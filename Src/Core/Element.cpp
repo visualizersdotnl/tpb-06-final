@@ -1,0 +1,25 @@
+#include "Element.h"
+
+namespace Pimp 
+{
+	Element::Element(World* ownerWorld)
+		: ownerWorld(ownerWorld), isNode(false), type(ET_Element)
+	{
+
+	}
+#ifdef _DEBUG
+	Element::~Element()
+	{
+	}
+#endif
+
+	void Element::SetType(ElementType type)
+	{
+		this->type = type;
+	}
+
+	void Element::SetIsNode(bool isNode)
+	{
+		this->isNode = isNode;
+	}
+}

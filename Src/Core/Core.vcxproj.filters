@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Nodes">
+      <UniqueIdentifier>{87566aae-4d37-4242-a904-0e9893fc2209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Nodes">
+      <UniqueIdentifier>{3e721300-a943-435c-8b96-1f4eb93cec94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{abf50863-ade4-4eec-967d-29f240baa8fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AnimCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectTechnique.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Element.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenQuadVertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Balls.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialParameter.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleAttractor.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSpline.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyMesh.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Xform.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DCompiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectTechnique.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Element.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PIX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenQuadVertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Balls.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialParameter.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleAttractor.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSpline.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyMesh.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Xform.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Shader_PostProcess.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Shaders\Shader_PostProcess.fx">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
