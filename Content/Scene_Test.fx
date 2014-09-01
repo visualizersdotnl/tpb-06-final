@@ -72,11 +72,10 @@ VSOutput MainVS(VSInput input)
 }
 
 
-Texture2D texture_1917884299; // Perlin
-Texture2D texture_4734255; // Sand
+Texture2D texture_testimage;
 
 
-SamplerState samplerDisplaceTexture
+SamplerState samplerTexture
 {
 	AddressU = WRAP;
 	AddressV = WRAP;
@@ -294,6 +293,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 
 
 	float3 diffColor;
+	float3 specColor;
 	float3 ambient;
 	float specAmount;
 	float3 maxLight;
@@ -302,14 +302,29 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	{		
 		// Walls and floor
 		
-		float gridFreq = 1.0;
-		float gridThickness = 0.020;
-		float gridPattern = max(max(sin(inPos.x * gridFreq),sin(inPos.y * gridFreq)),sin(inPos.z * gridFreq));
-		float grid = max(0.0, gridPattern-(1.0-gridThickness))/gridThickness;	
+		// float gridFreq = 1.0;
+		// float gridThickness = 0.020;
+		// float gridPattern = max(max(sin(inPos.x * gridFreq),sin(inPos.y * gridFreq)),sin(inPos.z * gridFreq));
+		// float grid = max(0.0, gridPattern-(1.0-gridThickness))/gridThickness;	
 
-		diffColor = (0.3 + grid*0.5).xxx;
-		ambient = diffColor*0.05;//(0.1).xxx;	
-		specAmount = 0.6;
+		float3 flatPos = inPos - inNormal*dot(inPos, inNormal);
+
+		float2 uv;
+
+		if (abs(inNormal.x) > 0)
+			uv = flatPos.yz;
+		else if (abs(inNormal.y) > 0)
+			uv = flatPos.xz;
+		else
+			uv = flatPos.xy;
+
+		uv *= 0.05;
+		float3 texel = texture_testimage.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		diffColor = texel.xxx;
+
+		ambient = diffColor*0.05*texel.z;
+		specColor = (1.0).xxx;
+		specAmount = 0.9 * texel.z;
 	}
 	else
 	{
@@ -327,7 +342,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specular = pow( max(0, dot(reflect, inEyeDir) ), 1 ) * specAmount;	
 	
 	float3 lightAmount = min(
-		diffuse + specular*diffColor + ambient,
+		diffuse + specular*specColor + ambient,
 		(1.0).xxx
 		);
 

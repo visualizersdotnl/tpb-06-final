@@ -76,6 +76,9 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -123,6 +126,14 @@
       <Project>{2dd684b0-6eef-48a8-b151-923a6719e9be}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\Libs\LodePNG\LodePNG.vcxproj">
+      <Project>{f30ef568-f1d2-4d38-9c74-012246924f17}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
     <ProjectReference Include="..\Libs\Math\Math.vcxproj">
       <Project>{881b9524-7d8d-4a76-ad1c-5d781140acc3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -130,6 +141,14 @@
     <ProjectReference Include="..\Libs\Shared\Shared.vcxproj">
       <Project>{493c64ac-e3bb-495b-b653-933160a10f98}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Libs\TinyXML\tinyxmlSTL.vcxproj">
+      <Project>{519cda93-b273-4c3e-9328-659e1b7ce4a6}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

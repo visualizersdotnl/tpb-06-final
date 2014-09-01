@@ -29,28 +29,29 @@ std::string GetAssetsPath()
 }
 
 
-//// Load a PNG texture from a file. Should be moved to Texture2D::LoadFromFile() probably.
-//Pimp::Texture2D* LoadTexture(const std::string& filename)
-//{
-//	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
-//
-//	unsigned char* pixels = NULL;
-//	unsigned int width, height;
-//
-//	unsigned int error = lodepng_decode32_file(&pixels, &width, &height, filename.c_str());
-//
-//	ASSERT_MSG(error == 0, std::string("Error loading texture from '") + filename + std::string("': ") + lodepng_error_text(error));
-//	ASSERT_MSG(width == height, std::string("Error loading texture from '") + filename + std::string("'. It's not square. Currently only square textures are supported..."));
-//	ASSERT(pixels != NULL);
-//
-//	int sizePixels = width;
-//
-//	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, sizePixels);
-//
-//	texture->UploadTexels(pixels);
-//
-//	return texture;
-//}
+// Load a PNG texture from a file. Should be moved to Texture2D::LoadFromFile() probably.
+Pimp::Texture2D* LoadTexture(const std::string& filename)
+{
+	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
+
+	std::vector<unsigned char> pixels;
+	unsigned int width, height;
+
+	unsigned int error = lodepng::decode(pixels, width, height, filename);
+	//lodepng_decode32_file(&pixels, &width, &height, filename.c_str());
+
+	ASSERT_MSG(error == 0, std::string("Error loading texture from '") + filename + std::string("': ") + lodepng_error_text(error));
+	ASSERT_MSG(width == height, std::string("Error loading texture from '") + filename + std::string("'. It's not square. Currently only square textures are supported..."));
+	ASSERT(pixels.size() > 0);
+
+	int sizePixels = width;
+
+	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, sizePixels);
+
+	texture->UploadTexels(&pixels[0]);
+
+	return texture;
+}
 
 
 void GenerateWorld_scene(Pimp::World** outWorld)
@@ -240,8 +241,8 @@ void GenerateWorld_scene(Pimp::World** outWorld)
 
 	// Load textures
 
-	//Pimp::Texture2D* testTexture = LoadTexture(assetsPath + "testimage.png");
-	//world->GetTextures().Add(testTexture);
+	Pimp::Texture2D* testTexture = LoadTexture(assetsPath + "testimage.png");
+	world->GetTextures().Add(testTexture);
 
 
 	// Init all materials, now that the shaders have been compiled.
