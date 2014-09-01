@@ -43,7 +43,6 @@ _
   
 TODO
 
-- Add support for loading images from files
 - Add sound playback system
 - Integrate GNU rocket
 - Add some good post processing
