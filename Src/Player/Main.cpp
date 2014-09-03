@@ -15,6 +15,9 @@ void CaptureFrame();
 int recordFrameIndex = 0;
 #endif
 
+#ifdef _DEBUG
+bool gIsPaused = false;
+#endif
 
 extern void GenerateWorld_scene(Pimp::World** outWorld);
 
@@ -24,6 +27,15 @@ LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 {
 	switch( msg )
 	{
+#ifdef _DEBUG
+	case WM_KEYDOWN:
+		if (wParam == VK_SPACE)
+		{
+			gIsPaused = !gIsPaused;
+			DEBUG_LOG(gIsPaused ? "Updating has been paused." : "Updating has been resumed!")
+		}
+		break;
+#endif
 	case WM_CLOSE: 
 	case WM_DESTROY:
 	case WM_CHAR:
@@ -291,6 +303,12 @@ int WINAPI WinMain(
 		float totalTimeElapsed = 0;
 #endif
 
+		DEBUG_LOG("============================================================================");
+		DEBUG_LOG("Pimp is up and running!");
+		DEBUG_LOG("");
+		DEBUG_LOG("SPACE: Toggle pause.");
+		DEBUG_LOG("============================================================================");
+
 		while (msg.message != WM_QUIT)
 		{
 			if( PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) )
@@ -336,6 +354,10 @@ int WINAPI WinMain(
 #endif	
 #endif	
 
+#ifdef _DEBUG
+				if (gIsPaused)
+					timeElapsed = 0;
+#endif
 				
 				currentWorld->Tick(timeElapsed);
 				currentWorld->Render();
