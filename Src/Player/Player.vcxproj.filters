@@ -27,6 +27,9 @@
     <ClCompile Include="Content\Scene.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

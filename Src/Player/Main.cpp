@@ -3,11 +3,15 @@
 #include "Settings.h"
 #include "Resource.h"
 #include "SceneTools.h"
+#include "DebugCamera.h"
 
 
 /*static*/ HWND gHwnd;
 /*static*/ Pimp::World* gWorld;
 
+#ifdef _DEBUG
+DebugCamera* gDebugCamera;
+#endif
 
 #if PIMPPLAYER_RECORD_TO_PNG
 ID3D10Texture2D* recordToPNGCaptureBuffer;
@@ -17,6 +21,9 @@ int recordFrameIndex = 0;
 
 #ifdef _DEBUG
 bool gIsPaused = false;
+bool gIsMouseTracking = false;
+int gMouseTrackInitialX;
+int gMouseTrackInitialY;
 #endif
 
 extern void GenerateWorld_scene(Pimp::World** outWorld);
@@ -33,6 +40,45 @@ LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		{
 			gIsPaused = !gIsPaused;
 			DEBUG_LOG(gIsPaused ? "Updating has been paused." : "Updating has been resumed!")
+
+			gDebugCamera->SetEnabled(gIsPaused);
+
+			ShowCursor(gIsPaused);
+		}
+		if (gIsPaused)
+		{
+			if (wParam == 'A')
+				gDebugCamera->Move(Vector3(-1.0f, 0.0f, 0.0f));
+			else if (wParam == 'D')
+				gDebugCamera->Move(Vector3(+1.0f, 0.0f, 0.0f));
+			else if (wParam == 'W')
+				gDebugCamera->Move(Vector3( 0.0f, 0.0f,-1.0f));
+			else if (wParam == 'S')
+				gDebugCamera->Move(Vector3( 0.0f, 0.0f,+1.0f));
+			else if (wParam == 'Q' && !gIsMouseTracking)
+				gDebugCamera->Roll(false);
+			else if (wParam == 'E' && !gIsMouseTracking)
+				gDebugCamera->Roll(true);			
+		}
+		
+		break;
+	case WM_LBUTTONDOWN:
+		gIsMouseTracking = true;
+		gMouseTrackInitialX = LOWORD(lParam);
+		gMouseTrackInitialY = HIWORD(lParam);
+		gDebugCamera->StartLookAt();
+		break;
+	case WM_LBUTTONUP:
+		gIsMouseTracking = false;
+		gDebugCamera->EndLookAt();
+		break;
+	case WM_MOUSEMOVE:
+		if (gIsMouseTracking)
+		{
+			int posX = LOWORD(lParam);
+			int posY = HIWORD(lParam);
+
+			gDebugCamera->LookAt(posX - gMouseTrackInitialX, posY - gMouseTrackInitialY);
 		}
 		break;
 #endif
@@ -192,6 +238,7 @@ bool RunConfiguration()
 #endif
 
 
+
 int WINAPI WinMain(
 	HINSTANCE hInstance,      // handle to current instance
 	HINSTANCE hPrevInstance,  // handle to previous instance
@@ -257,7 +304,7 @@ int WINAPI WinMain(
 #endif
 		}
 
-		SetCursor(NULL);
+		//SetCursor(NULL);
 		ShowCursor(FALSE);
 
 		Pimp::gD3D = new Pimp::D3D(gHwnd);
@@ -274,6 +321,9 @@ int WINAPI WinMain(
 		GenerateWorld_scene(&gWorld);
 		ASSERT( gWorld != NULL );
 		
+#ifdef _DEBUG
+		gDebugCamera = new DebugCamera(gWorld);
+#endif		
 
 		gWorld->GetPostProcess()->SetLoadProgress(0.0f);
 
@@ -306,7 +356,12 @@ int WINAPI WinMain(
 		DEBUG_LOG("============================================================================");
 		DEBUG_LOG("Pimp is up and running!");
 		DEBUG_LOG("");
-		DEBUG_LOG("SPACE: Toggle pause.");
+		DEBUG_LOG("> SPACE: Toggle pause");
+		DEBUG_LOG("");
+		DEBUG_LOG("If paused:");
+		DEBUG_LOG("> W,S,A,D: Translate current view forward, back, left or right.");
+		DEBUG_LOG("> Q,E: Roll current view, in either positive or negative direction.");
+		DEBUG_LOG("> Left mouse button+dragging: Adjust yaw and pitch of current view.");
 		DEBUG_LOG("============================================================================");
 
 		while (msg.message != WM_QUIT)

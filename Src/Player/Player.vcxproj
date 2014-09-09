@@ -106,11 +106,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SceneTools.cpp" />
     <ClCompile Include="Content\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
     <ClInclude Include="Settings.h" />

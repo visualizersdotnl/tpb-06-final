@@ -62,3 +62,25 @@ Quaternion CreateQuaternionFromRotationMatrix(const Matrix4& rotMatrix)
 
 	return result;
 }
+
+// Inspired by Wine's implementation of D3DXQuaternionRotationYawPitchRoll:
+// http://source.winehq.org/source/dlls/d3dx9_36/math.c#L1284
+Quaternion CreateQuaternionFromYawPitchRoll(float yaw, float pitch, float roll)
+{
+	float syaw, cyaw, spitch, cpitch, sroll, croll;
+
+	syaw = sinf(yaw / 2.0f);
+	cyaw = cosf(yaw / 2.0f);
+	spitch = sinf(pitch / 2.0f);
+	cpitch = cosf(pitch / 2.0f);
+	sroll = sinf(roll / 2.0f);
+	croll = cosf(roll / 2.0f);
+
+	Quaternion out;
+	out.x = syaw * cpitch * sroll + cyaw * spitch * croll;
+	out.y = syaw * cpitch * croll - cyaw * spitch * sroll;
+	out.z = cyaw * cpitch * sroll - syaw * spitch * croll;
+	out.w = cyaw * cpitch * croll + syaw * spitch * sroll;
+
+	return out;
+}
