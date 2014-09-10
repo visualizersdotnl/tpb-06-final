@@ -1,3 +1,10 @@
+
+// @plek: Some of my code to-do's:
+// - Figure out where that run-time error comes from (see output).
+// - Eradicate DXGI leaks (see output).
+// - Change output executable names (32/64/D).
+// - Then go figure out how everything else is put together.
+
 #include <Core/Core.h>
 #include <Windows.h>
 #include "Settings.h"
@@ -93,7 +100,7 @@ LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
-#ifndef _DEBUG
+#if !defined(_DEBUG) && !defined(PIMPPLAYER_IS_DEMO)
 void TerminateWithInitError()
 {
 	MessageBox(NULL, "Could not init!", "Error!", MB_OK|MB_ICONEXCLAMATION);
@@ -197,14 +204,14 @@ INT_PTR CALLBACK ConfigDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPA
 			{
 				// store
 
-				int adapterindex = SendMessage(GetDlgItem(hwndDlg, IDC_COMBOADAPTER), CB_GETCURSEL, 0, 0);
-				int resoindex = SendMessage(GetDlgItem(hwndDlg, IDC_COMBORESO), CB_GETCURSEL, 0, 0);
+				int adapterindex = (int) SendMessage(GetDlgItem(hwndDlg, IDC_COMBOADAPTER), CB_GETCURSEL, 0, 0);
+				int resoindex = (int) SendMessage(GetDlgItem(hwndDlg, IDC_COMBORESO), CB_GETCURSEL, 0, 0);
 
 				mainConfiguration->SetSelectedAdapter(adapterindex);
 				mainConfiguration->SetSelectedGraphicsMode(resoindex);
 
 				mainConfiguration->SetSelectedDisplayAspectRatio( 
-					SendMessage(GetDlgItem(hwndDlg, IDC_COMBOASPECT), CB_GETCURSEL, 0, 0)
+					(int) SendMessage(GetDlgItem(hwndDlg, IDC_COMBOASPECT), CB_GETCURSEL, 0, 0)
 					);
 
 				mainConfiguration->SetFullscreen(
@@ -227,7 +234,7 @@ bool RunConfiguration()
 	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), 
 		NULL, ConfigDialogProc);
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	if (result <= 0)
 		throw Win32Exception();
 #endif
@@ -246,7 +253,7 @@ int WINAPI WinMain(
 	int nCmdShow              // show state
 	)
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	try
 	{
 #endif
@@ -268,11 +275,11 @@ int WINAPI WinMain(
 		// Register the window class
 		WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, (WNDPROC) D3DWindowProc, 0L, 0L, 
 			GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
-			"pimp", NULL };
+			PIMPPLAYER_RELEASE_ID, NULL };
 
 		if (!RegisterClassEx( &wc ))
 		{
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 			throw Exception("Could not register window class!");
 #else
 			TerminateWithInitError();
@@ -285,36 +292,38 @@ int WINAPI WinMain(
 		int w = mode.width;
 		int h = mode.height;
 
-		if (!Pimp::Configuration::Instance()->GetFullscreen())
+		const bool windowed = !Pimp::Configuration::Instance()->GetFullscreen();
+
+		if (true == windowed)
 		{
 			w += 2*GetSystemMetrics(SM_CYDLGFRAME);
 			h += GetSystemMetrics(SM_CYCAPTION) + 2*GetSystemMetrics(SM_CXDLGFRAME);
 		}
 
-		gHwnd = CreateWindow( "pimp", PIMPPLAYER_WINDOWCAPTION, 
+		gHwnd = CreateWindow(PIMPPLAYER_RELEASE_ID, PIMPPLAYER_RELEASE_TITLE, 
 			WS_VISIBLE|WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, w, h,
 			GetDesktopWindow(), NULL, wc.hInstance, NULL );
 
 		if (!gHwnd)
 		{
-#ifdef _DEBUG
+#if 1 // defined(_DEBUG)
 			throw Exception("Could not create window!");
 #else
 			TerminateWithInitError();
 #endif
 		}
 
-		//SetCursor(NULL);
-		ShowCursor(FALSE);
+		// @plek: Keep cursor in windowed mode. I'm used to clicking that little cross :)
+		if (false == windowed)
+		{
+			ShowCursor(FALSE);
+		}
 
 		Pimp::gD3D = new Pimp::D3D(gHwnd);
 
 		BringWindowToTop(gHwnd);
 
 		InitMaterialCompilationSystem();
-
-
-
 
 		DrawLoadProgress(false);
 
@@ -340,7 +349,7 @@ int WINAPI WinMain(
 		recordToPNGCaptureBuffer = Pimp::gD3D->CreateIntermediateCPUTarget(DXGI_FORMAT_B8G8R8A8_UNORM);
 #endif
 
-		// start sound?
+		// @plek: I will initialize BASS and Rocket right here.
 		
 		MSG msg; 
 		ZeroMemory( &msg, sizeof(msg) );
@@ -443,24 +452,24 @@ int WINAPI WinMain(
 			}
 		}
 
-#ifdef _DEBUG 
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 		delete gWorld;
 
 		delete Pimp::gD3D;
 		ReleaseDC( gHwnd, GetDC(gHwnd));
 		DestroyWindow(gHwnd);
-		UnregisterClass("pimp", GetModuleHandle(NULL));
+		UnregisterClass(PIMPPLAYER_RELEASE_ID, GetModuleHandle(NULL));
 
 		Pimp::Configuration::Free();
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	}
 	catch(const Exception& e)
 	{
 		char s[8192];
 		sprintf_s(s, 8192, "Got an exception:\n%s", e.GetMessage().c_str());
-		MessageBox(0, s, "pimp: aargh!", MB_ICONEXCLAMATION|MB_OK);
+		MessageBox(0, s, PIMPPLAYER_RELEASE_TITLE, MB_ICONEXCLAMATION|MB_OK);
 	}
 #endif
 
