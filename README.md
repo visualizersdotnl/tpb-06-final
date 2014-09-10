@@ -5,7 +5,7 @@ TPB-06 - Excessination
 
 _
 
-NOTES (revision 2, I believe)
+NOTES (revision 3, codename "time is not our friend")
 
 - This framework is based on inque's 64k framework. Since that's a 64k system,
   expect some awkward stuff (things that are not really needed in a fullsize demo).
@@ -75,11 +75,11 @@ TODO
 - Add particle system (blend in using depth from scene shader?).
 - Use precompiled shaders; dont ship text versions of shaders -> very important!
 - Make it easier to construct the scene in the generate_scene() function.
-  @plek: I'm going to try and take a crack at that, will cry for help at some point :-)
+@plek: I'm going to try and take a crack at that, will cry for help at some point :-)
 - Fly-through camera support.
-  @plek: Not yet sure if we'll have scenes that need it but time will tell.
+@plek: Not yet sure if we'll have scenes that need it but time will tell.
 
 After the basics are rolling (which, surprise, is going to take longer than I thought it
 would initially) we'll get Decipher on board and see if he has some requirements for his
 FX (if he'll step up and actually make some). Hope that Glow also does some, but he knows
-this code and will modify/help as sees fit.
+this code and can modify with ease.

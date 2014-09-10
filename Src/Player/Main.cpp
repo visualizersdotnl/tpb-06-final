@@ -12,13 +12,15 @@
 	- DXGI leaks on exit (see output).
 
 	Where I'll go from here:
-	- Add demo mode to Core and have D3D (and more?) throw exceptions when due.
+	- Think of dropping 64KB support and potentially replacing some exceptions for return values.
+	  Maybe throw in my window class from INDIGO.
+	- D3D stuff needs to report it's vital errors one way or another (and other core things too).
 	- Add BASS/Rocket support:
 	  + Plug in my BASS stuff and play the MP3, obviously.
 	  + Integrate and connect to Rocket.
 	  + Revise timing logic (world tick) to fit Rocket tracks.
 	  + Lastly look at the Rocket content files and the (final) replay mode.
-	- Divert attention to what's going on in Content/Scene.cpp!
+	- Divert my attention to what's going on in Content/Scene.cpp!
 	- Implement GP exception handler (for release builds and pesky full screen crashes).
 	  I already fixed the latter a little bit with a nifty SetErrorMode() call.
 */
@@ -39,16 +41,6 @@ Pimp::World* gWorld = nullptr;
 
 #ifdef _DEBUG
 DebugCamera* gDebugCamera;
-#endif
-
-//
-// PNG recorder stuff.
-//
-
-#if PIMPPLAYER_RECORD_TO_PNG
-ID3D10Texture2D* recordToPNGCaptureBuffer;
-void CaptureFrame();
-int recordFrameIndex = 0;
 #endif
 
 //
