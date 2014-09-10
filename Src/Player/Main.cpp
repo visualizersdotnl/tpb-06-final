@@ -19,7 +19,7 @@
 	  + Revise timing logic (world tick) to fit Rocket tracks.
 	  + Lastly look at the Rocket content files and the (final) replay mode.
 	- Divert attention to what's going on in Content/Scene.cpp!
-	- Implement GP exception handler (for release builds and pesky fulls screen crashes).
+	- Implement GP exception handler (for release builds and pesky full screen crashes).
 	  I already fixed the latter a little bit with a nifty SetErrorMode() call.
 */
 
