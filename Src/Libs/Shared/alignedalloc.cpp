@@ -7,6 +7,9 @@
 
 void* AlignedAlloc(int size, int alignment)
 {
+	return _aligned_malloc(size, alignment);
+
+#if 0 // @plek: Most OSes actually have something like this on board. Built it myself in the past too :-)
 	ASSERT( alignment > 0 );
 	ASSERT( IsPowerOfTwo(alignment) );
 	
@@ -48,10 +51,14 @@ void* AlignedAlloc(int size, int alignment)
 //	CopySomeMemory(ptr, &unalignedPtr, sizeof(void*));
 
 	return alignedData;
+#endif
 }
 
 void AlignedFree(void* alignedPtr)
 {
+	_aligned_free(alignedPtr);
+
+#if 0
 	if (alignedPtr == NULL)
 		return;
 
@@ -68,6 +75,7 @@ void AlignedFree(void* alignedPtr)
 	ASSERT( (char*)unalignedPtr <= dataPtr );
 
 	HeapFree( GetProcessHeap(), 0, (void*)unalignedPtr );
+#endif
 }
 
 

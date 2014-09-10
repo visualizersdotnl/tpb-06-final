@@ -121,9 +121,6 @@
     <ResourceCompile Include="Player.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\info.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{2dd684b0-6eef-48a8-b151-923a6719e9be}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

@@ -2,14 +2,15 @@
 
 
 // Note: Also modify the config dialog's caption in Player.rc!
-#define PIMPPLAYER_WINDOWCAPTION "Untitled demo"
+#define PIMPPLAYER_WINDOWCAPTION "Excessination"
 
 // Do you want to see the config dialog? Set to 1 for the final build.
 #define PIMPPLAYER_USECONFIGDIALOG 0
 
 // Settings when not using the config dialog (see above setting)
-#define PIMPPLAYER_FORCEDRESOLUTION_X 1280
-#define PIMPPLAYER_FORCEDRESOLUTION_Y 720
+// @plek: I'm using a slow-ass laptop these days so I'll have to settle for "a little less".
+#define PIMPPLAYER_FORCEDRESOLUTION_X (1280/2)
+#define PIMPPLAYER_FORCEDRESOLUTION_Y (720/2)
 #define PIMPPLAYER_FORCEDRESOLUTION_FULLSCREEN 0
 #define PIMPPLAYER_FORCEDRESOLUTION_ASPECT 16.0f/9.0f
 

@@ -460,7 +460,7 @@ int WINAPI WinMain(
 	{
 		char s[8192];
 		sprintf_s(s, 8192, "Got an exception:\n%s", e.GetMessage().c_str());
-		MessageBox(0, s, "pimp: Aaargh!", MB_ICONEXCLAMATION|MB_OK);
+		MessageBox(0, s, "pimp: aargh!", MB_ICONEXCLAMATION|MB_OK);
 	}
 #endif
 
