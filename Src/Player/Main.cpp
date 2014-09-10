@@ -1,9 +1,27 @@
 
-// @plek: Some of my code to-do's:
-// - Figure out where that run-time error comes from (see output).
-// - Eradicate DXGI leaks (see output).
-// - Change output executable names (32/64/D).
-// - Then go figure out how everything else is put together.
+/* @plek:
+
+	I'm going through this file to get it a bit more up to demo standard (i.e. proper release of resources and
+	error messages) whilst maintaining backward compatibility with 64KBs (see Settings.h for a new toggle).
+		
+	I also took out some stuff I deemed useless for this project and added a ton of obvious comments, but those are
+	chiefly for me to keep oversight during this process. After all this code and it's intricacies are new to me :-)
+
+	Issues I've spotted and intened to fix:
+	- D3D CreateDevice() throws "Invalid parameter passed to C runtime function." into my output window.
+	- DXGI leaks on exit (see output).
+
+	Where I'll go from here:
+	- Add demo mode to Core and have D3D (and more?) throw exceptions when due.
+	- Add BASS/Rocket support:
+	  + Plug in my BASS stuff and play the MP3, obviously.
+	  + Integrate and connect to Rocket.
+	  + Revise timing logic (world tick) to fit Rocket tracks.
+	  + Lastly look at the Rocket content files and the (final) replay mode.
+	- Divert attention to what's going on in Content/Scene.cpp!
+	- Implement GP exception handler (for release builds and pesky fulls screen crashes).
+	  I already fixed the latter a little bit with a nifty SetErrorMode() call.
+*/
 
 #include <Core/Core.h>
 #include <Windows.h>
@@ -12,19 +30,30 @@
 #include "SceneTools.h"
 #include "DebugCamera.h"
 
+//
+// Global handles/pointers.
+//
 
-/*static*/ HWND gHwnd;
-/*static*/ Pimp::World* gWorld;
+HWND gHwnd = 0;
+Pimp::World* gWorld = nullptr;
 
 #ifdef _DEBUG
 DebugCamera* gDebugCamera;
 #endif
+
+//
+// PNG recorder stuff.
+//
 
 #if PIMPPLAYER_RECORD_TO_PNG
 ID3D10Texture2D* recordToPNGCaptureBuffer;
 void CaptureFrame();
 int recordFrameIndex = 0;
 #endif
+
+//
+// Debug input state.
+//
 
 #ifdef _DEBUG
 bool gIsPaused = false;
@@ -33,10 +62,17 @@ int gMouseTrackInitialX;
 int gMouseTrackInitialY;
 #endif
 
+//
+// World creator.
+//
+
+// @plek: Resides in Content/Scene.cpp
 extern void GenerateWorld_scene(Pimp::World** outWorld);
 
+//
+// Window proc.
+//
 
-// Dummy window proc.
 LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
 	switch( msg )
@@ -89,24 +125,36 @@ LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		}
 		break;
 #endif
-	case WM_CLOSE: 
-	case WM_DESTROY:
+	case WM_CLOSE:
 	case WM_CHAR:
 		if (msg != WM_CHAR || (char)wParam == 27)
+			// If WM_CLOSE or ESC key pressed, bail out.
 			PostQuitMessage(0);
+			gHwnd = NULL;// @plek: Important -> after the break, DefWindowProc() will call DestroyWindow() for us!
 		break;
 	}
 
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
+//
+// 64KB quick terminate function.
+//
+
 #if !defined(_DEBUG) && !defined(PIMPPLAYER_IS_DEMO)
-void TerminateWithInitError()
+void TerminateOnError64KB()
 {
-	MessageBox(NULL, "Could not init!", "Error!", MB_OK|MB_ICONEXCLAMATION);
+	// At the very least enhance our chances of returning to the desktop.
+	delete Pimp::gD3D; 
+	
+	MessageBox(NULL, "Could not initialize.", "Error!", MB_OK|MB_ICONEXCLAMATION);
 	ExitProcess(1);
 }
 #endif
+
+//
+// Configuration dialog.
+//
 
 #if PIMPPLAYER_USECONFIGDIALOG
 
@@ -237,6 +285,8 @@ bool RunConfiguration()
 #if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	if (result <= 0)
 		throw Win32Exception();
+#else
+		TerminateOnError64KB();
 #endif
 
 	return (result == IDOK);
@@ -244,7 +294,9 @@ bool RunConfiguration()
 
 #endif
 
-
+//
+// WinMain.
+//
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,      // handle to current instance
@@ -254,25 +306,48 @@ int WINAPI WinMain(
 	)
 {
 #if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
+	char exceptionMsg[8192] = { 0 };
 	try
 	{
 #endif
+		// This won't allocate anything, so ride along.
 		Matrix4::Init();
 
-		Pimp::Configuration::Init();	
-		
+		// Handle configuration.
+		// Will throw an exception or terminate. 
+
+		Pimp::Configuration::Init();
 
 #if !PIMPPLAYER_USECONFIGDIALOG
 		Pimp::Configuration::Instance()->SetFullscreen(PIMPPLAYER_FORCEDRESOLUTION_FULLSCREEN);
 		Pimp::Configuration::Instance()->SetForcedResolutionAndAspect(PIMPPLAYER_FORCEDRESOLUTION_X, PIMPPLAYER_FORCEDRESOLUTION_Y, PIMPPLAYER_FORCEDRESOLUTION_ASPECT);
 #else		
 		Pimp::Configuration::Instance()->SetFullscreen(false);
-
-		if (!RunConfiguration())
+		if (false == RunConfiguration())
+		{
+			// User bailed.
+#if defined(PIMPPLAYER_IS_DEMO)
+			Pimp::Configuration::Free();
+#endif
 			return 1;
+		}
 #endif
 
-		// Register the window class
+#if defined(DEBUG) || defined(PIMPPLAYER_IS_DEMO)
+		const bool windowed = !Pimp::Configuration::Instance()->GetFullscreen();
+		if (false == windowed)
+		{
+			// @plek: Now you'll hate or love this but it takes a crashing full screen D3D
+			//        application right down instead of "hanging" on either a debugger or Windows error box
+			//        that can't get any focus. If complemented with a general exception handler that tells you
+			//        something wen't wrong as well, it's an ideal combination for that particular frustration.
+			SetErrorMode(SEM_NOGPFAULTERRORBOX);
+		}
+#endif
+
+		// Create window.
+		//
+
 		WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, (WNDPROC) D3DWindowProc, 0L, 0L, 
 			GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
 			PIMPPLAYER_RELEASE_ID, NULL };
@@ -282,7 +357,7 @@ int WINAPI WinMain(
 #if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 			throw Exception("Could not register window class!");
 #else
-			TerminateWithInitError();
+			TerminateOnError64KB();
 #endif
 		}
 
@@ -292,8 +367,6 @@ int WINAPI WinMain(
 		int w = mode.width;
 		int h = mode.height;
 
-		const bool windowed = !Pimp::Configuration::Instance()->GetFullscreen();
-
 		if (true == windowed)
 		{
 			w += 2*GetSystemMetrics(SM_CYDLGFRAME);
@@ -302,14 +375,14 @@ int WINAPI WinMain(
 
 		gHwnd = CreateWindow(PIMPPLAYER_RELEASE_ID, PIMPPLAYER_RELEASE_TITLE, 
 			WS_VISIBLE|WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, w, h,
-			GetDesktopWindow(), NULL, wc.hInstance, NULL );
+			NULL, NULL, wc.hInstance, NULL );
 
 		if (!gHwnd)
 		{
-#if 1 // defined(_DEBUG)
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 			throw Exception("Could not create window!");
 #else
-			TerminateWithInitError();
+			TerminateOnError64KB();
 #endif
 		}
 
@@ -319,17 +392,20 @@ int WINAPI WinMain(
 			ShowCursor(FALSE);
 		}
 
+		// Initialize Direct3D.
+		// @plek: This needs error checking when running as a demo in a few key points and throw due exceptions.
+
 		Pimp::gD3D = new Pimp::D3D(gHwnd);
 
+		// Now do a few things that won't fail either.
 		BringWindowToTop(gHwnd);
-
 		InitMaterialCompilationSystem();
-
 		DrawLoadProgress(false);
 
+		// Generate the entire "world" (or demo content if you like).
 		GenerateWorld_scene(&gWorld);
-		ASSERT( gWorld != NULL );
-		
+		// @plek: ^ This should be able to fail by throwing (local) exceptions as well.
+
 #ifdef _DEBUG
 		gDebugCamera = new DebugCamera(gWorld);
 #endif		
@@ -337,27 +413,10 @@ int WINAPI WinMain(
 		gWorld->GetPostProcess()->SetLoadProgress(0.0f);
 
 		Pimp::World* currentWorld;
-
 		currentWorld = gWorld;
 
-
 #ifdef _DEBUG
-		gWorld->ForceSetTime(PIMPPLAYER_FORCEDSTARTTIME);
-#endif
-
-#if PIMPPLAYER_RECORD_TO_PNG
-		recordToPNGCaptureBuffer = Pimp::gD3D->CreateIntermediateCPUTarget(DXGI_FORMAT_B8G8R8A8_UNORM);
-#endif
-
-		// @plek: I will initialize BASS and Rocket right here.
-		
-		MSG msg; 
-		ZeroMemory( &msg, sizeof(msg) );
-
-		Stopwatch stopwatch;
-
-
-#ifdef _DEBUG
+		// For FPS counter.
 		int numFramesRendered = 0;
 		float totalTimeElapsed = 0;
 #endif
@@ -373,6 +432,13 @@ int WINAPI WinMain(
 		DEBUG_LOG("> Left mouse button+dragging: Adjust yaw and pitch of current view.");
 		DEBUG_LOG("============================================================================");
 
+		// @plek: As soon as Rocket runs the show this won't be for much else than the FPS counter.
+		Stopwatch stopwatch;
+
+		MSG msg; 
+		ZeroMemory( &msg, sizeof(msg) );
+
+		// @plek: For now this loop is continuous, fix it with a Rocket track.
 		while (msg.message != WM_QUIT)
 		{
 			if( PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) )
@@ -382,51 +448,20 @@ int WINAPI WinMain(
 			}
 			else
 			{
-#if PIMPPLAYER_RECORD_TO_PNG
-				float timeElapsed = 1.0f/PIMPPLAYER_RECORD_FRAMERATE;
-#else
-#if PIMPPLAYER_ENABLE_HARDSYNC
-				static float prevTime = 0.0f;
-				static bool isFirstFrame = true;
-
-				float currentTime = currentSoundSystem->GetPlaybackTime();
-
-				float timeElapsedSincePreviousFrame = stopwatch.GetSecondsElapsedAndReset();
-				float estimatedDurationOfCurrentFrame = isFirstFrame ? (1.0f/60.0f) : timeElapsedSincePreviousFrame;
-				
-				float sceneTimeAtEndOfUpdate = currentTime + estimatedDurationOfCurrentFrame*1.0f;				
-
-				// timeElapsed = actually the time to elapse this frame.
-				float timeElapsed = sceneTimeAtEndOfUpdate - currentWorld->GetCurrentTime();
-				if (timeElapsed < 0.0f)
-					timeElapsed = 0.0f;
-
-				prevTime += timeElapsed;
-				isFirstFrame = false;
-
-				//if (timeElapsed == 0.0f)
-				//{
-				//	DEBUG_LOG("timeElapsed: %f timeElapsedSincePreviousFrame: %f <----<----", timeElapsed, timeElapsedSincePreviousFrame);
-				//}
-				//else
-				//{
-				//	DEBUG_LOG("timeElapsed: %f timeElapsedSincePreviousFrame: %f", timeElapsed, timeElapsedSincePreviousFrame);
-				//}
-				
-#else
 				float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
-#endif	
-#endif	
 
 #ifdef _DEBUG
 				if (gIsPaused)
 					timeElapsed = 0;
 #endif
 				
+				// Tick and render.
+				// @plek: For Rocket integration I'll have to think of something like a master tick track.
 				currentWorld->Tick(timeElapsed);
 				currentWorld->Render();
 
 #ifdef _DEBUG
+				// FPS counter.
 				totalTimeElapsed += timeElapsed;
 
 				if (++numFramesRendered == 15)
@@ -441,94 +476,31 @@ int WINAPI WinMain(
 					totalTimeElapsed = 0;
 				}
 #endif
-
-#if PIMPPLAYER_RECORD_TO_PNG
-				CaptureFrame();
-#endif
-
-				if (gWorld->GetCurrentTime() > PIMPPLAYER_DURATION)
-					PostQuitMessage(1);
-
 			}
 		}
-
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
-		delete gWorld;
-
-		delete Pimp::gD3D;
-		ReleaseDC( gHwnd, GetDC(gHwnd));
-		DestroyWindow(gHwnd);
-		UnregisterClass(PIMPPLAYER_RELEASE_ID, GetModuleHandle(NULL));
-
-		Pimp::Configuration::Free();
-#endif
-
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	}
+
+#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	catch(const Exception& e)
 	{
-		char s[8192];
-		sprintf_s(s, 8192, "Got an exception:\n%s", e.GetMessage().c_str());
-		MessageBox(0, s, PIMPPLAYER_RELEASE_TITLE, MB_ICONEXCLAMATION|MB_OK);
+		// Custom exception occured. Store it for display in a bit...
+		sprintf_s(exceptionMsg, 8192, "Got an exception:\n%s", e.GetMessage().c_str());
 	}
+
+	// Get rid of World and D3D.
+	delete gWorld;
+	delete Pimp::gD3D;
+	
+	// If necessary, destroy window, then unregister class (harmless if it fails).
+	if (NULL != gHwnd) DestroyWindow(gHwnd);
+	UnregisterClass(PIMPPLAYER_RELEASE_ID, GetModuleHandle(NULL)); // DestroyWindow() has been called implicitly.
+
+	Pimp::Configuration::Free();
+
+	// Display exception if necessary.
+	if (0 != strlen(exceptionMsg))
+		MessageBox(0, exceptionMsg, PIMPPLAYER_RELEASE_TITLE, MB_ICONEXCLAMATION|MB_OK);
 #endif
 
 	return 0;
 }
-
-
-#if PIMPPLAYER_RECORD_TO_PNG
-
-char* captureBuffer = NULL;
-
-void CaptureFrame()
-{
-
-	// Resolve GPU backbuffer to our intermediate CPU texture
-	Pimp::gD3D->CopyTextures(recordToPNGCaptureBuffer, Pimp::gD3D->GetRenderTargetBackBuffer()->GetTexture());
-
-	// Map to memory so we can read it
-	D3D10_MAPPED_TEXTURE2D mappedTexture;
-	D3D_VERIFY( 
-		recordToPNGCaptureBuffer->Map(0, D3D10_MAP_READ, 0, &mappedTexture),
-		"ID3D10Texture2D:Map" );
-
-	int w,h;
-	Pimp::gD3D->GetViewportSize(&w, &h);
-
-	char filename[512];
-	sprintf_s(filename,512, "DemoCapture_%05d.tga", recordFrameIndex);
-
-	ASSERT(mappedTexture.RowPitch == w*4);
-
-	if (captureBuffer == NULL)
-		captureBuffer = new char[w*h*4];
-
-	// Copy a row at a time.
-	// The jump by pitch, may differ if pitch is not the same as width.
-	//
-	unsigned int myLineSize = w * 4;
-	unsigned int offsetMyData = (h-1) * myLineSize;
-	char* pixelSource = (char*)mappedTexture.pData;
-	char* pixelDest = (char*)captureBuffer + offsetMyData;
-
-	for ( int i=0 ; i < h; i++ )
-	{
-		memcpy(pixelDest, pixelSource, myLineSize);
-		pixelDest -= myLineSize;
-		pixelSource += mappedTexture.RowPitch;
-	}
-
-	StoreTGAImageToFile(filename, w, h, (unsigned char*)captureBuffer);
-
-
-	const int bytesPerPixel = 4;
-
-
-
-	recordToPNGCaptureBuffer->Unmap(0);
-
-
-	recordFrameIndex++;
-}
-#endif

@@ -87,7 +87,9 @@
     <ClCompile Include="fileutils.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="mutex.cpp" />
-    <ClCompile Include="pipe.cpp" />
+    <ClCompile Include="pipe.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="shell.cpp" />
     <ClCompile Include="stdafx.cpp">

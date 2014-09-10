@@ -44,12 +44,13 @@
     <OutDir>$(ProjectDir)\..\..\Content\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>$(ProjectName)_debug</TargetName>
+    <TargetName>$(ProjectName)_debug_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)\..\..\Content\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_x64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>

@@ -196,10 +196,9 @@ D3D::D3D(HWND hwnd)
 D3D::~D3D()
 {
 	delete depthStencil;
-
 	rasterizerState->Release();
 	delete renderTargetBackBuffer;
-	//swapchain->Release();
+	swapchain->Release();
 	device->Release();
 }
 

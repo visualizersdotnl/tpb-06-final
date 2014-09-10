@@ -9,22 +9,8 @@
 
 std::string GetAssetsPath()
 {
+	// @plek: Append /Content here and move stuff.
 	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
-//
-//#ifdef _DEBUG
-//	int foundIndex = path.find("src\\intermediate\\");
-//
-//
-//	if (foundIndex >= 0)
-//	{
-//		// Cut away the Src\Intermediate part...
-//		path = path.substr(0, foundIndex);
-//
-//		// ...and suffix with Content folder
-//		path += "content\\";
-//	}
-//#endif
-
 	return path;
 }
 
