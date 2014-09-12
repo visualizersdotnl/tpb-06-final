@@ -21,7 +21,7 @@ namespace Pimp
 	class D3D
 	{
 	public:
-		D3D(HWND hwnd);
+		D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain);
 		~D3D();
 
 		void Clear(ID3D10RenderTargetView* renderTarget);
@@ -92,18 +92,20 @@ namespace Pimp
 
 	private:
 		int viewWidth, viewHeight;
+
+		// These are supplied by host on construction, so don't release them!
 		ID3D10Device1* device;
 		IDXGISwapChain* swapchain;
 
+		// Actual resources.
 		ID3D10RasterizerState* rasterizerState;
-
 		RenderTarget* renderTargetBackBuffer;
 		DepthStencil* depthStencil;
 		ID3D10DepthStencilState* depthStencilState;
-
 		ID3D10BlendState* blendStates[MAX_BlendMode];
 
-		Vector2 renderScale; // scale (XY) to render with. includes aspect ratio correction
+		// Scale (XY) to render with. Includes aspect ratio correction (letterboxing).
+		Vector2 renderScale; 
 	};
 
 	extern D3D* gD3D;

@@ -6,16 +6,15 @@
 
 #define DEG2RAD(x) ((x)*(M_PI/180.0f))
 
-
 std::string GetAssetsPath()
 {
-	// @plek: Append /Content here and move stuff.
+	// FIXME: Append /Content here and move stuff.
 	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
 	return path;
 }
 
-
-// Load a PNG texture from a file. Should be moved to Texture2D::LoadFromFile() probably.
+// Load a PNG texture from a file. 
+// FIXME: Should be moved to Texture2D::LoadFromFile(), probably.
 Pimp::Texture2D* LoadTexture(const std::string& filename)
 {
 	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
@@ -39,8 +38,7 @@ Pimp::Texture2D* LoadTexture(const std::string& filename)
 	return texture;
 }
 
-
-void GenerateWorld_scene(Pimp::World** outWorld)
+void GenerateWorld(Pimp::World** outWorld)
 {
 	Pimp::World* world = new Pimp::World();
 	

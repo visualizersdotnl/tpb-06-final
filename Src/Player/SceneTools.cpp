@@ -1,14 +1,14 @@
 #include "SceneTools.h"
+#include "Stub.h"
 
+// 
+// Misc. scene graph helpers.
+//
 
 void AddChildToParent(Pimp::Node* nodeChild, Pimp::Node* nodeParent)
 {
 	Pimp::World::StaticAddChildToParent(nodeChild, nodeParent);
 }
-
-
-#define NUM_MAX_ANIMCURVEKEYS_GENTRACK 5120 //2560
-
 
 static void AddAnimCurveKey(FixedSizeList<Pimp::AnimCurve::Pair>& keys, float time, float value)
 {
@@ -21,191 +21,6 @@ static void AddAnimCurveKey(FixedSizeList<Pimp::AnimCurve::Pair>& keys, float ti
 	keys.Add(key);
 }
 
-//void GenerateAnimCurveForSoundtrackEvents(
-//	Pandora::System* soundSystem,
-//	Pimp::AnimCurve* curve, 
-//	int channel, float attackTimeSeconds, float decayTimeSeconds,
-//	float outValueMin, float outValueMax, float predelay, bool incremental, int eventType, int noteMin, int noteMax)
-//{
-//	float outRange = outValueMax - outValueMin;
-//
-//	if (incremental)
-//	{
-//		attackTimeSeconds = 0;
-//	}
-//
-//	struct Spike
-//	{
-//		float time;
-//		float value;
-//	};
-//
-//	FixedSizeList<Spike> spikes(NUM_MAX_ANIMCURVEKEYS_GENTRACK);
-//	FixedSizeList<Pimp::AnimCurve::Pair> keys(NUM_MAX_ANIMCURVEKEYS_GENTRACK*4);
-//
-//	// Step one: gather relevant spikes
-//	
-//	const Pandora::Track& track = soundSystem->GetTrack();
-//	const Pandora::Track::Event* finger = track.GetEvents();
-//
-//	unsigned int timeInSamples = 0;
-//
-//	for (int i=0; i<track.GetNumEvents(); ++i)
-//	{
-//		timeInSamples += finger->samplesSincePreviousEvent;
-//
-//		if (finger->type == Pandora::Track::Event::TYPE_NOTEON &&
-//			(channel == -1 || finger->channel == channel))
-//		{
-//			Spike newSpike = {
-//				(float)timeInSamples * (1.0f / 44100.0f) + predelay,
-//				(finger->velocity * outRange) / 255.0f + (incremental ? 0.0f : outValueMin)
-//			};
-//
-//			spikes.Add(newSpike);
-//		}
-//
-//		++finger;
-//	}
-//
-//	// Now interpolate inbetween
-//	
-//	if (spikes.Size() > 0)
-//	{
-//		const float endTime = spikes[spikes.Size()-1].time + decayTimeSeconds + attackTimeSeconds;
-//		float t = 0;
-//
-//		int nextSpikeIndex = 0;
-//
-//		float valueMin = outValueMin;
-//
-//		while (t <= endTime)
-//		{
-//			if (nextSpikeIndex < (int)spikes.Size())
-//			{
-//				float deltaTime = spikes[nextSpikeIndex].time - t;
-//
-//				float decayEndTime = t + decayTimeSeconds;
-//				float attackStartTime = spikes[nextSpikeIndex].time - attackTimeSeconds;
-//
-//				if (incremental)
-//				{
-//					if (nextSpikeIndex == 0)
-//					{
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, valueMin);
-//					}
-//					else if (decayEndTime < attackStartTime)
-//					{
-//						// Value key
-//						AddAnimCurveKey(keys, decayEndTime, valueMin + spikes[nextSpikeIndex].value);
-//
-//						// Value key
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, valueMin + spikes[nextSpikeIndex].value);
-//
-//						valueMin += spikes[nextSpikeIndex].value;
-//					}
-//					else
-//					{
-//						// decayendtime > attackstarttime!
-//
-//						float deltaValue = spikes[nextSpikeIndex].value;
-//						float alpha = (decayTimeSeconds > 0) ? (deltaTime / decayTimeSeconds) : 0.0f;
-//
-//						float dv = alpha*deltaValue;
-//
-//						// Value key
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, valueMin + dv);
-//
-//						valueMin += dv;
-//					}
-//
-//				}
-//				else
-//				{
-//					if (nextSpikeIndex == 0)
-//					{
-//						// No decay needed!
-//						// Start an attack interval
-//
-//						// Attack key
-//						AddAnimCurveKey(keys, attackStartTime, outValueMin);
-//
-//						// Value key
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, spikes[nextSpikeIndex].value);
-//					}
-//					else if (decayEndTime < attackStartTime) 
-//					{
-//						// First a decay that completely ends, and then an attack
-//
-//						// Decay key
-//						AddAnimCurveKey(keys, decayEndTime, outValueMin);
-//
-//						// Attack key
-//						AddAnimCurveKey(keys, attackStartTime, outValueMin);
-//
-//						// Value key
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, spikes[nextSpikeIndex].value);
-//					}
-//					else
-//					{
-//						// The decay intersects an attack! So it should be prematurely ended!
-//
-//						float t1 = spikes[nextSpikeIndex-1].time;
-//						float t2 = spikes[nextSpikeIndex].time;
-//						float v1 = spikes[nextSpikeIndex-1].value;
-//						float v2 = spikes[nextSpikeIndex].value;
-//
-//						ASSERT_MSG( decayEndTime >= attackStartTime, "Impossible intersection parameters" );
-//						ASSERT_MSG( decayEndTime >= t1, "Impossible intersection parameters" );
-//						ASSERT_MSG( attackStartTime <= t2, "Impossible intersection parameters" );
-//						ASSERT_MSG( t2 >= t1, "Impossible intersection parameters" );
-//
-//						float vDelta = (v1 - v2) / outRange;
-//						float tOffset = (t1 / (decayEndTime - t1)) + (t2 / (t2 - attackStartTime));
-//						float tScale = (1 / (decayEndTime - t1)) + (1 / (t2 - attackStartTime));
-//						float intersectionTime = (vDelta + tOffset) / tScale;
-//
-//						intersectionTime = min(max(intersectionTime, t1), t2);
-//
-//						//ASSERT_MSG( intersectionTime >= t1 && intersectionTime <= t2, "Impossible intersection time!" );
-//
-//						float valueIntersection = v1 - outRange * ((intersectionTime-t1)/(decayEndTime-t1));
-//
-//						if (valueIntersection < outValueMin)
-//							valueIntersection = outValueMin;
-//
-//						// Intersection key of decay with attack
-//						AddAnimCurveKey(keys, intersectionTime, valueIntersection);
-//
-//						// Value key
-//						AddAnimCurveKey(keys, spikes[nextSpikeIndex].time, spikes[nextSpikeIndex].value);
-//					}
-//				}
-//
-//
-//				t += deltaTime;							
-//				nextSpikeIndex++;
-//			}
-//			else 
-//			{
-//				if (!incremental)
-//				{
-//					// The last decay key after our last note.
-//					AddAnimCurveKey(keys, t+decayTimeSeconds, outValueMin);
-//				}
-//
-//
-//				// And quit by leaving the loop					
-//				break;
-//			}
-//		}
-//	}
-//
-//	// Set keys
-//	curve->SetKeysPtr(keys.GetItemsPtr(), keys.Size());
-//}
-
-
 static void RecursiveRemoveNode(Pimp::Node* node)
 {
 	FixedSizeList<Pimp::Element*>& elems = node->GetOwnerWorld()->GetElements();
@@ -214,7 +29,6 @@ static void RecursiveRemoveNode(Pimp::Node* node)
 	for (int i=0; i<node->GetChildren().Size(); ++i)
 		RecursiveRemoveNode(node->GetChildren()[i]);
 }
-
 
 void RemoveNodeFromWorld(Pimp::Node* node)
 {
@@ -228,7 +42,6 @@ void RemoveNodeFromWorld(Pimp::Node* node)
 	
 	RecursiveRemoveNode(node);
 }
-
 
 void DuplicateTransformTransformedHierarchy(
 	Pimp::World* w,
@@ -254,6 +67,10 @@ void DuplicateTransformTransformedHierarchy(
 		}
 	}
 }
+
+//
+// Effect compilation.
+//
 
 #if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
 
@@ -348,7 +165,6 @@ void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsc
 #endif
 }
 
-
 void WaitForMaterialCompilationJobsToFinish()
 {
 #if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
@@ -381,8 +197,6 @@ void WaitForMaterialCompilationJobsToFinish()
 #endif
 }
 
-extern HWND gHwnd;
-extern Pimp::World* gWorld;
 static int gNumTotalMaterialCompilationJobs = 1;
 
 void SetNumTotalMaterialCompilationJobs(int count)
@@ -392,10 +206,9 @@ void SetNumTotalMaterialCompilationJobs(int count)
 	DrawLoadProgress(false);
 }
 
-
-
-
-
+//
+// Loading bar.
+//
 
 void DrawLoadProgress( bool texturesLoaded )
 {
@@ -427,4 +240,3 @@ void DrawLoadProgress( bool texturesLoaded )
 	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
 }
-

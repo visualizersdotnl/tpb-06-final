@@ -107,16 +107,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="SceneTools.cpp" />
-    <ClCompile Include="Content\Scene.cpp" />
+    <ClCompile Include="DebugCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SceneTools.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Content\Scene.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Stub.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Stub.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc" />

@@ -1,20 +1,20 @@
 #pragma once
 
-// Undef. to resort to 64K cutbacks (i.e. no error messages, not releasing objects, no BASS/Rocket, et cetera).
-#define PIMPPLAYER_IS_DEMO
-
+// Demo ID & title.
 #define PIMPPLAYER_RELEASE_ID "TPB-06"
 #define PIMPPLAYER_RELEASE_TITLE "Excessination"
 
-// Do you want to see the config dialog? Set to 1 for the final build.
-#define PIMPPLAYER_USECONFIGDIALOG 0
-
-// Settings when not using the config dialog (see above setting)
-// @plek: I'm using a slow-ass laptop these days so I'll have to settle for "a little less" in dev. mode.
-#define PIMPPLAYER_FORCEDRESOLUTION_X (1280/2)
-#define PIMPPLAYER_FORCEDRESOLUTION_Y (720/2)
-#define PIMPPLAYER_FORCEDRESOLUTION_FULLSCREEN 0
-#define PIMPPLAYER_FORCEDRESOLUTION_ASPECT 16.0f/9.0f
+// Aspect ratio the demo is to be presented in.
+// For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
+#define PIMPPLAYER_RENDER_ASPECT_RATIO 16.f/9.f
 
 // Should our shaders be compiled in multiple threads? Speeds things up considerably.
 #define PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE 1
+
+// Force windowed (uses dev. resolution) or else the desktop resolution is adapted.
+// @plek: Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
+//        without monitor distortion. And a beam team can very well be instructed to select an appropriate one
+//        for performance reasons.
+#define PIMPPLAYER_FORCE_WINDOWED 1
+#define PIMPPLAYER_DEV_RES_X 1920/2
+#define PIMPPLAYER_DEV_RES_Y 1080/2

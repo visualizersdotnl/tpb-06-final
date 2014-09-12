@@ -44,44 +44,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_DIALOGCONFIG DIALOGEX 0, 0, 509, 29
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Setup"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "Go!",IDOK,397,7,50,15
-    PUSHBUTTON      "Exit",IDCANCEL,452,7,50,15
-    COMBOBOX        IDC_COMBOASPECT,296,8,41,72,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Windowed",IDC_CHECKWIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,344,9,49,10
-    COMBOBOX        IDC_COMBOADAPTER,7,8,203,150,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_COMBORESO,215,8,76,72,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_DIALOGCONFIG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 502
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 22
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 #endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 

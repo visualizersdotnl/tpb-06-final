@@ -19,52 +19,20 @@ namespace Pimp
 D3D* gD3D = NULL;
 
 
-D3D::D3D(HWND hwnd)
-: device(NULL), swapchain(NULL), renderTargetBackBuffer(NULL)
+D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) : 
+	device(device), swapchain(swapchain)
+,	rasterizerState(nullptr)
+,	renderTargetBackBuffer(nullptr)
+,	depthStencil(nullptr)
+,	depthStencilState(nullptr)
 {
-	const Configuration::DisplayMode& mode = Configuration::Instance()->GetSelectedDisplayMode();
-
-	viewWidth = mode.width;
-	viewHeight = mode.height;
-	IDXGIAdapter1* adapter = Configuration::Instance()->GetSelectedAdapter();
+	memset(blendStates, 0, MAX_BlendMode*sizeof(BlendMode));
 
 	HRESULT hr;
 
-	DXGI_SWAP_CHAIN_DESC sd;
-	memset(&sd, 0, sizeof(sd));
-
-	sd.BufferDesc.Width = viewWidth;
-	sd.BufferDesc.Height = viewHeight;
-	sd.BufferDesc.RefreshRate.Numerator = 0;
-	sd.BufferDesc.RefreshRate.Denominator = 0;
-	sd.BufferDesc.Format = PIMP_BACKBUFFER_FORMAT;
-	sd.BufferCount = 1; // 2 buffers? 1 should be enough?
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = hwnd;
-	sd.Windowed = !Configuration::Instance()->GetFullscreen();
-	sd.SampleDesc.Count = D3D_ANTIALIAS_NUM_SAMPLES;
-	sd.SampleDesc.Quality = D3D_ANTIALIAS_QUALITY;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-	// Set up device and swapchain
-	hr = D3D10CreateDeviceAndSwapChain1(
-		adapter, 
-		D3D10_DRIVER_TYPE_HARDWARE, 
-		NULL,
-#ifdef D3D_ENABLE_DEBUG
-		D3D10_CREATE_DEVICE_DEBUG,
-#else
-		0,
-#endif
-		D3D10_FEATURE_LEVEL_10_0,
-		D3D10_1_SDK_VERSION, 
-		&sd, &swapchain,
-		&device);
-
-	D3D_ASSERT(hr);
-	ASSERT(device != NULL);
-	ASSERT(swapchain != NULL);
+	const Configuration::DisplayMode& mode = Configuration::Instance()->GetDisplayMode();
+	viewWidth = mode.width;
+	viewHeight = mode.height;
 
 #ifdef D3D_DISABLE_SPECIFIC_WARNINGS
 	ID3D10InfoQueue* infoQueue;
@@ -84,24 +52,24 @@ D3D::D3D(HWND hwnd)
 	infoQueue->AddStorageFilterEntries(&filter);  
 #endif
 
-	// Retrieve backbuffer
-	ID3D10Texture2D* backbuffer = NULL;
+	// Retrieve backbuffer.
+	ID3D10Texture2D* backbuffer;
 	hr = swapchain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
 	D3D_ASSERT(hr);
 	ASSERT(backbuffer != NULL);
 
-	// Create rendertargetview for backbuffer
-	ID3D10RenderTargetView* renderTargetViewBackbuffer = NULL;
+	// Create render target view for backbuffer.
+	ID3D10RenderTargetView* renderTargetViewBackbuffer;
 	hr = device->CreateRenderTargetView(backbuffer, NULL, &renderTargetViewBackbuffer);
 	D3D_ASSERT(hr);
 	ASSERT(renderTargetViewBackbuffer != NULL);
 
 	renderTargetBackBuffer = new RenderTarget(PIMP_BACKBUFFER_FORMAT, backbuffer, renderTargetViewBackbuffer, NULL);
 
-	// Resort to trianglelists
+	// Resort to triangle lists.
 	device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Rasterizer state
+	// Rasterizer state.
 	D3D10_RASTERIZER_DESC rasterDesc;
 	memset(&rasterDesc, 0, sizeof(rasterDesc));
 	rasterDesc.FillMode = D3D10_FILL_SOLID;
@@ -141,18 +109,11 @@ D3D::D3D(HWND hwnd)
 	// Bind our backbuffer and depth stencil by default
 	BindBackbuffer(depthStencil);
 
-	//
-	// this piece of code assures that we ALWAYS use the same aspect ratio for our rendered screens,
-	// it will assure that everything is presented (not rendered!) in our maximum aspect ratio (16:9).
-	// this is achieved by adding black bars at the top and bottom of our screen.
-	// 
-
-	float desired_aspect_ratio_on_screen = Configuration::Instance()->GetMaxDisplayAspectRatio().aspect; // 16:9 = 1.777
-	float actual_aspect_ratio = Configuration::Instance()->GetSelectedDisplayAspectRatio(); // for example 4:3 = 1.333
-
-	float renderableAmount = actual_aspect_ratio / desired_aspect_ratio_on_screen;
-//	int renderableHeight = Clamp( (int)((float)viewHeight * renderableAmount), 0, viewHeight-1 );
-
+	// Here we perform letterboxing. 
+	// The configuration carries the desired aspect ratio and the one we're actually rendering to is adapted from the resolution.
+	float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
+	float outputAspectRatio = (float) viewWidth / viewHeight;
+	float renderableAmount = renderAspectRatio / outputAspectRatio;
 	renderScale.x = 1.0f;
 	renderScale.y = renderableAmount;
 
@@ -195,11 +156,13 @@ D3D::D3D(HWND hwnd)
 
 D3D::~D3D()
 {
+	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
+		if (nullptr != blendStates[iBS]) blendStates[iBS]->Release();
+	
+	if (nullptr != depthStencilState) depthStencilState->Release();
 	delete depthStencil;
-	rasterizerState->Release();
+	if (nullptr != rasterizerState) rasterizerState->Release();
 	delete renderTargetBackBuffer;
-	swapchain->Release();
-	device->Release();
 }
 
 

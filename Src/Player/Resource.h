@@ -2,14 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by Player.rc
 //
-#define IDD_DIALOGCONFIG                101
-#define IDC_COMBORES                    1001
-#define IDC_COMBOADAPTER                1001
-#define IDC_COMBOASPECT                 1002
-#define IDC_CHECKWIN                    1003
-#define IDC_CHECKVS                     1004
-#define IDC_COMBOASPECT2                1005
-#define IDC_COMBORESO                   1005
 
 // Next default values for new objects
 // 

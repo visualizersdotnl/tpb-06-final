@@ -97,7 +97,7 @@ namespace Pimp
 		this->FOVy = FOVy;
 
 		// recalc projection matrix
-		float renderAspect = Configuration::Instance()->GetMaxDisplayAspectRatio().aspect;
+		float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
 		projectionMatrix = CreateMatrixPerspectiveFov(FOVy, renderAspect, 0.15f, 2000.0f);
 	}
 }

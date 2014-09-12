@@ -1,138 +1,44 @@
 #pragma once
 
 #include <shared/shared.h>
-#include <dxgi.h>
 
 namespace Pimp 
 {
+	// @plek: This class used to contain objects to aid a flexible configuration dialog.
+	//        The new Player stub has a rather different (and static) philosophy to setting up a display mode,
+	//        so all of this has been taken out. If in the future a dialog will be added, the code to maintain
+	//        a list of properties and selections will likely be maintained by the host or live alongside it.
 
 	class Configuration : 
 		public Singleton<Configuration>
 	{
 	public:
-
 		struct DisplayMode
 		{
 			int width;
 			int height;
 		};
 
-		struct Adapter
-		{
-			Adapter() { name[0]=0; }
-
-			char name[256];
-			IDXGIAdapter1* adapterPtr;
-		};
-
-		struct DisplayAspectRatio
-		{
-			float aspect; // w/h
-			char name[256];
-		};
-
-
 	private:
-		FixedSizeList<Adapter> adapters;
-		FixedSizeList<DisplayMode> displayModes;
-		int selectedAdapter;
-		int selectedDisplayMode;
-		int selectedDisplayAspectRatio;
-
 		bool fullscreen;
+		DisplayMode displayMode;
 
-#if !PIMPPLAYER_USECONFIGDIALOG
-		bool forceResolutionAndAspect;
-		DisplayMode forcedDisplayMode;
-		DisplayAspectRatio forcedAspectRatio; // w/h
-#endif
+		// This means: the aspect ratio the demo requires.
+		// The actual aspect ratio (for letterboxing) will be derived from displayMode.
+		float renderAspectRatio; 
 
 		Configuration();
 
 		friend class Singleton<Configuration>;
 
 	public:
-		void SetSelectedAdapter(int index)
-		{
-			selectedAdapter = index;
-		}
+		void SetFullscreen(bool full) { fullscreen = full; }
+		bool GetFullscreen() const    { return fullscreen; }
 
-		void SetSelectedGraphicsMode(int mode)
-		{
-			selectedDisplayMode = mode;
-		}
+		void SetDisplayMode(const DisplayMode &mode) { displayMode = mode; }
+		const DisplayMode& GetDisplayMode()          { return displayMode; }
 
-		void SetFullscreen(bool full)
-		{
-			fullscreen = full;
-		}
-
-		bool GetFullscreen() const
-		{
-			return fullscreen;
-		}
-
-		int GetSelectedAdapterIndex() const
-		{
-			return selectedAdapter;
-		}
-
-		IDXGIAdapter1* GetSelectedAdapter() const
-		{
-			return adapters[selectedAdapter].adapterPtr;
-		}
-
-		int GetSelectedDisplayModeIndex() const
-		{
-			return selectedDisplayMode;
-		}
-
-		const FixedSizeList<Adapter>& GetAdapters() const 
-		{
-			return adapters;
-		}
-
-		const FixedSizeList<DisplayMode>& GetDisplayModes() const 
-		{
-			return displayModes;
-		}
-
-		const DisplayMode& GetSelectedDisplayMode() 
-		{
-#if !PIMPPLAYER_USECONFIGDIALOG
-			if (forceResolutionAndAspect)
-				return forcedDisplayMode;
-			else
-#endif
-				return displayModes[selectedDisplayMode];
-		}
-
-		const DisplayAspectRatio* GetDisplayAspectRatios() const;
-		int GetNumDisplayAspectRatios() const;
-
-		int GetSelectedDisplayAspectRatioIndex() const 
-		{
-			return selectedDisplayAspectRatio;
-		}
-
-		float GetSelectedDisplayAspectRatio() const;
-
-
-		void SetSelectedDisplayAspectRatio(int index)
-		{
-			selectedDisplayAspectRatio = index;
-		}
-
-#if !PIMPPLAYER_USECONFIGDIALOG
-		void SetForcedResolutionAndAspect(int width, int height, float aspect)
-		{
-			forceResolutionAndAspect = true;
-			forcedAspectRatio.aspect = aspect;
-			forcedDisplayMode.width = width;
-			forcedDisplayMode.height = height;
-		}
-#endif
-
-		const DisplayAspectRatio& GetMaxDisplayAspectRatio() const;
+		void SetRenderAspectRatio(float ratio) { renderAspectRatio = ratio; }
+		float GetRenderAspectRatio() const     { return renderAspectRatio;  }
 	};
 }

@@ -2,7 +2,7 @@
 /* @plek:
 
 	I'm going through this file to get it a bit more up to demo standard (i.e. proper release of resources and
-	error messages) whilst maintaining backward compatibility with 64KBs (see Settings.h for a new toggle).
+	error messages).
 		
 	I also took out some stuff I deemed useless for this project and added a ton of obvious comments, but those are
 	chiefly for me to keep oversight during this process. After all this code and it's intricacies are new to me :-)
@@ -12,7 +12,7 @@
 	- DXGI leaks on exit (see output).
 
 	Where I'll go from here:
-	- Add demo mode to Core and have D3D (and more?) throw exceptions when due.
+	- Revise D3D code and have it return proper errors if they so happen to occur.
 	- Add BASS/Rocket support:
 	  + Plug in my BASS stuff and play the MP3, obviously.
 	  + Integrate and connect to Rocket.
@@ -34,21 +34,11 @@
 // Global handles/pointers.
 //
 
-HWND gHwnd = 0;
+HWND g_hWnd = 0;
 Pimp::World* gWorld = nullptr;
 
 #ifdef _DEBUG
 DebugCamera* gDebugCamera;
-#endif
-
-//
-// PNG recorder stuff.
-//
-
-#if PIMPPLAYER_RECORD_TO_PNG
-ID3D10Texture2D* recordToPNGCaptureBuffer;
-void CaptureFrame();
-int recordFrameIndex = 0;
 #endif
 
 //
@@ -130,27 +120,12 @@ LRESULT CALLBACK D3DWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		if (msg != WM_CHAR || (char)wParam == 27)
 			// If WM_CLOSE or ESC key pressed, bail out.
 			PostQuitMessage(0);
-			gHwnd = NULL;// @plek: Important -> after the break, DefWindowProc() will call DestroyWindow() for us!
+			g_hWnd = NULL;// @plek: Important -> after the break, DefWindowProc() will call DestroyWindow() for us!
 		break;
 	}
 
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
-
-//
-// 64KB quick terminate function.
-//
-
-#if !defined(_DEBUG) && !defined(PIMPPLAYER_IS_DEMO)
-void TerminateOnError64KB()
-{
-	// At the very least enhance our chances of returning to the desktop.
-	delete Pimp::gD3D; 
-	
-	MessageBox(NULL, "Could not initialize.", "Error!", MB_OK|MB_ICONEXCLAMATION);
-	ExitProcess(1);
-}
-#endif
 
 //
 // Configuration dialog.
@@ -282,17 +257,19 @@ bool RunConfiguration()
 	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), 
 		NULL, ConfigDialogProc);
 
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	if (result <= 0)
 		throw Win32Exception();
-#else
-		TerminateOnError64KB();
-#endif
 
 	return (result == IDOK);
 }
 
 #endif
+
+//
+// Render window.
+//
+
+
 
 //
 // WinMain.
@@ -305,11 +282,9 @@ int WINAPI WinMain(
 	int nCmdShow              // show state
 	)
 {
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	char exceptionMsg[8192] = { 0 };
 	try
 	{
-#endif
 		// This won't allocate anything, so ride along.
 		Matrix4::Init();
 
@@ -326,24 +301,20 @@ int WINAPI WinMain(
 		if (false == RunConfiguration())
 		{
 			// User bailed.
-#if defined(PIMPPLAYER_IS_DEMO)
 			Pimp::Configuration::Free();
-#endif
 			return 1;
 		}
 #endif
 
-#if defined(DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 		const bool windowed = !Pimp::Configuration::Instance()->GetFullscreen();
 		if (false == windowed)
 		{
 			// @plek: Now you'll hate or love this but it takes a crashing full screen D3D
 			//        application right down instead of "hanging" on either a debugger or Windows error box
 			//        that can't get any focus. If complemented with a general exception handler that tells you
-			//        something wen't wrong as well, it's an ideal combination for that particular frustration.
+			//        something went wrong as well, it's an ideal combination for that particular frustration.
 			SetErrorMode(SEM_NOGPFAULTERRORBOX);
 		}
-#endif
 
 		// Create window.
 		//
@@ -354,11 +325,7 @@ int WINAPI WinMain(
 
 		if (!RegisterClassEx( &wc ))
 		{
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 			throw Exception("Could not register window class!");
-#else
-			TerminateOnError64KB();
-#endif
 		}
 
 		const Pimp::Configuration::DisplayMode& mode = 
@@ -373,17 +340,13 @@ int WINAPI WinMain(
 			h += GetSystemMetrics(SM_CYCAPTION) + 2*GetSystemMetrics(SM_CXDLGFRAME);
 		}
 
-		gHwnd = CreateWindow(PIMPPLAYER_RELEASE_ID, PIMPPLAYER_RELEASE_TITLE, 
+		g_hWnd = CreateWindow(PIMPPLAYER_RELEASE_ID, PIMPPLAYER_RELEASE_TITLE, 
 			WS_VISIBLE|WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, w, h,
 			NULL, NULL, wc.hInstance, NULL );
 
-		if (!gHwnd)
+		if (!g_hWnd)
 		{
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 			throw Exception("Could not create window!");
-#else
-			TerminateOnError64KB();
-#endif
 		}
 
 		// @plek: Keep cursor in windowed mode. I'm used to clicking that little cross :)
@@ -395,10 +358,10 @@ int WINAPI WinMain(
 		// Initialize Direct3D.
 		// @plek: This needs error checking when running as a demo in a few key points and throw due exceptions.
 
-		Pimp::gD3D = new Pimp::D3D(gHwnd);
+		Pimp::gD3D = new Pimp::D3D(g_hWnd);
 
 		// Now do a few things that won't fail either.
-		BringWindowToTop(gHwnd);
+		BringWindowToTop(g_hWnd);
 		InitMaterialCompilationSystem();
 		DrawLoadProgress(false);
 
@@ -470,7 +433,7 @@ int WINAPI WinMain(
 
 					char s[256];
 					sprintf_s(s,256, "%.2f fps", fps);
-					SetWindowText(gHwnd, s);
+					SetWindowText(g_hWnd, s);
 
 					numFramesRendered = 0;
 					totalTimeElapsed = 0;
@@ -480,7 +443,6 @@ int WINAPI WinMain(
 		}
 	}
 
-#if defined(_DEBUG) || defined(PIMPPLAYER_IS_DEMO)
 	catch(const Exception& e)
 	{
 		// Custom exception occured. Store it for display in a bit...
@@ -492,7 +454,7 @@ int WINAPI WinMain(
 	delete Pimp::gD3D;
 	
 	// If necessary, destroy window, then unregister class (harmless if it fails).
-	if (NULL != gHwnd) DestroyWindow(gHwnd);
+	if (NULL != g_hWnd) DestroyWindow(g_hWnd);
 	UnregisterClass(PIMPPLAYER_RELEASE_ID, GetModuleHandle(NULL)); // DestroyWindow() has been called implicitly.
 
 	Pimp::Configuration::Free();
@@ -500,7 +462,6 @@ int WINAPI WinMain(
 	// Display exception if necessary.
 	if (0 != strlen(exceptionMsg))
 		MessageBox(0, exceptionMsg, PIMPPLAYER_RELEASE_TITLE, MB_ICONEXCLAMATION|MB_OK);
-#endif
 
 	return 0;
 }
