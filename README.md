@@ -5,7 +5,7 @@ TPB-06 - Excessination
 
 _
 
-NOTES (revision 2, I believe)
+NOTES
 
 - This framework is based on inque's 64k framework. Since that's a 64k system,
   expect some awkward stuff (things that are not really needed in a fullsize demo).
@@ -69,14 +69,12 @@ TODO (@plek: Beyond what's in Src/Player/Stub.cpp.)
 - Add BASS and make it do bleep.
 - Basic GNU rocket integration (further integration with scenes will develop as we go).
 - Add some good post processing
-	- HDR rendering.
-	- Color grading?
-	- Bokeh? (Shifter wants this, but what's there now is already quite suitable).
-	- Lens flares?
+	- Bokeh (Shifter wants this, but what's there now is already quite suitable). (@glow: I'll take a look.)
+	- Anamorphic lens flares (@glow: I'll take a look.)
+	- Color grading? (@glow: I'll take a look. probably lower prio.)  
 - Add particle system (blend in using depth from scene shader?).
 - Use precompiled shaders; dont ship text versions of shaders -> very important!
 - Make it easier to construct the scene in the GenerateScene() function -> very important!
-- Fly-through camera support.
 
 @plek: As I go on and learn how all this sticks together and am refactoring it I realize
 it's going to take a little longer than expected to get into full production. Having said
