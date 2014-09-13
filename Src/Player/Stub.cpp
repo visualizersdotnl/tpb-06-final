@@ -14,11 +14,14 @@
 // - Take care of proper shutdown and error message display.
 
 // To do (@plek):
-// - Finish up taking over all Main.cpp functionality (e.g. FPS counter).
+// - Remove Debug/Release executables from repository (.gitignore) and add a Design build that won't be deleted.
 // - Take a close look at current D3D warnings and leaks on exit (World probably isn't releasing anything).
 // - Set up Core D3D and World with proper error checking (SetLastError()).
 // - Attempt to eliminate most app. C++ exceptions.
 // - Carry on with whats in README.md!
+//
+// Note on Rocket:
+// - Enable toggle in Debug/Release, always on in Design.
 //
 // Secondary (for those lazy moments):
 // - Go look what's redundant in Shared (ask Glow) & remove unused (commented) code.
@@ -41,23 +44,17 @@
 #include "SceneTools.h"
 #include "DebugCamera.h"
 
-#ifdef _DEBUG
-static DebugCamera* s_pDebugCamera;
-
-static bool		s_isPaused			= false;
-static bool		s_isMouseTracking	= false;
-static int		s_mouseTrackInitialX;
-static int		s_mouseTrackInitialY;
-#endif
-
-
 // configuration: windowed (dev. only) / full screen
-const bool kWindowed = PIMPPLAYER_FORCE_WINDOWED;
-const unsigned int kWindowedResX = PIMPPLAYER_DEV_RES_X;
-const unsigned int kWindowedResY = PIMPPLAYER_DEV_RES_Y;
+const bool kWindowed = true;
+const unsigned int kWindowedResX = 1920/2;
+const unsigned int kWindowedResY = 1080/2;
+
+// @plek: In full screen mode the desktop resolution is adapted.
+//        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
+//        without monitor distortion. And a beam team can very well be instructed to select an appropriate one
+//        for performance reasons.
 
 // global error message
-// FIXME: Move to Shared.
 static std::string s_lastError;
 void SetLastError(const std::string &message) { s_lastError = message; }
 
@@ -82,6 +79,16 @@ Pimp::World *gWorld = nullptr;
 // World generator (basically our complete content initalization).
 // Lives in Scene.cpp.
 extern void GenerateWorld(Pimp::World** outWorld);
+
+// Debug camera and it's state.
+#ifdef _DEBUG
+static DebugCamera* s_pDebugCamera;
+
+static bool		s_isPaused			= false;
+static bool		s_isMouseTracking	= false;
+static int		s_mouseTrackInitialX;
+static int		s_mouseTrackInitialY;
+#endif
 
 static bool CreateDXGI(HINSTANCE hInstance)
 {
@@ -140,6 +147,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 {
 	switch (uMsg)
 	{
+		// debug camera mouse input
 #ifdef _DEBUG
 	case WM_LBUTTONDOWN:
 		s_isMouseTracking = true;
@@ -173,6 +181,8 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case VK_ESCAPE:
 			PostMessage(hWnd, WM_CLOSE, 0, 0);
 			break;
+		
+		// debug camera (un)pause 
 #ifdef _DEBUG
 		case VK_SPACE:
 			{
@@ -181,12 +191,14 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 				s_pDebugCamera->SetEnabled(s_isPaused);
 
-				ShowCursor(s_isPaused);
+				if (false == kWindowed)
+					ShowCursor(s_isPaused);
 			}
 			break;
 #endif
 		}
 
+		// debug camera keyboard input
 #ifdef _DEBUG
 		if (s_isPaused)
 		{
@@ -415,7 +427,7 @@ static bool CreateDirect3D()
 
 	// either one failed, passing it off as one error
 	std::string message;
-	message  = "Can not create Direct3D 10 device.\r\n\r\n";
+	message  = "Can not create Direct3D 10.1 device.\r\n\r\n";
 	message += (kWindowed) ? "Type: windowed.\r\n" : "Type: full screen.\r\n";
 	message += "Resolution: " + ToString(s_displayMode.Width) + "*" + ToString(s_displayMode.Height) + ".";
 	SetLastError(message);
@@ -493,12 +505,27 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 						{
 #ifdef _DEBUG
 							s_pDebugCamera = new DebugCamera(gWorld);
+
+							DEBUG_LOG("============================================================================");
+							DEBUG_LOG("Pimp is up and running!");
+							DEBUG_LOG("");
+							DEBUG_LOG("> SPACE: Toggle pause");
+							DEBUG_LOG("");
+							DEBUG_LOG("If paused:");
+							DEBUG_LOG("> W,S,A,D: Translate current view forward, back, left or right.");
+							DEBUG_LOG("> Q,E: Roll current view, in either positive or negative direction.");
+							DEBUG_LOG("> Left mouse button+dragging: Adjust yaw and pitch of current view.");
+							DEBUG_LOG("============================================================================");
 #endif	
 
 							// reset loading bar
 							gWorld->GetPostProcess()->SetLoadProgress(0.0f);
 
 							Stopwatch stopwatch;
+
+							// in windowed mode FPS is refreshed every 15 frames
+							float timeElapsedFPS = 0.f;
+							unsigned int numFramesFPS = 0;
 							
 							// enter (render) loop
 							bool renderFrame;
@@ -508,23 +535,41 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 								float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
 #ifdef _DEBUG
 								if (s_isPaused)
-									timeElapsed = 0;
+									timeElapsed = 0.f;
 #endif
 
 								gWorld->Tick(timeElapsed);
 								gWorld->Render();
 
-								// frame rendered?
-								if (true == renderFrame)
+								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
+								// FIXME: ignoring DXGI_ERROR_DEVICE_RESET
+
+								if (true == kWindowed)
 								{
-									// yes: flip/blit
-									const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
-									// FIXME: ignoring DXGI_ERROR_DEVICE_RESET
+									// handle FPS counter
+									timeElapsedFPS += timeElapsed;
+									if (++numFramesFPS = 15)
+									{
+										const float FPS = 15.f/timeElapsedFPS;
+										
+										char fpsStr[256];
+										sprintf_s(fpsStr, 256, "%s (%.2f FPS)", PIMPPLAYER_RELEASE_TITLE, FPS);
+										SetWindowText(g_hWnd, fpsStr);
+
+										timeElapsedFPS = 0.f;
+										numFramesFPS = 0;
+									}
 								}
 							}
 
-							delete Pimp::gD3D;
+#ifdef _DEBUG
+							s_pDebugCamera = new DebugCamera(gWorld);
+#endif	
+
+							delete gWorld;
 						}
+
+						delete Pimp::gD3D;
 					}
 				}
 

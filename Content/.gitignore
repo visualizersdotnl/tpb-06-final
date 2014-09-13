@@ -1,0 +1,3 @@
+# Ignore Debug/Release build executables.
+Player_x64.exe
+Player_debug_x64.exe
