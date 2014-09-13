@@ -58,7 +58,7 @@ namespace Pimp
 		
 		void CopyTextures(ID3D10Texture2D* dest, ID3D10Texture2D* src);
 
-		Texture2D* CreateTexture2D(const std::string& name, int sizePixels);
+		Texture2D* CreateTexture2D(const std::string& name, int sizePixels, bool requiresGammaCorrection);
 		Texture3D* CreateTexture3D(const std::string& name, int sizePixels);
 
 		void ResolveMultiSampledRenderTarget(

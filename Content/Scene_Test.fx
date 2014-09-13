@@ -333,6 +333,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		diffColor = ColOrange * 0.6;
 		ambient = ColOrange*0.2;
 		specAmount = 0.2;
+		specColor = (1.0).xxx;
 	}
 
 

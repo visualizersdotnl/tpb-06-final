@@ -64,7 +64,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	D3D_ASSERT(hr);
 	ASSERT(renderTargetViewBackbuffer != NULL);
 
-	renderTargetBackBuffer = new RenderTarget(PIMP_BACKBUFFER_FORMAT, backbuffer, renderTargetViewBackbuffer, NULL);
+	renderTargetBackBuffer = new RenderTarget(PIMP_BACKBUFFER_FORMAT_GAMMA, backbuffer, renderTargetViewBackbuffer, NULL);
 
 	// Resort to triangle lists.
 	device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -456,13 +456,13 @@ DepthStencil* D3D::GetDefaultDepthStencil() const
 }
 
 
-Texture2D* D3D::CreateTexture2D(const std::string& name, int sizePixels)
+Texture2D* D3D::CreateTexture2D(const std::string& name, int sizePixels, bool requiresGammaCorrection)
 {
 	D3D10_TEXTURE2D_DESC desc;
 	desc.Width = sizePixels;
 	desc.Height = sizePixels;
 	desc.MipLevels = desc.ArraySize = 1; // Only a single mip
-	desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.Format = requiresGammaCorrection ? DXGI_FORMAT_B8G8R8A8_UNORM_SRGB : DXGI_FORMAT_B8G8R8A8_UNORM;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
 	desc.Usage = D3D10_USAGE_DYNAMIC;

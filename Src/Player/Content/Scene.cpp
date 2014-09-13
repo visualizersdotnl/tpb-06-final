@@ -15,7 +15,7 @@ std::string GetAssetsPath()
 
 // Load a PNG texture from a file. 
 // FIXME: Should be moved to Texture2D::LoadFromFile(), probably.
-Pimp::Texture2D* LoadTexture(const std::string& filename)
+Pimp::Texture2D* LoadTexture(const std::string& filename, bool requiresGammaCorrection)
 {
 	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
 
@@ -31,7 +31,7 @@ Pimp::Texture2D* LoadTexture(const std::string& filename)
 
 	int sizePixels = width;
 
-	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, sizePixels);
+	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, sizePixels, requiresGammaCorrection);
 
 	texture->UploadTexels(&pixels[0]);
 
@@ -225,7 +225,7 @@ void GenerateWorld(Pimp::World** outWorld)
 
 	// Load textures
 
-	Pimp::Texture2D* testTexture = LoadTexture(assetsPath + "testimage.png");
+	Pimp::Texture2D* testTexture = LoadTexture(assetsPath + "testimage.png", true);
 	world->GetTextures().Add(testTexture);
 
 

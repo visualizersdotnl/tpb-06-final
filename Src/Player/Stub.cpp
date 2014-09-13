@@ -104,7 +104,7 @@ static bool CreateDXGI(HINSTANCE hInstance)
 	modeToMatch.Height = GetSystemMetrics(SM_CYSCREEN);
 	modeToMatch.RefreshRate.Numerator = 0;
 	modeToMatch.RefreshRate.Denominator = 0;
-	modeToMatch.Format = PIMP_BACKBUFFER_FORMAT;
+	modeToMatch.Format = PIMP_BACKBUFFER_FORMAT_LIN;
 	modeToMatch.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	modeToMatch.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
@@ -113,6 +113,11 @@ static bool CreateDXGI(HINSTANCE hInstance)
 		SetLastError("Can not retrieve primary monitor's display mode.");
 		return false;
 	}
+
+	// Now that we've found a valid backbuffer, force its format to our gamma-corrected backbuffer.
+	// We couldn't search for the gamma-corrected format right away, since FindClosestMatchingMode doesn't 
+	// appear to take sRGB formats into account...
+	s_displayMode.Format = PIMP_BACKBUFFER_FORMAT_GAMMA;
 
 	if (kWindowed)
 	{
