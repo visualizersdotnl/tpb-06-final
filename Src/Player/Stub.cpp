@@ -45,9 +45,14 @@
 #include "DebugCamera.h"
 
 // configuration: windowed (dev. only) / full screen
-const bool kWindowed = PIMPPLAYER_FORCE_WINDOWED;
-const unsigned int kWindowedResX = PIMPPLAYER_DEV_RES_X;
-const unsigned int kWindowedResY = PIMPPLAYER_DEV_RES_Y;
+const bool kWindowed = true;
+const unsigned int kWindowedResX = 1920/2;
+const unsigned int kWindowedResY = 1080/2;
+
+// @plek: In full screen mode the desktop resolution is adapted.
+//        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
+//        without monitor distortion. And a beam team can very well be instructed to select an appropriate one
+//        for performance reasons.
 
 // global error message
 static std::string s_lastError;
@@ -417,7 +422,7 @@ static bool CreateDirect3D()
 
 	// either one failed, passing it off as one error
 	std::string message;
-	message  = "Can not create Direct3D 10 device.\r\n\r\n";
+	message  = "Can not create Direct3D 10.1 device.\r\n\r\n";
 	message += (kWindowed) ? "Type: windowed.\r\n" : "Type: full screen.\r\n";
 	message += "Resolution: " + ToString(s_displayMode.Width) + "*" + ToString(s_displayMode.Height) + ".";
 	SetLastError(message);
