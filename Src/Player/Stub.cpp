@@ -14,7 +14,7 @@
 // - Take care of proper shutdown and error message display.
 
 // To do (@plek):
-// - Finish up taking over all Main.cpp functionality (e.g. debug camera & FPS counter).
+// - Finish up taking over all Main.cpp functionality (e.g. FPS counter).
 // - Take a close look at current D3D warnings and leaks on exit (World probably isn't releasing anything).
 // - Set up Core D3D and World with proper error checking (SetLastError()).
 // - Attempt to eliminate most app. C++ exceptions.
@@ -39,6 +39,17 @@
 #include "Stub.h"
 #include "Settings.h"
 #include "SceneTools.h"
+#include "DebugCamera.h"
+
+#ifdef _DEBUG
+static DebugCamera* s_pDebugCamera;
+
+static bool		s_isPaused			= false;
+static bool		s_isMouseTracking	= false;
+static int		s_mouseTrackInitialX;
+static int		s_mouseTrackInitialY;
+#endif
+
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = PIMPPLAYER_FORCE_WINDOWED;
@@ -124,6 +135,28 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 {
 	switch (uMsg)
 	{
+#ifdef _DEBUG
+	case WM_LBUTTONDOWN:
+		s_isMouseTracking = true;
+		s_mouseTrackInitialX = LOWORD(lParam);
+		s_mouseTrackInitialY = HIWORD(lParam);
+		s_pDebugCamera->StartLookAt();
+		break;
+	case WM_LBUTTONUP:
+		s_isMouseTracking = false;
+		s_pDebugCamera->EndLookAt();
+		break;
+	case WM_MOUSEMOVE:
+		if (s_isMouseTracking)
+		{
+			int posX = LOWORD(lParam);
+			int posY = HIWORD(lParam);
+
+			s_pDebugCamera->LookAt(posX - s_mouseTrackInitialX, posY - s_mouseTrackInitialY);
+		}
+		break;
+#endif
+
 	case WM_CLOSE:
 		PostQuitMessage(0); // terminate message loop
 		g_hWnd = NULL;      // DefWindowProc() will call DestroyWindow()
@@ -135,8 +168,37 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case VK_ESCAPE:
 			PostMessage(hWnd, WM_CLOSE, 0, 0);
 			break;
+#ifdef _DEBUG
+		case VK_SPACE:
+			{
+				s_isPaused = !s_isPaused;
+				DEBUG_LOG(s_isPaused ? "Updating has been paused." : "Updating has been resumed!")
+
+				s_pDebugCamera->SetEnabled(s_isPaused);
+
+				ShowCursor(s_isPaused);
+			}
+			break;
+#endif
 		}
 
+#ifdef _DEBUG
+		if (s_isPaused)
+		{
+			if (wParam == 'A')
+				s_pDebugCamera->Move(Vector3(-1.0f, 0.0f, 0.0f));
+			else if (wParam == 'D')
+				s_pDebugCamera->Move(Vector3(+1.0f, 0.0f, 0.0f));
+			else if (wParam == 'W')
+				s_pDebugCamera->Move(Vector3( 0.0f, 0.0f,-1.0f));
+			else if (wParam == 'S')
+				s_pDebugCamera->Move(Vector3( 0.0f, 0.0f,+1.0f));
+			else if (wParam == 'Q' && !s_isMouseTracking)
+				s_pDebugCamera->Roll(false);
+			else if (wParam == 'E' && !s_isMouseTracking)
+				s_pDebugCamera->Roll(true);			
+		}
+#endif
 		break;
 
 	case WM_ACTIVATE:
@@ -424,6 +486,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 						GenerateWorld(&gWorld);
 						if (nullptr != gWorld)
 						{
+#ifdef _DEBUG
+							s_pDebugCamera = new DebugCamera(gWorld);
+#endif	
+
 							// reset loading bar
 							gWorld->GetPostProcess()->SetLoadProgress(0.0f);
 
@@ -434,7 +500,13 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							while (true == UpdateAppWindow(renderFrame))
 							{
 								// render frame
-								gWorld->Tick(stopwatch.GetSecondsElapsedAndReset());
+								float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
+#ifdef _DEBUG
+								if (s_isPaused)
+									timeElapsed = 0;
+#endif
+
+								gWorld->Tick(timeElapsed);
 								gWorld->Render();
 
 								// frame rendered?
