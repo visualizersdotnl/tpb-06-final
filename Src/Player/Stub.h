@@ -20,7 +20,6 @@ template<typename T> inline std::string ToString(const T &X)
 }
 
 // declared in Stub.cpp
-// FIXME: Move to Shared.
 void SetLastError(const std::string &message);
 
 // declared in Stub.cpp
