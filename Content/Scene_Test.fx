@@ -318,13 +318,20 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		else
 			uv = flatPos.xy;
 
+		// texel: 
+		// r = noise pattern for specular
+		// g = very bright spot
+		// b = diffuse color
+
 		uv *= 0.05;
 		float3 texel = texture_testimage.SampleLevel(samplerTexture, uv.xy, 0).xyz;
-		diffColor = texel.xxx;
+		diffColor = texel.rrr;
 
-		ambient = diffColor*0.05*texel.z;
+		ambient = diffColor*0.05*texel.b;
 		specColor = (1.0).xxx;
-		specAmount = 0.9 * texel.z;
+		specAmount = 0.9 * texel.b;
+
+		ambient += texel.g * (4.0).xxx;
 	}
 	else
 	{
@@ -342,10 +349,8 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float3 reflect = normalize((2.0f * diffuseTerm * inNormal) - lightDir);
 	float specular = pow( max(0, dot(reflect, inEyeDir) ), 1 ) * specAmount;	
 	
-	float3 lightAmount = min(
-		diffuse + specular*specColor + ambient,
-		(1.0).xxx
-		);
+	float3 lightAmount = 
+		diffuse + specular*specColor + ambient;
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
