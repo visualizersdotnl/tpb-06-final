@@ -15,7 +15,7 @@
 
 // To do (@plek):
 // - Remove Debug/Release executables from repository (.gitignore) and add a Design build that won't be deleted.
-// - Take a close look at current D3D warnings and leaks on exit (World probably isn't releasing anything).
+// - Take a close look at current D3D warnings and leaks on exit.
 // - Set up Core D3D and World with proper error checking (SetLastError()).
 // - Attempt to eliminate most app. C++ exceptions.
 // - Carry on with whats in README.md!
