@@ -11,7 +11,7 @@
 
 #ifdef _DEBUG
 //#define D3D_DISABLE_SPECIFIC_WARNINGS
-//#define D3D_ENABLE_DEBUG	//< Doesn't work on Windows 8! (http://xboxforums.create.msdn.com/forums/t/110782.aspx)#endif
+//#define D3D_ENABLE_DEBUG	//< Doesn't work on Windows 8! (http://xboxforums.create.msdn.com/forums/t/110782.aspx)
 #endif
 namespace Pimp
 {

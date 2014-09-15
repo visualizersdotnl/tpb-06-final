@@ -1,5 +1,5 @@
 #include "SceneTools.h"
-#include "Stub.h"
+#include "gWorld.h"
 
 // 
 // Misc. scene graph helpers.
