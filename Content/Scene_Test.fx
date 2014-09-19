@@ -43,6 +43,7 @@ cbuffer paramsOnlyOnce
 	
 	float FOV = 0.7f;
 
+	float testSceneTime = 0.0;
 
 	float fisheyeStrength = 6; //6;
 	float fisheyeFOV = 1.0; //1.0;
@@ -178,17 +179,24 @@ float DistanceEstimator(float3 Pos, out float HitMat)
 {
 	float d0 = -DistToBoxSigned(Pos, (25.0).xxx);
 	float d1 = DistToSphere(Pos - testBallPos, 5.0);
+	float d2 = DistToSphere(Pos - testLightPos, 0.5);
 
-	if (d0 < d1)
-	{
-		HitMat = 0;
-		return d0;		
-	}
-	else
+	float d = d0;
+	HitMat = 0;
+
+	if (d1 < d)
 	{
 		HitMat = 1;
-		return d1;
+		d = d1;
 	}
+
+	if (d2 < d)
+	{
+		HitMat = 2;
+		d = d2;
+	}
+
+	return d;
 }
 
 
@@ -298,7 +306,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specAmount;
 	float3 maxLight;
 
-	if (inMatIndex < 1)
+	if (inMatIndex == 0)
 	{		
 		// Walls and floor
 		
@@ -320,7 +328,6 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 
 		// texel: 
 		// r = noise pattern for specular
-		// g = very bright spot
 		// b = diffuse color
 
 		uv *= 0.05;
@@ -330,10 +337,8 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		ambient = diffColor*0.05*texel.b;
 		specColor = (1.0).xxx;
 		specAmount = 0.9 * texel.b;
-
-		ambient += texel.g * (4.0).xxx;
 	}
-	else
+	else if (inMatIndex == 1)
 	{
 		// Ball
 
@@ -341,6 +346,16 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		ambient = ColOrange*0.2;
 		specAmount = 0.2;
 		specColor = (1.0).xxx;
+	}
+	else
+	{
+		// Light
+
+		float lightIntensity = 0.5*(1+sin(testSceneTime * 25.0));
+
+		ambient = float3(0.0, 2.0, 4.0) * lightIntensity;
+		specAmount = 0;
+		specColor = (0.0).xxx;
 	}
 
 

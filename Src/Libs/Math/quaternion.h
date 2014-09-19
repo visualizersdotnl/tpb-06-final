@@ -33,5 +33,7 @@ public:
 		return *this;
 	}
 
+	Vector3 GetEulerAnglesXYZ() const;
+
 	float x,y,z,w;
 };

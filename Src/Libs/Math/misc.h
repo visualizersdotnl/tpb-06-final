@@ -40,6 +40,10 @@ Vector3 Clamp(const Vector3& v, const Vector3& minVec, const Vector3& maxVec);
 #endif
 
 
+#define DEG2RAD(x) ((x)*(M_PI/180.0f))
+#define RAD2DEG(x) ((x)*(180.0f/M_PI))
+
+
 // float random number generated from @LX/FRequency 
 // (and others...)
 // http://code4k.blogspot.com/2009/10/random-float-number-using-x86-asm-code.html

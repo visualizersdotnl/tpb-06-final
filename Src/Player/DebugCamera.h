@@ -17,6 +17,8 @@ public:
 
 	void Roll(bool positive);
 
+	void DumpCurrentTransformToOutputWindow();
+
 private:
 	bool isEnabled;
 

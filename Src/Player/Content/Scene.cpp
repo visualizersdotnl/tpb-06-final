@@ -4,7 +4,6 @@
 #include "SceneTools.h"
 #include "LodePNG/lodepng.h"
 
-#define DEG2RAD(x) ((x)*(M_PI/180.0f))
 
 std::string GetAssetsPath()
 {
@@ -93,7 +92,7 @@ void GenerateWorld(Pimp::World** outWorld)
 	Pimp::Xform* xformCamTest = new Pimp::Xform(world);
 	world->GetElements().Add(xformCamTest);
 
-	// Add material param
+	// Add material params
 	Pimp::MaterialParameter* paramSpherePos = new Pimp::MaterialParameter(world);
 	world->GetElements().Add(paramSpherePos);
 	paramSpherePos->SetValueType(Pimp::MaterialParameter::VT_NodePosition);
@@ -102,6 +101,10 @@ void GenerateWorld(Pimp::World** outWorld)
 	Pimp::Xform* xformParamSpherePos = new Pimp::Xform(world);
 	world->GetElements().Add(xformParamSpherePos);
 
+	Pimp::MaterialParameter* paramSceneTime = new Pimp::MaterialParameter(world);
+	world->GetElements().Add(paramSceneTime);
+	paramSceneTime->SetValueType(Pimp::MaterialParameter::VT_Value);
+	paramSceneTime->SetName("testSceneTime");
 	
 	// Set up anim curves for camera xform
 	Pimp::AnimCurve* camTestShape_posX = new Pimp::AnimCurve(world);
@@ -117,28 +120,28 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->GetElements().Add(camTestShape_rotY);
 	world->GetElements().Add(camTestShape_rotZ);
 	static const Pimp::AnimCurve::Pair camTestShape_posX_keys[] = { 
-		{ 0.0000000f,	21.0f, 0.0f, 0.0f},
-		{ 10.0f,		13.8f, 0.0f, 0.0f},
+		{  0.0f,	-4.50f, 0.0f, 0.0f}, // pos.x
+		{ 10.0f,	-6.76f, 0.0f, 0.0f}, // pos.x
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_posY_keys[] = { 
-		{ 0.0000000f,	-8.0f, 0.0f, 0.0f},
-		{ 10.0f,		-7.0f, 0.0f, 0.0f},
+		{  0.0f,	-19.91f, 0.0f, 0.0f}, // pos.y
+		{ 10.0f,	-21.73f, 0.0f, 0.0f}, // pos.y
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_posZ_keys[] = { 
-		{ 0.0000000f,	-3.3f, 0.0f, 0.0f},
-		{ 10.0f,		8.5f, 0.0f, 0.0f},
+		{  0.0f,	-15.63f, 0.0f, 0.0f}, // pos.z
+		{ 10.0f,	-12.87f, 0.0f, 0.0f}, // pos.z
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotX_keys[] = { 
-		{ 0.0000000f,	DEG2RAD(-28.0f), 0.0f, 0.0f},
-		{ 10.0f,		DEG2RAD(-181.0f), 0.0f, 0.0f},
+		//{ 0.0000000f,	DEG2RAD(-28.0f), 0.0f, 0.0f},
+		{ 5.0f,	DEG2RAD(-173.98f), 0.0f, 0.0f}, // rot.x
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotY_keys[] = { 
-		{ 0.0000000f,	DEG2RAD(1182.0f), 0.0f, 0.0f},
-		{ 10.0f,		DEG2RAD(1196.0f), 0.0f, 0.0f},
+		//{ 0.0000000f,	DEG2RAD(1182.0f), 0.0f, 0.0f},
+		{ 5.0f, DEG2RAD(-43.63f), 0.0f, 0.0f}, // rot.y
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotZ_keys[] = { 
-		{ 0.0000000f,	DEG2RAD(0.0f), 0.0f, 0.0f},
-		{ 10.0f,		DEG2RAD(-140.0f), 0.0f, 0.0f},
+		//{ 0.0000000f,	DEG2RAD(0.0f), 0.0f, 0.0f},
+		{ 5.0f,	DEG2RAD(-141.09f), 0.0f, 0.0f}, // rot.z
 	};
 	camTestShape_posX->SetKeysPtr(camTestShape_posX_keys, sizeof(camTestShape_posX_keys)/sizeof(Pimp::AnimCurve::Pair));
 	camTestShape_posY->SetKeysPtr(camTestShape_posY_keys, sizeof(camTestShape_posY_keys)/sizeof(Pimp::AnimCurve::Pair));
@@ -188,13 +191,21 @@ void GenerateWorld(Pimp::World** outWorld)
 	xformParamSpherePos->SetAnimCurveTranslationY(paramSpherePos_posY);
 	xformParamSpherePos->SetAnimCurveTranslationZ(paramSpherePos_posZ);
 
-
-
+	// Set up anim curve for material param scene time
+	Pimp::AnimCurve* paramSceneTime_value = new Pimp::AnimCurve(world);
+	world->GetElements().Add(paramSceneTime_value);
+	static const Pimp::AnimCurve::Pair paramSceneTime_value_keys[] = { 
+		{ 0.0000000f,	0.0f, 0.0f, 0.0f},
+		{ 100.0000f,	100.0f, 0.0f, 0.0f},
+	};
+	paramSceneTime_value->SetKeysPtr(paramSceneTime_value_keys, sizeof(paramSceneTime_value_keys)/sizeof(Pimp::AnimCurve::Pair));
+	paramSceneTime->SetAnimCurveValue(paramSceneTime_value);
 
 	// Build up our scene graph
 
 	AddChildToParent(xformCamTest,world->GetRootNode());
 	AddChildToParent(xformParamSpherePos,world->GetRootNode());
+	AddChildToParent(paramSceneTime, world->GetRootNode());
 	
 	AddChildToParent(camTestShape,xformCamTest);
 	AddChildToParent(paramSpherePos,xformParamSpherePos);

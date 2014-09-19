@@ -46,8 +46,8 @@
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = true;
-const unsigned int kWindowedResX = 1920/2;
-const unsigned int kWindowedResY = 1080/2;
+const unsigned int kWindowedResX = 1920;
+const unsigned int kWindowedResY = 1080;
 
 // @plek: In full screen mode the desktop resolution is adapted.
 //        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
@@ -214,6 +214,8 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 				s_pDebugCamera->Roll(false);
 			else if (wParam == 'E' && !s_isMouseTracking)
 				s_pDebugCamera->Roll(true);			
+			else if (wParam == VK_RETURN)
+				s_pDebugCamera->DumpCurrentTransformToOutputWindow();
 		}
 #endif
 		break;

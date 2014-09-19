@@ -93,3 +93,19 @@ void DebugCamera::Roll(bool positive)
 
 	xform->SetRotation(rot);
 }
+
+void DebugCamera::DumpCurrentTransformToOutputWindow()
+{
+	Quaternion rot = xform->GetRotation();
+	Vector3 pos = xform->GetTranslation();
+
+	Vector3 rotEulerXYZ = rot.GetEulerAnglesXYZ();
+
+	DEBUG_LOG("Current debug camera transform:");
+	DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.x", pos.x);
+	DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.y", pos.y);
+	DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.z", pos.z);
+	DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.x", RAD2DEG(rotEulerXYZ.x));
+	DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.y", RAD2DEG(rotEulerXYZ.y));
+	DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.z", RAD2DEG(rotEulerXYZ.z));
+}
