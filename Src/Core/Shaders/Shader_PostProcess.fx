@@ -26,12 +26,8 @@ cbuffer paramsOnlyOnce
 {
 	float4 bloomGatherSamples[2];
 	float4 bloomBlurSamples[NUM_BLOOMBLUR_SAMPLES];
-	float bloomBlurWeights[NUM_BLOOMBLUR_SAMPLES];	
+	float bloomBlurWeights[NUM_BLOOMBLUR_SAMPLES];
 	float2 bloomBlurPixelDir;
-
-	float4 flaresBlurSamples[NUM_BLOOMBLUR_SAMPLES];
-	float flaresBlurWeights[NUM_BLOOMBLUR_SAMPLES];	
-	float2 flaresBlurPixelDir;
 
 	float4 screenSizeInv; // conversion scale (XY) and offset (ZW) to convert from screen buffer's pixels to "rendered" screen buffer texels (takes sceneRenderLOD into account)
 	float2 filterSizeInv; // conversion scale (XY) to convert from filter buffer's pixels to filter buffer's texels. (just the inv of the size)
@@ -61,8 +57,7 @@ VSOutput MainVS_Combine(VSInput input)
 
 	
 Texture2D bufferSceneColor;
-Texture2D bufferFilterA;
-Texture2D bufferFilterB;
+Texture2D bufferFilter;
 
 
 SamplerState samplerSceneColor
@@ -105,7 +100,7 @@ PSOutput MainPS_Gather(VSOutput input)
 
 
 
-PSOutput MainPS_BloomBlur(VSOutput input)
+PSOutput MainPS_Blur(VSOutput input)
 {
 	PSOutput result;
 	
@@ -115,26 +110,7 @@ PSOutput MainPS_BloomBlur(VSOutput input)
 
 	for (int i=0; i<NUM_BLOOMBLUR_SAMPLES; i++)
 	{
-		totalSum += bufferFilterA.Sample(samplerFilter, uv+bloomBlurSamples[i].xy*bloomBlurPixelDir) * bloomBlurWeights[i];
-	}
-	
-	result.color = totalSum;
-	
-	return result;
-}
-
-
-PSOutput MainPS_FlaresBlur(VSOutput input)
-{
-	PSOutput result;
-	
-	float2 uv = input.screenPos.xy * filterSizeInv;
-
-	float4 totalSum = 0;
-
-	for (int i=0; i<NUM_BLOOMBLUR_SAMPLES; i++)
-	{
-		totalSum += bufferFilterA.Sample(samplerFilter, uv+flaresBlurSamples[i].xy*flaresBlurPixelDir) * flaresBlurWeights[i];
+		totalSum += bufferFilter.Sample(samplerFilter, uv+bloomBlurSamples[i].xy*bloomBlurPixelDir) * bloomBlurWeights[i];
 	}
 	
 	result.color = totalSum;
@@ -150,12 +126,9 @@ PSOutput MainPS_Combine(VSOutput input)
 	float2 uv = input.screenPos.xy * screenSizeInv.xy + screenSizeInv.zw;
 
 	float4 color = bufferSceneColor.Sample(samplerSceneColor, uv);
+	color += bufferFilter.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;	
 	
-	// Add contents of filter buffer A (bloom results)
-	color += bufferFilterA.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;
 
-	// Add contents of filter buffer B (flares results)
-	color += bufferFilterB.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;
 	
 	result.color = color;	
 
@@ -208,18 +181,11 @@ technique10 PostFX
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Gather()) );		
 	}
 	
-	pass BloomBlur
+	pass Blur
 	{
 		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
-		SetPixelShader( CompileShader(ps_4_0, MainPS_BloomBlur()) );
+		SetPixelShader( CompileShader(ps_4_0, MainPS_Blur()) );
 	}	
-
-	pass FlaresBlur
-	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
-		SetPixelShader( CompileShader(ps_4_0, MainPS_FlaresBlur()) );
-	}	
-
 	
 	pass Combine
 	{

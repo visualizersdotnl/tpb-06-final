@@ -11,8 +11,6 @@
 // Scaledown factor for the filter buffer relative to the fullscreen buffer's size
 #define POSTPROCESS_FILTER_SCALEDOWN 4
 
-#define POSTPROCESS_NUM_HBLURPASSES 24 //12
-
 namespace Pimp
 {
 
@@ -20,8 +18,7 @@ PostProcess::PostProcess() :
 	effect((unsigned char*)gCompiledShader_PostProcess, sizeof(gCompiledShader_PostProcess)),
 	techniquePostFX(&effect, "PostFX"),
 	passBloomGather(&techniquePostFX, "Gather"),
-	passBloomBlur(&techniquePostFX, "BloomBlur"),
-	passFlaresBlur(&techniquePostFX, "FlaresBlur"),
+	passBloomBlur(&techniquePostFX, "Blur"),
 	passBloomCombine(&techniquePostFX, "Combine"),
 	passMotionBlurBlend(&techniquePostFX, "MotionBlur"),
 	userPostEffect(NULL)
@@ -31,7 +28,7 @@ PostProcess::PostProcess() :
 	renderTargetSceneMotionBlurred = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 	renderTargetSceneUserPostEffect = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 	
-	for (int i=0; i<3; ++i)
+	for (int i=0; i<2; ++i)
 		renderTargetFilter[i] = gD3D->CreateRenderTarget(POSTPROCESS_FILTER_SCALEDOWN, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 
 	// Register variables
@@ -39,15 +36,11 @@ PostProcess::PostProcess() :
 	varIndexFilterSizeInv = effect.RegisterVariable("filterSizeInv", true);
 	varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 	varIndexBufferSceneColor = effect.RegisterVariable("bufferSceneColor", true);
-	varIndexBufferFilterA = effect.RegisterVariable("bufferFilterA", true);
-	varIndexBufferFilterB = effect.RegisterVariable("bufferFilterB", true);
+	varIndexBufferFilter = effect.RegisterVariable("bufferFilter", true);
 	varIndexBloomGatherSamples = effect.RegisterVariable("bloomGatherSamples", true);
 	varIndexBloomBlurSamples = effect.RegisterVariable("bloomBlurSamples", true);
 	varIndexBloomBlurWeights = effect.RegisterVariable("bloomBlurWeights", true);
 	varIndexBloomBlurPixelDir = effect.RegisterVariable("bloomBlurPixelDir", true);
-	varIndexFlaresBlurSamples = effect.RegisterVariable("flaresBlurSamples", true);
-	varIndexFlaresBlurWeights = effect.RegisterVariable("flaresBlurWeights", true);
-	varIndexFlaresBlurPixelDir = effect.RegisterVariable("flaresBlurPixelDir", true);
 	varIndexLoadProgress = effect.RegisterVariable("loadProgress", true);
 	varIndexMotionBlurWeight = effect.RegisterVariable("motionBlurFrameWeight", true);
 
@@ -65,7 +58,6 @@ PostProcess::~PostProcess()
 	delete renderTargetSceneUserPostEffect;
 	delete renderTargetFilter[0];
 	delete renderTargetFilter[1];
-	delete renderTargetFilter[2];
 }
 
 
@@ -100,7 +92,6 @@ void PostProcess::SetParameters()
 
 	InitBloomGatherSamples();
 	InitBloomBlurSamples(invFilterSize);
-	InitFlaresBlurSamples(invFilterSize);
 }
 
 void PostProcess::BindForRenderScene()
@@ -145,45 +136,24 @@ void PostProcess::RenderPostProcess()
 	}
 
 
-	// Gather bloom into Filter0
+	// Gather bloom
 	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
 	effect.SetVariableValue(varIndexBufferSceneColor, bloomGatherSource->GetShaderResourceView());
 	passBloomGather.Apply();	
 	gD3D->DrawScreenQuad();
 
-	// Bloom blur pass 1 of 2 (Filter0 -> Filter1)
+	// Blur pass 1
 	gD3D->BindRenderTarget(renderTargetFilter[1], NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
+	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirH);
 	passBloomBlur.Apply();
 	gD3D->DrawScreenQuad();
 
-	// Bloom blur pass 2 of 2 (Filter1 -> Filter2)
-	gD3D->BindRenderTarget(renderTargetFilter[2], NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)renderTargetFilter[1]->GetShaderResourceView());
-	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirV);
-	passBloomBlur.Apply();
-	gD3D->DrawScreenQuad();
-
-	// Flares Blur pass 1 of 3 (Filter0 -> Filter1)
-	gD3D->BindRenderTarget(renderTargetFilter[1], NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
-	effect.SetVariableValue(varIndexFlaresBlurPixelDir, bloomBlurDirH);
-	passFlaresBlur.Apply();
-	gD3D->DrawScreenQuad();
-
-	// Flares Blur pass 2 of 3 (Filter1 -> Filter0)
+	// Blur pass 2
 	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)renderTargetFilter[1]->GetShaderResourceView());
-	effect.SetVariableValue(varIndexFlaresBlurPixelDir, bloomBlurDirH * (float)POSTPROCESS_BLOOMBLUR_NUMSAMPLES);
-	passFlaresBlur.Apply();
-	gD3D->DrawScreenQuad();
-
-	// Flares Blur pass 3 of 3 (Filter0 -> Filter1)
-	gD3D->BindRenderTarget(renderTargetFilter[1], NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
-	effect.SetVariableValue(varIndexFlaresBlurPixelDir, bloomBlurDirH * (float)(POSTPROCESS_BLOOMBLUR_NUMSAMPLES*POSTPROCESS_BLOOMBLUR_NUMSAMPLES));
-	passFlaresBlur.Apply();
+	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[1]->GetShaderResourceView());
+	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirV);
+	passBloomBlur.Apply();	
 	gD3D->DrawScreenQuad();
 
 	// Combine bloom results
@@ -193,16 +163,14 @@ void PostProcess::RenderPostProcess()
 	gD3D->BindBackbuffer(NULL);
 	gD3D->ClearBackBuffer();
 
-	effect.SetVariableValue(varIndexBufferFilterA, renderTargetFilter[2]->GetShaderResourceView());
-	effect.SetVariableValue(varIndexBufferFilterB, renderTargetFilter[1]->GetShaderResourceView());
+	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	passBloomCombine.Apply();	
 	gD3D->DrawScreenQuad();
 
 
 	// Reset bound variables again
 	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D10ShaderResourceView*)NULL);
-	effect.SetVariableValue(varIndexBufferFilterA, (ID3D10ShaderResourceView*)NULL);
-	effect.SetVariableValue(varIndexBufferFilterB, (ID3D10ShaderResourceView*)NULL);
+	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)NULL);
 	passBloomCombine.Apply();
 }
 
@@ -278,48 +246,6 @@ void PostProcess::InitBloomBlurSamples(Vector2 filterSizeInv)
 	bloomBlurDirV.x = 0;
 	bloomBlurDirV.y = filterSizeInv.y;
 }
-
-
-void PostProcess::InitFlaresBlurSamples(Vector2 filterSizeInv)
-{
-	ASSERT(POSTPROCESS_BLOOMBLUR_NUMSAMPLES%2 == 1);
-	ASSERT(POSTPROCESS_BLOOMBLUR_NUMSAMPLES >= 3);
-
-	Vector4 offsets[POSTPROCESS_BLOOMBLUR_NUMSAMPLES];
-	float weights[POSTPROCESS_BLOOMBLUR_NUMSAMPLES];
-
-	int roundedKernelSize = (POSTPROCESS_BLOOMBLUR_NUMSAMPLES-1)/2;
-
-	int numSamples = 0;
-
-	float weightSum = 0;
-
-	for (int sampleIndex=-roundedKernelSize; sampleIndex<=roundedKernelSize; ++sampleIndex)
-	{
-		ASSERT(numSamples < POSTPROCESS_BLOOMBLUR_NUMSAMPLES);
-		offsets[numSamples].x = (float)sampleIndex;
-		offsets[numSamples].y = offsets[numSamples].x;
-		weights[numSamples] = 1.0f;
-
-		++numSamples;
-		weightSum += 0.5f;
-	}
-
-	ASSERT(numSamples == POSTPROCESS_BLOOMBLUR_NUMSAMPLES);
-
-	for (int i=0; i<POSTPROCESS_BLOOMBLUR_NUMSAMPLES; ++i)
-		weights[i] /= weightSum;
-
-	effect.SetVariableValue(varIndexFlaresBlurWeights, weights, POSTPROCESS_BLOOMBLUR_NUMSAMPLES);
-	effect.SetVariableValue(varIndexFlaresBlurSamples, offsets, POSTPROCESS_BLOOMBLUR_NUMSAMPLES);
-
-
-	// Set filter directions
-	flaresBlurDir.x = filterSizeInv.x;
-	flaresBlurDir.y = 0;
-}
-
-
 
 
 void PostProcess::Clear()

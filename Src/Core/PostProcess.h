@@ -42,19 +42,17 @@ namespace Pimp
 		void SetParameters();
 		void InitBloomGatherSamples();
 		void InitBloomBlurSamples(Vector2 filterSizeInv);
-		void InitFlaresBlurSamples(Vector2 filterSizeInv);
 
 		RenderTarget* renderTargetSceneMS;
 		RenderTarget* renderTargetSceneSingle;
 		RenderTarget* renderTargetSceneMotionBlurred;
 		RenderTarget* renderTargetSceneUserPostEffect;
-		RenderTarget* renderTargetFilter[3];
+		RenderTarget* renderTargetFilter[2];
 
 		Effect effect;
 		EffectTechnique techniquePostFX;
 		EffectPass passBloomGather;
 		EffectPass passBloomBlur;
-		EffectPass passFlaresBlur;
 		EffectPass passBloomCombine;
 		EffectPass passMotionBlurBlend;
 
@@ -62,21 +60,16 @@ namespace Pimp
 		int varIndexFilterSizeInv;
 		int varIndexRenderScale;
 		int varIndexBufferSceneColor;
-		int varIndexBufferFilterA;
-		int varIndexBufferFilterB;
+		int varIndexBufferFilter;
 		int varIndexBloomGatherSamples;
 		int varIndexBloomBlurSamples;
 		int varIndexBloomBlurWeights;
 		int varIndexBloomBlurPixelDir;
-		int varIndexFlaresBlurSamples;
-		int varIndexFlaresBlurWeights;
-		int varIndexFlaresBlurPixelDir;
 		int varIndexLoadProgress; // loadProgress
 		int varIndexMotionBlurWeight;
 
 		Vector2 bloomBlurDirH;
 		Vector2 bloomBlurDirV;
-		Vector2 flaresBlurDir;
 
 		Material* userPostEffect;
 		float w;

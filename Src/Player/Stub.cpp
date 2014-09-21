@@ -46,8 +46,8 @@
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = true;
-const unsigned int kWindowedResX = 1920;
-const unsigned int kWindowedResY = 1080;
+const unsigned int kWindowedResX = 1920/2;
+const unsigned int kWindowedResY = 1080/2;
 
 // @plek: In full screen mode the desktop resolution is adapted.
 //        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
