@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "quaternion.h"
 
-void strfloat(char*, float f);
 
 // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/
 

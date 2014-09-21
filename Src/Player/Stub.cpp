@@ -43,6 +43,7 @@
 #include "Settings.h"
 #include "SceneTools.h"
 #include "DebugCamera.h"
+#include "AutoShaderReload.h"
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = true;
@@ -82,6 +83,7 @@ extern void GenerateWorld(Pimp::World** outWorld);
 
 // Debug camera and it's state.
 #ifdef _DEBUG
+static AutoShaderReload* s_pAutoShaderReloader;
 static DebugCamera* s_pDebugCamera;
 
 static bool		s_isPaused			= false;
@@ -506,6 +508,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 						if (nullptr != gWorld)
 						{
 #ifdef _DEBUG
+							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
+
 							s_pDebugCamera = new DebugCamera(gWorld);
 
 							DEBUG_LOG("============================================================================");
@@ -514,9 +518,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							DEBUG_LOG("> SPACE: Toggle pause");
 							DEBUG_LOG("");
 							DEBUG_LOG("If paused:");
-							DEBUG_LOG("> W,S,A,D: Translate current view forward, back, left or right.");
-							DEBUG_LOG("> Q,E: Roll current view, in either positive or negative direction.");
-							DEBUG_LOG("> Left mouse button+dragging: Adjust yaw and pitch of current view.");
+							DEBUG_LOG("> W,S,A,D:	Translate current view forward, back, left or right.");
+							DEBUG_LOG("> Q,E:		Roll current view, in either positive or negative direction.");
+							DEBUG_LOG("> Drag LMB:	Adjust yaw and pitch of current view.");
+							DEBUG_LOG("> ENTER:		Dump current debug camera transform to output window.");
 							DEBUG_LOG("============================================================================");
 #endif	
 
@@ -538,6 +543,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 #ifdef _DEBUG
 								if (s_isPaused)
 									timeElapsed = 0.f;
+
+								s_pAutoShaderReloader->Update();
 #endif
 
 								gWorld->Tick(timeElapsed);
@@ -565,7 +572,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							}
 
 #ifdef _DEBUG
-							s_pDebugCamera = new DebugCamera(gWorld);
+							delete s_pDebugCamera;
+							delete s_pAutoShaderReloader;
 #endif	
 
 							delete gWorld;

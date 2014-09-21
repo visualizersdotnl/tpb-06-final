@@ -11,7 +11,7 @@ namespace Pimp
 	Material::Material(
 		World* world, 
 		const unsigned char* shaderCompiledText, int shaderCompiledTextLength,
-		const char* shaderName, unsigned int shaderCRC)
+		const std::string& shaderFileName)
 		: effect(shaderCompiledText, shaderCompiledTextLength),
 		effectTechnique(&effect, "Default"),
 		effectPass(&effectTechnique, "Default"),
@@ -23,16 +23,12 @@ namespace Pimp
 		varIndexSceneRenderLOD(0),
 		varIndexSceneBuffer(0),
 #ifdef _DEBUG
-		shaderCRC(shaderCRC),
+		shaderFileName(shaderFileName),
 #endif
 		boundTextureVariableIndices(PIMP_MAX_NUM_BOUNDTEXTUREVARINDICES),
 		boundMaterialParameters(PIMP_MAX_NUM_BOUNDMATERIALPARAMETERS)
 	{
 		RefreshParameters();
-
-#ifdef _DEBUG
-		strcpy(this->shaderName, shaderName);
-#endif
 	}
 
 #ifdef _DEBUG

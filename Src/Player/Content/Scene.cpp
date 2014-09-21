@@ -242,14 +242,14 @@ void GenerateWorld(Pimp::World** outWorld)
 
 	// Init all materials, now that the shaders have been compiled.
 
-	Pimp::Material* sceneShaderMat0 = new Pimp::Material(world, sceneShaderMat0_compiled_hlsl, sceneShaderMat0_compiled_hlsl_size, "scene_flux.fx", 0);
+	Pimp::Material* sceneShaderMat0 = new Pimp::Material(world, sceneShaderMat0_compiled_hlsl, sceneShaderMat0_compiled_hlsl_size, assetsPath + "scene_test.fx");
 	world->GetMaterials().Add(sceneShaderMat0);
 	sceneShader0->SetMaterial(sceneShaderMat0);
 	world->GetScenes().Add(sceneShader0);
 	world->GetElements().Add(sceneShader0);
 
 
-	Pimp::Material* userPostEffectMat = new Pimp::Material(world, userPostEffectMat_compiled_hlsl, userPostEffectMat_compiled_hlsl_size, "posteffect.fx", 0);
+	Pimp::Material* userPostEffectMat = new Pimp::Material(world, userPostEffectMat_compiled_hlsl, userPostEffectMat_compiled_hlsl_size, assetsPath + "posteffect.fx");
 	world->GetMaterials().Add(userPostEffectMat);
 	world->GetPostProcess()->SetUserPostEffect(userPostEffectMat);
 

@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AutoShaderReload.cpp" />
     <ClCompile Include="DebugCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -165,6 +166,7 @@
     <ClCompile Include="Stub.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AutoShaderReload.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />

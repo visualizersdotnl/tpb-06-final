@@ -7,6 +7,8 @@
 #include "MaterialParameter.h"
 #include "Balls.h"
 
+#include <string>
+
 namespace Pimp 
 {
 	class World;
@@ -42,8 +44,7 @@ namespace Pimp
 
 
 #ifdef _DEBUG
-		char shaderName[256]; // name of the shader source file, to easily determine changes made in maya
-		unsigned int shaderCRC; // CRC of the shader text, to easily determine changes made in maya
+		std::string shaderFileName; // complete path to shader source file
 #endif
 
 	protected:
@@ -53,7 +54,7 @@ namespace Pimp
 		Material(
 			World* world, 
 			const unsigned char* shaderCompiledText, int shaderCompiledTextLength, 
-			const char* shaderName, unsigned int shaderCRC);
+			const std::string& shaderFileName);
 
 #ifdef _DEBUG
 		~Material();
@@ -62,14 +63,9 @@ namespace Pimp
 		void Bind(Camera* camera);
 
 #ifdef _DEBUG
-		unsigned int GetShaderCRC() const 
-		{ 
-			return shaderCRC; 
-		}
-
-		const char* GetShaderName() const
+		const std::string& GetShaderFileName() const
 		{
-			return shaderName;
+			return shaderFileName;
 		}
 #endif
 
