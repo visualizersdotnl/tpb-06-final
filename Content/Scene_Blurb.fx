@@ -197,7 +197,13 @@ float2 GetBlobbyUV(float3 p)
 	return uv*0.1;	
 }
 
-float DistToBlobbyThing(float3 p, float size)
+static const float size0 = 0.6;
+static const float size1 = 1.0;
+static const float size2 = 1.3;
+static const float holeRadius = 2.5;
+
+
+float DistToCubeWithHoles(float3 p, float size)
 {
 	float r = 4.0 * size;
 	float thickness = 0.2;
@@ -210,7 +216,8 @@ float DistToBlobbyThing(float3 p, float size)
 	float dInner = length(p.xyz) - (r-thickness);
 	d = max(d, -dInner);
 
-	float holeR = 2.5 * size;  
+	// Cut holes on X,Y and Z axes
+	float holeR = holeRadius * size;  
 	float3 k = abs(p);
 	d = max(d, -(length(k.xy) - holeR));
 	d = max(d, -(length(k.xz) - holeR));
@@ -226,14 +233,51 @@ float DistToBlobbyThing(float3 p, float size)
 
 
 
+float DistToSpinningCubes(float3 Pos)
+{
+	float d = DistToCubeWithHoles( mul(testBallXformInv1, float4(Pos,1)).xyz, size1);
+	d = min(d, DistToCubeWithHoles( mul(testBallXformInv2, float4(Pos,1)).xyz, size2));
+	d = min(d, DistToCubeWithHoles( mul(testBallXformInv0, float4(Pos,1)).xyz, size0));
+
+	return d;
+}
+
+
+float DistToLightVolume(float3 Pos)
+{
+	float radius = 20.0;
+
+	float3 localPos0 = mul(testBallXformInv0, float4(Pos,1)).xyz;
+	float3 localPos1 = mul(testBallXformInv1, float4(Pos,1)).xyz;
+	float3 localPos2 = mul(testBallXformInv2, float4(Pos,1)).xyz;
+
+	float d = length(localPos0) - radius;
+
+	// Get intersection with holes on X,Y and Z axes
+	float holeR0 = holeRadius*size0*0.65;
+	float holeR1 = holeRadius*size1*0.65;
+	float holeR2 = holeRadius*size2*0.65;
+	float coneFactor = 0.2;
+
+	float3 k0 = abs(localPos0);
+	float3 k1 = abs(localPos1);
+	float3 k2 = abs(localPos2);
+	float axesCrossDist0 = min(min(length(k0.xy) - holeR0 - coneFactor*k0.z, length(k0.xz) - holeR0 - coneFactor*k0.y), length(k0.yz) - holeR0 - coneFactor*k0.x);
+	float axesCrossDist1 = min(min(length(k1.xy) - holeR1 - coneFactor*k1.z, length(k1.xz) - holeR1 - coneFactor*k1.y), length(k1.yz) - holeR1 - coneFactor*k1.x);
+	float axesCrossDist2 = min(min(length(k2.xy) - holeR2 - coneFactor*k2.z, length(k2.xz) - holeR2 - coneFactor*k2.y), length(k2.yz) - holeR2 - coneFactor*k2.x);
+	d = max(d, axesCrossDist0);
+	d = max(d, axesCrossDist1);
+	d = max(d, axesCrossDist2);
+
+	return d;
+}
+
 
 float DistanceEstimator(float3 Pos, out float HitMat) 
 {
 	float d0 = -DistToBoxSigned(Pos, (25.0).xxx);
-	float d1 = DistToBlobbyThing( mul(testBallXformInv1, float4(Pos,1)).xyz, 1.0);
-	d1 = min(d1, DistToBlobbyThing( mul(testBallXformInv2, float4(Pos,1)).xyz, 1.3));
-	d1 = min(d1, DistToBlobbyThing( mul(testBallXformInv0, float4(Pos,1)).xyz, 0.6));
-	float d2 = DistToSphere(Pos - testLightPos, 0.5);
+	float d1 = DistToSpinningCubes(Pos);
+	// float d2 = DistToLightVolume(Pos);
 
 	float d = d0;
 	HitMat = 0;
@@ -244,17 +288,45 @@ float DistanceEstimator(float3 Pos, out float HitMat)
 		d = d1;
 	}
 
-	if (d2 < d)
-	{
-		HitMat = 2;
-		d = d2;
-	}
+	// if (d2 < d)
+	// {
+	// 	HitMat = 2;
+	// 	d = d2;
+	// }
 
 	return d;
 }
 
 
+float CalculateVolumetricLightAmount(float4 From, float4 Dir, float Distance)
+{
+	float totalDist = 0.0;
+	float light = 0;
+	int step = 0;
+	float4 pos = From;
 
+	float4 lightPos = testBallXformInv0._31_32_33_34;
+	lightPos.w = 1;		
+
+	[fastopt] while (totalDist < Distance && step < 200)
+	{
+		float dist = DistToLightVolume(pos.xyz);
+
+		if (dist < 10.0)  
+		{
+			float lightAtten = 1.0 / (1.0 + pow(length(lightPos - pos), 4.0)*0.01);
+			light = max(light, pow(-dist,0.5) * lightAtten);
+		}
+
+		float stepSize = abs(dist) + 0.2;
+		totalDist += stepSize;
+		pos += stepSize * Dir;
+		step++;
+	}
+
+
+	return light * 1.9;
+}
 
 
 bool Trace(float4 From, float4 Dir, out float4 HitPos, out float HitMaterial)
@@ -344,7 +416,7 @@ float SoftShadowIq(float3 inPos, float3 inLightDir, float inMinT, float inMaxT, 
 static float3 ColOrange = float3(255.0,83.0,13.0)/255.0;
 
 
-float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex)
+float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float inVolumetricLightAmount)
 {
 	float3 lightOffset = (testLightPos.xyz - inPos);
 	
@@ -409,10 +481,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	else
 	{
 		// Light
-
-		float lightIntensity = 0.5*(1+sin(testSceneTime * 25.0));
-
-		ambient = float3(0.0, 2.0, 4.0) * lightIntensity;
+		ambient = float3(0.0, 1.0, 1.0) * 0.5;
 		specAmount = 0;
 		specColor = (0.0).xxx;
 	}
@@ -424,7 +493,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specular = pow( max(0, dot(reflected, inEyeDir) ), 6 ) * specAmount;	
 	
 	float3 lightAmount = 
-		diffuse + specular*specColor + ambient;
+		diffuse + specular*specColor + ambient + inVolumetricLightAmount.xxx;
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
@@ -460,7 +529,9 @@ PSOutput MainPS(VSOutput input)
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);		
 #else
-		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat), 1 );
+		float volLightAmount = CalculateVolumetricLightAmount(origin, dir, length(hitPos - origin));
+
+		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, volLightAmount), 1 );
 #endif			
 	}
 	else

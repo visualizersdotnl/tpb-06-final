@@ -227,7 +227,7 @@ void GenerateWorld(Pimp::World** outWorld)
 	xformParamSpherePos0->SetAnimCurveRotationY(paramSpherePos_rotY);
 	xformParamSpherePos0->SetAnimCurveRotationZ(paramSpherePos_rotZ);
 
-	float delay = 0.5f;
+	float delay = 0.3f;
 	xformParamSpherePos1->SetAnimCurveTranslationX(paramSpherePos_posX);
 	xformParamSpherePos1->SetAnimCurveTranslationY(paramSpherePos_posY);
 	xformParamSpherePos1->SetAnimCurveTranslationZ(paramSpherePos_posZ);
