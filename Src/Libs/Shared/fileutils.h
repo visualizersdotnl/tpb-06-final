@@ -47,6 +47,8 @@ public:
 	bool IsFileDirty();
 
 private:
+	bool CanAccessFile() const;
+
 	std::string filename;
 	__time64_t lastModified;
 };

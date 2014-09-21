@@ -173,6 +173,11 @@ bool FileChangeCheck::IsFileDirty()
 	{
 		return false;
 	}
+	else if (!CanAccessFile())
+	{
+		// We can't access this file (yet?), so pretend it hasn't been changed atm.
+		return false;
+	}
 	else
 	{
 		lastModified = stamp;
@@ -180,4 +185,15 @@ bool FileChangeCheck::IsFileDirty()
 	}
 }
 
+
+bool FileChangeCheck::CanAccessFile() const
+{
+	FILE* f = NULL;
+	fopen_s(&f, filename.c_str(), "rb");
+	if (f == NULL)
+		return false;
+
+	fclose(f);
+	return true;
+}
 
