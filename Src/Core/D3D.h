@@ -2,8 +2,13 @@
 
 #include <DXGI.h>
 #include <d3d10_1.h>
-
+// #include <string>
 #include <math/math.h>
+
+// @plek: As of now Core reports it's errors to it's only host: Player.
+//        Maybe SetLastError() has a place in Shared but for now this will do.
+#include "../Player/SetLastError.h" 
+
 #include "Settings.h"
 #include "RenderTarget.h"
 #include "PIX.h"
@@ -11,7 +16,6 @@
 #include "DepthStencil.h"
 #include "Texture2D.h"
 #include "Texture3D.h"
-#include <string>
 
 namespace Pimp
 {

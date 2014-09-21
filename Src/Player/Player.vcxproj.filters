@@ -47,7 +47,10 @@
     <ClInclude Include="DebugCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stub.h">
+    <ClInclude Include="gWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SetLastError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AutoShaderReload.h">

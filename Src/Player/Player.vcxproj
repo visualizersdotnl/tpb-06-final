@@ -168,10 +168,11 @@
   <ItemGroup>
     <ClInclude Include="AutoShaderReload.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="gWorld.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
+    <ClInclude Include="SetLastError.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="Stub.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc" />

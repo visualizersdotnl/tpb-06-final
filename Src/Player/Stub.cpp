@@ -1,33 +1,34 @@
 
-// New Player stub, taken from a visualizers.nl project, stripped & adapted to serve in this Inque->Pimp contraption.
-// Idea is to provide a stable stub without 64KB-cutbacks (e.g. proper error handling and resource destruction on exit).
+/*
+	Player stub without 64KB-cutbacks (e.g. proper error handling and resource destruction on exit).
 
-// As in the rest of the codebase, I'll comment my own peculiarities with '@plek' (red tape, mostly).
-// Over time (and if we continue to use this codebase), these comments should probably vanish.
-// Stuff that really needs fixing, here it comes, can be found by searching for 'FIXME'.
+	@plek: As I'm accustomed to placing some vital information in Main.cpp (or whatever the name is), here goes:
 
-// The idea here is to:
-// - Create and manage a simple render window.
-// - Initialize and maintain DXGI/D3D and create the device exactly like Core wants it.
-// - Kick off audio and talk to Rocket.
-// - Provide a stable main loop.
-// - Take care of proper shutdown and error message display.
+	As in the rest of the codebase, I'll comment my own peculiarities with '@plek' (some red tape, some useful information).
+	Stuff that really needs fixing, here it comes, can be found by searching for 'FIXME'.
 
-// To do (@plek):
-// - Remove Debug/Release executables from repository (.gitignore) and add a Design build that won't be deleted.
-// - Take a close look at current D3D warnings and leaks on exit (World probably isn't releasing anything).
-// - Set up Core D3D and World with proper error checking (SetLastError()).
-// - Attempt to eliminate most app. C++ exceptions.
-// - Carry on with whats in README.md!
-//
-// Note on Rocket:
-// - Enable toggle in Debug/Release, always on in Design.
-//
-// Secondary (for those lazy moments):
-// - Go look what's redundant in Shared (ask Glow) & remove unused (commented) code.
-// - Check FIXMEs (esp. the ALT+ENTER block).
-// - Icon. (Shifter!)
-// - Keep a close eye on those D3D warnings.
+	The idea here is to:
+	- Create and manage a simple render window.
+	- Initialize and maintain DXGI/D3D and create the device exactly like Core wants it.
+	- Kick off audio and talk to Rocket.
+	- Provide a stable main loop.
+	- Take care of proper shutdown and error message display.
+
+	To do (@plek):
+	- Set up proper error checking & reporting (SetLastError()).
+	- Take a close look at current D3D warnings and leaks on exit.
+	- Attempt to eliminate most app. C++ exceptions.
+	- Carry on with whats in README.md!
+
+	Note on Rocket:
+	- Enable toggle in Debug/Release, always on in Design.
+
+	Secondary (for those lazy moments):
+	- Go look what's redundant in Shared (ask Glow) & remove unused (commented) code.
+	- Check FIXMEs (esp. the ALT+ENTER block).
+	- Icon. (Shifter!)
+	- Keep a close eye on those D3D warnings, most probably are space-savers (non-critical).
+*/
 
 #include <Windows.h>
 #include <intrin.h> // for SSE2 check
@@ -39,7 +40,6 @@
 
 #include <Core/Core.h>
 
-#include "Stub.h"
 #include "Settings.h"
 #include "SceneTools.h"
 #include "DebugCamera.h"
@@ -67,7 +67,7 @@ static DXGI_MODE_DESC   s_displayMode;
 
 // app. window
 static bool s_classRegged = false;
-HWND        g_hWnd = NULL;
+static HWND s_hWnd = NULL;
 static bool s_wndIsActive; // set by WindowProc()
 
 // Direct3D objects
@@ -91,6 +91,18 @@ static bool		s_isMouseTracking	= false;
 static int		s_mouseTrackInitialX;
 static int		s_mouseTrackInitialY;
 #endif
+
+// COM release macro
+#define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()
+
+// serialize constant value to std::string
+// @plek: This is sort of ugly but I didn't port all to string streams in the original project.
+template<typename T> inline std::string ToString(const T &X)
+{
+	std::stringstream strStream;
+	strStream << X;
+	return strStream.str();
+}
 
 static bool CreateDXGI(HINSTANCE hInstance)
 {
@@ -174,7 +186,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 	case WM_CLOSE:
 		PostQuitMessage(0); // terminate message loop
-		g_hWnd = NULL;      // DefWindowProc() will call DestroyWindow()
+		s_hWnd = NULL;      // DefWindowProc() will call DestroyWindow()
 		break;
 
 	case WM_KEYDOWN:
@@ -306,7 +318,7 @@ static bool CreateAppWindow(HINSTANCE hInstance, int nCmdShow)
 	const int wndWidth = wndRect.right - wndRect.left;
 	const int wndHeight = wndRect.bottom - wndRect.top;
 
-	g_hWnd = CreateWindowEx(
+	s_hWnd = CreateWindowEx(
 		exWindowStyle,
 		PIMPPLAYER_RELEASE_ID,
 		PIMPPLAYER_RELEASE_TITLE,
@@ -318,13 +330,13 @@ static bool CreateAppWindow(HINSTANCE hInstance, int nCmdShow)
 		hInstance,
 		NULL);	
 
-	if (NULL == g_hWnd)
+	if (NULL == s_hWnd)
 	{
 		SetLastError("Can not create application window (CreateWindowEx() failed).");
 		return false;
 	}
 
-	ShowWindow(g_hWnd, (kWindowed) ? nCmdShow : SW_SHOW);
+	ShowWindow(s_hWnd, (kWindowed) ? nCmdShow : SW_SHOW);
 
 	return true;
 }
@@ -351,7 +363,7 @@ static bool UpdateAppWindow(bool &renderFrame)
 	else
 	{
 		// no message: window alive?
-		if (NULL != g_hWnd)
+		if (NULL != s_hWnd)
 		{
 			if (!kWindowed && s_wndIsActive)
 			{
@@ -378,10 +390,10 @@ static bool UpdateAppWindow(bool &renderFrame)
 
 void DestroyAppWindow(HINSTANCE hInstance)
 {
-	if (NULL != g_hWnd)
+	if (NULL != s_hWnd)
 	{
-		DestroyWindow(g_hWnd);
-		g_hWnd = NULL;
+		DestroyWindow(s_hWnd);
+		s_hWnd = NULL;
 	}	
 	
 	if (s_classRegged)
@@ -415,7 +427,7 @@ static bool CreateDirect3D()
 		swapDesc.SampleDesc.Quality = 0;
 		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapDesc.BufferCount = 3;
-		swapDesc.OutputWindow = g_hWnd;
+		swapDesc.OutputWindow = s_hWnd;
 		swapDesc.Windowed = kWindowed;
 		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		swapDesc.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -423,7 +435,7 @@ static bool CreateDirect3D()
 		if SUCCEEDED(s_pDXGIFactory->CreateSwapChain(s_pD3D, &swapDesc, &s_pSwapChain))
 		{
 			// FIXME: block automatic ALT+ENTER (doesn't quite work?)
-			s_pDXGIFactory->MakeWindowAssociation(g_hWnd, DXGI_MWA_NO_ALT_ENTER);
+			s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 			return true;
 		}
@@ -492,7 +504,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 		if (CreateAppWindow(hInstance, nCmdShow))
 		{
 			// initialize BASS audio library
-			if (1) // Audio_Create(-1, g_hWnd))
+			if (1) // Audio_Create(-1, s_hWnd))
 			{
 				// initialize Direct3D
 				if (CreateDirect3D())
@@ -563,7 +575,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 										
 										char fpsStr[256];
 										sprintf_s(fpsStr, 256, "%s (%.2f FPS)", PIMPPLAYER_RELEASE_TITLE, FPS);
-										SetWindowText(g_hWnd, fpsStr);
+										SetWindowText(s_hWnd, fpsStr);
 
 										timeElapsedFPS = 0.f;
 										numFramesFPS = 0;
