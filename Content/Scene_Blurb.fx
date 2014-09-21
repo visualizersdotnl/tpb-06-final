@@ -325,7 +325,7 @@ float CalculateVolumetricLightAmount(float4 From, float4 Dir, float Distance)
 	}
 
 
-	return light * 1.9;
+	return light * 2.9;
 }
 
 
