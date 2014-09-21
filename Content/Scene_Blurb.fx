@@ -77,6 +77,7 @@ VSOutput MainVS(VSInput input)
 
 Texture2D texture_blurb_grid;
 Texture2D texture_blurb_noise;
+Texture2D texture_blurb_rock;
 
 
 SamplerState samplerTexture
@@ -193,7 +194,7 @@ float2 GetBlobbyUV(float3 p)
 	else  
 		uv = p.xy;	// Z is leading
 
-	return uv;	
+	return uv*0.1;	
 }
 
 float DistToBlobbyThing(float3 p, float size)
@@ -215,7 +216,7 @@ float DistToBlobbyThing(float3 p, float size)
 	d = max(d, -(length(k.xz) - holeR));
 	d = max(d, -(length(k.yz) - holeR));
 
-	float2 uv = GetBlobbyUV(p) * 0.1;
+	float2 uv = GetBlobbyUV(p);
 	float displacement = texture_blurb_noise.SampleLevel(samplerTexture, uv, 0).b;
 
 	d -= displacement*0.4;
@@ -396,8 +397,12 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	{
 		// Ball
 
-		diffColor = ColOrange * 0.6;
-		ambient = ColOrange*0.2;
+		float3 inPosLocal = mul(testBallXformInv2, float4(inPos,1)).xyz;
+		float2 uv = GetBlobbyUV(inPosLocal);
+		float3 texel = texture_blurb_rock.SampleLevel(samplerTexture, uv, 0).xyz;
+
+		diffColor = texel * 0.6;
+		ambient = texel*0.2;
 		specAmount = 0.2;
 		specColor = (1.0).xxx;
 	}

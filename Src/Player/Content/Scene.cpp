@@ -294,6 +294,7 @@ void GenerateWorld(Pimp::World** outWorld)
 
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_grid.png", true));
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_noise.png", true));
+	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_rock.png", true));
 
 
 	// Init all materials, now that the shaders have been compiled.

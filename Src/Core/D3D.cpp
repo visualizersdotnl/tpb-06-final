@@ -462,7 +462,7 @@ Texture2D* D3D::CreateTexture2D(const std::string& name, int sizePixels, bool re
 	desc.Width = sizePixels;
 	desc.Height = sizePixels;
 	desc.MipLevels = desc.ArraySize = 1; // Only a single mip
-	desc.Format = requiresGammaCorrection ? DXGI_FORMAT_B8G8R8A8_UNORM_SRGB : DXGI_FORMAT_B8G8R8A8_UNORM;
+	desc.Format = requiresGammaCorrection ? DXGI_FORMAT_R8G8B8A8_UNORM_SRGB : DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
 	desc.Usage = D3D10_USAGE_DYNAMIC;
