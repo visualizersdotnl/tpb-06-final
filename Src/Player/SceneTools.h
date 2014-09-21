@@ -17,3 +17,5 @@ void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsc
 void WaitForMaterialCompilationJobsToFinish();
 
 void DrawLoadProgress(bool texturesLoaded);
+
+Pimp::AnimCurve* DuplicateAnimCurve(Pimp::World* world, Pimp::AnimCurve* curve, float delay);

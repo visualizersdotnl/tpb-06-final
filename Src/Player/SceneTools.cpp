@@ -240,3 +240,24 @@ void DrawLoadProgress( bool texturesLoaded )
 	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
 }
+
+
+Pimp::AnimCurve* DuplicateAnimCurve( Pimp::World* world, Pimp::AnimCurve* curve, float delay )
+{
+	Pimp::AnimCurve* dupeCurve = new Pimp::AnimCurve(world);
+	world->GetElements().Add(dupeCurve);
+
+	FixedSizeList<Pimp::AnimCurve::Pair>* pairs = new FixedSizeList<Pimp::AnimCurve::Pair>(curve->GetKeysPtr()->Size());
+
+	*pairs = *curve->GetKeysPtr();
+
+	for (int i=0; i<pairs->Size(); ++i)
+	{
+		Pimp::AnimCurve::Pair& pair = (*pairs)[i];
+		pair.time += delay;
+	}
+
+	dupeCurve->SetKeysPtr(pairs);
+
+	return dupeCurve;
+}
