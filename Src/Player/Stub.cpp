@@ -18,6 +18,7 @@
 	- Set up proper error checking & reporting (SetLastError()).
 	- Take a close look at current D3D warnings and leaks on exit.
 	- Attempt to eliminate most app. C++ exceptions.
+	- Fix a proper content directory and non-square textures.
 	- Carry on with whats in README.md!
 
 	Note on Rocket:
@@ -423,10 +424,10 @@ static bool CreateDirect3D()
 		// create swap chain
 		DXGI_SWAP_CHAIN_DESC swapDesc;
 		swapDesc.BufferDesc = s_displayMode;
-		swapDesc.SampleDesc.Count = 1;
-		swapDesc.SampleDesc.Quality = 0;
+		swapDesc.SampleDesc.Count = D3D_ANTIALIAS_NUM_SAMPLES;
+		swapDesc.SampleDesc.Quality = D3D_ANTIALIAS_QUALITY;
 		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapDesc.BufferCount = 3;
+		swapDesc.BufferCount = 1;
 		swapDesc.OutputWindow = s_hWnd;
 		swapDesc.Windowed = kWindowed;
 		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
