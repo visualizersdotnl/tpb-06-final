@@ -569,7 +569,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 								{
 									// handle FPS counter
 									timeElapsedFPS += timeElapsed;
-									if (++numFramesFPS = 15)
+
+									if (++numFramesFPS == 15)
 									{
 										const float FPS = 15.f/timeElapsedFPS;
 										
