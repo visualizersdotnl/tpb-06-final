@@ -571,9 +571,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 									// handle FPS counter
 									timeElapsedFPS += timeElapsed;
 
-									if (++numFramesFPS == 15)
+									if (++numFramesFPS == 60)
 									{
-										const float FPS = 15.f/timeElapsedFPS;
+										const float FPS = 60.f/timeElapsedFPS;
 										
 										char fpsStr[256];
 										sprintf_s(fpsStr, 256, "%s (%.2f FPS)", PIMPPLAYER_RELEASE_TITLE, FPS);
