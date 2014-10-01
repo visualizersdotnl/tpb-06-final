@@ -5,8 +5,8 @@
 
 namespace Pimp 
 {
-	Texture::Texture(const std::string& name, int sizePixels,ID3D10ShaderResourceView* view)
-		:  name(name), view(view), sizePixels(sizePixels)
+	Texture::Texture(const std::string& name, int width, int height, ID3D10ShaderResourceView* view)
+		:  name(name), view(view), width(width), height(height)
 	{
 	}
 

@@ -25,12 +25,9 @@ Pimp::Texture2D* LoadTexture(const std::string& filename, bool requiresGammaCorr
 	//lodepng_decode32_file(&pixels, &width, &height, filename.c_str());
 
 	ASSERT_MSG(error == 0, std::string("Error loading texture from '") + filename + std::string("': ") + lodepng_error_text(error));
-	ASSERT_MSG(width == height, std::string("Error loading texture from '") + filename + std::string("'. It's not square. Currently only square textures are supported..."));
 	ASSERT(pixels.size() > 0);
 
-	int sizePixels = width;
-
-	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, sizePixels, requiresGammaCorrection);
+	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, width, height, requiresGammaCorrection);
 
 	texture->UploadTexels(&pixels[0]);
 

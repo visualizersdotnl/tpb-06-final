@@ -27,7 +27,7 @@ namespace Pimp
 		void DownSampleTo8Bit(void* dest, Texel* source, int numPixels);
 
 	public:
-		Texture2D(const std::string& name, int sizePixels, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view);
+		Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view);
 
 #ifdef _DEBUG
 		virtual ~Texture2D();

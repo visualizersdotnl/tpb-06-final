@@ -6,10 +6,9 @@
 
 namespace Pimp
 {
-	Texture3D::Texture3D(const std::string& name, int sizePixels, ID3D10Texture3D* texture, ID3D10ShaderResourceView* view, ID3D10RenderTargetView** sliceRenderTargetViews)
-		: Texture(name, sizePixels, view), texture(texture), sliceRenderTargetViews(sliceRenderTargetViews)
+	Texture3D::Texture3D(const std::string& name, int width, int height, int depth, ID3D10Texture3D* texture, ID3D10ShaderResourceView* view, ID3D10RenderTargetView** sliceRenderTargetViews)
+		: Texture(name, width, height, view), texture(texture), sliceRenderTargetViews(sliceRenderTargetViews), depth(depth)
 	{
-		size3 = sizePixels*sizePixels*sizePixels;
 	}
 
 #ifdef _DEBUG
@@ -21,7 +20,7 @@ namespace Pimp
 			texture = NULL;
 		}
 
-		for (int i=0; i<GetSizePixels(); ++i)
+		for (int i=0; i<depth; ++i)
 		{
 			if (sliceRenderTargetViews[i] != NULL)
 			{
@@ -40,10 +39,10 @@ namespace Pimp
 		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
 
 		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch == GetSizePixels()*4); // We're assuming this...
-		ASSERT(mappedTex.DepthPitch == GetSizePixels()*GetSizePixels()*4); // We're assuming this...
+		ASSERT(mappedTex.RowPitch == GetWidth()*4); // We're assuming this...
+		ASSERT(mappedTex.DepthPitch == GetWidth()*GetHeight()*4); // We're assuming this...
 
-		memcpy(destTexels, sourceTexels, size3*4);
+		memcpy(destTexels, sourceTexels, GetWidth()*GetHeight()*GetDepth()*4);
 
 		//#ifdef _DEBUG
 		//		char s[256];

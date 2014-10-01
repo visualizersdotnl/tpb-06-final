@@ -10,11 +10,12 @@ namespace Pimp
 	private:
 		ID3D10ShaderResourceView* view;
 
-		unsigned int sizePixels;
+		unsigned int width;
+		unsigned int height;
 		std::string name;
 
 	public:
-		Texture(const std::string& name, int sizePixels, ID3D10ShaderResourceView* view);
+		Texture(const std::string& name, int width, int height, ID3D10ShaderResourceView* view);
 
 #ifdef _DEBUG
 		virtual ~Texture();
@@ -31,9 +32,14 @@ namespace Pimp
 			return view; 
 		}
 
-		int GetSizePixels() const
+		int GetWidth() const
 		{
-			return sizePixels;
+			return width;
+		}
+
+		int GetHeight() const
+		{
+			return height;
 		}
 	};
 }

@@ -8,8 +8,8 @@ namespace Pimp
 {
 	Texel Texel::black = { 1, 0, 0, 0 };
 
-	Texture2D::Texture2D(const std::string& name, int sizePixels, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view)
-		: Texture(name, sizePixels, view), texture(texture)
+	Texture2D::Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view)
+		: Texture(name, width, height, view), texture(texture)
 	{
 
 	}
@@ -80,9 +80,9 @@ namespace Pimp
 		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
 
 		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch == GetSizePixels()*4); // We're assuming this...
+		ASSERT(mappedTex.RowPitch == GetWidth()*4); // We're assuming this...
 
-		DownSampleTo8Bit(destTexels, sourceTexels, GetSizePixels()*GetSizePixels());
+		DownSampleTo8Bit(destTexels, sourceTexels,  GetWidth()*GetHeight());
 
 		//#ifdef _DEBUG
 		//		char s[256];
@@ -101,9 +101,9 @@ namespace Pimp
 		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
 
 		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch == GetSizePixels()*4); // We're assuming this...
+		ASSERT(mappedTex.RowPitch ==  GetWidth()*4); // We're assuming this...
 
-		memcpy(destTexels, sourceTexels, GetSizePixels()*GetSizePixels()*sizeof(DWORD));
+		memcpy(destTexels, sourceTexels,  GetWidth()*GetHeight()*sizeof(DWORD));
 
 		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
 	}

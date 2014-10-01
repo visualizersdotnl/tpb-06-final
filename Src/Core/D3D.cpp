@@ -454,11 +454,11 @@ DepthStencil* D3D::GetDefaultDepthStencil() const
 }
 
 
-Texture2D* D3D::CreateTexture2D(const std::string& name, int sizePixels, bool requiresGammaCorrection)
+Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection)
 {
 	D3D10_TEXTURE2D_DESC desc;
-	desc.Width = sizePixels;
-	desc.Height = sizePixels;
+	desc.Width = width;
+	desc.Height = height;
 	desc.MipLevels = desc.ArraySize = 1; // Only a single mip
 	desc.Format = requiresGammaCorrection ? DXGI_FORMAT_R8G8B8A8_UNORM_SRGB : DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
@@ -477,18 +477,18 @@ Texture2D* D3D::CreateTexture2D(const std::string& name, int sizePixels, bool re
 	D3D_ASSERT(hr);
 	ASSERT(view != NULL);
 
-	return new Texture2D(name, sizePixels, texture, view);
+	return new Texture2D(name, width, height, texture, view);
 }
 
 
-Texture3D* D3D::CreateTexture3D(const std::string& name, int sizePixels)
+Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, int depth)
 {
 	D3D10_TEXTURE3D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 
-	desc.Width = sizePixels;
-	desc.Height = sizePixels;
-	desc.Depth = sizePixels;
+	desc.Width = width;
+	desc.Height = height;
+	desc.Depth = depth;
 	desc.MipLevels = 1; // Only a single mip
 	desc.Format = DXGI_FORMAT_R16G16_FLOAT; //DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.Usage = D3D10_USAGE_DEFAULT;
@@ -505,9 +505,9 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int sizePixels)
 	ASSERT(view != NULL);
 
 	// Create N views for rendering to
-	ID3D10RenderTargetView** rtviews = new ID3D10RenderTargetView*[sizePixels];
+	ID3D10RenderTargetView** rtviews = new ID3D10RenderTargetView*[depth];
 
-	for (int i=0; i<sizePixels; ++i)
+	for (int i=0; i<depth; ++i)
 	{
 		D3D10_RENDER_TARGET_VIEW_DESC rtv;
 		rtv.Format = desc.Format;
@@ -524,7 +524,7 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int sizePixels)
 		rtviews[i] = renderTargetView;
 	}
 
-	return new Texture3D(name, sizePixels, texture, view, rtviews);
+	return new Texture3D(name, width, height, depth, texture, view, rtviews);
 }
 
 
