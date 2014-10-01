@@ -49,10 +49,11 @@ void GenerateWorld(Pimp::World** outWorld)
 	// Shaders
 
 	// Set total number of material compilation jobs. Assures that the loading bar is accurate.
-	SetNumTotalMaterialCompilationJobs(2);
+	int numScenes = 1;
+	int numOverlays = 1;
+	SetNumTotalMaterialCompilationJobs(numScenes + numOverlays + 1);
 
 	// Scene shader 0
-	Pimp::Scene* sceneShader0 = new Pimp::Scene(world);
 	unsigned char* sceneShader0_hlsl;
 	int sceneShader0_hlsl_size;
 	ReadFileContents(assetsPath + "scene_blurb.fx", &sceneShader0_hlsl, &sceneShader0_hlsl_size);
@@ -69,6 +70,15 @@ void GenerateWorld(Pimp::World** outWorld)
 	unsigned char* userPostEffectMat_compiled_hlsl = NULL;
 	int userPostEffectMat_compiled_hlsl_size = 0;
 	StartMaterialCompilationJob(userPostEffect_hlsl, userPostEffect_hlsl_size, &userPostEffectMat_compiled_hlsl, &userPostEffectMat_compiled_hlsl_size);
+
+	// Overlay shader 0
+	unsigned char* overlayShader0_hlsl;
+	int overlayShader0_hlsl_size;
+	ReadFileContents(assetsPath + "overlay_test.fx", &overlayShader0_hlsl, &overlayShader0_hlsl_size);
+
+	unsigned char* overlayShaderMat0_compiled_hlsl = NULL;
+	int overlayShaderMat0_compiled_hlsl_size = 0;
+	StartMaterialCompilationJob(overlayShader0_hlsl, overlayShader0_hlsl_size, &overlayShaderMat0_compiled_hlsl, &overlayShaderMat0_compiled_hlsl_size);
 
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -292,22 +302,32 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_grid.png", true));
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_noise.png", true));
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_rock.png", true));
+	world->GetTextures().Add(LoadTexture(assetsPath + "testoverlay.png", true));
 
 
 	// Init all materials, now that the shaders have been compiled.
 
+	// Scenes
 	Pimp::Material* sceneShaderMat0 = new Pimp::Material(world, sceneShaderMat0_compiled_hlsl, sceneShaderMat0_compiled_hlsl_size, assetsPath + "scene_blurb.fx");
 	world->GetMaterials().Add(sceneShaderMat0);
+	Pimp::Scene* sceneShader0 = new Pimp::Scene(world);
 	sceneShader0->SetMaterial(sceneShaderMat0);
 	world->GetScenes().Add(sceneShader0);
 	world->GetElements().Add(sceneShader0);
 
-
+	// Post effect
 	Pimp::Material* userPostEffectMat = new Pimp::Material(world, userPostEffectMat_compiled_hlsl, userPostEffectMat_compiled_hlsl_size, assetsPath + "posteffect.fx");
 	world->GetMaterials().Add(userPostEffectMat);
 	world->GetPostProcess()->SetUserPostEffect(userPostEffectMat);
 
-
+	// Overlays
+	Pimp::Material* overlayShaderMat0 = new Pimp::Material(world, overlayShaderMat0_compiled_hlsl, overlayShaderMat0_compiled_hlsl_size, assetsPath + "overlay_test.fx");
+	world->GetMaterials().Add(overlayShaderMat0);
+	Pimp::Overlay* overlayShader0 = new Pimp::Overlay(world);
+	overlayShader0->SetMaterial(overlayShaderMat0);
+	overlayShader0->SetTimings(0.0f, 100.0f, 0.5f, 0.5f);
+	world->GetOverlays().Add(overlayShader0);
+	world->GetElements().Add(overlayShader0);	
 
 
 	world->InitAllBalls();
