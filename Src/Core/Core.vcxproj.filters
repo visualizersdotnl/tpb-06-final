@@ -206,7 +206,7 @@
     <ClInclude Include="Shaders\Shader_PostProcess.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="APIAssert.h">
+    <ClInclude Include="D3DAssert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

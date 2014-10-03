@@ -12,7 +12,7 @@
 //        Maybe SetLastError() has a place in Shared but for now this will do.
 #include "../Player/SetLastError.h" 
 
-#include "APIAssert.h"
+#include "D3DAssert.h"
 #include "Settings.h"
 #include "RenderTarget.h"
 #include "PIX.h"
