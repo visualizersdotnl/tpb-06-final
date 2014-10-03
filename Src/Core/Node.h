@@ -16,9 +16,7 @@ namespace Pimp
 
 	public:
 		Node(World* ownerWorld);
-#ifdef _DEBUG
-		virtual ~Node();
-#endif
+		virtual ~Node() {}
 
 		FixedSizeList<Node*>& GetChildren()
 		{

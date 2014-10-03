@@ -20,9 +20,7 @@ namespace Pimp
 
 	public:
 		ParticleAttractor(World* ownerWorld);
-#ifdef _DEBUG
 		virtual ~ParticleAttractor();
-#endif
 
 		void Tick(float deltaTime);
 

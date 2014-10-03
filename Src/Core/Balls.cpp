@@ -26,7 +26,6 @@ namespace Pimp
 #endif
 	}
 
-#ifdef _DEBUG
 	Balls::~Balls()
 	{
 		for (int i=0; i<cachedBallAnims.Size(); ++i)
@@ -36,7 +35,6 @@ namespace Pimp
 			delete cachedBallAnims[i].animCurvePosZ;
 		}
 	}
-#endif
 
 	void Balls::SetName(const char* newName)
 	{

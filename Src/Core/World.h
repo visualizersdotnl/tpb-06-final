@@ -58,9 +58,7 @@ namespace Pimp
 
 	public:
 		World();
-#ifdef _DEBUG
 		virtual ~World();
-#endif
 
 		FixedSizeList<Element*>& GetElements() 
 		{

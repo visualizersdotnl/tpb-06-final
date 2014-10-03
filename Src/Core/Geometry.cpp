@@ -12,13 +12,11 @@ namespace Pimp
 		SetType(ET_Geometry);
 	}
 
-#ifdef _DEBUG
 	Geometry::~Geometry()
 	{
 		delete [] vertices;
 		delete [] indices;
 	}
-#endif
 
 	void Geometry::InitBuffers(int numVertices, int numIndices)
 	{

@@ -14,6 +14,7 @@ namespace Pimp
 
 	public:
 		Scene(World* ownerWorld);
+		virtual ~Scene() {}
 
 		void Render(Camera* camera);
 

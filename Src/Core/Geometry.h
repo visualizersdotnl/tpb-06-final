@@ -26,10 +26,7 @@ namespace Pimp
 
 	public:
 		Geometry(World* ownerWorld);
-
-#ifdef _DEBUG
 		virtual ~Geometry();
-#endif		
 
 		virtual bool HasGeometry() const 
 		{

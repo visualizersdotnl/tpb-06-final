@@ -263,12 +263,10 @@ namespace Pimp
 		RebuildParticles();
 	}
 
-#ifdef _DEBUG
 	ParticleSpline::~ParticleSpline()
 	{
 		delete spline;
 	}
-#endif
 
 
 	//void ParticleSpline::Render(Camera* camera)

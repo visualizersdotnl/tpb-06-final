@@ -45,9 +45,7 @@ namespace Pimp
 	public:
 		Xform(World* ownerWorld);
 		Xform(const Xform& other);
-#ifdef _DEBUG
-		virtual ~Xform();
-#endif
+		virtual ~Xform() {}
 
 		virtual void Tick(float deltaTime);
 

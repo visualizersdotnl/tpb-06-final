@@ -25,10 +25,7 @@ namespace Pimp
 
 	public:
 		MaterialParameter(World* ownerWorld);		
-
-#ifdef _DEBUG
-		~MaterialParameter();
-#endif
+		virtual ~MaterialParameter() {}
 
 		float GetCurrentValue() const 
 		{

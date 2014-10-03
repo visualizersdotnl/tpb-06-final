@@ -43,10 +43,7 @@ namespace Pimp
 
 	public:
 		Balls(World* ownerWorld);		
-
-#ifdef _DEBUG
-		~Balls();
-#endif
+		virtual ~Balls();
 
 		const char* GetName() const 
 		{ 

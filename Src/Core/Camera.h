@@ -34,9 +34,7 @@ namespace Pimp
 
 	public:
 		Camera(World* ownerWorld);
-#ifdef _DEBUG
-		virtual ~Camera();
-#endif
+		virtual ~Camera() {}
 
 		virtual void Tick(float timeDelta);
 		

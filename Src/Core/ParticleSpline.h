@@ -88,9 +88,7 @@ namespace Pimp
 
 	public:
 		ParticleSpline(World* ownerWorld);
-#ifdef _DEBUG
-		~ParticleSpline();
-#endif
+		virtual ~ParticleSpline();
 
 		void Tick(float deltaTime);
 

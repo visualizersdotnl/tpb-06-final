@@ -52,14 +52,6 @@ namespace Pimp
 		CalculateTransforms();
 	}
 
-#ifdef _DEBUG
-	Xform::~Xform()
-	{
-		
-	}
-#endif
-
-
 	void Xform::CalculateTransforms()
 	{
 		// Build transformation matrix.  NULL arguments are treated as identity.

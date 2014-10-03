@@ -17,9 +17,7 @@ namespace Pimp
 
 	public:
 		PolyMesh(World* ownerWorld);
-#ifdef _DEBUG
-		virtual ~PolyMesh();
-#endif
+		virtual ~PolyMesh() {}
 
 		void SetMeshData(
 			int numVertices,

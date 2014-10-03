@@ -1,19 +1,16 @@
 
-#include <core/core.h>
-#include <shared/shared.h>
+#include <Core/Core.h>
+#include <Shared/shared.h>
+#include <LodePNG/lodepng.h>
 #include "SceneTools.h"
-#include "LodePNG/lodepng.h"
+#include "Assets.h"
 
-
-std::string GetAssetsPath()
-{
-	// FIXME: Append /Content here and move stuff.
-	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
-	return path;
-}
+//
+// Asset loading.
+// FIXME: Some of this should be moved to a separate location at some point.
+//
 
 // Load a PNG texture from a file. 
-// FIXME: Should be moved to Texture2D::LoadFromFile(), probably.
 Pimp::Texture2D* LoadTexture(const std::string& filename, bool requiresGammaCorrection)
 {
 	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
@@ -34,19 +31,33 @@ Pimp::Texture2D* LoadTexture(const std::string& filename, bool requiresGammaCorr
 	return texture;
 }
 
-void GenerateWorld(Pimp::World** outWorld)
+//
+// Assets root.
+//
+
+static const std::string GetAssetsPath()
 {
+	// FIXME: Append /Content here and move stuff.
+	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
+	return path;
+}
+
+//
+// World generator & resource release.
+//
+
+bool GenerateWorld(Pimp::World** outWorld)
+{
+	// Store new world pointer right away; DrawLoadProgress assumes there is a gWorld.
 	Pimp::World* world = new Pimp::World();
-	
-	*outWorld = world; // Store world pointer right away; DrawLoadProgress assumes there is a gWorld.
-	
+	*outWorld = world; 
 	DrawLoadProgress(false);
 
-	std::string assetsPath = GetAssetsPath();
+	const std::string assetsPath = GetAssetsPath();
 
-
-	// ---------------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	// Shaders
+	// ----------------------------------------------------------------------------------------------
 
 	// Set total number of material compilation jobs. Assures that the loading bar is accurate.
 	int numScenes = 1;
@@ -80,16 +91,13 @@ void GenerateWorld(Pimp::World** outWorld)
 	int overlayShaderMat0_compiled_hlsl_size = 0;
 	StartMaterialCompilationJob(overlayShader0_hlsl, overlayShader0_hlsl_size, &overlayShaderMat0_compiled_hlsl, &overlayShaderMat0_compiled_hlsl_size);
 
-
-	// ---------------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	// Construct and initialize all elements.
+	// ----------------------------------------------------------------------------------------------
 
 	world->SetMotionBlurAmount(0.000000f);
-
-
 	
 	DrawLoadProgress(true);
-	
 
 	// Add camera
 	Pimp::Camera* camTestShape = new Pimp::Camera(world);
@@ -334,6 +342,12 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->UpdateAllMaterialParameters();
 
 	// Ready!
-	
 	*outWorld = world;
+	return true;
 }
+
+void ReleaseWorld()
+{
+	// FIXME: Release resources!
+}
+
