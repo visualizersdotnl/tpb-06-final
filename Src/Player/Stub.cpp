@@ -17,7 +17,7 @@
 	To do (@plek):
 	- See Github issues & README.md!
 	- Set up proper error checking & reporting (SetLastError()).
-	- Fix a proper content directory.
+	- Fix a proper content directory & move files (do this some time late at night).
 	- Precompiled shader toggle (see Github issue).
 	- Audio (including Rocket).
 	- Icon. (Shifter!)

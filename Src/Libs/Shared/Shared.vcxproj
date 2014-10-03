@@ -82,42 +82,31 @@
     <ClCompile Include="alignedalloc.cpp" />
     <ClCompile Include="conversions.cpp" />
     <ClCompile Include="crc32.cpp" />
-    <ClCompile Include="events.cpp" />
     <ClCompile Include="exception.cpp" />
     <ClCompile Include="fileutils.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="mutex.cpp" />
-    <ClCompile Include="pipe.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="resources.cpp" />
-    <ClCompile Include="shell.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="stopwatch.cpp" />
-    <ClCompile Include="tga.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alignedalloc.h" />
     <ClInclude Include="assert.h" />
     <ClInclude Include="conversions.h" />
     <ClInclude Include="crc32.h" />
-    <ClInclude Include="events.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="fileutils.h" />
     <ClInclude Include="fixedsizelist.h" />
     <ClInclude Include="misc.h" />
-    <ClInclude Include="mutex.h" />
-    <ClInclude Include="pipe.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="shared.h" />
-    <ClInclude Include="shell.h" />
     <ClInclude Include="singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="stopwatch.h" />
-    <ClInclude Include="tga.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Math\Math.vcxproj">
