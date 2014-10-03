@@ -110,10 +110,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimCurve.h" />
-    <ClInclude Include="APIAssert.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="D3D.h" />
+    <ClInclude Include="D3DAssert.h" />
     <ClInclude Include="D3DCompiler.h" />
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="Effect.h" />
