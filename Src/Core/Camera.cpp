@@ -12,13 +12,6 @@ namespace Pimp
 		SetFOVy(1.5f);
 	}
 
-#ifdef _DEBUG
-	Camera::~Camera()
-	{
-
-	}
-#endif
-
 	void Camera::Tick(float timeDelta)
 	{
 

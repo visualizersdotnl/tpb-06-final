@@ -16,6 +16,9 @@
     <Filter Include="Content">
       <UniqueIdentifier>{edcf3efb-3bd2-42b3-8c8e-fbe460061b3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Content\/Assets/Shaders">
+      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneTools.cpp">
@@ -31,6 +34,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AutoShaderReload.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,10 +62,27 @@
     <ClInclude Include="AutoShaderReload.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Assets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Content\Overlay_Test.fx">
+      <Filter>Content\/Assets/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\posteffect.fx">
+      <Filter>Content\/Assets/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\Scene_Blurb.fx">
+      <Filter>Content\/Assets/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\Scene_Test.fx">
+      <Filter>Content\/Assets/Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

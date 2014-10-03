@@ -210,7 +210,7 @@ void SetNumTotalMaterialCompilationJobs(int count)
 // Loading bar.
 //
 
-void DrawLoadProgress( bool texturesLoaded )
+void DrawLoadProgress( bool diskResourcesLoaded )
 {
 	if (gWorld == NULL)
 	{	
@@ -219,8 +219,8 @@ void DrawLoadProgress( bool texturesLoaded )
 		return;
 	}
 
-	int numStepsTotal = gNumTotalMaterialCompilationJobs+1; // 1 extra for the texture generator
-	int numStepsDone = texturesLoaded ? 1 : 0;
+	int numStepsTotal = gNumTotalMaterialCompilationJobs+1;
+	int numStepsDone = diskResourcesLoaded ? 1 : 0;
 
 	for (int i=0; i<materialCompilationJobs->Size(); ++i)
 		if ((*materialCompilationJobs)[i].ready)
@@ -235,12 +235,15 @@ void DrawLoadProgress( bool texturesLoaded )
 	postProcess->Clear();
 	postProcess->BindForRenderScene();
 
-	// Flip once to get rid of the white screen
+	// Flip once to get rid of the white screen.
+	// @plek: This really is a cache issue.
 	Pimp::gD3D->ClearBackBuffer();
 	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
 }
 
+// Animation curve helper(s).
+//
 
 Pimp::AnimCurve* DuplicateAnimCurve( Pimp::World* world, Pimp::AnimCurve* curve, float delay )
 {

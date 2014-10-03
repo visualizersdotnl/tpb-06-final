@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Node.h"
+
 #include "Geometry.h"
 
 namespace Pimp 
@@ -17,9 +19,7 @@ namespace Pimp
 
 	public:
 		PolyMesh(World* ownerWorld);
-#ifdef _DEBUG
-		virtual ~PolyMesh();
-#endif
+		virtual ~PolyMesh() {}
 
 		void SetMeshData(
 			int numVertices,

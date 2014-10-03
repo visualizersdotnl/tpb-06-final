@@ -1,7 +1,8 @@
 #pragma once
 
-#include "AnimCurve.h"
 #include "Node.h"
+
+#include "AnimCurve.h"
 #include <shared/shared.h>
 #include "Effect.h"
 
@@ -43,10 +44,7 @@ namespace Pimp
 
 	public:
 		Balls(World* ownerWorld);		
-
-#ifdef _DEBUG
-		~Balls();
-#endif
+		virtual ~Balls();
 
 		const char* GetName() const 
 		{ 

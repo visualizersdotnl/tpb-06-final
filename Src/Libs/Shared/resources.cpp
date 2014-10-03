@@ -1,25 +1,16 @@
 #include "stdafx.h"
 #include "resources.h"
-#include "exception.h"
 
 BinaryResourceReader::BinaryResourceReader(
 	HINSTANCE hInstance,
 	int id,
 	const char* type)
 {
+	// @plek: If this crashes you shouldn't be shipping anyway.
 	res = FindResource(hInstance, MAKEINTRESOURCE(id), type);
-	if (!res)
-		throw Win32Exception();
-
 	resGlobal = LoadResource(hInstance, res);
-	if (!resGlobal)
-		throw Win32Exception();
-
 	size = SizeofResource(hInstance, res);
-
 	lockedBuffer = (unsigned char*)LockResource(resGlobal);
-	if (!lockedBuffer)
-		throw Win32Exception();
 }
 
 BinaryResourceReader::~BinaryResourceReader()

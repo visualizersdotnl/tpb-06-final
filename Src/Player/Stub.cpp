@@ -15,21 +15,25 @@
 	- Take care of proper shutdown and error message display.
 
 	To do (@plek):
+	- See Github issues & README.md!
 	- Set up proper error checking & reporting (SetLastError()).
-	- Take a close look at current D3D warnings and leaks on exit.
-	- Attempt to eliminate most app. C++ exceptions.
-	- Fix a proper content directory and non-square textures.
-	- Carry on with whats in README.md!
+	- Fix a proper content directory & move files (do this some time late at night).
+	- Precompiled shader toggle (see Github issue).
+	- Audio (including Rocket).
+	- Icon. (Shifter!)
 
 	Note on Rocket:
 	- Enable toggle in Debug/Release, always on in Design.
 
 	Secondary (for those lazy moments):
-	- Go look what's redundant in Shared (ask Glow) & remove unused (commented) code.
+	- Fix (D3D)ASSERT_MSG.
 	- Check FIXMEs (esp. the ALT+ENTER block).
-	- Icon. (Shifter!)
-	- Keep a close eye on those D3D warnings, most probably are space-savers (non-critical).
+	- Leaks.
+	- Remove unused (commented) code.
 */
+
+// @plek: One of my many attempts to silence the compiler.
+#include "../KillUnwindSemantics.h"
 
 #include <Windows.h>
 #include <intrin.h> // for SSE2 check
@@ -48,8 +52,8 @@
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = true;
-const unsigned int kWindowedResX = 1920/2;
-const unsigned int kWindowedResY = 1080/2;
+const unsigned int kWindowedResX = 1920/4;
+const unsigned int kWindowedResY = 1080/4;
 
 // @plek: In full screen mode the desktop resolution is adapted.
 //        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
@@ -80,7 +84,8 @@ Pimp::World *gWorld = nullptr;
 
 // World generator (basically our complete content initalization).
 // Lives in Scene.cpp.
-extern void GenerateWorld(Pimp::World** outWorld);
+extern bool GenerateWorld(Pimp::World** outWorld);
+extern void ReleaseWorld();
 
 // Debug camera and it's state.
 #ifdef _DEBUG
@@ -517,8 +522,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 						InitMaterialCompilationSystem();
 						DrawLoadProgress(false);
 
-						GenerateWorld(&gWorld);
-						if (nullptr != gWorld)
+						if (true == GenerateWorld(&gWorld))
 						{
 #ifdef _DEBUG
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
@@ -564,7 +568,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 								gWorld->Render();
 
 								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
-								// FIXME: ignoring DXGI_ERROR_DEVICE_RESET
+								// FIXME: ignoring serious errors
 
 								if (true == kWindowed)
 								{
@@ -590,6 +594,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							delete s_pAutoShaderReloader;
 #endif	
 
+							ReleaseWorld();
 							delete gWorld;
 						}
 

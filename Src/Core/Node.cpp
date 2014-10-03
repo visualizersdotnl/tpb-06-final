@@ -12,12 +12,6 @@ namespace Pimp
 		SetIsNode(true);
 	}
 
-#ifdef _DEBUG
-	Node::~Node()
-	{
-	}
-#endif
-
 	void Node::Tick(float deltaTime)
 	{
 		for (int i=children.Size()-1; i>=0; --i)

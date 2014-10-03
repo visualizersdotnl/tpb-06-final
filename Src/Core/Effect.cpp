@@ -61,7 +61,7 @@ namespace Pimp
 		ASSERT(type != NULL);
 
 		D3D10_EFFECT_TYPE_DESC desc;
-		D3D_VERIFY( type->GetDesc(&desc), "EffectType::GetDesc" );
+		D3D_VERIFY( type->GetDesc(&desc) );
 
 		return desc;
 	}

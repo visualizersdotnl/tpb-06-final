@@ -11,14 +11,6 @@ namespace Pimp
 		name[0] = 0;
 	}
 
-#ifdef _DEBUG
-	MaterialParameter::~MaterialParameter()
-	{
-	}
-#endif
-
-
-
 	void MaterialParameter::AssignValueToEffectVariable(Effect* effect, int varIndex)
 	{
 #ifdef _DEBUG

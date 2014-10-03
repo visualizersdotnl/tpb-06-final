@@ -16,6 +16,6 @@ void SetNumTotalMaterialCompilationJobs(int count);
 void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
 void WaitForMaterialCompilationJobsToFinish();
 
-void DrawLoadProgress(bool texturesLoaded);
+void DrawLoadProgress(bool diskResourcesLoaded);
 
 Pimp::AnimCurve* DuplicateAnimCurve(Pimp::World* world, Pimp::AnimCurve* curve, float delay);

@@ -1,6 +1,7 @@
+
+#include "D3D.h"
 #include "World.h"
 #include "Xform.h"
-#include "D3D.h"
 #include "Geometry.h"
 #include "ParticleSpline.h"
 #include "Overlay.h"
@@ -53,20 +54,17 @@ namespace Pimp
 		screenQuadVertexBuffer->Bind();
 	}
 
-#ifdef _DEBUG
 	World::~World()
 	{
-		// HACK: removed this for now, since something is crashing :)
-		//for (int i=0; i<elements.Size(); ++i)
-		//{
-		//	delete elements[i];
-		//}
-		//elements.Clear();
+		for (int i=0; i<elements.Size(); ++i)
+		{
+			delete elements[i];
+		}
+		elements.Clear();
 
 		delete screenQuadVertexBuffer;
 		delete postProcess;
 	}
-#endif
 
 	void World::Tick(float deltaTime)
 	{

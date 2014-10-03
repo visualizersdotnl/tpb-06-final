@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Node.h"
+
 #include "Camera.h"
 #include "Geometry.h"
 #include "AnimCurve.h"
-
 
 namespace Pimp 
 {
@@ -88,9 +88,7 @@ namespace Pimp
 
 	public:
 		ParticleSpline(World* ownerWorld);
-#ifdef _DEBUG
-		~ParticleSpline();
-#endif
+		virtual ~ParticleSpline();
 
 		void Tick(float deltaTime);
 

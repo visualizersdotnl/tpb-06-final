@@ -1,52 +1,50 @@
 
-#include <core/core.h>
-#include <shared/shared.h>
+#include <Core/Core.h>
+#include <Shared/shared.h>
+#include <LodePNG/lodepng.h>
 #include "SceneTools.h"
-#include "LodePNG/lodepng.h"
+#include "Assets.h"
 
+// Assets root.
+//
 
-std::string GetAssetsPath()
+static const std::string GetAssetsPath()
 {
 	// FIXME: Append /Content here and move stuff.
 	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
 	return path;
 }
 
-// Load a PNG texture from a file. 
-// FIXME: Should be moved to Texture2D::LoadFromFile(), probably.
-Pimp::Texture2D* LoadTexture(const std::string& filename, bool requiresGammaCorrection)
+// World generator & resource release.
+//
+
+bool GenerateWorld(Pimp::World** outWorld)
 {
-	std::string name = LowerCase(GetFilenameWithoutExtFromPath(filename));
-
-	std::vector<unsigned char> pixels;
-	unsigned int width, height;
-
-	unsigned int error = lodepng::decode(pixels, width, height, filename);
-	//lodepng_decode32_file(&pixels, &width, &height, filename.c_str());
-
-	ASSERT_MSG(error == 0, std::string("Error loading texture from '") + filename + std::string("': ") + lodepng_error_text(error));
-	ASSERT(pixels.size() > 0);
-
-	Pimp::Texture2D* texture = Pimp::gD3D->CreateTexture2D(name, width, height, requiresGammaCorrection);
-
-	texture->UploadTexels(&pixels[0]);
-
-	return texture;
-}
-
-void GenerateWorld(Pimp::World** outWorld)
-{
+	// Store new world pointer right away; DrawLoadProgress assumes there is a gWorld.
 	Pimp::World* world = new Pimp::World();
-	
-	*outWorld = world; // Store world pointer right away; DrawLoadProgress assumes there is a gWorld.
-	
+	*outWorld = world; 
+
+	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
 	DrawLoadProgress(false);
 
-	std::string assetsPath = GetAssetsPath();
+	// Set asset loader root.
+	Assets::SetRoot(GetAssetsPath());
+	const std::string assetsPath = GetAssetsPath();
 
+	// Asset requests for all scenes.
+	//
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------------
-	// Shaders
+	// Test textures.
+	Pimp::Texture2D *blurbGrid, *blurbNoise, *blurbRock, *testOverlay;
+	Pimp::Texture2D *ribbonsWall, *ribbonsMesh;
+	Assets::AddTexture2D("blurb_grid.png", true, &blurbGrid);
+	Assets::AddTexture2D("blurb_noise.png", true, &blurbNoise);
+	Assets::AddTexture2D("blurb_rock.png", true, &blurbRock);
+	Assets::AddTexture2D("testoverlay.png", true, &testOverlay);
+	Assets::AddTexture2D("ribbons_wall.png", true, &ribbonsWall);
+	Assets::AddTexture2D("ribbons_mesh.png", true, &ribbonsMesh);
+
+	// ----------------------------------------------------------------------------------------------
 
 	// Set total number of material compilation jobs. Assures that the loading bar is accurate.
 	int numScenes = 2;
@@ -90,16 +88,22 @@ void GenerateWorld(Pimp::World** outWorld)
 	int overlayShaderMat0_compiled_hlsl_size = 0;
 	StartMaterialCompilationJob(overlayShader0_hlsl, overlayShader0_hlsl_size, &overlayShaderMat0_compiled_hlsl, &overlayShaderMat0_compiled_hlsl_size);
 
+	// ----------------------------------------------------------------------------------------------
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------------
-	// Construct and initialize all elements.
+	// Let the asset loader do it's thing up to where all disk I/O is completed and verified.
+	//
 
-	world->SetMotionBlurAmount(0.000000f);
+	// Doing this first as it possibly kicks off a lot of threads.
+	if (false == Assets::LoadMaterials())
+		return false;
 
+	if (false == Assets::LoadTextures())
+		return false;
 
-	
+	// And by now all I/O tasks are done, so set the loading bar accordingly.
 	DrawLoadProgress(true);
-	
+
+	// ----------------------------------------------------------------------------------------------
 
 	// Add camera
 	Pimp::Camera* camTestShape = new Pimp::Camera(world);
@@ -304,20 +308,22 @@ void GenerateWorld(Pimp::World** outWorld)
 	};
 	world->GetSceneDirectionAnimCurve()->SetKeysPtr(sceneDirection_keys, sizeof(sceneDirection_keys)/sizeof(Pimp::AnimCurve::Pair));
 
+	// Wait for the asset loading thread(s) to be all finished.
+	//
 
-	WaitForMaterialCompilationJobsToFinish();
+	Assets::FinishLoading();
 
-	// Load textures
+	// Add test textures to our World.
+	//
 
-	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_grid.png", true));
-	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_noise.png", true));
-	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_rock.png", true));
-	world->GetTextures().Add(LoadTexture(assetsPath + "testoverlay.png", true));
-	world->GetTextures().Add(LoadTexture(assetsPath + "ribbons_wall.png", true));
-	world->GetTextures().Add(LoadTexture(assetsPath + "ribbons_mesh.png", true));
+	world->GetTextures().Add(blurbGrid);
+	world->GetTextures().Add(blurbNoise);
+	world->GetTextures().Add(blurbRock);
+	world->GetTextures().Add(testOverlay);
+	world->GetTextures().Add(ribbonsWall);
+	world->GetTextures().Add(ribbonsMesh);
 
-
-	// Init all materials, now that the shaders have been compiled.
+	// ----------------------------------------------------------------------------------------------
 
 	// Scenes
 	Pimp::Material* sceneShaderMat0 = new Pimp::Material(world, sceneShaderMat0_compiled_hlsl, sceneShaderMat0_compiled_hlsl_size, assetsPath + "scene_blurb.fx");
@@ -349,11 +355,24 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->GetOverlays().Add(overlayShader0);
 	world->GetElements().Add(overlayShader0);	
 
+	// ----------------------------------------------------------------------------------------------
+
+	// Do stuff.
+	//
 
 	world->InitAllBalls();
 	world->UpdateAllMaterialParameters();
 
-	// Ready!
-	
+	// Rock and roll baby!
+	//
+
 	*outWorld = world;
+	return true;
 }
+
+void ReleaseWorld()
+{
+	Assets::Release();
+	// FIXME: Release more resources?
+}
+

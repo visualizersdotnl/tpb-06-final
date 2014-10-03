@@ -1,16 +1,11 @@
 #pragma once
 
 #ifdef _DEBUG
-
-#include "conversions.h"
-#include "exception.h"
-
-#define ASSERT_MSG(cond, msg) if (!(cond)) { OutputDebugString(std::string(msg).c_str()); OutputDebugString("\n"); if (IsDebuggerPresent()) DebugBreak(); throw Exception(std::string("At ")+std::string(__FILE__)+std::string(":")+Int2Str(__LINE__)+std::string(":\n")+(msg)); }
-#define ASSERT(cond) ASSERT_MSG(cond, #cond)
-
+	#define ASSERT(condition) if (!(condition)) __debugbreak();
+	#define VERIFY(condition) ASSERT(condition)
+	#define ASSERT_MSG(condition, message) ASSERT(condition) // FIXME: Add message output.
 #else
-
-#define ASSERT_MSG(x,y) {}
-#define ASSERT(x) {}
-
+	#define ASSERT(condition)
+	#define VERIFY(condition) (condition)
+	#define ASSERT_MSG(condition)
 #endif

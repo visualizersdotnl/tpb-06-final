@@ -59,9 +59,8 @@ PSOutput MainPS(VSOutput input)
 	// Screen uv in [0,1] for both x and y
 	float2 screenUV = input.normalizedPos*float2(0.5, -0.5) + (0.5).xx;
 
-	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, screenUV, 0);		
+	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, screenUV, 0);
 	result.color.xyz += fadeInOut.xxx;
-
 
 	return result;
 }

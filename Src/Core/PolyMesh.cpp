@@ -11,13 +11,6 @@ namespace Pimp
 		SetType(ET_PolyMesh);
 	}
 
-#ifdef _DEBUG
-	PolyMesh::~PolyMesh()
-	{
-	}
-#endif
-
-
 	void PolyMesh::SetMeshData(
 		int numVertices,
 		int numIndices,

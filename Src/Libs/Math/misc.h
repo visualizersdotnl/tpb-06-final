@@ -9,7 +9,6 @@ enum Halfspace
 	HALFSPACE_POSITIVE = 1
 };
 
-
 bool FloatsEqual(float a, float b, float epsilon);
 
 #ifndef max

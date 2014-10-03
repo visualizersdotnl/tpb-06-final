@@ -1,3 +1,4 @@
+#include "Settings.h"
 #include "Xform.h"
 
 namespace Pimp 
@@ -51,14 +52,6 @@ namespace Pimp
 		SetType(ET_Xform); 
 		CalculateTransforms();
 	}
-
-#ifdef _DEBUG
-	Xform::~Xform()
-	{
-		
-	}
-#endif
-
 
 	void Xform::CalculateTransforms()
 	{

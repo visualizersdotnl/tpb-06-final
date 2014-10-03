@@ -12,12 +12,10 @@ namespace Pimp
 		ownerWorld->RegisterParticleAttractor(this);
 	}
 
-#ifdef _DEBUG
 	ParticleAttractor::~ParticleAttractor()
 	{
 		ownerWorld->UnregisterParticleAttractor(this);
 	}
-#endif
 
 	void ParticleAttractor::SetIntensity(float intensity)
 	{

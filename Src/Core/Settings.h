@@ -1,24 +1,7 @@
 #pragma once
 
-
-#ifndef _DEBUG
-#define PIMP_USE_ERROR_REPORTING 0
-#else
-#define PIMP_USE_ERROR_REPORTING 1
-#endif
-
-#ifndef _DEBUG
-#define PIMP_SUPPORT_DUMPANIMS 0
-#else
-#define PIMP_SUPPORT_DUMPANIMS 1
-#endif
-
 // Output extra info for PIX? 
-#ifndef _DEBUG
 #define PIMP_USE_PIX_INFO 0
-#else
-#define PIMP_USE_PIX_INFO 0 // Keep disabled for now, only worked in dx9?
-#endif
 
 // Format for our backbuffer. 
 // @glow: my ION netbook only supports DXGI_FORMAT_B8G8R8A8_UNORM, instead of the
@@ -30,4 +13,3 @@
 // Used both in Core and by Player to set up the initial swap chain.
 #define D3D_ANTIALIAS_NUM_SAMPLES 1
 #define D3D_ANTIALIAS_QUALITY 0
-

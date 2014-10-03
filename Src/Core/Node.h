@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Shared/shared.h>
+#include <Math/math.h>
 #include "Element.h"
-#include <shared/shared.h>
-#include <math/math.h>
 
 namespace Pimp 
 {
@@ -16,9 +16,7 @@ namespace Pimp
 
 	public:
 		Node(World* ownerWorld);
-#ifdef _DEBUG
-		virtual ~Node();
-#endif
+		virtual ~Node() {}
 
 		FixedSizeList<Node*>& GetChildren()
 		{
