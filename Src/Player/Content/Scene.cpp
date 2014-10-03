@@ -49,7 +49,7 @@ void GenerateWorld(Pimp::World** outWorld)
 	// Shaders
 
 	// Set total number of material compilation jobs. Assures that the loading bar is accurate.
-	int numScenes = 1;
+	int numScenes = 2;
 	int numOverlays = 1;
 	SetNumTotalMaterialCompilationJobs(numScenes + numOverlays + 1);
 
@@ -61,6 +61,16 @@ void GenerateWorld(Pimp::World** outWorld)
 	unsigned char* sceneShaderMat0_compiled_hlsl = NULL;
 	int sceneShaderMat0_compiled_hlsl_size = 0;
 	StartMaterialCompilationJob(sceneShader0_hlsl, sceneShader0_hlsl_size, &sceneShaderMat0_compiled_hlsl, &sceneShaderMat0_compiled_hlsl_size);
+
+	// Scene shader 1
+	unsigned char* sceneShader1_hlsl;
+	int sceneShader1_hlsl_size;
+	ReadFileContents(assetsPath + "scene_ribbons.fx", &sceneShader1_hlsl, &sceneShader1_hlsl_size);
+
+	unsigned char* sceneShaderMat1_compiled_hlsl = NULL;
+	int sceneShaderMat1_compiled_hlsl_size = 0;
+	StartMaterialCompilationJob(sceneShader1_hlsl, sceneShader1_hlsl_size, &sceneShaderMat1_compiled_hlsl, &sceneShaderMat1_compiled_hlsl_size);
+
 
 	// Post effect
 	unsigned char* userPostEffect_hlsl;
@@ -139,28 +149,28 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->GetElements().Add(camTestShape_rotY);
 	world->GetElements().Add(camTestShape_rotZ);
 	static const Pimp::AnimCurve::Pair camTestShape_posX_keys[] = { 
-		{  0.0f,	13.39f, 0.0f, 0.0f}, // pos.x
-		{ 20.0f,	18.15f, 0.0f, 0.0f}, // pos.x
+		{  0.0f,	-0.36f, 0.0f, 0.0f}, // pos.x
+		{  20.0f,	0.38f, 0.0f, 0.0f}, // pos.x
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_posY_keys[] = { 
-		{  0.0f,	11.09f, 0.0f, 0.0f}, // pos.y
-		{ 20.0f,	-0.77f, 0.0f, 0.0f}, // pos.y
+		{  0.0f,	6.26f, 0.0f, 0.0f}, // pos.y
+		{  20.0f,	12.20f, 0.0f, 0.0f}, // pos.y
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_posZ_keys[] = { 
-		{  0.0f,	-12.60f, 0.0f, 0.0f}, // pos.z
-		{ 20.0f,	17.62f, 0.0f, 0.0f}, // pos.z
+		{  0.0f,	7.35f, 0.0f, 0.0f}, // pos.z
+		{  20.0f,	7.76f, 0.0f, 0.0f}, // pos.z
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotX_keys[] = { 
-		{  0.0f,	DEG2RAD(134.25f), 0.0f, 0.0f}, // rot.x
-		{ 20.0f,	DEG2RAD(-6.15f), 0.0f, 0.0f}, // rot.x
+		{  0.0f,	DEG2RAD(-0.90f), 0.0f, 0.0f}, // rot.x
+		{  20.0f,	DEG2RAD(5.38f), 0.0f, 0.0f}, // rot.x
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotY_keys[] = { 
-		{  0.0f,	DEG2RAD(45.81f), 0.0f, 0.0f}, // rot.y
-		{ 20.0f,	DEG2RAD(42.68f), 0.0f, 0.0f}, // rot.y
+		{  0.0f,	DEG2RAD(-7.99f), 0.0f, 0.0f}, // rot.y
+		{  20.0f,	DEG2RAD(-10.28f), 0.0f, 0.0f}, // rot.y
 	};
 	static const Pimp::AnimCurve::Pair camTestShape_rotZ_keys[] = { 
-		{  0.0f,	DEG2RAD(172.53f), 0.0f, 0.0f}, // rot.z
-		{ 20.0f,	DEG2RAD(-12.14f), 0.0f, 0.0f}, // rot.z
+		{  0.0f,	DEG2RAD(82.94f), 0.0f, 0.0f}, // rot.z
+		{  20.0f,	DEG2RAD(83.10f), 0.0f, 0.0f}, // rot.z
 	};
 	camTestShape_posX->SetKeysPtr(camTestShape_posX_keys, sizeof(camTestShape_posX_keys)/sizeof(Pimp::AnimCurve::Pair));
 	camTestShape_posY->SetKeysPtr(camTestShape_posY_keys, sizeof(camTestShape_posY_keys)/sizeof(Pimp::AnimCurve::Pair));
@@ -290,7 +300,7 @@ void GenerateWorld(Pimp::World** outWorld)
 
 
 	static const Pimp::AnimCurve::Pair sceneDirection_keys[] = { 
-	 { -1.000000f,0.000000f,0.000000f,0.000000f},	// scene 0
+	 { -1.000000f, 1.000000f,0.000000f,0.000000f},	// scene 1, always active...
 	};
 	world->GetSceneDirectionAnimCurve()->SetKeysPtr(sceneDirection_keys, sizeof(sceneDirection_keys)/sizeof(Pimp::AnimCurve::Pair));
 
@@ -303,6 +313,8 @@ void GenerateWorld(Pimp::World** outWorld)
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_noise.png", true));
 	world->GetTextures().Add(LoadTexture(assetsPath + "blurb_rock.png", true));
 	world->GetTextures().Add(LoadTexture(assetsPath + "testoverlay.png", true));
+	world->GetTextures().Add(LoadTexture(assetsPath + "ribbons_wall.png", true));
+	world->GetTextures().Add(LoadTexture(assetsPath + "ribbons_mesh.png", true));
 
 
 	// Init all materials, now that the shaders have been compiled.
@@ -314,6 +326,14 @@ void GenerateWorld(Pimp::World** outWorld)
 	sceneShader0->SetMaterial(sceneShaderMat0);
 	world->GetScenes().Add(sceneShader0);
 	world->GetElements().Add(sceneShader0);
+
+	Pimp::Material* sceneShaderMat1 = new Pimp::Material(world, sceneShaderMat1_compiled_hlsl, sceneShaderMat1_compiled_hlsl_size, assetsPath + "scene_ribbons.fx");
+	world->GetMaterials().Add(sceneShaderMat1);
+	Pimp::Scene* sceneShader1 = new Pimp::Scene(world);
+	sceneShader1->SetMaterial(sceneShaderMat1);
+	world->GetScenes().Add(sceneShader1);
+	world->GetElements().Add(sceneShader1);
+
 
 	// Post effect
 	Pimp::Material* userPostEffectMat = new Pimp::Material(world, userPostEffectMat_compiled_hlsl, userPostEffectMat_compiled_hlsl_size, assetsPath + "posteffect.fx");
