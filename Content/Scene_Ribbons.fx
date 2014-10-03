@@ -228,11 +228,11 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 	float2 uv0, uv1;
 
 	float d = DistToRibbonOuter(Pos,0,uv0);
-	d = MinWithUV(d, DistToRibbonOuter(Pos,1.7,uv1), uv0, uv1, outUV);
+	d = MinWithUV(d, DistToRibbonOuter(Pos,3.7,uv1), uv0, uv1, outUV);
 	d = MinWithUV(d, DistToRibbonOuter(Pos,4.1,uv1), outUV, uv1, outUV);	
 	d = MinWithUV(d, DistToRibboInner(Pos, 0, uv1), outUV, uv1, outUV);
-	d = MinWithUV(d, DistToRibboInner(Pos,1.7,uv1), outUV, uv1, outUV);
-	d = MinWithUV(d, DistToRibboInner(Pos,4.1,uv1), outUV, uv1, outUV);
+	d = MinWithUV(d, DistToRibboInner(Pos,2.7,uv1), outUV, uv1, outUV);
+	d = MinWithUV(d, DistToRibboInner(Pos,3.9,uv1), outUV, uv1, outUV);
 
 
 	float dWall = Pos.z + 3.0;
@@ -245,6 +245,7 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 	else
 	{
 		HitMat = 1;
+		outUV = Pos.xy * 0.1;		
 		return dWall;
 	}
 }
@@ -374,7 +375,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	{
 		// Wall
 
-		float2 uv = inPos.xy * 0.1; //GetBlobbyUV(inPosLocal);
+		float2 uv = inUV; //GetBlobbyUV(inPosLocal);
 		float3 texel = texture_ribbons_wall.SampleLevel(samplerTexture, uv, 0).xyz;
 
 		diffColor = texel * 0.6;
@@ -431,16 +432,18 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
+		float depth = 1;//length(hitPos - origin);
+
 #if SHOW_NORMALS		
-		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);		
+		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
 #else
-		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), 1 );
+		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
 #endif			
 	}
 	else
 	{
 		// Outside anything.
-		result.color = float4(0,0,0,1);
+		result.color = float4(0,0,0,0);
 	}
 
     return result;
