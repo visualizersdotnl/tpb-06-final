@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "matrix4.h"
 #include "vector4.h"
+#include "misc.h"
 
 
 Matrix4 Matrix4::IDENTITY;

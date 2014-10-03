@@ -1,5 +1,5 @@
-#include "Texture3D.h"
 #include "D3D.h"
+#include "Texture3D.h"
 #include <xmmintrin.h>
 #include <emmintrin.h>
 

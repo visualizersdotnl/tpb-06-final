@@ -5,14 +5,17 @@
 // #include <string>
 #include <math/math.h>
 
+// @plek: I'm making short work of C++ exceptions.
+#include "../KillUnwindSemantics.h"
+
 // @plek: As of now Core reports it's errors to it's only host: Player.
 //        Maybe SetLastError() has a place in Shared but for now this will do.
 #include "../Player/SetLastError.h" 
 
+#include "APIAssert.h"
 #include "Settings.h"
 #include "RenderTarget.h"
 #include "PIX.h"
-#include "D3DException.h"
 #include "DepthStencil.h"
 #include "Texture2D.h"
 #include "Texture3D.h"

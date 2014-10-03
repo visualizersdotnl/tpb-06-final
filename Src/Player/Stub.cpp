@@ -26,12 +26,14 @@
 	- Enable toggle in Debug/Release, always on in Design.
 
 	Secondary (for those lazy moments):
-	- Review ASSERt/ASSERT_MSG (exception use).
+	- Fix (D3D)ASSERT_MSG.
 	- Check FIXMEs (esp. the ALT+ENTER block).
 	- Leaks.
-	- Attempt to eliminate most app. C++ exceptions.
 	- Remove unused (commented) code.
 */
+
+// @plek: One of my many attempts to silence the compiler.
+#include "../KillUnwindSemantics.h"
 
 #include <Windows.h>
 #include <intrin.h> // for SSE2 check

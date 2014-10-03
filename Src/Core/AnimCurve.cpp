@@ -1,6 +1,10 @@
+
+// @plek: I'm making short work of C++ exceptions.
+#include "../KillUnwindSemantics.h"
+
+#include "Settings.h"
 #include "AnimCurve.h"
 #include "World.h"
-#include "Settings.h"
 
 namespace Pimp
 {

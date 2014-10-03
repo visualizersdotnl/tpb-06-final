@@ -1,7 +1,8 @@
 #pragma once
 
-#include <shared/shared.h>
+#include <Shared/shared.h>
 
+#include "Settings.h"
 #include "Element.h"
 #include "Node.h"
 #include "Camera.h"
@@ -13,7 +14,6 @@
 #include "ScreenQuadVertexBuffer.h"
 #include "Scene.h"
 #include "Overlay.h"
-#include "Settings.h"
 
 
 namespace Pimp 

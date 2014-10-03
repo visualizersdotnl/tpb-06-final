@@ -1,6 +1,6 @@
+#include "D3D.h"
 #include "Material.h"
 #include "World.h"
-#include "D3D.h"
 
 
 #define PIMP_MAX_NUM_BOUNDTEXTUREVARINDICES 256

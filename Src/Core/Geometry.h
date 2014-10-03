@@ -2,7 +2,6 @@
 
 #include "Node.h"
 
-
 namespace Pimp 
 {
 	class Geometry : 

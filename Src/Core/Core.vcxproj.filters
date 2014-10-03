@@ -33,9 +33,6 @@
     <ClCompile Include="D3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3DException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DepthStencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,9 +122,6 @@
     <ClInclude Include="D3DCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3DException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DepthStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -211,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="Shaders\Shader_PostProcess.h">
       <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="APIAssert.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

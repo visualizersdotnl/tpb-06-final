@@ -62,6 +62,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -75,13 +76,13 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimCurve.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="D3D.cpp" />
-    <ClCompile Include="D3DException.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectPass.cpp" />
@@ -109,11 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimCurve.h" />
+    <ClInclude Include="APIAssert.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="D3DCompiler.h" />
-    <ClInclude Include="D3DException.h" />
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectPass.h" />

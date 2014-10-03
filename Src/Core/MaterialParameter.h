@@ -1,7 +1,8 @@
 #pragma once
 
-#include "AnimCurve.h"
 #include "Node.h"
+
+#include "AnimCurve.h"
 #include <shared/shared.h>
 #include "Effect.h"
 

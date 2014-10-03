@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.h"
+
 #include "Camera.h"
 #include "Geometry.h"
 #include "AnimCurve.h"

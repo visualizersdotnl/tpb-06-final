@@ -1,3 +1,4 @@
+#include "Settings.h"
 #include "Xform.h"
 
 namespace Pimp 

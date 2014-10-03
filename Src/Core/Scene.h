@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Node.h"
+
 #include "Material.h"
 #include "Camera.h"
 

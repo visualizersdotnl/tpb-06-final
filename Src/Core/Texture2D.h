@@ -3,7 +3,6 @@
 #include <d3d10_1.h>
 #include "Texture.h"
 
-
 namespace Pimp
 {
 	struct Texel

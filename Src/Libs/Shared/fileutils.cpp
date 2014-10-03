@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "fileutils.h"
-#include "exception.h"
 #include <sys/stat.h>
+#include "../Player/SetLastError.h"
 
-
-std::string RemoveFilenameFromPath(const std::string& filename)
+const std::string RemoveFilenameFromPath(const std::string& filename)
 {
 	int index = (int)filename.find_last_of("\\/");
 
@@ -15,8 +14,7 @@ std::string RemoveFilenameFromPath(const std::string& filename)
 	return filename.substr(0, index+1);
 }
 
-
-std::string GetFilenameFromPath(const std::string& filename)
+const std::string GetFilenameFromPath(const std::string& filename)
 {
 	int index = (int)filename.find_last_of("\\/");
 
@@ -27,7 +25,7 @@ std::string GetFilenameFromPath(const std::string& filename)
 	return filename.substr(index+1);
 }
 
-std::string GetFilenameWithoutExtFromPath(const std::string& filename)
+const std::string GetFilenameWithoutExtFromPath(const std::string& filename)
 {
 	std::string filenameWithExt = GetFilenameFromPath(filename);
 
@@ -40,16 +38,15 @@ std::string GetFilenameWithoutExtFromPath(const std::string& filename)
 	return filenameWithExt.substr(0, index);
 }
 
-
-
 // binary-safe file content reading
-std::string ReadFileContents(const std::string& filename)
+bool ReadFileContents(const std::string& filename, std::string &res)
 {
 	FILE * f;
 	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
-		throw Exception("Could not read file "+filename);
-
-	std::string res;
+	{
+		SetLastError("Could not read file: " + filename);
+		return false;
+	}
 
 	int numRead = 0;
 	
@@ -70,21 +67,24 @@ std::string ReadFileContents(const std::string& filename)
 	} while (numRead == 4096);
 
 	fclose(f);
-
-	return res;
+	return true;
 }
 
 
 // binary-safe file content writing
-void WriteFileContents(const std::string& filename, const std::string& data)
+bool WriteFileContents(const std::string& filename, const std::string& data)
 {
 	FILE * f;
 	if (fopen_s(&f, filename.c_str(), "wb") || (!f))
-		throw Exception("Could not write file "+filename);
+	{
+		SetLastError("Could not write file: " + filename);
+		return false;
+	}
 
 	fwrite(data.c_str(), 1, data.length(), f);
 
 	fclose(f);
+	return true;
 }
 
 bool FileExists(const std::string& filename)
@@ -99,12 +99,14 @@ bool FileExists(const std::string& filename)
 	return true;
 }
 
-
-void ReadFileContents(const std::string& filename, unsigned char** outBuffer, int* outBytesRead)
+bool ReadFileContents(const std::string& filename, unsigned char** outBuffer, int* outBytesRead)
 {
 	FILE * f = NULL;
 	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
-		throw Exception("Could not read file "+filename);
+	{
+		SetLastError("Could not read file: " + filename);
+		return false;
+	}
 
 	fseek(f, 0, SEEK_END);
 	int filesize = ftell(f);
@@ -117,22 +119,8 @@ void ReadFileContents(const std::string& filename, unsigned char** outBuffer, in
 	*outBuffer = buffer;
 
 	fclose(f);
+	return true;
 }
-
-
-std::string GetTemporaryFileFileName()
-{
-	char tempPath[512];
-	if (GetTempPath(sizeof(tempPath), tempPath) == 0)
-		throw Win32Exception();
-	
-	char buffer[MAX_PATH+1];
-	if (GetTempFileName(tempPath, "inq", 0, buffer) == 0)
-		throw Win32Exception();
-
-	return std::string(buffer);
-}
-
 
 __time64_t GetFileLastModifiedTime(const std::string& filename)
 {
@@ -145,19 +133,12 @@ __time64_t GetFileLastModifiedTime(const std::string& filename)
 	return fileinfo.st_mtime;
 }
 
-
-std::string GetCurrentProcessFileName()
+const std::string GetCurrentProcessFileName()
 {
 	char filename[2048];
-
-	DWORD result = GetModuleFileName(NULL, filename, sizeof(filename));
-
-	if (result == 0)
-		throw Win32Exception();
-
+	GetModuleFileName(NULL, filename, sizeof(filename));
 	return std::string(filename);
 }
-
 
 FileChangeCheck::FileChangeCheck(const std::string& filename)
 : filename(filename), lastModified(-1)
@@ -173,7 +154,7 @@ bool FileChangeCheck::IsFileDirty()
 	{
 		return false;
 	}
-	else if (!CanAccessFile())
+	else if (false == CanAccessFile())
 	{
 		// We can't access this file (yet?), so pretend it hasn't been changed atm.
 		return false;
@@ -196,4 +177,3 @@ bool FileChangeCheck::CanAccessFile() const
 	fclose(f);
 	return true;
 }
-
