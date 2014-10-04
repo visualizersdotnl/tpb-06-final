@@ -16,7 +16,6 @@
 
 	To do (@plek, issues not already in Github):
 	- Set up all-round proper error checking & reporting (SetLastError()).
-	- Fix a proper content directory & move files (do this some time late at night).
 	- Audio (including Rocket).
 	- Make sure AutoShaderReload stuff keeps working.
 
@@ -512,7 +511,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
 						InitMaterialCompilationSystem();
-						DrawLoadProgress(false);
 
 						if (true == Demo::GenerateWorld(&gWorld))
 						{
@@ -591,8 +589,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							delete gWorld;
 						}
 
-						delete Pimp::gD3D;
 					}
+
+					delete Pimp::gD3D;
 				}
 
 				DestroyDirect3D();

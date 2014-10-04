@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "fileutils.h"
 #include <sys/stat.h>
-#include "../Player/SetLastError.h"
 
 const std::string RemoveFilenameFromPath(const std::string& filename)
 {
@@ -44,7 +43,6 @@ bool ReadFileContents(const std::string& filename, std::string &res)
 	FILE * f;
 	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
 	{
-		SetLastError("Could not read file: " + filename);
 		return false;
 	}
 
@@ -77,7 +75,6 @@ bool WriteFileContents(const std::string& filename, const std::string& data)
 	FILE * f;
 	if (fopen_s(&f, filename.c_str(), "wb") || (!f))
 	{
-		SetLastError("Could not write file: " + filename);
 		return false;
 	}
 
@@ -104,7 +101,6 @@ bool ReadFileContents(const std::string& filename, unsigned char** outBuffer, in
 	FILE * f = NULL;
 	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
 	{
-		SetLastError("Could not read file: " + filename);
 		return false;
 	}
 

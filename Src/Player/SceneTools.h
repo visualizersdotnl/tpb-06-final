@@ -12,10 +12,10 @@ void DuplicateTransformTransformedHierarchy(
 	Pimp::Node* source, Pimp::Node* dest);
 
 void InitMaterialCompilationSystem();
-void SetNumTotalMaterialCompilationJobs(int count);
+void SetNumTotalMaterialCompilationJobs(size_t count);
 void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
 void WaitForMaterialCompilationJobsToFinish();
 
-void DrawLoadProgress(bool diskResourcesLoaded);
+void DrawLoadProgress();
 
 Pimp::AnimCurve* DuplicateAnimCurve(Pimp::World* world, Pimp::AnimCurve* curve, float delay);

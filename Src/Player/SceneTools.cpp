@@ -1,5 +1,8 @@
+
 #include "SceneTools.h"
 #include "gWorld.h"
+
+#include "Content/Demo.h"
 
 // 
 // Misc. scene graph helpers.
@@ -69,7 +72,7 @@ void DuplicateTransformTransformedHierarchy(
 }
 
 //
-// Effect compilation.
+// Effect compilation system.
 //
 
 #if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
@@ -143,8 +146,6 @@ void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsc
 
 	HANDLE h = CreateThread(NULL, 0, MaterialCompilerThreadProc, newJob, 0, NULL);
 	materialCompilationThreadHandles->Add(h);
-
-	DrawLoadProgress(false);
 #else
 
 #ifdef _DEBUG
@@ -175,10 +176,8 @@ void WaitForMaterialCompilationJobsToFinish()
 
 	while (true)
 	{
-		// Wait for all threads to complete
+		// Wait for all threads to complete.
 		DWORD res = WaitForMultipleObjects(materialCompilationThreadHandles->Size(), materialCompilationThreadHandles->GetItemsPtr(), TRUE, 1000);
-
-		DrawLoadProgress(true);
 
 		if (res != WAIT_TIMEOUT)
 			break;
@@ -197,20 +196,17 @@ void WaitForMaterialCompilationJobsToFinish()
 #endif
 }
 
-static int gNumTotalMaterialCompilationJobs = 1;
+static size_t gNumTotalMaterialCompilationJobs = 0;
 
-void SetNumTotalMaterialCompilationJobs(int count)
+void SetNumTotalMaterialCompilationJobs(size_t count)
 {
 	gNumTotalMaterialCompilationJobs = count;
-
-	DrawLoadProgress(false);
 }
 
-//
 // Loading bar.
 //
 
-void DrawLoadProgress( bool diskResourcesLoaded )
+void DrawLoadProgress()
 {
 	if (gWorld == NULL)
 	{	
@@ -219,14 +215,14 @@ void DrawLoadProgress( bool diskResourcesLoaded )
 		return;
 	}
 
-	int numStepsTotal = gNumTotalMaterialCompilationJobs+1;
-	int numStepsDone = diskResourcesLoaded ? 1 : 0;
+	size_t numStepsTotal = gNumTotalMaterialCompilationJobs+1; // Plus 1 for g_diskResourcesLoaded.
+	size_t numStepsDone = Demo::g_diskResourcesLoaded ? 1 : 0;
 
 	for (int i=0; i<materialCompilationJobs->Size(); ++i)
 		if ((*materialCompilationJobs)[i].ready)
 			numStepsDone++;
 
-	float progress = (numStepsTotal > 0) ? ((float)numStepsDone / (float)numStepsTotal) : 0.0f;
+	float progress = (numStepsTotal > 0) ? (float) numStepsDone / numStepsTotal : 0.0f;
 	if (progress > 1.0f)
 		progress = 1.0f;	
 
@@ -235,13 +231,12 @@ void DrawLoadProgress( bool diskResourcesLoaded )
 	postProcess->Clear();
 	postProcess->BindForRenderScene();
 
-	// Flip once to get rid of the white screen.
-	// @plek: This really is a cache issue.
 	Pimp::gD3D->ClearBackBuffer();
 	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
 }
 
+//
 // Animation curve helper(s).
 //
 

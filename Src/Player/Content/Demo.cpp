@@ -7,7 +7,8 @@
 
 namespace Demo {
 
-// Assets root.
+//
+// Asset root directory.
 //
 
 static const std::string GetAssetsPath()
@@ -17,8 +18,25 @@ static const std::string GetAssetsPath()
 	return path;
 }
 
+//
+// Asset (resource) pointers.
+// These are collected by the asset loader and thus don't have to be released.
+//
+
+// Textures:
+static Pimp::Texture2D *blurbGrid, *blurbNoise, *blurbRock, *testOverlay;
+static Pimp::Texture2D *ribbonsWall, *ribbonsMesh;
+
+// Materials:
+static Pimp::Material *matScene0, *matScene1;
+static Pimp::Material *matUserPostFX;
+static Pimp::Material *matOverlayTest;
+
+//
 // World generator & resource release.
 //
+
+bool g_diskResourcesLoaded = false;
 
 bool GenerateWorld(Pimp::World** outWorld)
 {
@@ -27,18 +45,12 @@ bool GenerateWorld(Pimp::World** outWorld)
 	*outWorld = world; 
 
 	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
-	DrawLoadProgress(false);
+	DrawLoadProgress();
 
 	// Set asset loader root.
 	Assets::SetRoot(GetAssetsPath());
-	const std::string assetsPath = GetAssetsPath();
 
-	// Asset requests for all scenes.
-	//
-
-	// Test textures.
-	Pimp::Texture2D *blurbGrid, *blurbNoise, *blurbRock, *testOverlay;
-	Pimp::Texture2D *ribbonsWall, *ribbonsMesh;
+	// Request textures.
 	Assets::AddTexture2D("blurb_grid.png", true, &blurbGrid);
 	Assets::AddTexture2D("blurb_noise.png", true, &blurbNoise);
 	Assets::AddTexture2D("blurb_rock.png", true, &blurbRock);
@@ -46,65 +58,22 @@ bool GenerateWorld(Pimp::World** outWorld)
 	Assets::AddTexture2D("ribbons_wall.png", true, &ribbonsWall);
 	Assets::AddTexture2D("ribbons_mesh.png", true, &ribbonsMesh);
 
-	// ----------------------------------------------------------------------------------------------
+	// Request materials (shaders).
+	Assets::AddMaterial("scene_blurb.fx", &matScene0);
+	Assets::AddMaterial("scene_ribbons.fx", &matScene1);
+	Assets::AddMaterial("posteffect.fx", &matUserPostFX);
+	Assets::AddMaterial("overlay_test.fx", &matOverlayTest);
 
-	// Set total number of material compilation jobs. Assures that the loading bar is accurate.
-	int numScenes = 2;
-	int numOverlays = 1;
-	SetNumTotalMaterialCompilationJobs(numScenes + numOverlays + 1);
-
-	// Scene shader 0
-	unsigned char* sceneShader0_hlsl;
-	int sceneShader0_hlsl_size;
-	ReadFileContents(assetsPath + "scene_blurb.fx", &sceneShader0_hlsl, &sceneShader0_hlsl_size);
-
-	unsigned char* sceneShaderMat0_compiled_hlsl = NULL;
-	int sceneShaderMat0_compiled_hlsl_size = 0;
-	StartMaterialCompilationJob(sceneShader0_hlsl, sceneShader0_hlsl_size, &sceneShaderMat0_compiled_hlsl, &sceneShaderMat0_compiled_hlsl_size);
-
-	// Scene shader 1
-	unsigned char* sceneShader1_hlsl;
-	int sceneShader1_hlsl_size;
-	ReadFileContents(assetsPath + "scene_ribbons.fx", &sceneShader1_hlsl, &sceneShader1_hlsl_size);
-
-	unsigned char* sceneShaderMat1_compiled_hlsl = NULL;
-	int sceneShaderMat1_compiled_hlsl_size = 0;
-	StartMaterialCompilationJob(sceneShader1_hlsl, sceneShader1_hlsl_size, &sceneShaderMat1_compiled_hlsl, &sceneShaderMat1_compiled_hlsl_size);
-
-
-	// Post effect
-	unsigned char* userPostEffect_hlsl;
-	int userPostEffect_hlsl_size;
-	ReadFileContents(assetsPath + "posteffect.fx", &userPostEffect_hlsl, &userPostEffect_hlsl_size);
-
-	unsigned char* userPostEffectMat_compiled_hlsl = NULL;
-	int userPostEffectMat_compiled_hlsl_size = 0;
-	StartMaterialCompilationJob(userPostEffect_hlsl, userPostEffect_hlsl_size, &userPostEffectMat_compiled_hlsl, &userPostEffectMat_compiled_hlsl_size);
-
-	// Overlay shader 0
-	unsigned char* overlayShader0_hlsl;
-	int overlayShader0_hlsl_size;
-	ReadFileContents(assetsPath + "overlay_test.fx", &overlayShader0_hlsl, &overlayShader0_hlsl_size);
-
-	unsigned char* overlayShaderMat0_compiled_hlsl = NULL;
-	int overlayShaderMat0_compiled_hlsl_size = 0;
-	StartMaterialCompilationJob(overlayShader0_hlsl, overlayShader0_hlsl_size, &overlayShaderMat0_compiled_hlsl, &overlayShaderMat0_compiled_hlsl_size);
-
-	// ----------------------------------------------------------------------------------------------
-
-	// Let the asset loader do it's thing up to where all disk I/O is completed and verified.
-	//
-
-	// Doing this first as it possibly kicks off a lot of threads.
-	if (false == Assets::LoadMaterials())
-		return false;
-
-	if (false == Assets::LoadTextures())
+	// Let the asset loader do it's thing up to where all disk I/O is verified.
+	if (false == Assets::StartLoading())
 		return false;
 
 	// And by now all I/O tasks are done, so set the loading bar accordingly.
-	DrawLoadProgress(true);
+	g_diskResourcesLoaded = true;
+	DrawLoadProgress();
 
+	// ----------------------------------------------------------------------------------------------
+	// CLEAN UP BELOW!
 	// ----------------------------------------------------------------------------------------------
 
 	// Add camera
@@ -310,14 +279,15 @@ bool GenerateWorld(Pimp::World** outWorld)
 	};
 	world->GetSceneDirectionAnimCurve()->SetKeysPtr(sceneDirection_keys, sizeof(sceneDirection_keys)/sizeof(Pimp::AnimCurve::Pair));
 
-	// Wait for the asset loading thread(s) to be all finished.
-	//
+	// ----------------------------------------------------------------------------------------------
+	// CLEAN UP ABOVE!
+	// ----------------------------------------------------------------------------------------------
 
-	Assets::FinishLoading();
+	// Wait for the asset loading to be all finished.
+	if (false == Assets::FinishLoading())
+		return false;
 
 	// Add test textures to our World.
-	//
-
 	world->GetTextures().Add(blurbGrid);
 	world->GetTextures().Add(blurbNoise);
 	world->GetTextures().Add(blurbRock);
@@ -325,49 +295,37 @@ bool GenerateWorld(Pimp::World** outWorld)
 	world->GetTextures().Add(ribbonsWall);
 	world->GetTextures().Add(ribbonsMesh);
 
-	// ----------------------------------------------------------------------------------------------
-
-	// Scenes
-	Pimp::Material* sceneShaderMat0 = new Pimp::Material(world, sceneShaderMat0_compiled_hlsl, sceneShaderMat0_compiled_hlsl_size, assetsPath + "scene_blurb.fx");
-	world->GetMaterials().Add(sceneShaderMat0);
+	// Test scene 1.
+	world->GetMaterials().Add(matScene0);
 	Pimp::Scene* sceneShader0 = new Pimp::Scene(world);
-	sceneShader0->SetMaterial(sceneShaderMat0);
+	sceneShader0->SetMaterial(matScene0);
 	world->GetScenes().Add(sceneShader0);
 	world->GetElements().Add(sceneShader0);
 
-	Pimp::Material* sceneShaderMat1 = new Pimp::Material(world, sceneShaderMat1_compiled_hlsl, sceneShaderMat1_compiled_hlsl_size, assetsPath + "scene_ribbons.fx");
-	world->GetMaterials().Add(sceneShaderMat1);
+	// Test scene 2.
+	world->GetMaterials().Add(matScene1);
 	Pimp::Scene* sceneShader1 = new Pimp::Scene(world);
-	sceneShader1->SetMaterial(sceneShaderMat1);
+	sceneShader1->SetMaterial(matScene1);
 	world->GetScenes().Add(sceneShader1);
 	world->GetElements().Add(sceneShader1);
 
+	// Set user post effect shader.
+	world->GetMaterials().Add(matUserPostFX);
+	world->GetPostProcess()->SetUserPostEffect(matUserPostFX);
 
-	// Post effect
-	Pimp::Material* userPostEffectMat = new Pimp::Material(world, userPostEffectMat_compiled_hlsl, userPostEffectMat_compiled_hlsl_size, assetsPath + "posteffect.fx");
-	world->GetMaterials().Add(userPostEffectMat);
-	world->GetPostProcess()->SetUserPostEffect(userPostEffectMat);
-
-	// Overlays
-	Pimp::Material* overlayShaderMat0 = new Pimp::Material(world, overlayShaderMat0_compiled_hlsl, overlayShaderMat0_compiled_hlsl_size, assetsPath + "overlay_test.fx");
-	world->GetMaterials().Add(overlayShaderMat0);
+	// Test overlay.
+	world->GetMaterials().Add(matOverlayTest);
 	Pimp::Overlay* overlayShader0 = new Pimp::Overlay(world);
-	overlayShader0->SetMaterial(overlayShaderMat0);
+	overlayShader0->SetMaterial(matOverlayTest);
 	overlayShader0->SetTimings(0.0f, 100.0f, 0.5f, 0.5f);
 	world->GetOverlays().Add(overlayShader0);
 	world->GetElements().Add(overlayShader0);	
 
-	// ----------------------------------------------------------------------------------------------
-
-	// Do stuff.
-	//
-
+	// Finish up some World business.
 	world->InitAllBalls();
 	world->UpdateAllMaterialParameters();
 
-	// Rock and roll baby!
-	//
-
+	// Done!
 	*outWorld = world;
 	return true;
 }

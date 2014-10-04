@@ -33,7 +33,7 @@ namespace Pimp
 		void Flip();
 
 		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData);
-		ID3D10Buffer* CreateIndicesBuffer(int numIndices, const void* initialData);
+		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData);
 
 		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
 		void BindIndexBuffer(ID3D10Buffer* buffer);

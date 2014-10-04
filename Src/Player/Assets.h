@@ -5,8 +5,9 @@
 
 // Typical usage pattern:
 // - Add any number of resources.
-// - Call load functions and check their result, SetLastError() will have been set in case anything failed.
-// - Finally FinishLoading() for any multithreaded loading (e.g. shader compilation) to finish up completely.
+// - Call StartLoading() and check it's result, SetLastError() will have been set in case anything failed.
+// - Do stuff?
+// - Call FinishLoading() and check it's result, SetLastError() will have been set in case anything failed.
 // - On World destruction, call Release().
 
 #pragma once
@@ -19,14 +20,14 @@ namespace Assets
 	void SetRoot(const std::string &root);
 
 	void AddMaterial(const std::string &path, Pimp::Material **ppMaterial);
-	bool LoadMaterials();
-
 	void AddTexture2D(const std::string &path, bool gammaCorrect, Pimp::Texture2D **ppTexture2D);
-	bool LoadTextures();
+
+	// Completes all blocking (for now) I/O and kicks material compilation jobs.
+	bool StartLoading();
 	
 	// Waits for all threads to be finished.
 	// Only after this call are all resources gauranteed to be valid.
-	void FinishLoading();
+	bool FinishLoading();
 
 	void Release();
 }

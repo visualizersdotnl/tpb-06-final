@@ -203,7 +203,7 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
 }
 
 
-ID3D10Buffer* D3D::CreateIndicesBuffer(int numIndices, const void* initialData)
+ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData)
 {
 	D3D10_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D10_USAGE_IMMUTABLE;
