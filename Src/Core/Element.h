@@ -18,9 +18,7 @@ namespace Pimp
 
 	public:
 		Element(World* ownerWorld);
-#ifdef _DEBUG
 		virtual ~Element();
-#endif
 
 		virtual void Tick(float deltaTime) {}
 

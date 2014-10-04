@@ -166,12 +166,7 @@ D3D::~D3D()
 
 void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 {
-#ifdef _DEBUG
 	static const FloatColor clearcolor(0,0,0,1);
-#else
-	static const FloatColor clearcolor(0,0,0,1);
-#endif
-
 	device->ClearRenderTargetView(renderTarget, (float*)&clearcolor);
 }
 

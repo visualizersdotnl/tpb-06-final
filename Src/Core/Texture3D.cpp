@@ -11,7 +11,6 @@ namespace Pimp
 	{
 	}
 
-#ifdef _DEBUG
 	Texture3D::~Texture3D()
 	{
 		if (texture != NULL)
@@ -31,7 +30,6 @@ namespace Pimp
 
 		delete [] sliceRenderTargetViews;
 	}
-#endif
 
 	void Texture3D::UploadTexels(float* sourceTexels)
 	{

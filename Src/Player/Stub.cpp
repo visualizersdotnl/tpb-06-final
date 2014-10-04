@@ -30,14 +30,11 @@
 	- Remove unused (commented) code.
 */
 
-// @plek: One of my many attempts to silence the compiler.
-#include "../KillUnwindSemantics.h"
-
 #include <Windows.h>
 #include <intrin.h> // for SSE2 check
 
 #include <stdint.h>
-// #include <string>
+#include <string>
 #include <sstream>
 #include <vector>
 
@@ -47,6 +44,8 @@
 #include "SceneTools.h"
 #include "DebugCamera.h"
 #include "AutoShaderReload.h"
+
+#include "Content/Demo.h"
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = true;
@@ -79,11 +78,6 @@ static IDXGISwapChain *s_pSwapChain = NULL;
 
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
-
-// World generator (basically our complete content initalization).
-// Lives in Scene.cpp.
-extern bool GenerateWorld(Pimp::World** outWorld);
-extern void ReleaseWorld();
 
 // Debug camera and it's state.
 #ifdef _DEBUG
@@ -520,7 +514,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 						InitMaterialCompilationSystem();
 						DrawLoadProgress(false);
 
-						if (true == GenerateWorld(&gWorld))
+						if (true == Demo::GenerateWorld(&gWorld))
 						{
 #ifdef _DEBUG
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
@@ -562,6 +556,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 								s_pAutoShaderReloader->Update();
 #endif
 
+								Demo::Tick();
 								gWorld->Tick(timeElapsed);
 								gWorld->Render();
 
@@ -592,7 +587,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							delete s_pAutoShaderReloader;
 #endif	
 
-							ReleaseWorld();
+							Demo::ReleaseWorld();
 							delete gWorld;
 						}
 

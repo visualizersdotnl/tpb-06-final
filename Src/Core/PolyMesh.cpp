@@ -407,9 +407,7 @@ namespace Pimp
 		int index = 0;   
 		int numBerOfIndices = 0;
 
-//#ifdef _DEBUG
 		indicesCache0 = indicesCache1 = indicesCache2 = 0;
-//#endif
 
 		for (int elementIndex=0; elementIndex<indexStreamSize; ++elementIndex)
 		{

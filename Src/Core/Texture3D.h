@@ -15,10 +15,7 @@ namespace Pimp
 
 	public:
 		Texture3D(const std::string& name, int width, int height, int depth, ID3D10Texture3D* texture, ID3D10ShaderResourceView* view, ID3D10RenderTargetView** sliceRenderTargetViews);
-
-#ifdef _DEBUG
 		virtual ~Texture3D();
-#endif
 
 		// Upload texel data from a 32bit-fp source buffer.
 		void UploadTexels(float* sourceTexels);

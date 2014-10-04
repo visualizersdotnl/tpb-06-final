@@ -7,11 +7,8 @@ namespace Pimp
 	{
 
 	}
-#ifdef _DEBUG
-	Element::~Element()
-	{
-	}
-#endif
+
+	Element::~Element() {}
 
 	void Element::SetType(ElementType type)
 	{

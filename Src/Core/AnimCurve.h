@@ -33,9 +33,7 @@ namespace Pimp
 
 	public:
 		AnimCurve(World* ownerWorld);
-#ifdef _DEBUG
 		~AnimCurve();
-#endif
 
 		FixedSizeList<Pair>* GetKeysPtr() const 
 		{

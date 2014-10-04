@@ -10,7 +10,6 @@ namespace Pimp
 	{
 	}
 
-#ifdef _DEBUG
 	Texture::~Texture()
 	{
 		if (view != NULL)
@@ -19,6 +18,4 @@ namespace Pimp
 			view = NULL;
 		}
 	}
-#endif
-
 }

@@ -5,6 +5,8 @@
 #include "SceneTools.h"
 #include "Assets.h"
 
+namespace Demo {
+
 // Assets root.
 //
 
@@ -376,3 +378,11 @@ void ReleaseWorld()
 	// FIXME: Release more resources?
 }
 
+// Tick function (manipulate world according to sync., prior to "ticking" & rendering it).
+//
+
+void Tick()
+{
+}
+
+} // namespace Demo

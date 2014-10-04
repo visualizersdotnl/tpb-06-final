@@ -27,10 +27,7 @@ namespace Pimp
 
 	public:
 		Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view);
-
-#ifdef _DEBUG
 		virtual ~Texture2D();
-#endif
 
 		// Upload texel data from a 32bit-fp-per-component RGBA image of exactly the same dimensions.
 		// this will downsample it to 8bit-per-component.

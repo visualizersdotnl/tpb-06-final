@@ -1,7 +1,4 @@
 
-// @plek: I'm making short work of C++ exceptions.
-#include "../KillUnwindSemantics.h"
-
 #include "Settings.h"
 #include "AnimCurve.h"
 #include "World.h"
@@ -16,11 +13,7 @@ namespace Pimp
 		SetType(ET_AnimCurve);
 	}
 
-#ifdef _DEBUG
-	AnimCurve::~AnimCurve()
-	{
-	}
-#endif
+	AnimCurve::~AnimCurve() {}
 
 	void AnimCurve::SetKeysPtr(const Pair* pairs, int numPairs)
 	{

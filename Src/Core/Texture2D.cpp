@@ -14,7 +14,6 @@ namespace Pimp
 
 	}
 
-#ifdef _DEBUG
 	Texture2D::~Texture2D()
 	{
 		if (texture != NULL)
@@ -23,7 +22,6 @@ namespace Pimp
 			texture = NULL;
 		}
 	}
-#endif
 
 	void Texture2D::DownSampleTo8Bit(void* dest, Texel* source, int numPixels)
 	{

@@ -56,9 +56,7 @@ namespace Pimp
 			const unsigned char* shaderCompiledText, int shaderCompiledTextLength, 
 			const std::string& shaderFileName);
 
-#ifdef _DEBUG
 		~Material();
-#endif
 
 		void Bind(Camera* camera);
 

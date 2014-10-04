@@ -16,11 +16,7 @@ namespace Pimp
 
 	public:
 		Texture(const std::string& name, int width, int height, ID3D10ShaderResourceView* view);
-
-#ifdef _DEBUG
 		virtual ~Texture();
-#endif
-
 
 		const std::string& GetName() const
 		{

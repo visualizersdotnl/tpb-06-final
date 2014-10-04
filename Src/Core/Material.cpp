@@ -31,11 +31,9 @@ namespace Pimp
 		RefreshParameters();
 	}
 
-#ifdef _DEBUG
 	Material::~Material()
-	{}
-#endif
-
+	{
+	}
 
 	void Material::InitParameters()
 	{
