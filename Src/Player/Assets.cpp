@@ -1,6 +1,7 @@
 
 // #include <string>
 #include <vector>
+#include <algorithm>
 #include <Core/Core.h>
 #include <Shared/shared.h>
 #include <LodePNG/lodepng.h>
@@ -172,10 +173,14 @@ namespace Assets
 		// Finish up materials, bytecode is now ready!
 		for (MaterialRequest &request : s_materialReqs)
 		{
-			// FIXME: Check if compilation process succeeded!
-
 			if (false == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
 			{
+				if (-1 == request.bytecodeSize)
+				{
+					SetLastError("Failed to compile shader: " + request.path);
+					return false;
+				}
+
 				// In dev. mode, dump shader binary to disk.
 				VERIFY(true == WriteFileContent(request.path + "b", request.bytecode, request.bytecodeSize));
 			}
@@ -203,4 +208,18 @@ namespace Assets
 		s_materials.clear();
 		s_textures.clear();
 	}
+
+#ifdef _DEBUG
+
+	void ReplaceMaterial(Pimp::Material *pOld, Pimp::Material *pNew)
+	{
+		auto iMat = std::find(s_materials.begin(), s_materials.end(), pOld);
+		if (s_materials.end() != iMat)
+		{
+			*iMat = pNew;
+		}
+	}
+
+#endif
+
 }

@@ -93,5 +93,8 @@
     <FxCompile Include="..\..\Content\Scene_Test.fx">
       <Filter>Content\/Assets/Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Content\Scene_Ribbons.fx">
+      <Filter>Content\/Assets/Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 #ifdef _DEBUG
 
-#include <core/Core.h>
+#include <Core/Core.h>
 #include <Shared/shared.h>
 
 // Helper class that can monitor file changes to shader files and automatically trigger recompilation when changes

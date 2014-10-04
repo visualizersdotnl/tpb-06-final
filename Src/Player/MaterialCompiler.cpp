@@ -55,13 +55,15 @@ void MaterialCompiler::WaitForCompletion()
 	Job *pJob = reinterpret_cast<Job *>(context);
 
 	// Compile FX...
-	const bool success = 
-		Pimp::gD3D->CompileEffect(
+	if (false == Pimp::gD3D->CompileEffect(
 		pJob->source,
 		pJob->sourceLen,
 		pJob->bytecode,
-		pJob->bytecodeSize);
-	ASSERT(success);
+		pJob->bytecodeSize))
+	{
+		ASSERT(0);
+		*pJob->bytecodeSize = -1; // Quick way to indicate that compile has failed.
+	}
 
 	// Done.
 	pJob->ready = true;

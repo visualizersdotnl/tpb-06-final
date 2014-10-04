@@ -1,6 +1,8 @@
-#include "AutoShaderReload.h"
 
 #ifdef _DEBUG
+
+#include "AutoShaderReload.h"
+#include "Assets.h"
 
 AutoShaderReload::AutoShaderReload( Pimp::World* world, float checkInterval )
 	: world(world), checkInterval(checkInterval)
@@ -83,8 +85,10 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 			world->GetMaterials().RemoveAtIndex(oldIndex);
 
 		delete oldMaterial;
+
+		// Replace pointer in asset loader's administration
+		Assets::ReplaceMaterial(oldMaterial, newMaterial);
 	}
 }
-
 
 #endif

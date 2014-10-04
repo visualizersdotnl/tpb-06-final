@@ -30,4 +30,9 @@ namespace Assets
 	bool FinishLoading();
 
 	void Release();
+
+#ifdef _DEBUG
+	// A little hack to replace a material pointer for a new one, used by AutoShaderReload.
+	void ReplaceMaterial(Pimp::Material *pOld, Pimp::Material *pNew);
+#endif
 }
