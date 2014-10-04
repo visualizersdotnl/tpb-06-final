@@ -18,10 +18,9 @@ const std::string GetFilenameFromPath(const std::string& filename);
 // c:\kip\koe\hoi.txt -> becomes -> hoi
 const std::string GetFilenameWithoutExtFromPath(const std::string& filename);
 
-// Binary-safe file content writing and reading routines.
-bool ReadFileContents(const std::string& filenamem, std::string &res);
-bool WriteFileContents(const std::string& filename, const std::string& data);
-bool ReadFileContents(const std::string& filename, unsigned char** outBuffer, int* outBytesRead);
+// Binary-safe file read & write.
+bool ReadFileContent(const std::string& filename, unsigned char** ppDest, int* pBytesRead);
+bool WriteFileContent(const std::string& filename, unsigned char* pSrc, int bytesToWrite);
 
 // Find out if a file with specified filename exists.
 bool FileExists(const std::string& filename);

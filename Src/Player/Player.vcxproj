@@ -161,6 +161,7 @@
     <ClCompile Include="DebugCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MaterialCompiler.cpp" />
     <ClCompile Include="SceneTools.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -175,6 +176,7 @@
     <ClInclude Include="Content\Demo.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="gWorld.h" />
+    <ClInclude Include="MaterialCompiler.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
     <ClInclude Include="SetLastError.h" />

@@ -58,7 +58,7 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 	// Load shader file (text)
 	unsigned char* shader_ascii;
 	int shader_ascii_size;
-	ReadFileContents(shaderFileName, &shader_ascii, &shader_ascii_size);
+	ReadFileContent(shaderFileName, &shader_ascii, &shader_ascii_size);
 
 	// Compile our shader (text -> bytecode)
 	unsigned char* compiled_shader;

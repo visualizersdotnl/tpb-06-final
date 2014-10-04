@@ -37,53 +37,6 @@ const std::string GetFilenameWithoutExtFromPath(const std::string& filename)
 	return filenameWithExt.substr(0, index);
 }
 
-// binary-safe file content reading
-bool ReadFileContents(const std::string& filename, std::string &res)
-{
-	FILE * f;
-	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
-	{
-		return false;
-	}
-
-	int numRead = 0;
-	
-	do
-	{
-		char buf[4096];
-
-		numRead = (int)fread(buf, 1, 4096, f);
-
-		int currentSize = (int)res.size();
-		res.resize(currentSize+numRead);
-
-		// safe-copy read data (very very inefficient isn't it? :))
-		// /me to lazy atm.
-		for (int i=0; i<numRead; ++i)
-			res[currentSize+i] = buf[i];
-
-	} while (numRead == 4096);
-
-	fclose(f);
-	return true;
-}
-
-
-// binary-safe file content writing
-bool WriteFileContents(const std::string& filename, const std::string& data)
-{
-	FILE * f;
-	if (fopen_s(&f, filename.c_str(), "wb") || (!f))
-	{
-		return false;
-	}
-
-	fwrite(data.c_str(), 1, data.length(), f);
-
-	fclose(f);
-	return true;
-}
-
 bool FileExists(const std::string& filename)
 {
 	FILE* f = NULL;
@@ -96,7 +49,7 @@ bool FileExists(const std::string& filename)
 	return true;
 }
 
-bool ReadFileContents(const std::string& filename, unsigned char** outBuffer, int* outBytesRead)
+bool ReadFileContent(const std::string& filename, unsigned char** ppDest, int* pBytesRead)
 {
 	FILE * f = NULL;
 	if (fopen_s(&f, filename.c_str(), "rb") || (!f))
@@ -111,8 +64,22 @@ bool ReadFileContents(const std::string& filename, unsigned char** outBuffer, in
 	unsigned char* buffer = new unsigned char[filesize+1];
 	buffer[filesize] = 0;
 
-	*outBytesRead = (int)fread(buffer, 1, filesize, f);
-	*outBuffer = buffer;
+	*pBytesRead = (int)fread(buffer, 1, filesize, f);
+	*ppDest = buffer;
+
+	fclose(f);
+	return true;
+}
+
+bool WriteFileContent(const std::string& filename, unsigned char* pSrc, int bytesToWrite)
+{
+	FILE * f;
+	if (fopen_s(&f, filename.c_str(), "wb") || (!f))
+	{
+		return false;
+	}
+
+	fwrite(pSrc, 1, bytesToWrite, f);
 
 	fclose(f);
 	return true;

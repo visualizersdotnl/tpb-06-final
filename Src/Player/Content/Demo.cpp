@@ -8,6 +8,23 @@
 namespace Demo {
 
 //
+// Scene (part) class.
+// Primarily intended to manage all resource requests, objects and world manipulation for a single scene.
+//
+
+class Scene
+{
+public:
+	Scene()
+	{
+	}
+
+	~Scene()
+	{
+	}
+};
+
+//
 // Asset root directory.
 //
 
@@ -333,7 +350,7 @@ bool GenerateWorld(Pimp::World** outWorld)
 void ReleaseWorld()
 {
 	Assets::Release();
-	// FIXME: Release more resources?
+	// FIXME: Release more resources!
 }
 
 // Tick function (manipulate world according to sync., prior to "ticking" & rendering it).

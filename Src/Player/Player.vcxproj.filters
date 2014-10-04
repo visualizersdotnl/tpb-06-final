@@ -39,6 +39,9 @@
     <ClCompile Include="Content\Demo.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="Content\Demo.h">
       <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialCompiler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

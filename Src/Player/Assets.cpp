@@ -8,6 +8,8 @@
 #include "SceneTools.h"
 #include "SetLastError.h"
 #include "gWorld.h"
+#include "Settings.h"
+#include "MaterialCompiler.h"
 
 //
 // PNG loader.
@@ -37,6 +39,8 @@ static Pimp::Texture2D *LoadPNG(const std::string &path, bool gammaCorrect)
 //
 // Loading system.
 //
+
+static MaterialCompiler s_fxCompiler;
 
 class MaterialRequest // Basically an FX shader.
 {
@@ -95,18 +99,34 @@ namespace Assets
 
 	static bool LoadMaterials()
 	{
-		// Set correct loading bar size.
-		SetNumTotalMaterialCompilationJobs((int) s_materialReqs.size());
+		// FIXME: Set correct loading bar size.
+		// ...
 
-		for (MaterialRequest &request : s_materialReqs)
+		if (false == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
 		{
-			if (false == ReadFileContents(request.path, &request.source, &request.sourceSize))
+			// Compile from source.
+			for (MaterialRequest &request : s_materialReqs)
 			{
-				SetLastError("Can not load shader source: " + request.path);
-				return false;
-			}
+				if (false == ReadFileContent(request.path, &request.source, &request.sourceSize))
+				{
+					SetLastError("Can not load shader source: " + request.path);
+					return false;
+				}
 
-			StartMaterialCompilationJob(request.source, request.sourceSize, &request.bytecode, &request.bytecodeSize);
+				s_fxCompiler.StartJob(request.source, request.sourceSize, &request.bytecode, &request.bytecodeSize);
+			}
+		}
+		else
+		{
+			// Run from binaries.
+			for (MaterialRequest &request : s_materialReqs)
+			{
+				if (false == ReadFileContent(request.path + "b", &request.bytecode, &request.bytecodeSize))
+				{
+					SetLastError("Can not load shader binary: " + request.path + "b");
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -147,12 +167,19 @@ namespace Assets
 
 	bool FinishLoading()
 	{
-		WaitForMaterialCompilationJobsToFinish();
+		s_fxCompiler.WaitForCompletion();
 		
 		// Finish up materials, bytecode is now ready!
 		for (MaterialRequest &request : s_materialReqs)
 		{
-			// FIXME: Check if all is OK.
+			// FIXME: Check if compilation process succeeded!
+
+			if (false == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
+			{
+				// In dev. mode, dump shader binary to disk.
+				VERIFY(true == WriteFileContent(request.path + "b", request.bytecode, request.bytecodeSize));
+			}
+
 			Pimp::Material *pMat = new Pimp::Material(gWorld, request.bytecode, request.bytecodeSize, request.path);
 			*request.ppDest = pMat;
 			s_materials.push_back(pMat);

@@ -1,7 +1,7 @@
 
+#include <vector>
 #include "SceneTools.h"
 #include "gWorld.h"
-
 #include "Content/Demo.h"
 
 // 
@@ -72,137 +72,6 @@ void DuplicateTransformTransformedHierarchy(
 }
 
 //
-// Effect compilation system.
-//
-
-#if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
-
-struct MaterialJobInfo
-{
-	const unsigned char* effectAscii;
-	int effectAsciiSize;
-	unsigned char** outCompiledEffectBuffer;
-	int* compiledEffectLength;
-	int index;
-	bool ready;
-};
-
-#define MAX_NUM_MATERIALCOMPILETHREADS 64
-
-static FixedSizeList<MaterialJobInfo>* materialCompilationJobs;
-static FixedSizeList<HANDLE>* materialCompilationThreadHandles;
-
-#endif
-
-void InitMaterialCompilationSystem()
-{
-#if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
-	materialCompilationJobs = new FixedSizeList<MaterialJobInfo>(MAX_NUM_MATERIALCOMPILETHREADS);
-	materialCompilationThreadHandles = new FixedSizeList<HANDLE>(MAX_NUM_MATERIALCOMPILETHREADS);
-#endif
-}
-
-DWORD WINAPI MaterialCompilerThreadProc(void* parameter)
-{
-	MaterialJobInfo* jobInfo = (MaterialJobInfo*)parameter;
-
-#ifdef _DEBUG
-	Stopwatch sw;
-#endif
-
-	bool success = 
-		Pimp::gD3D->CompileEffect(
-		jobInfo->effectAscii, 
-		jobInfo->effectAsciiSize, 
-		jobInfo->outCompiledEffectBuffer, 
-		jobInfo->compiledEffectLength);
-	ASSERT(success);
-
-	jobInfo->ready = true;
-
-#ifdef _DEBUG
-	{
-		char s[512];
-		sprintf_s(s,512, "Material compilation job %d has finished! Took %f seconds.\n", jobInfo->index, sw.GetSecondsElapsedAndReset());
-		OutputDebugString(s);
-	}
-#endif
-
-	return 1;
-}
-
-void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength)
-{
-#if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
-	// Schedule a new job
-	materialCompilationJobs->AddMultipleNoninitialized(1);
-	MaterialJobInfo* newJob = materialCompilationJobs->GetItemPtr(materialCompilationJobs->Size()-1);
-	newJob->effectAscii = effectAscii;
-	newJob->effectAsciiSize = effectAsciiSize;
-	newJob->outCompiledEffectBuffer = outCompiledEffectBuffer;
-	newJob->compiledEffectLength = compiledEffectLength;
-	newJob->index = materialCompilationJobs->Size()-1;
-	newJob->ready = false;
-
-	HANDLE h = CreateThread(NULL, 0, MaterialCompilerThreadProc, newJob, 0, NULL);
-	materialCompilationThreadHandles->Add(h);
-#else
-
-#ifdef _DEBUG
-	Stopwatch sw;
-#endif
-
-	bool success = Pimp::gD3D->CompileEffect(effectAscii, effectAsciiSize, outCompiledEffectBuffer, compiledEffectLength);
-	ASSERT(success);
-
-#ifdef _DEBUG
-	{
-		char s[512];
-		sprintf_s(s,512, "Material compilation job has finished! Took %f seconds.\n", sw.GetSecondsElapsedAndReset());
-		OutputDebugString(s);
-	}
-#endif
-
-#endif
-}
-
-void WaitForMaterialCompilationJobsToFinish()
-{
-#if PIMPPLAYER_USEMULTITHREADED_EFFECTS_COMPILE
-
-#ifdef _DEBUG
-	Stopwatch sw;
-#endif
-
-	while (true)
-	{
-		// Wait for all threads to complete.
-		DWORD res = WaitForMultipleObjects(materialCompilationThreadHandles->Size(), materialCompilationThreadHandles->GetItemsPtr(), TRUE, 1000);
-
-		if (res != WAIT_TIMEOUT)
-			break;
-	}
-
-#ifdef _DEBUG
-	{
-		char s[512];
-		sprintf_s(s,512, "Total material compilation time: %f seconds.\n", sw.GetSecondsElapsedAndReset());
-		OutputDebugString(s);
-	}
-#endif
-
-#else
-	// no need to wait
-#endif
-}
-
-static size_t gNumTotalMaterialCompilationJobs = 0;
-
-void SetNumTotalMaterialCompilationJobs(size_t count)
-{
-	gNumTotalMaterialCompilationJobs = count;
-}
-
 // Loading bar.
 //
 
@@ -215,12 +84,8 @@ void DrawLoadProgress()
 		return;
 	}
 
-	size_t numStepsTotal = gNumTotalMaterialCompilationJobs+1; // Plus 1 for g_diskResourcesLoaded.
+	size_t numStepsTotal = 1;
 	size_t numStepsDone = Demo::g_diskResourcesLoaded ? 1 : 0;
-
-	for (int i=0; i<materialCompilationJobs->Size(); ++i)
-		if ((*materialCompilationJobs)[i].ready)
-			numStepsDone++;
 
 	float progress = (numStepsTotal > 0) ? (float) numStepsDone / numStepsTotal : 0.0f;
 	if (progress > 1.0f)

@@ -1,20 +1,10 @@
 #pragma once
 
 #include <Core/Core.h>
-#include "Settings.h"
 
 void AddChildToParent(Pimp::Node* nodeChild, Pimp::Node* nodeParent);
-
 void RemoveNodeFromWorld(Pimp::Node* node);
-
-void DuplicateTransformTransformedHierarchy(
-	Pimp::World* w,
-	Pimp::Node* source, Pimp::Node* dest);
-
-void InitMaterialCompilationSystem();
-void SetNumTotalMaterialCompilationJobs(size_t count);
-void StartMaterialCompilationJob(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
-void WaitForMaterialCompilationJobsToFinish();
+void DuplicateTransformTransformedHierarchy(Pimp::World* w, Pimp::Node* source, Pimp::Node* dest);
 
 void DrawLoadProgress();
 

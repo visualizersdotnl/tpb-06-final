@@ -15,18 +15,15 @@
 	- Take care of proper shutdown and error message display.
 
 	To do (@plek, issues not already in Github):
-	- Set up all-round proper error checking & reporting (SetLastError()).
-	- Audio (including Rocket).
-	- Make sure AutoShaderReload stuff keeps working.
-
-	Note on Rocket:
-	- Enable toggle in Debug/Release, always on in Design.
-
-	Secondary (for those lazy moments):
+	- Set up error checking on most critical D3D calls.
 	- Fix (D3D)ASSERT_MSG.
 	- Check FIXMEs (esp. the ALT+ENTER block).
 	- Leaks.
+	- Phase out FixedSizeList use where unnecessary.
 	- Remove unused (commented) code.
+
+	Note on Rocket:
+	- Enable toggle in Debug/Release, always on in Design.
 */
 
 #include <Windows.h>
@@ -47,9 +44,9 @@
 #include "Content/Demo.h"
 
 // configuration: windowed (dev. only) / full screen
-const bool kWindowed = true;
-const unsigned int kWindowedResX = 1920/4;
-const unsigned int kWindowedResY = 1080/4;
+const bool kWindowed = PIMPPLAYER_WINDOWED_DEV;
+const unsigned int kWindowedResX = PIMPPLAYER_WINDOWED_RES_X;
+const unsigned int kWindowedResY = PIMPPLAYER_WINDOWED_RES_Y;
 
 // @plek: In full screen mode the desktop resolution is adapted.
 //        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
@@ -510,8 +507,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
-						InitMaterialCompilationSystem();
-
 						if (true == Demo::GenerateWorld(&gWorld))
 						{
 #ifdef _DEBUG
