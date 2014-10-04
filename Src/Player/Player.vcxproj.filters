@@ -24,9 +24,6 @@
     <ClCompile Include="SceneTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Content\Scene.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <ClCompile Include="DebugCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -38,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="Assets.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Demo.cpp">
+      <Filter>Content</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="Assets.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Demo.h">
+      <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

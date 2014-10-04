@@ -14,13 +14,11 @@
 	- Provide a stable main loop.
 	- Take care of proper shutdown and error message display.
 
-	To do (@plek):
-	- See Github issues & README.md!
-	- Set up proper error checking & reporting (SetLastError()).
+	To do (@plek, issues not already in Github):
+	- Set up all-round proper error checking & reporting (SetLastError()).
 	- Fix a proper content directory & move files (do this some time late at night).
-	- Precompiled shader toggle (see Github issue).
 	- Audio (including Rocket).
-	- Icon. (Shifter!)
+	- Make sure AutoShaderReload stuff keeps working.
 
 	Note on Rocket:
 	- Enable toggle in Debug/Release, always on in Design.
