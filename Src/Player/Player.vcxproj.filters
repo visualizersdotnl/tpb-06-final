@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="Content">
+    <Filter Include="/Content">
       <UniqueIdentifier>{edcf3efb-3bd2-42b3-8c8e-fbe460061b3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Content\/Assets/Shaders">
+    <Filter Include="/Content\/Assets/Shaders">
       <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/../Libs/bass24">
+      <UniqueIdentifier>{719c05ca-dba2-4523-8dac-45160c7f924a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/../Libs/bass24\/c/x64">
+      <UniqueIdentifier>{ded9246d-4a35-4391-852e-9edc239b05eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +43,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Content\Demo.cpp">
-      <Filter>Content</Filter>
+      <Filter>/Content</Filter>
     </ClCompile>
     <ClCompile Include="MaterialCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,13 +78,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Content\Demo.h">
-      <Filter>Content</Filter>
+      <Filter>/Content</Filter>
     </ClInclude>
     <ClInclude Include="MaterialCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Content\Ribbons.h">
-      <Filter>Content</Filter>
+      <Filter>/Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,25 +96,26 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Content\Overlay_Test.fx">
-      <Filter>Content\/Assets/Shaders</Filter>
+    <Text Include="Content\Scratchpad.txt">
+      <Filter>/Content</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
+      <Filter>/Content\/Assets/Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Content\posteffect.fx">
-      <Filter>Content\/Assets/Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Blurb.fx">
-      <Filter>Content\/Assets/Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Test.fx">
-      <Filter>Content\/Assets/Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Ribbons.fx">
-      <Filter>Content\/Assets/Shaders</Filter>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
+      <Filter>/Content\/Assets/Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Content\Scratchpad.txt">
-      <Filter>Content</Filter>
-    </Text>
+    <None Include="..\Libs\bass24\bass.chm">
+      <Filter>/../Libs/bass24</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Libs\bass24\c\x64\bass.lib">
+      <Filter>/../Libs/bass24\/c/x64</Filter>
+    </Library>
   </ItemGroup>
 </Project>

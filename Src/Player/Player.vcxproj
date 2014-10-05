@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AutoShaderReload.cpp" />
     <ClCompile Include="DebugCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h" />
+    <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
     <ClInclude Include="Content\Demo.h" />
     <ClInclude Include="Content\Ribbons.h" />
@@ -217,34 +219,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Content\Overlay_Test.fx">
+    <Text Include="Content\Scratchpad.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Content\posteffect.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Blurb.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Ribbons.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\Scene_Test.fx">
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Content\Scratchpad.txt" />
+    <None Include="..\Libs\bass24\bass.chm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Libs\bass24\c\x64\bass.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

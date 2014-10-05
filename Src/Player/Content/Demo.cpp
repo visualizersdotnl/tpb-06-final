@@ -14,6 +14,10 @@ namespace Demo {
 // Scene (part) base class.
 // Primarily intended to manage all resource requests, objects and world manipulation for a single scene.
 //
+// !! IMPORTANT !!
+// All objects added as an element to the world are destroyed by the world itself!
+// This includes stuff like scenes and cameras!
+//
 
 class Scene
 {
@@ -25,8 +29,6 @@ public:
 
 	virtual ~Scene() 
 	{
-		// @plek: As it seems, elements are released by the world's destructor.
-//		delete m_pScene;
 	}
 
 	virtual void ReqAssets() = 0;           // Called prior to loading process: request assets only.
@@ -59,7 +61,7 @@ protected:
 // Asset root directory.
 //
 
-static const std::string GetAssetsPath()
+const std::string GetAssetsPath()
 {
 	const std::string exePath = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
 	return exePath + "assets\\";
@@ -143,6 +145,7 @@ void ReleaseWorld()
 	gWorld = nullptr;
 }
 
+//
 // Tick function. 
 // Here: manipulate the world and it's objects according to sync., prior to "ticking" & rendering it).
 //

@@ -1,6 +1,7 @@
 
 /*
 	Player stub without 64KB-cutbacks (e.g. proper error handling and resource destruction on exit).
+	Taken from a Visualizers project and more or less directly plugged in.
 
 	@plek: As I'm accustomed to placing some vital information in Main.cpp (or whatever the name is), here goes:
 
@@ -42,8 +43,13 @@
 #include "DebugCamera.h"
 #include "AutoShaderReload.h"
 #include "gWorld.h"
+#include "Audio.h"
 
 #include "Content/Demo.h"
+
+// audio settings
+const std::string kMP3Path = PIMPPLAYER_MP3_PATH;
+const bool kMuteAudio = PIMPPLAYER_MUTE_AUDIO;
 
 // configuration: windowed (dev. only) / full screen
 const bool kWindowed = PIMPPLAYER_WINDOWED_DEV;
@@ -497,7 +503,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 		if (CreateAppWindow(hInstance, nCmdShow))
 		{
 			// initialize BASS audio library
-			if (1) // Audio_Create(-1, s_hWnd))
+			if (Audio_Create(-1, s_hWnd, Demo::GetAssetsPath() + kMP3Path, kMuteAudio))
 			{
 				// initialize Direct3D
 				if (CreateDirect3D())
@@ -526,8 +532,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							DEBUG_LOG("============================================================================");
 #endif	
 
-							// reset loading bar
-							gWorld->GetPostProcess()->SetLoadProgress(0.0f);
+							// Done loading: kill loading bar & start soundtrack.
+							gWorld->GetPostProcess()->SetLoadProgress(0.f);
+							Audio_Start();
 
 							Stopwatch stopwatch;
 
@@ -590,7 +597,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 				DestroyDirect3D();
 			}
 			
-//			Audio_Destroy();
+			Audio_Destroy();
 		}
 		
 		DestroyAppWindow(hInstance);
