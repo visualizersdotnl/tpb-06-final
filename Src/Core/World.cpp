@@ -6,6 +6,7 @@
 #include "ParticleSpline.h"
 #include "Overlay.h"
 
+// FIXME: Introduce regular STL vectors instead?
 #define PIMP_MAX_NUM_WORLD_ELEMENTS 8192
 #define PIMP_MAX_NUM_PARTICLEATTRACTORS 256
 #define PIMP_MAX_NUM_TEXTURES 256

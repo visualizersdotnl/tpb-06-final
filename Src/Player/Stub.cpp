@@ -14,12 +14,13 @@
 	- Provide a stable main loop.
 	- Take care of proper shutdown and error message display.
 
-	To do (@plek, issues not already in Github):
+	To do (@plek, issues not already in Github, most of these are non-critical for TPB-06):
 	- Set up error checking on most critical D3D calls.
 	- Fix (D3D)ASSERT_MSG.
 	- Check FIXMEs (esp. the ALT+ENTER block).
 	- Leaks.
 	- Phase out FixedSizeList use where unnecessary.
+	- Create a general platform include (system, STL, CRT, assertions, et cetera).
 	- Remove unused (commented) code.
 
 	Note on Rocket:
@@ -40,6 +41,7 @@
 #include "SceneTools.h"
 #include "DebugCamera.h"
 #include "AutoShaderReload.h"
+#include "gWorld.h"
 
 #include "Content/Demo.h"
 
@@ -48,10 +50,10 @@ const bool kWindowed = PIMPPLAYER_WINDOWED_DEV;
 const unsigned int kWindowedResX = PIMPPLAYER_WINDOWED_RES_X;
 const unsigned int kWindowedResY = PIMPPLAYER_WINDOWED_RES_Y;
 
-// @plek: In full screen mode the desktop resolution is adapted.
-//        Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
-//        without monitor distortion. And a beam team can very well be instructed to select an appropriate one
-//        for performance reasons.
+// In full screen mode the desktop resolution is adapted.
+// Adapting the desktop resolution makes good sense: it's usually the viewer's optimal resolution
+// without monitor distortion. And a beam team can very well be instructed to select an appropriate one
+// for performance reasons.
 
 // global error message
 static std::string s_lastError;
@@ -71,9 +73,6 @@ static bool s_wndIsActive; // set by WindowProc()
 // Direct3D objects
 static ID3D10Device1  *s_pD3D = NULL;
 static IDXGISwapChain *s_pSwapChain = NULL;
-
-// World, our Core container for the entire demo.
-Pimp::World *gWorld = nullptr;
 
 // Debug camera and it's state.
 #ifdef _DEBUG
@@ -507,7 +506,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
-						if (true == Demo::GenerateWorld(&gWorld))
+						if (true == Demo::GenerateWorld())
 						{
 #ifdef _DEBUG
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
@@ -580,10 +579,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							delete s_pAutoShaderReloader;
 #endif	
 
-							Demo::ReleaseWorld();
-							delete gWorld;
 						}
 
+						Demo::ReleaseWorld();
 					}
 
 					delete Pimp::gD3D;

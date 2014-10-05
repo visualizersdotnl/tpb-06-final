@@ -74,6 +74,9 @@
     <ClInclude Include="MaterialCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Ribbons.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
@@ -96,5 +99,10 @@
     <FxCompile Include="..\..\Content\Scene_Ribbons.fx">
       <Filter>Content\/Assets/Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Content\Scratchpad.txt">
+      <Filter>Content</Filter>
+    </Text>
   </ItemGroup>
 </Project>

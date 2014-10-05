@@ -5,24 +5,55 @@
 #include "SceneTools.h"
 #include "Assets.h"
 
+// World, our Core container for the entire demo.
+Pimp::World *gWorld = nullptr;
+
 namespace Demo {
 
 //
-// Scene (part) class.
+// Scene (part) base class.
 // Primarily intended to manage all resource requests, objects and world manipulation for a single scene.
 //
 
 class Scene
 {
 public:
-	Scene()
+	Scene() :
+		m_pScene(nullptr)
 	{
 	}
 
-	~Scene()
+	virtual ~Scene() 
 	{
+		// @plek: As it seems, elements are released by the world's destructor.
+//		delete m_pScene;
+	}
+
+	virtual void ReqAssets() = 0;           // Called prior to loading process: request assets only.
+	virtual void BindAnimationNodes() = 0;  // Called during loading process: create & bind animation related nodes.
+	virtual void BindAssets() = 0;          // Bind all resource based elements to the world (remember: asset loader takes care of it for assets).
+	virtual void Tick() = 0;                // To be called from Demo::Tick().
+
+protected:
+	// Assuming that each part has at least one scene shader.
+	Pimp::Scene *m_pScene;
+
+	// Call this in BindToWorld() to bind the shader to the main scene.
+	void SetSceneMaterial(Pimp::Material *pMat)
+	{
+		if (nullptr == m_pScene)
+		{
+			m_pScene = new Pimp::Scene(gWorld);
+			gWorld->GetScenes().Add(m_pScene);
+			gWorld->GetElements().Add(m_pScene);
+		}
+
+		m_pScene->SetMaterial(pMat);
 	}
 };
+
+// Scenes:
+#include "Ribbons.h"
 
 //
 // Asset root directory.
@@ -30,334 +61,95 @@ public:
 
 static const std::string GetAssetsPath()
 {
-	// FIXME: Append /Content here and move stuff.
-	std::string path = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
-	return path;
+	const std::string exePath = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
+	return exePath + "assets\\";
 }
-
-//
-// Asset (resource) pointers.
-// These are collected by the asset loader and thus don't have to be released.
-//
-
-// Textures:
-static Pimp::Texture2D *blurbGrid, *blurbNoise, *blurbRock, *testOverlay;
-static Pimp::Texture2D *ribbonsWall, *ribbonsMesh;
-
-// Materials:
-static Pimp::Material *matScene0, *matScene1;
-static Pimp::Material *matUserPostFX;
-static Pimp::Material *matOverlayTest;
 
 //
 // World generator & resource release.
 //
 
-bool g_diskResourcesLoaded = false;
+static std::vector<Scene *> s_scenes;
 
-bool GenerateWorld(Pimp::World** outWorld)
+bool GenerateWorld()
 {
-	// Store new world pointer right away; DrawLoadProgress assumes there is a gWorld.
-	Pimp::World* world = new Pimp::World();
-	*outWorld = world; 
+	gWorld = new Pimp::World();
 
 	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
-	DrawLoadProgress();
+	DrawLoadProgress(0.f);
 
-	// Set asset loader root.
+	// Set asset loader root path.
 	Assets::SetRoot(GetAssetsPath());
 
-	// Request textures.
-	Assets::AddTexture2D("blurb_grid.png", true, &blurbGrid);
-	Assets::AddTexture2D("blurb_noise.png", true, &blurbNoise);
-	Assets::AddTexture2D("blurb_rock.png", true, &blurbRock);
-	Assets::AddTexture2D("testoverlay.png", true, &testOverlay);
-	Assets::AddTexture2D("ribbons_wall.png", true, &ribbonsWall);
-	Assets::AddTexture2D("ribbons_mesh.png", true, &ribbonsMesh);
+	// Create scenes.
+	s_scenes.push_back(new Ribbons());
 
-	// Request materials (shaders).
-	Assets::AddMaterial("scene_blurb.fx", &matScene0);
-	Assets::AddMaterial("scene_ribbons.fx", &matScene1);
-	Assets::AddMaterial("posteffect.fx", &matUserPostFX);
-	Assets::AddMaterial("overlay_test.fx", &matOverlayTest);
+	// Request resources.
+	//
+
+	for (Scene *pScene : s_scenes)
+		pScene->ReqAssets();
+
+	// Loaded some more! :)
+	DrawLoadProgress(0.25f);
+
+	// FIXME: Load other stuff here like the user post FX shader.
 
 	// Let the asset loader do it's thing up to where all disk I/O is verified.
 	if (false == Assets::StartLoading())
 		return false;
 
-	// And by now all I/O tasks are done, so set the loading bar accordingly.
-	g_diskResourcesLoaded = true;
-	DrawLoadProgress();
+	// Loaded some more! :)
+	DrawLoadProgress(0.5f);
 
-	// ----------------------------------------------------------------------------------------------
-	// CLEAN UP BELOW!
-	// ----------------------------------------------------------------------------------------------
+	// Bind animation related nodes (and do other CPU-based preparation work).
+	//
 
-	// Add camera
-	Pimp::Camera* camTestShape = new Pimp::Camera(world);
-	world->GetElements().Add(camTestShape);
-	camTestShape->SetFOVy(0.563197f);
+	for (Scene *pScene : s_scenes)
+		pScene->BindAnimationNodes();
 
-	Pimp::Xform* xformCamTest = new Pimp::Xform(world);
-	world->GetElements().Add(xformCamTest);
-
-	// Add material params
-	Pimp::MaterialParameter* paramSpherePos0 = new Pimp::MaterialParameter(world);
-	Pimp::MaterialParameter* paramSpherePos1 = new Pimp::MaterialParameter(world);
-	Pimp::MaterialParameter* paramSpherePos2 = new Pimp::MaterialParameter(world);
-	world->GetElements().Add(paramSpherePos0);
-	world->GetElements().Add(paramSpherePos1);
-	world->GetElements().Add(paramSpherePos2);
-	paramSpherePos0->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
-	paramSpherePos1->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
-	paramSpherePos2->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
-	paramSpherePos0->SetName("testBallXformInv0");
-	paramSpherePos1->SetName("testBallXformInv1");
-	paramSpherePos2->SetName("testBallXformInv2");
-
-	Pimp::Xform* xformParamSpherePos0 = new Pimp::Xform(world);
-	Pimp::Xform* xformParamSpherePos1 = new Pimp::Xform(world);
-	Pimp::Xform* xformParamSpherePos2 = new Pimp::Xform(world);
-	world->GetElements().Add(xformParamSpherePos0);
-	world->GetElements().Add(xformParamSpherePos1);
-	world->GetElements().Add(xformParamSpherePos2);
-
-	Pimp::MaterialParameter* paramSceneTime = new Pimp::MaterialParameter(world);
-	world->GetElements().Add(paramSceneTime);
-	paramSceneTime->SetValueType(Pimp::MaterialParameter::VT_Value);
-	paramSceneTime->SetName("testSceneTime");
-	
-	// Set up anim curves for camera xform
-	Pimp::AnimCurve* camTestShape_posX = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* camTestShape_posY = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* camTestShape_posZ = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* camTestShape_rotX = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* camTestShape_rotY = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* camTestShape_rotZ = new Pimp::AnimCurve(world);
-	world->GetElements().Add(camTestShape_posX);
-	world->GetElements().Add(camTestShape_posY);
-	world->GetElements().Add(camTestShape_posZ);
-	world->GetElements().Add(camTestShape_rotX);
-	world->GetElements().Add(camTestShape_rotY);
-	world->GetElements().Add(camTestShape_rotZ);
-	static const Pimp::AnimCurve::Pair camTestShape_posX_keys[] = { 
-		{  0.0f,	-0.36f, 0.0f, 0.0f}, // pos.x
-		{  20.0f,	0.38f, 0.0f, 0.0f}, // pos.x
-	};
-	static const Pimp::AnimCurve::Pair camTestShape_posY_keys[] = { 
-		{  0.0f,	6.26f, 0.0f, 0.0f}, // pos.y
-		{  20.0f,	12.20f, 0.0f, 0.0f}, // pos.y
-	};
-	static const Pimp::AnimCurve::Pair camTestShape_posZ_keys[] = { 
-		{  0.0f,	7.35f, 0.0f, 0.0f}, // pos.z
-		{  20.0f,	7.76f, 0.0f, 0.0f}, // pos.z
-	};
-	static const Pimp::AnimCurve::Pair camTestShape_rotX_keys[] = { 
-		{  0.0f,	DEG2RAD(-0.90f), 0.0f, 0.0f}, // rot.x
-		{  20.0f,	DEG2RAD(5.38f), 0.0f, 0.0f}, // rot.x
-	};
-	static const Pimp::AnimCurve::Pair camTestShape_rotY_keys[] = { 
-		{  0.0f,	DEG2RAD(-7.99f), 0.0f, 0.0f}, // rot.y
-		{  20.0f,	DEG2RAD(-10.28f), 0.0f, 0.0f}, // rot.y
-	};
-	static const Pimp::AnimCurve::Pair camTestShape_rotZ_keys[] = { 
-		{  0.0f,	DEG2RAD(82.94f), 0.0f, 0.0f}, // rot.z
-		{  20.0f,	DEG2RAD(83.10f), 0.0f, 0.0f}, // rot.z
-	};
-	camTestShape_posX->SetKeysPtr(camTestShape_posX_keys, sizeof(camTestShape_posX_keys)/sizeof(Pimp::AnimCurve::Pair));
-	camTestShape_posY->SetKeysPtr(camTestShape_posY_keys, sizeof(camTestShape_posY_keys)/sizeof(Pimp::AnimCurve::Pair));
-	camTestShape_posZ->SetKeysPtr(camTestShape_posZ_keys, sizeof(camTestShape_posZ_keys)/sizeof(Pimp::AnimCurve::Pair));
-	camTestShape_rotX->SetKeysPtr(camTestShape_rotX_keys, sizeof(camTestShape_rotX_keys)/sizeof(Pimp::AnimCurve::Pair));
-	camTestShape_rotY->SetKeysPtr(camTestShape_rotY_keys, sizeof(camTestShape_rotY_keys)/sizeof(Pimp::AnimCurve::Pair));
-	camTestShape_rotZ->SetKeysPtr(camTestShape_rotZ_keys, sizeof(camTestShape_rotZ_keys)/sizeof(Pimp::AnimCurve::Pair));
-
-	xformCamTest->SetAnimCurveTranslationX(camTestShape_posX);
-	xformCamTest->SetAnimCurveTranslationY(camTestShape_posY);
-	xformCamTest->SetAnimCurveTranslationZ(camTestShape_posZ);
-	xformCamTest->SetAnimCurveRotationX(camTestShape_rotX);
-	xformCamTest->SetAnimCurveRotationY(camTestShape_rotY);
-	xformCamTest->SetAnimCurveRotationZ(camTestShape_rotZ);
-
-
-	// Set up anim curves for material param xform
-	Pimp::AnimCurve* paramSpherePos_posX = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* paramSpherePos_posY = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* paramSpherePos_posZ = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* paramSpherePos_rotX = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* paramSpherePos_rotY = new Pimp::AnimCurve(world);
-	Pimp::AnimCurve* paramSpherePos_rotZ = new Pimp::AnimCurve(world);
-	world->GetElements().Add(paramSpherePos_posX);
-	world->GetElements().Add(paramSpherePos_posY);
-	world->GetElements().Add(paramSpherePos_posZ);
-	world->GetElements().Add(paramSpherePos_rotX);
-	world->GetElements().Add(paramSpherePos_rotY);
-	world->GetElements().Add(paramSpherePos_rotZ);
-	static const Pimp::AnimCurve::Pair paramSpherePos_posX_keys[] = { 
-		{ 0.0000000f,	0.0f, 0.0f, 0.0f},
-	};
-	static const Pimp::AnimCurve::Pair paramSpherePos_posY_keys[] = { 
-		{  0.0f,	-2.0f, 0.0f, 0.0f},
-		{  2.0f,	+2.0f, 0.0f, 0.0f},
-		{  4.0f,	-2.0f, 0.0f, 0.0f},
-		{  6.0f,	+2.0f, 0.0f, 0.0f},
-		{  8.0f,	-2.0f, 0.0f, 0.0f},
-		{ 10.0f,	+2.0f, 0.0f, 0.0f},
-		{ 12.0f,	-2.0f, 0.0f, 0.0f},
-		{ 14.0f,	+2.0f, 0.0f, 0.0f},
-		{ 16.0f,	-2.0f, 0.0f, 0.0f},
-		{ 18.0f,	+2.0f, 0.0f, 0.0f},
-	};
-	static const Pimp::AnimCurve::Pair paramSpherePos_posZ_keys[] = { 
-		{ 0.0000000f,	-3.3f, 0.0f, 0.0f},
-	};
-	static const Pimp::AnimCurve::Pair paramSpherePos_rotX_keys[] = { 
-		{  0.0f,	DEG2RAD(0.0f), 0.0f, 0.0f}, // rot.x
-		{ 18.0f,	DEG2RAD(1134.25f), 0.0f, 0.0f}, // rot.x
-	};
-	static const Pimp::AnimCurve::Pair paramSpherePos_rotY_keys[] = { 
-		{  0.0f,	DEG2RAD(0.0f), 0.0f, 0.0f}, // rot.y
-		{ 18.0f,	DEG2RAD(145.81f), 0.0f, 0.0f}, // rot.y
-	};
-	static const Pimp::AnimCurve::Pair paramSpherePos_rotZ_keys[] = { 
-		{  0.0f,	DEG2RAD(0.0f), 0.0f, 0.0f}, // rot.z
-		{ 18.0f,	DEG2RAD(1172.53f), 0.0f, 0.0f}, // rot.z
-	};
-	paramSpherePos_posX->SetKeysPtr(paramSpherePos_posX_keys, sizeof(paramSpherePos_posX_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSpherePos_posY->SetKeysPtr(paramSpherePos_posY_keys, sizeof(paramSpherePos_posY_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSpherePos_posZ->SetKeysPtr(paramSpherePos_posZ_keys, sizeof(paramSpherePos_posZ_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSpherePos_rotX->SetKeysPtr(paramSpherePos_rotX_keys, sizeof(paramSpherePos_rotX_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSpherePos_rotY->SetKeysPtr(paramSpherePos_rotY_keys, sizeof(paramSpherePos_rotY_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSpherePos_rotZ->SetKeysPtr(paramSpherePos_rotZ_keys, sizeof(paramSpherePos_rotZ_keys)/sizeof(Pimp::AnimCurve::Pair));
-
-	xformParamSpherePos0->SetAnimCurveTranslationX(paramSpherePos_posX);
-	xformParamSpherePos0->SetAnimCurveTranslationY(paramSpherePos_posY);
-	xformParamSpherePos0->SetAnimCurveTranslationZ(paramSpherePos_posZ);
-	xformParamSpherePos0->SetAnimCurveRotationX(paramSpherePos_rotX);
-	xformParamSpherePos0->SetAnimCurveRotationY(paramSpherePos_rotY);
-	xformParamSpherePos0->SetAnimCurveRotationZ(paramSpherePos_rotZ);
-
-	float delay = 0.3f;
-	xformParamSpherePos1->SetAnimCurveTranslationX(paramSpherePos_posX);
-	xformParamSpherePos1->SetAnimCurveTranslationY(paramSpherePos_posY);
-	xformParamSpherePos1->SetAnimCurveTranslationZ(paramSpherePos_posZ);
-	xformParamSpherePos1->SetAnimCurveRotationX(DuplicateAnimCurve(world, paramSpherePos_rotX, delay));
-	xformParamSpherePos1->SetAnimCurveRotationY(DuplicateAnimCurve(world, paramSpherePos_rotY, delay));
-	xformParamSpherePos1->SetAnimCurveRotationZ(DuplicateAnimCurve(world, paramSpherePos_rotZ, delay));
-	
-	delay *= 2.0f;
-	xformParamSpherePos2->SetAnimCurveTranslationX(paramSpherePos_posX);
-	xformParamSpherePos2->SetAnimCurveTranslationY(paramSpherePos_posY);
-	xformParamSpherePos2->SetAnimCurveTranslationZ(paramSpherePos_posZ);
-	xformParamSpherePos2->SetAnimCurveRotationX(DuplicateAnimCurve(world, paramSpherePos_rotX, delay));
-	xformParamSpherePos2->SetAnimCurveRotationY(DuplicateAnimCurve(world, paramSpherePos_rotY, delay));
-	xformParamSpherePos2->SetAnimCurveRotationZ(DuplicateAnimCurve(world, paramSpherePos_rotZ, delay));
-
-	// Set up anim curve for material param scene time
-	Pimp::AnimCurve* paramSceneTime_value = new Pimp::AnimCurve(world);
-	world->GetElements().Add(paramSceneTime_value);
-	static const Pimp::AnimCurve::Pair paramSceneTime_value_keys[] = { 
-		{ 0.0000000f,	0.0f, 0.0f, 0.0f},
-		{ 100.0000f,	100.0f, 0.0f, 0.0f},
-	};
-	paramSceneTime_value->SetKeysPtr(paramSceneTime_value_keys, sizeof(paramSceneTime_value_keys)/sizeof(Pimp::AnimCurve::Pair));
-	paramSceneTime->SetAnimCurveValue(paramSceneTime_value);
-
-	// Build up our scene graph
-
-	AddChildToParent(xformCamTest,world->GetRootNode());
-	AddChildToParent(xformParamSpherePos0,world->GetRootNode());
-	AddChildToParent(xformParamSpherePos1,world->GetRootNode());
-	AddChildToParent(xformParamSpherePos2,world->GetRootNode());
-	AddChildToParent(paramSceneTime, world->GetRootNode());
-	
-	AddChildToParent(camTestShape,xformCamTest);
-	AddChildToParent(paramSpherePos0,xformParamSpherePos0);
-	AddChildToParent(paramSpherePos1,xformParamSpherePos1);
-	AddChildToParent(paramSpherePos2,xformParamSpherePos2);
-
-
-	// Camera direction (add all cameras)
-
-	world->SetUseCameraDirection(true);
-	FixedSizeList<Pimp::Camera*>& directionCameras = world->GetDirectionCameras();
-
-	directionCameras.Add(camTestShape); // 0: test cam
-
-
-
-	static const Pimp::AnimCurve::Pair cameraDirection_keys[] = { 
-	 { -1.000000f,0.000000f,0.000000f,0.000000f},	// cam 0
-	};
-	world->GetCameraDirectionAnimCurve()->SetKeysPtr(cameraDirection_keys, sizeof(cameraDirection_keys)/sizeof(Pimp::AnimCurve::Pair));
-
-
-	static const Pimp::AnimCurve::Pair sceneDirection_keys[] = { 
-	 { -1.000000f, 1.000000f,0.000000f,0.000000f},	// scene 1, always active...
-	};
-	world->GetSceneDirectionAnimCurve()->SetKeysPtr(sceneDirection_keys, sizeof(sceneDirection_keys)/sizeof(Pimp::AnimCurve::Pair));
-
-	// ----------------------------------------------------------------------------------------------
-	// CLEAN UP ABOVE!
-	// ----------------------------------------------------------------------------------------------
+	// Loaded some more! :)
+	DrawLoadProgress(0.75f);
 
 	// Wait for the asset loading to be all finished.
 	if (false == Assets::FinishLoading())
 		return false;
 
-	// Add test textures to our World.
-	world->GetTextures().Add(blurbGrid);
-	world->GetTextures().Add(blurbNoise);
-	world->GetTextures().Add(blurbRock);
-	world->GetTextures().Add(testOverlay);
-	world->GetTextures().Add(ribbonsWall);
-	world->GetTextures().Add(ribbonsMesh);
+	// Setup resource related world objects.
+	//
 
-	// Test scene 1.
-	world->GetMaterials().Add(matScene0);
-	Pimp::Scene* sceneShader0 = new Pimp::Scene(world);
-	sceneShader0->SetMaterial(matScene0);
-	world->GetScenes().Add(sceneShader0);
-	world->GetElements().Add(sceneShader0);
+	for (Scene *pScene : s_scenes)
+		pScene->BindAssets();
 
-	// Test scene 2.
-	world->GetMaterials().Add(matScene1);
-	Pimp::Scene* sceneShader1 = new Pimp::Scene(world);
-	sceneShader1->SetMaterial(matScene1);
-	world->GetScenes().Add(sceneShader1);
-	world->GetElements().Add(sceneShader1);
-
-	// Set user post effect shader.
-	world->GetMaterials().Add(matUserPostFX);
-	world->GetPostProcess()->SetUserPostEffect(matUserPostFX);
-
-	// Test overlay.
-	world->GetMaterials().Add(matOverlayTest);
-	Pimp::Overlay* overlayShader0 = new Pimp::Overlay(world);
-	overlayShader0->SetMaterial(matOverlayTest);
-	overlayShader0->SetTimings(0.0f, 100.0f, 0.5f, 0.5f);
-	world->GetOverlays().Add(overlayShader0);
-	world->GetElements().Add(overlayShader0);	
+	// Ta-daa!
+	DrawLoadProgress(1.f);
 
 	// Finish up some World business.
-	world->InitAllBalls();
-	world->UpdateAllMaterialParameters();
+	gWorld->InitAllBalls();
+	gWorld->UpdateAllMaterialParameters();
 
 	// Done!
-	*outWorld = world;
 	return true;
 }
 
 void ReleaseWorld()
 {
+	for (Scene *pScene : s_scenes)
+		delete pScene;
+
 	Assets::Release();
-	// FIXME: Release more resources!
+
+	delete gWorld;
+	gWorld = nullptr;
 }
 
-// Tick function (manipulate world according to sync., prior to "ticking" & rendering it).
+// Tick function. 
+// Here: manipulate the world and it's objects according to sync., prior to "ticking" & rendering it).
 //
 
 void Tick()
 {
+	s_scenes[0]->Tick();
 }
 
 } // namespace Demo

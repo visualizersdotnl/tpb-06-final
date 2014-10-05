@@ -75,7 +75,7 @@ void DuplicateTransformTransformedHierarchy(
 // Loading bar.
 //
 
-void DrawLoadProgress()
+void DrawLoadProgress(float progress)
 {
 	if (gWorld == NULL)
 	{	
@@ -84,12 +84,8 @@ void DrawLoadProgress()
 		return;
 	}
 
-	size_t numStepsTotal = 1;
-	size_t numStepsDone = Demo::g_diskResourcesLoaded ? 1 : 0;
-
-	float progress = (numStepsTotal > 0) ? (float) numStepsDone / numStepsTotal : 0.0f;
-	if (progress > 1.0f)
-		progress = 1.0f;	
+	if (progress > 1.f)
+		progress = 1.f;
 
 	Pimp::PostProcess* postProcess = gWorld->GetPostProcess();
 	postProcess->SetLoadProgress(progress);

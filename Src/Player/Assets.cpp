@@ -148,6 +148,8 @@ namespace Assets
 
 			*request.ppDest = pTex;
 			s_textures.push_back(pTex);
+
+			gWorld->GetTextures().Add(pTex);
 		}
 
 		return true;
@@ -186,8 +188,10 @@ namespace Assets
 			}
 
 			Pimp::Material *pMat = new Pimp::Material(gWorld, request.bytecode, request.bytecodeSize, request.path);
+
 			*request.ppDest = pMat;
 			s_materials.push_back(pMat);
+			gWorld->GetMaterials().Add(pMat);
 		}
 
 		// Ditch requests.

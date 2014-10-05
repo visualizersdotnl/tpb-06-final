@@ -3,6 +3,8 @@
 // All final pointers are stored locally and can be ditched at once by calling Release().
 // Saves a lot of code duplication i.e. typing.
 
+// Resources are added to the global World instance automatically!
+
 // Typical usage pattern:
 // - Add any number of resources.
 // - Call StartLoading() and check it's result, SetLastError() will have been set in case anything failed.
