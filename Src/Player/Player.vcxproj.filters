@@ -25,6 +25,9 @@
     <Filter Include="/../Libs/bass24\/c/x64">
       <UniqueIdentifier>{ded9246d-4a35-4391-852e-9edc239b05eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="/../Libs/rocket-0.9/sync">
+      <UniqueIdentifier>{613c2965-988f-4488-bb10-986bbca0c304}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneTools.cpp">
@@ -50,6 +53,15 @@
     </ClCompile>
     <ClCompile Include="Audio.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\rocket-0.9\sync\data.c">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\rocket-0.9\sync\device.c">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\rocket-0.9\sync\track.c">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +100,21 @@
     </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\rocket-0.9\sync\base.h">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\rocket-0.9\sync\data.h">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\rocket-0.9\sync\device.h">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\rocket-0.9\sync\sync.h">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\rocket-0.9\sync\track.h">
+      <Filter>/../Libs/rocket-0.9/sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
