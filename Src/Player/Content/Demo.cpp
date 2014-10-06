@@ -2,11 +2,38 @@
 #include <Core/Core.h>
 #include <Shared/shared.h>
 #include <LodePNG/lodepng.h>
+#include "../../Libs/rocket/lib/sync.h"
 #include "SceneTools.h"
 #include "Assets.h"
+#include "Audio.h"
 
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
+
+//
+// Rocket stuff.
+//
+
+// Define to run from Rocket files instead of edit mode.
+// #define SYNC_PLAYER
+
+// Rocket hooks.
+static sync_cb s_rocketHooks = 
+{ 
+	Audio_Rocket_Pause, 
+	Audio_Rocket_SetRow, 
+	Audio_Rocket_IsPlaying 
+};
+
+static sync_device *s_Rocket = nullptr;
+
+// All tracks:
+// ...
+
+ void SpawnRocketTracks()
+ {
+ }
+
 
 namespace Demo {
 
@@ -77,6 +104,26 @@ bool GenerateWorld()
 {
 	gWorld = new Pimp::World();
 
+	// Try to fire up Rocket.
+	s_Rocket = sync_create_device("sync");
+	if (nullptr == s_Rocket)
+	{
+		SetLastError("Unable to start GNU Rocket.");
+		return false;
+	}
+
+	// Instantiate all Rocket tracks.
+	SpawnRocketTracks();
+
+#if !defined(SYNC_PLAYER)
+	// We're in dev. mode, so hook Rocket client to the audio player.
+	if (0 != sync_connect(s_Rocket, "localhost", SYNC_DEFAULT_PORT))
+	{
+		SetLastError("Unable to connect to a GNU Rocket client.");
+		return false;
+	}
+#endif
+
 	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
 	DrawLoadProgress(0.f);
 
@@ -141,6 +188,9 @@ void ReleaseWorld()
 
 	Assets::Release();
 
+	if (nullptr != s_Rocket)
+		sync_destroy_device(s_Rocket);
+
 	delete gWorld;
 	gWorld = nullptr;
 }
@@ -150,9 +200,19 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., prior to "ticking" & rendering it).
 //
 
-void Tick()
+bool Tick()
 {
+	const double rocketRow = Audio_Rocket_GetRow();
+	if (0 != sync_update(s_Rocket, int(floor(rocketRow)), &s_rocketHooks, nullptr))
+	{
+		SetLastError("Connection to GNU Rocket lost!");
+		return false;
+	}
+
 	s_scenes[0]->Tick();
+
+	// FIXME: return false if demo is done.
+	return true;
 }
 
 } // namespace Demo

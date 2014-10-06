@@ -23,9 +23,6 @@
 	- Phase out FixedSizeList use where unnecessary.
 	- Create a general platform include (system, STL, CRT, assertions, et cetera).
 	- Remove unused (commented) code.
-
-	Note on Rocket:
-	- Enable toggle in Debug/Release, always on in Design.
 */
 
 #include <Windows.h>
@@ -166,20 +163,19 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		s_isMouseTracking = true;
 		s_mouseTrackInitialX = LOWORD(lParam);
 		s_mouseTrackInitialY = HIWORD(lParam);
-		s_pDebugCamera->StartLookAt();
+		s_pDebugCamera->StartLookAt(); 
 		break;
+
 	case WM_LBUTTONUP:
 		s_isMouseTracking = false;
 		s_pDebugCamera->EndLookAt();
 		break;
+
 	case WM_MOUSEMOVE:
-		if (s_isMouseTracking)
-		{
+		if (s_isMouseTracking) {
 			int posX = LOWORD(lParam);
 			int posY = HIWORD(lParam);
-
-			s_pDebugCamera->LookAt(posX - s_mouseTrackInitialX, posY - s_mouseTrackInitialY);
-		}
+			s_pDebugCamera->LookAt(posX - s_mouseTrackInitialX, posY - s_mouseTrackInitialY); }
 		break;
 #endif
 
@@ -205,7 +201,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 				s_pDebugCamera->SetEnabled(s_isPaused);
 
 				if (false == kWindowed)
-					ShowCursor(s_isPaused);
+					ShowCursor(true == s_isPaused);
 			}
 			break;
 #endif
@@ -256,12 +252,14 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			{
 				// exit full screen
 				if (NULL != s_pSwapChain)
+				{
 					s_pSwapChain->SetFullscreenState(FALSE, NULL);
 
-				// push window to bottom of the Z order
-				SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+					// push window to bottom of the Z order
+					SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+				}
 			}
-			
+
 			s_wndIsActive = false;
 			break;
 		};
@@ -364,7 +362,7 @@ static bool UpdateAppWindow(bool &renderFrame)
 		// no message: window alive?
 		if (NULL != s_hWnd)
 		{
-			if (!kWindowed && s_wndIsActive)
+			if (false == kWindowed && s_wndIsActive)
 			{
 				// kill cursor for active full screen window
 				SetCursor(NULL);
@@ -532,8 +530,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							DEBUG_LOG("============================================================================");
 #endif	
 
-							// Done loading: kill loading bar & start soundtrack.
+							// Done loading: kill loading bar.
 							gWorld->GetPostProcess()->SetLoadProgress(0.f);
+
+							// Start/prepare audio.
 							Audio_Start();
 
 							Stopwatch stopwatch;
@@ -555,7 +555,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 								s_pAutoShaderReloader->Update();
 #endif
 
-								Demo::Tick();
+								if (false == Demo::Tick())
+									break;
+								
 								gWorld->Tick(timeElapsed);
 								gWorld->Render();
 
@@ -579,6 +581,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 										numFramesFPS = 0;
 									}
 								}
+
+								Audio_Update();
 							}
 
 #ifdef _DEBUG

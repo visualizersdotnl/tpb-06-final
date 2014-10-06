@@ -35,7 +35,8 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 		}
 	}
 
-	s_hMP3 = BASS_StreamCreateFile(FALSE, mp3Path.c_str(), 0, 0, 0 /* BASS_UNICODE */);
+	const DWORD streamFlags = BASS_MP3_SETPOS | BASS_STREAM_PRESCAN | ( (0 == iDevice) ? BASS_STREAM_DECODE : 0 );
+	s_hMP3 = BASS_StreamCreateFile(FALSE, mp3Path.c_str(), 0, 0, streamFlags /* BASS_UNICODE */);
 	if (s_hMP3 == NULL)
 	{
 		switch (BASS_ErrorGetCode())
@@ -58,6 +59,8 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 		}
 	}
 
+	BASS_ChannelFlags(s_hMP3, BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+
 	if (true == mute)
 		BASS_ChannelSetAttribute(s_hMP3, BASS_ATTRIB_VOL, 0.f);
 
@@ -72,13 +75,44 @@ void Audio_Destroy()
 void Audio_Start()
 {
 	ASSERT(s_hMP3 != NULL);
-	BASS_ChannelPlay(s_hMP3, FALSE);
+	// @plek: Rocket will tell us what to do and when.
 }
 
-static float Audio_GetPos()
+void Audio_Update() { ASSERT(0 != s_hMP3); BASS_Update(0); }
+
+//
+// Rocket stuff.
+// I'm ditching the choir boy ASSERTs here.
+//
+
+// FIXME: Move these to a "settings" location.
+const double kRocketBPM = 127.0;
+const int kRocketRPB = 16;
+double kRocketRowRate = (kRocketBPM/60.0) * kRocketRPB;
+
+void Audio_Rocket_Pause(void *, int bPause)
 {
-	ASSERT(s_hMP3 != NULL);
+	if (0 == bPause)
+ 		BASS_ChannelPlay(s_hMP3, FALSE);
+	else
+		BASS_ChannelPause(s_hMP3);
+}
+
+void Audio_Rocket_SetRow(void *, int row)
+{
+	const double secPos = floor(row / kRocketRowRate);
+	const QWORD newChanPos = BASS_ChannelSeconds2Bytes(s_hMP3, secPos);
+	BASS_ChannelSetPosition(s_hMP3, newChanPos, BASS_POS_BYTE);
+}
+
+int Audio_Rocket_IsPlaying(void *)
+{
+	return BASS_ChannelIsActive(s_hMP3) == BASS_ACTIVE_PLAYING;
+}
+
+double Audio_Rocket_GetRow()
+{
 	const QWORD chanPos = BASS_ChannelGetPosition(s_hMP3, BASS_POS_BYTE);
-	const float secPos = (float) BASS_ChannelBytes2Seconds(s_hMP3, chanPos);
-	return secPos;
+	const double secPos = BASS_ChannelBytes2Seconds(s_hMP3, chanPos);
+	return floor(secPos*kRocketRowRate);
 }
