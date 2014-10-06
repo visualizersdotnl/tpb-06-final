@@ -458,7 +458,7 @@ static void DestroyDirect3D()
 	SAFE_RELEASE(s_pD3D);
 }
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
+int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
 	// change path to target root
 	SetCurrentDirectory("..\\");
@@ -618,6 +618,32 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 		MessageBox(NULL, s_lastError.c_str(), "Error!", MB_OK | MB_ICONEXCLAMATION);
 		return 1;
 	}
+
+	return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCmdShow)
+{
+#if !defined(_DEBUG) && !defined(_DESIGN)
+	__try 
+	{
+#endif
+
+	return Main(hInstance, hPrevInstance, cmdLine, nCmdShow);
+
+#if !defined(_DEBUG) && !defined(_DESIGN)
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		// Try a few things to restore the desktop.
+		SAFE_RELEASE(s_pD3D);
+		if (NULL != s_hWnd) DestroyWindow(s_hWnd);
+
+		// Sound the alarm bell :-)
+		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", Demo::s_demoName.c_str(), MB_OK | MB_ICONEXCLAMATION);
+		_exit(1); // Better do as little as possible past this point.
+	}
+#endif
 
 	return 0;
 }
