@@ -640,7 +640,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, 
 		if (NULL != s_hWnd) DestroyWindow(s_hWnd);
 
 		// Sound the alarm bell :-)
-		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", Demo::s_demoName.c_str(), MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", PIMPPLAYER_RELEASE_ID, MB_OK | MB_ICONEXCLAMATION);
 		_exit(1); // Better do as little as possible past this point.
 	}
 #endif
