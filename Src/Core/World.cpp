@@ -50,6 +50,7 @@ namespace Pimp
 		currentCamera = NULL;
 
 		postProcess = new PostProcess();
+		sprites = new Sprites();
 
 		screenQuadVertexBuffer = new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather());
 		screenQuadVertexBuffer->Bind();
@@ -65,6 +66,7 @@ namespace Pimp
 
 		delete screenQuadVertexBuffer;
 		delete postProcess;
+		delete sprites;
 	}
 
 	void World::Tick(float deltaTime)
@@ -162,6 +164,9 @@ namespace Pimp
 		// Draw all overlays
 		for (int i=overlays.Size()-1; i>=0; --i)
 			overlays[i]->Render(NULL);
+
+		// Draw the sprites
+		sprites->Render();
 
 		gD3D->SetBlendMode(D3D::BM_None);
 

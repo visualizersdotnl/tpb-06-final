@@ -92,6 +92,7 @@
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ScreenQuadVertexBuffer.cpp" />
+    <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Texture3D.cpp" />
@@ -127,6 +128,8 @@
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ScreenQuadVertexBuffer.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Shaders\Shader_Sprites.h" />
+    <ClInclude Include="Sprites.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Texture3D.h" />
@@ -146,7 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_PostProcess.fx">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling shader...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling postfx shader...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
@@ -168,6 +171,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Shaders\Shader_Sprites.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling sprites shader...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling sprites shader...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

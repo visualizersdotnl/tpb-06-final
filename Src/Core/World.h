@@ -14,7 +14,7 @@
 #include "ScreenQuadVertexBuffer.h"
 #include "Scene.h"
 #include "Overlay.h"
-
+#include "Sprites.h"
 
 namespace Pimp 
 {
@@ -47,6 +47,8 @@ namespace Pimp
 
 		PostProcess* postProcess;
 		ScreenQuadVertexBuffer* screenQuadVertexBuffer;
+
+		Sprites* sprites;
 
 		float currentTime;
 
@@ -103,6 +105,11 @@ namespace Pimp
 		PostProcess* GetPostProcess() const
 		{
 			return postProcess;
+		}
+
+		Sprites* GetSprites() const
+		{
+			return sprites;
 		}
 
 		void Tick(float deltaTime);

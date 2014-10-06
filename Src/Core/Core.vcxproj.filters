@@ -105,6 +105,9 @@
     <ClCompile Include="Xform.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimCurve.h">
@@ -209,9 +212,18 @@
     <ClInclude Include="D3DAssert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Shader_Sprites.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_PostProcess.fx">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Shaders\Shader_Sprites.fx">
       <Filter>Shaders</Filter>
     </CustomBuild>
   </ItemGroup>
