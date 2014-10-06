@@ -21,3 +21,6 @@ const bool PIMPPLAYER_RUN_FROM_SHADER_BINARIES = false;
 const std::string PIMPPLAYER_MP3_PATH = "ROSS2.mp3"; // Relative to asset root (see Demo.cpp).
 const bool PIMPPLAYER_MUTE_AUDIO = false;
 
+// Audio sync. settings.
+const double PIMPPLAYER_ROCKET_BPM = 127.0;
+const int PIMPPLAYER_ROCKET_RPB = 16;

@@ -5,6 +5,7 @@
 #include "../Libs/bass24/c/bass.h"
 #include "Audio.h"
 #include "SetLastError.h"
+#include "Settings.h"
 
 static HSTREAM s_hMP3 = 0;
 
@@ -85,10 +86,7 @@ void Audio_Update() { ASSERT(0 != s_hMP3); BASS_Update(0); }
 // I'm ditching the choir boy ASSERTs here.
 //
 
-// FIXME: Move these to a "settings" location.
-const double kRocketBPM = 127.0;
-const int kRocketRPB = 16;
-double kRocketRowRate = (kRocketBPM/60.0) * kRocketRPB;
+double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
 
 void Audio_Rocket_Pause(void *, int bPause)
 {
