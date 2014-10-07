@@ -533,9 +533,6 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 							// Done loading: kill loading bar.
 							gWorld->GetPostProcess()->SetLoadProgress(0.f);
 
-							// Start/prepare audio.
-							Audio_Start();
-
 							Stopwatch stopwatch;
 
 							// in windowed mode FPS is refreshed every 15 frames

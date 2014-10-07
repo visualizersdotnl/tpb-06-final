@@ -76,7 +76,7 @@ void Audio_Destroy()
 void Audio_Start()
 {
 	ASSERT(s_hMP3 != NULL);
-	// @plek: Rocket will tell us what to do and when.
+	BASS_ChannelPlay(s_hMP3, FALSE);
 }
 
 void Audio_Update() { ASSERT(0 != s_hMP3); BASS_Update(0); }
@@ -110,7 +110,12 @@ int Audio_Rocket_IsPlaying(void *)
 
 double Audio_Rocket_GetRow()
 {
+	return floor(Audio_GetPos()*kRocketRowRate);
+}
+
+float Audio_GetPos()
+{
 	const QWORD chanPos = BASS_ChannelGetPosition(s_hMP3, BASS_POS_BYTE);
 	const double secPos = BASS_ChannelBytes2Seconds(s_hMP3, chanPos);
-	return floor(secPos*kRocketRowRate);
+	return (float) secPos;
 }

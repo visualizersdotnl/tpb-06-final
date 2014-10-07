@@ -2,7 +2,6 @@
 #include <Core/Core.h>
 #include <Shared/shared.h>
 #include <LodePNG/lodepng.h>
-#include "../../Libs/rocket/lib/sync.h"
 #include "SceneTools.h"
 #include "Assets.h"
 #include "Audio.h"
@@ -13,11 +12,23 @@ Pimp::World *gWorld = nullptr;
 //
 // Rocket stuff.
 //
+// Rocket can run in edit mode (requires the client (sync_player.exe) to be connected) or
+// it can run from exported data in replay mode.
+//
+// Right now, Player has 3 different build configurations:
+// -   Debug: debug build that runs Rocket in edit mode.
+// -  Design: release build that runs Rocket in edit mode.
+// - Release: release build that runs Rocket in replay mode (globally defines SYNC_PLAYER).
+//
 
-// Define to run from Rocket files instead of edit mode.
-// #define SYNC_PLAYER
+// Library required for Rocket.
+#pragma comment(lib, "ws2_32.lib")
 
-// Rocket hooks.
+#include "../../Libs/rocket/lib/sync.h"
+
+#if !defined (SYNC_PLAYER)
+
+// Audio player hooks.
 static sync_cb s_rocketHooks = 
 { 
 	Audio_Rocket_Pause, 
@@ -25,17 +36,19 @@ static sync_cb s_rocketHooks =
 	Audio_Rocket_IsPlaying 
 };
 
+#endif
+
 static sync_device *s_Rocket = nullptr;
 
-// All tracks:
+// All tracks (they do not have to be freed individually):
 // ...
 
- void SpawnRocketTracks()
- {
- }
+void CreateRocketTracks()
+{
+}
+ 
 
-
-namespace Demo {
+ namespace Demo {
 
 //
 // Scene (part) base class.
@@ -113,10 +126,10 @@ bool GenerateWorld()
 	}
 
 	// Instantiate all Rocket tracks.
-	SpawnRocketTracks();
+	CreateRocketTracks();
 
 #if !defined(SYNC_PLAYER)
-	// We're in dev. mode, so hook Rocket client to the audio player.
+	// We're in edit mode: connect to Rocket client.
 	if (0 != sync_connect(s_Rocket, "localhost", SYNC_DEFAULT_PORT))
 	{
 		SetLastError("Unable to connect to a GNU Rocket client.");
@@ -177,6 +190,11 @@ bool GenerateWorld()
 	gWorld->InitAllBalls();
 	gWorld->UpdateAllMaterialParameters();
 
+#if defined(SYNC_PLAYER)
+	// We're in replay mode so start the soundtrack, otherwise Rocket will tell use what to do.
+	Audio_Start();
+#endif
+
 	// Done!
 	return true;
 }
@@ -197,17 +215,25 @@ void ReleaseWorld()
 
 //
 // Tick function. 
-// Here: manipulate the world and it's objects according to sync., prior to "ticking" & rendering it).
+// Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
 bool Tick()
 {
 	const double rocketRow = Audio_Rocket_GetRow();
+
+#if !defined(SYNC_PLAYER)
 	if (0 != sync_update(s_Rocket, int(floor(rocketRow)), &s_rocketHooks, nullptr))
 	{
 		SetLastError("Connection to GNU Rocket lost!");
 		return false;
 	}
+
+	// If we're paused (and probably scrolling around and such), keep telling World where we're at 
+	// in time.
+	if (0 == Audio_Rocket_IsPlaying(nullptr))
+		gWorld->ForceSetTime(Audio_GetPos());
+#endif
 
 	s_scenes[0]->Tick();
 
