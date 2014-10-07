@@ -105,7 +105,7 @@ bool GenerateWorld()
 	gWorld = new Pimp::World();
 
 	// Try to fire up Rocket.
-	s_Rocket = sync_create_device("sync");
+	s_Rocket = sync_create_device("assets\\sync");
 	if (nullptr == s_Rocket)
 	{
 		SetLastError("Unable to start GNU Rocket.");
