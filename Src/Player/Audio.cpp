@@ -18,7 +18,15 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 	//  0 = No sound (causes functionality to be limited, so -1 is the better pick).
 	// -1 = Default.
 	// >0 = As enumerated.
-	if (!BASS_Init((iDevice == -1) ? -1 : iDevice + 1, 44100, BASS_DEVICE_LATENCY, hWnd, NULL))
+
+//	DWORD devCount = 0; 
+//	BASS_DEVICEINFO devInfo;
+//	for (DWORD iDev = 0; BASS_GetDeviceInfo(iDev, &devInfo); ++iDev)
+//		if (devInfo.flags & BASS_DEVICE_ENABLED)
+//			++devCount;
+//
+
+	if (!BASS_Init(iDevice, 44100, BASS_DEVICE_LATENCY, hWnd, NULL))
 	{ 
 		switch (BASS_ErrorGetCode())
 		{
