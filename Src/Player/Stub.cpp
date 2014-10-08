@@ -545,17 +545,29 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 							{
 								// render frame
 								float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
+
 #ifdef _DEBUG
-								if (s_isPaused)
-									timeElapsed = 0.f;
-
 								s_pAutoShaderReloader->Update();
-#endif
 
-								if (false == Demo::Tick())
+								if (true == s_isPaused)
+								{
+									Demo::Tick(s_pDebugCamera->Get());
+									gWorld->Tick(0.f);
+								}
+								else
+								{
+									if (false == Demo::Tick(nullptr))
+										break;
+
+									gWorld->Tick(timeElapsed);
+								}
+#else
+								if (false == Demo::Tick(nullptr))
 									break;
-								
+
 								gWorld->Tick(timeElapsed);
+#endif
+								
 								gWorld->Render();
 
 								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);

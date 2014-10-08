@@ -77,6 +77,14 @@ void CreateRocketTracks()
 
  namespace Demo {
 
+ //
+ // Shared objects.
+ //
+
+ // Default (static) world to camera transformation.
+static Pimp::Camera *s_defaultCam;
+static Pimp::Xform *s_defaultXform;
+ 
 //
 // Scene (part) base class.
 // Primarily intended to manage all resource requests, objects and world manipulation for a single scene.
@@ -90,7 +98,8 @@ class Scene
 {
 public:
 	Scene() :
-		m_pScene(nullptr)
+		m_pScene(nullptr),
+		m_sceneIdx(-1)
 	{
 	}
 
@@ -106,6 +115,7 @@ public:
 protected:
 	// Assuming that each part has at least one scene shader.
 	Pimp::Scene *m_pScene;
+	int m_sceneIdx;
 
 	// Call this in BindToWorld() to bind the shader to the main scene.
 	void SetSceneMaterial(Pimp::Material *pMat)
@@ -115,6 +125,7 @@ protected:
 			m_pScene = new Pimp::Scene(gWorld);
 			gWorld->GetScenes().Add(m_pScene);
 			gWorld->GetElements().Add(m_pScene);
+			m_sceneIdx = gWorld->GetElements().Size()-1;		
 		}
 
 		m_pScene->SetMaterial(pMat);
@@ -182,7 +193,7 @@ bool GenerateWorld()
 	// Loaded some more! :)
 	DrawLoadProgress(0.25f);
 
-	// FIXME: Load other stuff here like the user post FX shader.
+	// FIXME: Request other stuff here like the user post FX shader.
 
 	// Let the asset loader do it's thing up to where all disk I/O is verified.
 	if (false == Assets::StartLoading())
@@ -194,8 +205,23 @@ bool GenerateWorld()
 	// Bind animation related nodes (and do other CPU-based preparation work).
 	//
 
+	// Add (static) default transformation.
+	s_defaultCam = new Pimp::Camera(gWorld);
+	gWorld->GetElements().Add(s_defaultCam);
+	s_defaultCam->SetFOVy(0.563197f);
+	s_defaultXform = new Pimp::Xform(gWorld);
+	gWorld->GetElements().Add(s_defaultXform);
+	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
+	AddChildToParent(s_defaultXform, gWorld->GetRootNode());
+	AddChildToParent(s_defaultCam, s_defaultXform);
+	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
+
 	for (Scene *pScene : s_scenes)
 		pScene->BindAnimationNodes();
+
+	// We're using Rocket- or debug-driven cameras only!
+	gWorld->SetCurrentUserCamera(s_defaultCam);
+	gWorld->SetUseCameraDirection(false);
 
 	// Loaded some more! :)
 	DrawLoadProgress(0.75f);
@@ -245,7 +271,7 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
-bool Tick()
+bool Tick(Pimp::Camera *camOverride)
 {
 	const double rocketRow = Rocket_GetRow();
 
@@ -258,6 +284,12 @@ bool Tick()
 #endif
 
 	s_scenes[0]->Tick();
+
+	// This is primarily used to feed the debug camera if need be.
+	if (nullptr != camOverride)
+	{
+		gWorld->SetCurrentUserCamera(camOverride);
+	}
 
 	// FIXME: return false if demo is done.
 	return true;

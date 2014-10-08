@@ -10,5 +10,5 @@ namespace Demo
 	bool GenerateWorld();
 	void ReleaseWorld();
 
-	bool Tick();
+	bool Tick(Pimp::Camera *camOverride);
 }

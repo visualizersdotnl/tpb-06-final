@@ -9,5 +9,5 @@
 #else
 	#define D3D_ASSERT(condition)
 	#define D3D_VERIFY(condition) (condition)
-	#define D3D_ASSERT_MSG(condition)
+	#define D3D_ASSERT_MSG(condition, message)
 #endif
