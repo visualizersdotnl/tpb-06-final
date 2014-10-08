@@ -5,6 +5,7 @@
 #include "SceneTools.h"
 #include "Assets.h"
 #include "Audio.h"
+#include "Settings.h"
 
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
@@ -28,12 +29,38 @@ Pimp::World *gWorld = nullptr;
 
 #if !defined (SYNC_PLAYER)
 
+double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
+
+void Rocket_Pause(void *, int bPause)
+{
+	if (0 == bPause)
+		Audio_Unpause();
+	else
+		Audio_Pause();
+}
+
+void Rocket_SetRow(void *, int row)
+{
+	const double secPos = floor(row / kRocketRowRate);
+	Audio_SetPosition((float) secPos);
+}
+
+int Rocket_IsPlaying(void *)
+{
+	return Audio_IsPlaying();
+}
+
+double Rocket_GetRow()
+{
+	return floor(Audio_GetPosition()*kRocketRowRate);
+}
+
 // Audio player hooks.
 static sync_cb s_rocketHooks = 
 { 
-	Audio_Rocket_Pause, 
-	Audio_Rocket_SetRow, 
-	Audio_Rocket_IsPlaying 
+	Rocket_Pause, 
+	Rocket_SetRow, 
+	Rocket_IsPlaying 
 };
 
 #endif
@@ -185,7 +212,7 @@ bool GenerateWorld()
 
 	// Ta-daa!
 	DrawLoadProgress(1.f);
-
+	
 	// Finish up some World business.
 	gWorld->InitAllBalls();
 	gWorld->UpdateAllMaterialParameters();
@@ -220,7 +247,7 @@ void ReleaseWorld()
 
 bool Tick()
 {
-	const double rocketRow = Audio_Rocket_GetRow();
+	const double rocketRow = Rocket_GetRow();
 
 #if !defined(SYNC_PLAYER)
 	if (0 != sync_update(s_Rocket, int(floor(rocketRow)), &s_rocketHooks, nullptr))
@@ -228,11 +255,6 @@ bool Tick()
 		SetLastError("Connection to GNU Rocket lost!");
 		return false;
 	}
-
-	// If we're paused (and probably scrolling around and such), keep telling World where we're at 
-	// in time.
-	if (0 == Audio_Rocket_IsPlaying(nullptr))
-		gWorld->ForceSetTime(Audio_GetPos()); // FIXME: GetPos() doesn't work if channel isn't playing: derive from row.
 #endif
 
 	s_scenes[0]->Tick();

@@ -5,7 +5,6 @@
 #include "../Libs/bass24/c/bass.h"
 #include "Audio.h"
 #include "SetLastError.h"
-#include "Settings.h"
 
 static HSTREAM s_hMP3 = 0;
 
@@ -81,48 +80,46 @@ void Audio_Destroy()
 	BASS_Free();
 }
 
+void Audio_Update() 
+{ 
+	ASSERT(s_hMP3 != NULL);
+	BASS_Update(0); 
+}
+
 void Audio_Start()
 {
 	ASSERT(s_hMP3 != NULL);
-	BASS_ChannelPlay(s_hMP3, FALSE);
+	BASS_ChannelPlay(s_hMP3, TRUE);
 }
 
-void Audio_Update() { ASSERT(0 != s_hMP3); BASS_Update(0); }
-
-//
-// Rocket stuff.
-// I'm ditching the choir boy ASSERTs here.
-//
-
-double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
-
-void Audio_Rocket_Pause(void *, int bPause)
+void Audio_Pause()
 {
-	if (0 == bPause)
- 		BASS_ChannelPlay(s_hMP3, FALSE);
-	else
-		BASS_ChannelPause(s_hMP3);
+	ASSERT(s_hMP3 != NULL);
+	BASS_ChannelPause(s_hMP3);
 }
 
-void Audio_Rocket_SetRow(void *, int row)
+void Audio_Unpause()
 {
-	const double secPos = floor(row / kRocketRowRate);
+	ASSERT(s_hMP3 != NULL);
+ 	BASS_ChannelPlay(s_hMP3, FALSE);
+}
+
+bool Audio_IsPlaying()
+{
+	ASSERT(s_hMP3 != NULL);
+	return BASS_ChannelIsActive(s_hMP3) == BASS_ACTIVE_PLAYING;
+}
+
+void Audio_SetPosition(float secPos)
+{
+	ASSERT(s_hMP3 != NULL);
 	const QWORD newChanPos = BASS_ChannelSeconds2Bytes(s_hMP3, secPos);
 	BASS_ChannelSetPosition(s_hMP3, newChanPos, BASS_POS_BYTE);
 }
 
-int Audio_Rocket_IsPlaying(void *)
+float Audio_GetPosition()
 {
-	return BASS_ChannelIsActive(s_hMP3) == BASS_ACTIVE_PLAYING;
-}
-
-double Audio_Rocket_GetRow()
-{
-	return floor(Audio_GetPos()*kRocketRowRate);
-}
-
-float Audio_GetPos()
-{
+	ASSERT(s_hMP3 != NULL);
 	const QWORD chanPos = BASS_ChannelGetPosition(s_hMP3, BASS_POS_BYTE);
 	const double secPos = BASS_ChannelBytes2Seconds(s_hMP3, chanPos);
 	return (float) secPos;
