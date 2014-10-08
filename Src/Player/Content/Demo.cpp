@@ -232,7 +232,7 @@ bool Tick()
 	// If we're paused (and probably scrolling around and such), keep telling World where we're at 
 	// in time.
 	if (0 == Audio_Rocket_IsPlaying(nullptr))
-		gWorld->ForceSetTime(Audio_GetPos());
+		gWorld->ForceSetTime(Audio_GetPos()); // FIXME: GetPos() doesn't work if channel isn't playing: derive from row.
 #endif
 
 	s_scenes[0]->Tick();
