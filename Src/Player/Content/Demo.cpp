@@ -68,10 +68,12 @@ static sync_cb s_rocketHooks =
 static sync_device *s_Rocket = nullptr;
 
 // All tracks (they do not have to be freed individually):
+static const sync_track *sync_sceneIdx;
 static const sync_track *sync_ribbonTime;
 
 void CreateRocketTracks()
 {
+	sync_sceneIdx = sync_get_track(s_Rocket, "SceneIndex");
 	sync_ribbonTime = sync_get_track(s_Rocket, "RibbonTime");
 }
  
@@ -163,8 +165,11 @@ bool GenerateWorld(const char *rocketClient)
 {
 	gWorld = new Pimp::World();
 
+	const std::string assetsPath = GetAssetsPath();
+	const std::string syncPath = assetsPath + "sync\\";
+
 	// Try to fire up Rocket.
-	s_Rocket = sync_create_device("sync");
+	s_Rocket = sync_create_device(syncPath.c_str());
 	if (nullptr == s_Rocket)
 	{
 		SetLastError("Unable to start GNU Rocket.");
@@ -187,7 +192,7 @@ bool GenerateWorld(const char *rocketClient)
 	DrawLoadProgress(0.f);
 
 	// Set asset loader root path.
-	Assets::SetRoot(GetAssetsPath());
+	Assets::SetRoot(assetsPath);
 
 	// Create scenes.
 	s_scenes.push_back(new Ribbons());
@@ -291,7 +296,8 @@ bool Tick(Pimp::Camera *camOverride)
 	}
 #endif
 
-	s_scenes[0]->Tick();
+	const int sceneIdx = (int) sync_get_val(sync_sceneIdx, rocketRow);
+	s_scenes[sceneIdx]->Tick();
 
 	// This is primarily used to feed the debug camera if need be.
 	if (nullptr != camOverride)
