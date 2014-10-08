@@ -32,7 +32,6 @@ public:
 
 	void Tick()
 	{
-		gWorld->SetCurrentUserCamera(s_defaultCam);
-		gWorld->SetCurrentSceneIndex(m_sceneIdx);
+		SetMainSceneAndDefaultCamera();
 	}
 };

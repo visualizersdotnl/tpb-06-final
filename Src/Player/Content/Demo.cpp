@@ -68,10 +68,11 @@ static sync_cb s_rocketHooks =
 static sync_device *s_Rocket = nullptr;
 
 // All tracks (they do not have to be freed individually):
-// ...
+static const sync_track *sync_ribbonTime;
 
 void CreateRocketTracks()
 {
+	sync_ribbonTime = sync_get_track(s_Rocket, "RibbonTime");
 }
  
 
@@ -130,6 +131,13 @@ protected:
 
 		m_pScene->SetMaterial(pMat);
 	}
+
+	// And this one on top of Tick() to activate said scene.
+	void SetMainSceneAndDefaultCamera() 
+	{ 
+		gWorld->SetCurrentUserCamera(s_defaultCam);
+		gWorld->SetCurrentSceneIndex(m_sceneIdx); 
+	}
 };
 
 // Scenes:
@@ -151,24 +159,24 @@ const std::string GetAssetsPath()
 
 static std::vector<Scene *> s_scenes;
 
-bool GenerateWorld()
+bool GenerateWorld(const char *rocketClient)
 {
 	gWorld = new Pimp::World();
 
 	// Try to fire up Rocket.
-	s_Rocket = sync_create_device("assets\\sync");
+	s_Rocket = sync_create_device("sync");
 	if (nullptr == s_Rocket)
 	{
 		SetLastError("Unable to start GNU Rocket.");
 		return false;
 	}
 
-	// Instantiate all Rocket tracks.
+		// Instantiate all Rocket tracks.
 	CreateRocketTracks();
 
 #if !defined(SYNC_PLAYER)
 	// We're in edit mode: connect to Rocket client.
-	if (0 != sync_connect(s_Rocket, "localhost", SYNC_DEFAULT_PORT))
+	if (0 != sync_connect(s_Rocket, rocketClient, SYNC_DEFAULT_PORT))
 	{
 		SetLastError("Unable to connect to a GNU Rocket client.");
 		return false;

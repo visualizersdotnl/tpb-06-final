@@ -510,7 +510,8 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
-						if (true == Demo::GenerateWorld())
+						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
+						if (true == Demo::GenerateWorld(rocketClient))
 						{
 #ifdef _DEBUG
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
