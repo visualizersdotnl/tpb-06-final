@@ -3,6 +3,7 @@
 #include "EffectPass.h"
 #include "RenderTarget.h"
 #include "Settings.h"
+#include "Camera.h"
 
 namespace Pimp
 {
@@ -16,7 +17,7 @@ namespace Pimp
 
 		void Clear();
 		void BindForRenderScene();
-		void RenderPostProcess();
+		void RenderPostProcess(const Camera::DOFSettings& dofSettings);
 
 		EffectPass* GetEffectPassBloomGather() 
 		{ 
@@ -51,9 +52,10 @@ namespace Pimp
 
 		Effect effect;
 		EffectTechnique techniquePostFX;
+		EffectPass passDOFGather;
 		EffectPass passBloomGather;
-		EffectPass passBloomBlur;
-		EffectPass passBloomCombine;
+		EffectPass passBlur;
+		EffectPass passCombine;
 		EffectPass passMotionBlurBlend;
 
 		int varIndexScreenSizeInv;
@@ -61,12 +63,16 @@ namespace Pimp
 		int varIndexRenderScale;
 		int varIndexBufferSceneColor;
 		int varIndexBufferFilter;
-		int varIndexBloomGatherSamples;
-		int varIndexBloomBlurSamples;
-		int varIndexBloomBlurWeights;
-		int varIndexBloomBlurPixelDir;
+		int varIndexGatherSamples;
+		int varIndexBlurSamples;
+		int varIndexBlurWeights;
+		int varIndexBlurPixelDir;
 		int varIndexLoadProgress; // loadProgress
 		int varIndexMotionBlurWeight;
+
+		int varIndexDOFDepthFocus;
+		int varIndexDOFDepthFar;
+		int varIndexDOFDepthNear;
 
 		Vector2 bloomBlurDirH;
 		Vector2 bloomBlurDirV;

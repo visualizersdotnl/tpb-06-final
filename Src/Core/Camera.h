@@ -7,6 +7,18 @@ namespace Pimp
 	class Camera 
 		: public Node
 	{
+	public:
+		struct DOFSettings
+		{
+			DOFSettings(float depthNear, float depthFocus, float depthFar)
+				: depthNear(depthNear), depthFocus(depthFocus), depthFar(depthFar)
+			{}
+
+			float depthNear;
+			float depthFocus;
+			float depthFar;			
+		};
+
 	protected:
 		enum FrustumPlane
 		{
@@ -27,6 +39,8 @@ namespace Pimp
 		Vector3 cameraNearSize;
 
 		Plane frustumPlane[6];
+
+		DOFSettings settingsDOF;
 
 		float FOVy;
 
@@ -60,6 +74,16 @@ namespace Pimp
 		const Vector3& GetWorldPosition() const 
 		{
 			return worldPosition;
+		}
+
+		void SetDOFSettings(const DOFSettings& dof)
+		{
+			settingsDOF = dof;
+		}
+
+		const DOFSettings& GetDOFSettings() const
+		{
+			return settingsDOF;
 		}
 	};
 }

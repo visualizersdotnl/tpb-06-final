@@ -146,6 +146,7 @@ namespace Pimp
 
 
 		// Render our scene to a single sceneColor FP16 RT
+		Camera::DOFSettings dof(0,1,2);
 
 		if (scenes.IsValidIndex(currentSceneIndex) && 
 			scenes[currentSceneIndex] != NULL &&
@@ -153,11 +154,13 @@ namespace Pimp
 		{
 			currentCamera->Bind();
 			scenes[currentSceneIndex]->Render(currentCamera);
+			
+			dof = currentCamera->GetDOFSettings();
 		}
 
 
 		// Draw posteffects
-		postProcess->RenderPostProcess();
+		postProcess->RenderPostProcess(dof);
 
 		gD3D->SetBlendMode(D3D::BM_AlphaBlend);
 

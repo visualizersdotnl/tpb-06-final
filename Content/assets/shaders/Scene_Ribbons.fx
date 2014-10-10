@@ -432,7 +432,7 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
-		float depth = 1;//length(hitPos - origin);
+		float depth = length(hitPos - origin);
 
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
