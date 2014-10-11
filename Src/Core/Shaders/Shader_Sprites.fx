@@ -13,19 +13,26 @@ struct VSOutput
 	float2 texCoord : TEXCOORD0;
 };
 
+struct PSOutput
+{
+	float4 color : SV_Target0;
+};
 
 cbuffer paramsOnlyOnce
 {
 	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
+
+	float2 position;
+	float2 size;
 };
 
 
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
-	output.screenPos = float4(input.position, 1.f); // FIXME: renderScale!
+	output.screenPos = float4( (input.position.xy * size + position) * renderScale, 0, 1);
 	output.color = input.color;
-	output.texCoord = input.texCoord;
+	output.texCoord = (input.position.xy + float2(1,1))*0.5;
 	return output;
 }
 

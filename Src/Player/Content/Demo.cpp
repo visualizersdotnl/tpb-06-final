@@ -362,7 +362,7 @@ bool Tick(Pimp::Camera *camOverride)
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
 
-	const int sceneIdx = 2; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	const int sceneIdx = 1; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick();
 	else
@@ -378,7 +378,8 @@ bool Tick(Pimp::Camera *camOverride)
 }
 
 void WorldRender() {
-	gWorld->Render(s_sprites); }
+	gWorld->Render(s_sprites); 
+}
 
 
 } // namespace Demo

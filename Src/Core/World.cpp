@@ -164,7 +164,7 @@ namespace Pimp
 			overlays[i]->Render(NULL);
 
 		// Flush (draw & clear queue) the sprites
-//		pSprites->Flush();
+		pSprites->Flush();
 
 		// Ensure blend mode is none for next frame.
 		gD3D->SetBlendMode(D3D::BM_None);
