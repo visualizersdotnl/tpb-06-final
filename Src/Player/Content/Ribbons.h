@@ -18,6 +18,7 @@ public:
 	{
 		Assets::AddTexture2D("textures\\ribbons_wall.png", true, &texWall);
 		Assets::AddTexture2D("textures\\ribbons_mesh.png", true, &texMesh);
+		Assets::AddTexture2D("textures\\even_lachen.png", true, &texMesh);
 		Assets::AddMaterial("shaders\\Scene_Ribbons.fx", &ribbonMat);
 	}
 
