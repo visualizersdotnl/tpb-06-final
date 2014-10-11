@@ -67,16 +67,59 @@ static sync_cb s_rocketHooks =
 
 static sync_device *s_Rocket = nullptr;
 
-// All tracks (they do not have to be freed individually):
-static const sync_track *sync_sceneIdx;
-static const sync_track *sync_ribbonTime;
+static Pimp::MaterialParameter *CreateShaderParamFromTrack(const std::string &name) // Element, so no need to release.
+{
+	Pimp::MaterialParameter *newParam = new Pimp::MaterialParameter(gWorld);
+	gWorld->GetElements().Add(newParam);
+	newParam->SetValueType(Pimp::MaterialParameter::VT_Value);
+	newParam->SetName(name.c_str());
+	return newParam;
+}
+
+// @plek: Note, Rocket tracks do not have to be released individually, neither does my container.
+class SyncTrack
+{
+public:
+	SyncTrack(const std::string &name) :
+		m_track(sync_get_track(s_Rocket, name.c_str())),
+		m_name(name) 
+	{
+		ASSERT(nullptr != m_track);
+		matParam = CreateShaderParamFromTrack(name);
+	}
+
+	float Get(double row) const 
+	{ 
+		return (float) sync_get_val(m_track, row); 
+	}
+
+	// Call each frame!
+	void Update(double row)
+	{
+		matParam->SetValue(Get(row));
+	}
+
+	const sync_track *m_track;
+	const std::string m_name;
+	Pimp::MaterialParameter *matParam;
+};
+
+static std::vector<SyncTrack> syncTracks;
+
+const unsigned int kSync_SceneIdx = 0;
+const unsigned int kSync_fxTimeGlobal = 1;
 
 void CreateRocketTracks()
 {
-	sync_sceneIdx = sync_get_track(s_Rocket, "SceneIndex");
-	sync_ribbonTime = sync_get_track(s_Rocket, "RibbonTime");
+	syncTracks.clear();
+
+	// GLOBAL TRACKS (indexed, keep in line with the crap above)
+	syncTracks.push_back(SyncTrack("SceneIndex")); 
+	syncTracks.push_back(SyncTrack("fxTimeGlobal"));
+
+	// SHADER ONLY TRACKS (non-indexed, don't care as long as they're updated)
+	// ...
 }
- 
 
  namespace Demo {
 
@@ -296,8 +339,15 @@ bool Tick(Pimp::Camera *camOverride)
 	}
 #endif
 
-	const int sceneIdx = (int) sync_get_val(sync_sceneIdx, rocketRow);
-	s_scenes[sceneIdx]->Tick();
+	// Update tracks.
+	for (SyncTrack &syncTrack : syncTracks)
+		syncTrack.Update(rocketRow);
+
+	const int sceneIdx = (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	if (-1 != sceneIdx)
+		s_scenes[sceneIdx]->Tick();
+	else
+		return false; // Demo is finished.
 
 	// This is primarily used to feed the debug camera if need be.
 	if (nullptr != camOverride)
@@ -305,7 +355,6 @@ bool Tick(Pimp::Camera *camOverride)
 		gWorld->SetCurrentUserCamera(camOverride);
 	}
 
-	// FIXME: return false if demo is done.
 	return true;
 }
 

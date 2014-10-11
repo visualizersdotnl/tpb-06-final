@@ -1,11 +1,12 @@
-<sync rows="128">
+<sync rows="6656">
 	<tracks>
-		<track name="RibbonTime">
-			<key interpolation="2" row="0" value="0"/>
-			<key interpolation="0" row="127" value="55"/>
-		</track>
 		<track name="SceneIndex">
-			<key interpolation="0" row="0" value="0"/>
+			<key row="0" value="0" interpolation="0"/>
+			<key row="6655" value="-1" interpolation="0"/>
+		</track>
+		<track name="fxTimeGlobal">
+			<key row="0" value="0" interpolation="1"/>
+			<key row="6655" value="600" interpolation="0"/>
 		</track>
 	</tracks>
 	<bookmarks/>

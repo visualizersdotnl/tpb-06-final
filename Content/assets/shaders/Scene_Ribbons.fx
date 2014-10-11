@@ -50,7 +50,7 @@ cbuffer paramsOnlyOnce
 
 	float4 testLightPos = float4(20.0, 20.0, 20.0, 1.0);
 
-	float testSceneTime = 0;	
+	float fxTimeGlobal = 0;	
 };
 
 
@@ -177,8 +177,8 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 {
 
 
-	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + testSceneTime);
-	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + testSceneTime);
+	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
+	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
 
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;
@@ -193,7 +193,7 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.2, 0.02);
-	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + testSceneTime);
+	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + fxTimeGlobal);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.2, outUV);	
 }
@@ -202,7 +202,7 @@ float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 float DistToRibboInner(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.15, 0.03);
-	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + testSceneTime);
+	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + fxTimeGlobal);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.5, outUV);	
 }
