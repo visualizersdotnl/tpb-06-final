@@ -569,7 +569,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 								gWorld->Tick(timeElapsed);
 #endif
 								
-								gWorld->Render();
+								Demo::WorldRender();
 
 								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
 								// FIXME: ignoring serious errors
