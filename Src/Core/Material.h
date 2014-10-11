@@ -43,11 +43,9 @@ namespace Pimp
 		int varIndexSceneBuffer;			// scene buffer texture (only allowed in post effect material)
 
 
-#ifdef _DEBUG
-		std::string shaderFileName; // complete path to shader source file
-#endif
-
-	protected:
+		// complete path to shader source file
+		std::string shaderFileName; 
+protected:
 		virtual void InitParameters();
 
 	public:
@@ -60,12 +58,10 @@ namespace Pimp
 
 		void Bind(Camera* camera);
 
-#ifdef _DEBUG
 		const std::string& GetShaderFileName() const
 		{
 			return shaderFileName;
 		}
-#endif
 
 		void RefreshParameters();
 

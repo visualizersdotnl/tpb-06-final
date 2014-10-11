@@ -116,6 +116,9 @@
     <ClInclude Include="..\Libs\rocket\lib\track.h">
       <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Bondtro.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">

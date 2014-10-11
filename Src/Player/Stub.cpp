@@ -78,7 +78,7 @@ static ID3D10Device1  *s_pD3D = NULL;
 static IDXGISwapChain *s_pSwapChain = NULL;
 
 // Debug camera and it's state.
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 static AutoShaderReload* s_pAutoShaderReloader;
 static DebugCamera* s_pDebugCamera;
 
@@ -158,7 +158,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 	switch (uMsg)
 	{
 		// debug camera mouse input
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 	case WM_LBUTTONDOWN:
 		s_isMouseTracking = true;
 		s_mouseTrackInitialX = LOWORD(lParam);
@@ -192,7 +192,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			break;
 		
 		// debug camera (un)pause 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 		case VK_SPACE:
 			{
 				s_isPaused = !s_isPaused;
@@ -208,7 +208,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		}
 
 		// debug camera keyboard input
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 		if (s_isPaused)
 		{
 			if (wParam == 'A')
@@ -513,7 +513,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
 						if (true == Demo::GenerateWorld(rocketClient))
 						{
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
 
 							s_pDebugCamera = new DebugCamera(gWorld);
@@ -547,7 +547,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 								// render frame
 								float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 								s_pAutoShaderReloader->Update();
 
 								if (true == s_isPaused)
@@ -595,7 +595,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 								Audio_Update();
 							}
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 							delete s_pDebugCamera;
 							delete s_pAutoShaderReloader;
 #endif	

@@ -183,6 +183,7 @@
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
+    <ClInclude Include="Content\Bondtro.h" />
     <ClInclude Include="Content\Demo.h" />
     <ClInclude Include="Content\Ribbons.h" />
     <ClInclude Include="DebugCamera.h" />

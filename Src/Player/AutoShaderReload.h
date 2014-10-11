@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 
 #include <Core/Core.h>
 #include <Shared/shared.h>

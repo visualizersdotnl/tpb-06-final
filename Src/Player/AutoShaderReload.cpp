@@ -1,5 +1,5 @@
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 
 #include "AutoShaderReload.h"
 #include "Assets.h"
