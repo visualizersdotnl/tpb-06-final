@@ -119,6 +119,9 @@
     <ClInclude Include="Content\Bondtro.h">
       <Filter>/Content</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Knot.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">

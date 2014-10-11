@@ -116,6 +116,9 @@ void CreateRocketTracks()
 	// GLOBAL TRACKS (indexed, keep in line with the crap above)
 	syncTracks.push_back(SyncTrack("SceneIndex")); 
 	syncTracks.push_back(SyncTrack("fxTimeGlobal"));
+	syncTracks.push_back(SyncTrack("knotTubeRadius1"));
+	syncTracks.push_back(SyncTrack("knotTubeRadius2"));
+	syncTracks.push_back(SyncTrack("knotTubeRadius3"));
 
 	// SHADER ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	// ...
@@ -174,7 +177,7 @@ protected:
 			m_pScene = new Pimp::Scene(gWorld);
 			gWorld->GetScenes().Add(m_pScene);
 			gWorld->GetElements().Add(m_pScene);
-			m_sceneIdx = gWorld->GetElements().Size()-1;		
+			m_sceneIdx = gWorld->GetScenes().Size()-1;		
 		}
 
 		m_pScene->SetMaterial(pMat);
@@ -191,6 +194,7 @@ protected:
 // Scenes:
 #include "Bondtro.h"
 #include "Ribbons.h"
+#include "Knot.h"
 
 //
 // Asset root directory.
@@ -244,6 +248,7 @@ bool GenerateWorld(const char *rocketClient)
 	// Create scenes.
 	s_scenes.push_back(new Bondtro());
 	s_scenes.push_back(new Ribbons());
+	s_scenes.push_back(new Knot());
 
 	// Request resources.
 	//

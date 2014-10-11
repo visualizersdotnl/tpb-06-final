@@ -185,6 +185,7 @@
     <ClInclude Include="AutoShaderReload.h" />
     <ClInclude Include="Content\Bondtro.h" />
     <ClInclude Include="Content\Demo.h" />
+    <ClInclude Include="Content\Knot.h" />
     <ClInclude Include="Content\Ribbons.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="gWorld.h" />

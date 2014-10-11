@@ -107,10 +107,10 @@ namespace Pimp
 			currentCamera = currentUserCamera;
 		}
 
-		currentSceneIndex = (int)floorf(sceneDirection->GetCurrentValue());
+		//currentSceneIndex = (int)floorf(sceneDirection->GetCurrentValue());
 
-		if (!scenes.IsValidIndex(currentSceneIndex))
-			currentSceneIndex = -1;
+		//if (!scenes.IsValidIndex(currentSceneIndex))
+		//	currentSceneIndex = -1;
 
 
 		float timeSincePrevMotionBlur = currentTime - prevMotionBlurTime;
