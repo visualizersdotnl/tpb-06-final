@@ -165,9 +165,10 @@ namespace Pimp
 		for (int i=overlays.Size()-1; i>=0; --i)
 			overlays[i]->Render(NULL);
 
-		// Draw the sprites
-		sprites->Render();
+		// Flush (draw & clear queue) the sprites
+//		sprites->Flush();
 
+		// Ensure blend mode is none for next frame.
 		gD3D->SetBlendMode(D3D::BM_None);
 
 		gD3D->Flip();

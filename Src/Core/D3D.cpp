@@ -173,24 +173,28 @@ void D3D::Flip()
 }
 
 
-ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
+ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
 	ASSERT(numBytes > 0);
+	ASSERT(true == isDynamic || nullptr != initialData);
 
 	D3D10_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D10_USAGE_IMMUTABLE;
+	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
 	bufferDesc.ByteWidth = numBytes;
 	bufferDesc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.CPUAccessFlags = (isDynamic) ? D3D10_CPU_ACCESS_WRITE : 0;
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
-	data.pSysMem = initialData;
-	data.SysMemPitch = 0;
-	data.SysMemSlicePitch = 0;
+	if (false == isDynamic)
+	{
+		data.pSysMem = initialData;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
+	}
 
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 
@@ -198,22 +202,28 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
 }
 
 
-ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData)
+ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic)
 {
+	ASSERT(numIndices > 0);
+	ASSERT(true == isDynamic || nullptr != initialData);
+
 	D3D10_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D10_USAGE_IMMUTABLE;
+	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
 	bufferDesc.ByteWidth = numIndices * sizeof(DWORD);
 	bufferDesc.BindFlags = D3D10_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.CPUAccessFlags = (isDynamic) ? D3D10_CPU_ACCESS_WRITE : 0;
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
-	data.pSysMem = initialData;
-	data.SysMemPitch = 0;
-	data.SysMemSlicePitch = 0;
+	if (false == isDynamic)
+	{
+		data.pSysMem = initialData;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
+	}
 
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 
@@ -240,9 +250,9 @@ void D3D::BindInputLayout(ID3D10InputLayout* layout)
 }
 
 
-void D3D::DrawScreenQuad()
+void D3D::DrawTriQuad(DWORD offset)
 {
-	device->Draw(6, 0);
+	device->Draw(6, offset);
 }
 
 

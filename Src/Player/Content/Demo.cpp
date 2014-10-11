@@ -130,6 +130,9 @@ void CreateRocketTracks()
  // Default (static) world to camera transformation.
 static Pimp::Camera *s_defaultCam;
 static Pimp::Xform *s_defaultXform;
+
+// 2D sprite batcher.
+static Pimp::Sprites *s_sprites = nullptr;
  
 //
 // Scene (part) base class.
@@ -186,6 +189,7 @@ protected:
 };
 
 // Scenes:
+#include "Bondtro.h"
 #include "Ribbons.h"
 
 //
@@ -219,7 +223,7 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 	}
 
-		// Instantiate all Rocket tracks.
+	// Instantiate all Rocket tracks.
 	CreateRocketTracks();
 
 #if !defined(SYNC_PLAYER)
@@ -238,6 +242,7 @@ bool GenerateWorld(const char *rocketClient)
 	Assets::SetRoot(assetsPath);
 
 	// Create scenes.
+	s_scenes.push_back(new Bondtro());
 	s_scenes.push_back(new Ribbons());
 
 	// Request resources.
@@ -260,7 +265,7 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Bind animation related nodes (and do other CPU-based preparation work).
 	//
-
+	
 	// Add (static) default transformation.
 	s_defaultCam = new Pimp::Camera(gWorld);
 	gWorld->GetElements().Add(s_defaultCam);
@@ -271,6 +276,9 @@ bool GenerateWorld(const char *rocketClient)
 	AddChildToParent(s_defaultXform, gWorld->GetRootNode());
 	AddChildToParent(s_defaultCam, s_defaultXform);
 	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
+
+	// Sprite batcher.
+	s_sprites = new Pimp::Sprites();
 
 	for (Scene *pScene : s_scenes)
 		pScene->BindAnimationNodes();
@@ -310,6 +318,8 @@ bool GenerateWorld(const char *rocketClient)
 
 void ReleaseWorld()
 {
+	delete s_sprites;
+
 	for (Scene *pScene : s_scenes)
 		delete pScene;
 

@@ -32,8 +32,8 @@ namespace Pimp
 		void ClearDepthStencil();
 		void Flip();
 
-		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData);
-		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData);
+		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
+		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
 
 		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
 		void BindIndexBuffer(ID3D10Buffer* buffer);
@@ -43,7 +43,8 @@ namespace Pimp
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
-		void DrawScreenQuad();
+		void DrawTriQuad(DWORD offset);
+		void DrawScreenQuad() { DrawTriQuad(0); } 
 
 		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
 

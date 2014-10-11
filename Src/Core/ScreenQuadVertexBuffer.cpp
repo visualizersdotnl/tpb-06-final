@@ -18,7 +18,7 @@ namespace Pimp
 	{
 		ASSERT(inputLayoutEffectPass != NULL);
 
-		vertices = gD3D->CreateVertexBuffer(6*sizeof(ScreenQuadVertex), (void*)screenQuad);	
+		vertices = gD3D->CreateVertexBuffer(6*sizeof(ScreenQuadVertex), (void*)screenQuad, false);	
 
 		unsigned char* signature;
 		int signatureLength;
