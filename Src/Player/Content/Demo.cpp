@@ -177,13 +177,14 @@ protected:
 			m_pScene = new Pimp::Scene(gWorld);
 			gWorld->GetScenes().Add(m_pScene);
 			gWorld->GetElements().Add(m_pScene);
-			m_sceneIdx = gWorld->GetScenes().Size()-1;		
+			m_sceneIdx = gWorld->GetScenes().Size()-1;	
+
+			m_pScene->SetMaterial(pMat);
 		}
 	}
 
 	void SetSceneMaterial()
 	{
-		m_pScene->SetMaterial(m_pScene->GetMaterial());
 	}
 
 	// And this one on top of Tick() to activate said scene.
@@ -361,7 +362,7 @@ bool Tick(Pimp::Camera *camOverride)
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
 
-	const int sceneIdx = 1; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	const int sceneIdx = 2; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick();
 	else
