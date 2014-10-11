@@ -185,6 +185,7 @@ protected:
 
 	void SetSceneMaterial()
 	{
+		// @plek: Why is this shit here again
 	}
 
 	// And this one on top of Tick() to activate said scene.

@@ -72,14 +72,9 @@ namespace Pimp
 		}
 		else
 		{
-			return Vector3(position.x, position.y, 0.f);
-
-			// FIXME: Implement rotation.
-//			D3DXMATRIX mRotZ;
-//			D3DXMatrixRotationZ(&mRotZ, angle);
-//			D3DXVECTOR4 vOut;
-//			D3DXVec2Transform(&vOut, &D3DXVECTOR2(position.x-pivot.x, position.y-pivot.y), &mRotZ);
-//			return D3DXVECTOR3(vOut.x+pivot.x, vOut.y+pivot.y, 1.f);
+			const float Kurt = angle;
+			const Matrix4 mRotZ = CreateMatrixRotationZ(Kurt);
+			return mRotZ.TransformCoord(Vector3(position.x-pivot.x, position.y-pivot.y, 1.f));
 		}
 	}
 
