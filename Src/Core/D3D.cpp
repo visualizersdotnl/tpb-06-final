@@ -66,7 +66,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	D3D10_RASTERIZER_DESC rasterDesc;
 	memset(&rasterDesc, 0, sizeof(rasterDesc));
 	rasterDesc.FillMode = D3D10_FILL_SOLID;
-	rasterDesc.CullMode = D3D10_CULL_BACK;
+	rasterDesc.CullMode = D3D10_CULL_NONE; // FIXME: Back culling!
 	//rasterDesc.FrontCounterClockwise = FALSE;
 	//rasterDesc.DepthBias = 0;
 	//rasterDesc.DepthBiasClamp = 0;
@@ -161,8 +161,9 @@ D3D::~D3D()
 
 void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 {
-	static const FloatColor clearcolor(0,0,0,1);
+	static const FloatColor clearcolor(0,0,0,0);
 	device->ClearRenderTargetView(renderTarget, (float*)&clearcolor);
+	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.f, 0);
 }
 
 
@@ -176,7 +177,6 @@ void D3D::Flip()
 ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
 	ASSERT(numBytes > 0);
-	ASSERT(true == isDynamic || nullptr != initialData);
 
 	D3D10_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
@@ -186,15 +186,12 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, boo
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
-	if (false == isDynamic)
-	{
-		data.pSysMem = initialData;
-		data.SysMemPitch = 0;
-		data.SysMemSlicePitch = 0;
-	}
+	data.pSysMem = initialData;
+	data.SysMemPitch = 0;
+	data.SysMemSlicePitch = 0;
 
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (!isDynamic) ? &data : nullptr, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 
@@ -205,7 +202,6 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, boo
 ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic)
 {
 	ASSERT(numIndices > 0);
-	ASSERT(true == isDynamic || nullptr != initialData);
 
 	D3D10_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
@@ -215,15 +211,12 @@ ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bo
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
-	if (false == isDynamic)
-	{
-		data.pSysMem = initialData;
-		data.SysMemPitch = 0;
-		data.SysMemSlicePitch = 0;
-	}
+	data.pSysMem = initialData;
+	data.SysMemPitch = 0;
+	data.SysMemSlicePitch = 0;
 
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (!isDynamic) ? &data : nullptr, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 

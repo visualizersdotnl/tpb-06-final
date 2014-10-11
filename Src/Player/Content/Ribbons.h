@@ -28,11 +28,12 @@ public:
 
 	void BindAssets()
 	{
-		SetSceneMaterial(ribbonMat);
+		BindSceneMaterial(ribbonMat);
 	}
 
 	void Tick()
 	{
+		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 	}
 };

@@ -30,6 +30,6 @@ public:
 	void Tick()
 	{
 //		SetMainSceneAndDefaultCamera();
-		s_sprites->AddSpriteCenter(blaxMister, Pimp::D3D::BlendMode::BM_Additive, Vector2(0.f, 0.f), 1.f, 1.f);
+//		s_sprites->AddSprite(blaxMister, Pimp::D3D::BlendMode::BM_Additive, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), 1.f, 0.f);
 	}
 };

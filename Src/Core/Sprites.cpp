@@ -19,16 +19,12 @@ namespace Pimp
 	{
 		// Glow's business.
 		int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
-
 		const Vector2& visible_area = gD3D->GetRenderScale();
 		effect.SetVariableValue(varIndexRenderScale, visible_area);
-
-		varIndexPosition = effect.RegisterVariable("position", true);
-		varIndexSize = effect.RegisterVariable("size", true);
 		varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 
 		// Plek's business.
-		VB.vertices = gD3D->CreateVertexBuffer(kMaxSprites*sizeof(SpriteVertex), nullptr, true);
+		VB.vertices = gD3D->CreateVertexBuffer(6*kMaxSprites*sizeof(SpriteVertex), nullptr, true);
 		sprites.clear();
 
 		unsigned char* signature;
@@ -72,11 +68,11 @@ namespace Pimp
 	{
 		if (0.f == angle)
 		{
-			return Vector3(position.x, position.y, 1.f);
+			return Vector3(position.x, position.y, 0.f);
 		}
 		else
 		{
-			return Vector3(position.x, position.y, 1.f);
+			return Vector3(position.x, position.y, 0.f);
 
 			// FIXME: Implement rotation.
 //			D3DXMATRIX mRotZ;
@@ -114,32 +110,33 @@ namespace Pimp
 		const unsigned int ARGB = vertexColor;
 
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(-1.f, 1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(1.f, 1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 1.f);
 		++pVertices;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(1.f, -1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
+
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(-1.f, 1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(1.f, -1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(-1.f, -1.f), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 0.f);
 		++pVertices;
@@ -160,8 +157,6 @@ namespace Pimp
 
 		if (0 != sprites.size())
 		{
-			DWORD vbIdx = 0;
-
 			// Unlock vertex buffer.
 			ASSERT(nullptr != VB.vertices);
 			VB.vertices->Unmap();
@@ -173,20 +168,21 @@ namespace Pimp
 
 			sprites.sort();
 
+			DWORD vbIdx = 0;
 			for (Sprite sprite : sprites)
 			{
+				gD3D->SetBlendMode(sprite.blendMode);
+
 				Vector2 aspect_corrected_scale = sprite.size;
 				aspect_corrected_scale.y *= renderAspect;
 			
-				effect.SetVariableValue(varIndexPosition, sprite.position);
-				effect.SetVariableValue(varIndexSize, aspect_corrected_scale);
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
 
-				gD3D->SetBlendMode(sprite.blendMode);
+//				gD3D->DrawTriQuad(vbIdx);
+//				vbIdx += 6;
 
-				gD3D->DrawTriQuad(vbIdx);
-				vbIdx += 6;
+//				gD3D->DrawScreenQuad();
 			}
 		}
 

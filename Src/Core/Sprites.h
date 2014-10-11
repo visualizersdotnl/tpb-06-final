@@ -108,8 +108,6 @@ namespace Pimp
 		EffectTechnique effectTechnique;
 		EffectPass effectPass;
 
-		int varIndexPosition;
-		int varIndexSize;
 		int varIndexTextureMap;
 	};
 }

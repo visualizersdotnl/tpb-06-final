@@ -170,7 +170,7 @@ protected:
 	int m_sceneIdx;
 
 	// Call this in BindToWorld() to bind the shader to the main scene.
-	void SetSceneMaterial(Pimp::Material *pMat)
+	void BindSceneMaterial(Pimp::Material *pMat)
 	{
 		if (nullptr == m_pScene)
 		{
@@ -179,8 +179,11 @@ protected:
 			gWorld->GetElements().Add(m_pScene);
 			m_sceneIdx = gWorld->GetScenes().Size()-1;		
 		}
+	}
 
-		m_pScene->SetMaterial(pMat);
+	void SetSceneMaterial()
+	{
+		m_pScene->SetMaterial(m_pScene->GetMaterial());
 	}
 
 	// And this one on top of Tick() to activate said scene.
@@ -358,7 +361,7 @@ bool Tick(Pimp::Camera *camOverride)
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
 
-	const int sceneIdx = (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	const int sceneIdx = 1; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick();
 	else
@@ -372,5 +375,9 @@ bool Tick(Pimp::Camera *camOverride)
 
 	return true;
 }
+
+void WorldRender() {
+	gWorld->Render(s_sprites); }
+
 
 } // namespace Demo
