@@ -163,7 +163,7 @@ namespace Pimp
 			pVertices = nullptr;
 
 			// Bind buffers.
-			gD3D->BindVertexBuffer(0, VB.vertices, sizeof(Sprites::Sprite));
+			gD3D->BindVertexBuffer(0, VB.vertices, sizeof(SpriteVertex));
 			gD3D->BindInputLayout(VB.inputLayout);
 
 			sprites.sort();
@@ -179,10 +179,8 @@ namespace Pimp
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
 
-//				gD3D->DrawTriQuad(vbIdx);
-//				vbIdx += 6;
-
-//				gD3D->DrawScreenQuad();
+				gD3D->DrawTriQuad(vbIdx);
+				vbIdx += 6;
 			}
 		}
 
