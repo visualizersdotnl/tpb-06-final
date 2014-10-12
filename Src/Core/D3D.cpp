@@ -66,7 +66,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	D3D10_RASTERIZER_DESC rasterDesc;
 	memset(&rasterDesc, 0, sizeof(rasterDesc));
 	rasterDesc.FillMode = D3D10_FILL_SOLID;
-	rasterDesc.CullMode = D3D10_CULL_BACK; // FIXME: Back culling!
+	rasterDesc.CullMode = D3D10_CULL_BACK;
 	//rasterDesc.FrontCounterClockwise = FALSE;
 	//rasterDesc.DepthBias = 0;
 	//rasterDesc.DepthBiasClamp = 0;
@@ -124,26 +124,31 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Blend states
 	blendStates[BM_None] = NULL;
 
-	D3D10_BLEND_DESC blend;
-	memset(&blend, 0, sizeof(D3D10_BLEND_DESC));
+	D3D10_BLEND_DESC alphaDesc;
+	alphaDesc.AlphaToCoverageEnable = FALSE;
+	alphaDesc.BlendEnable[0] = TRUE;
+	memset(alphaDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	alphaDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	alphaDesc.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
+	alphaDesc.BlendOp = D3D10_BLEND_OP_ADD;
+	alphaDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	alphaDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	alphaDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(alphaDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&alphaDesc, &blendStates[BM_AlphaBlend]);
 
-	blend.BlendEnable[0] = TRUE;
-	blend.SrcBlend = D3D10_BLEND_SRC_ALPHA;
-	blend.DestBlend = D3D10_BLEND_ONE;
-	blend.BlendOp = D3D10_BLEND_OP_ADD;
-	blend.SrcBlendAlpha = D3D10_BLEND_ZERO;
-	blend.DestBlendAlpha = D3D10_BLEND_ZERO;
-	blend.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	blend.RenderTargetWriteMask[0] = D3D10_COLOR_WRITE_ENABLE_ALL;
-
-	hr = device->CreateBlendState(&blend, &blendStates[BM_Additive]);
-	D3D_ASSERT(hr);
-	ASSERT(blendStates[BM_Additive] != NULL);
-
-	blend.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
-	hr = device->CreateBlendState(&blend, &blendStates[BM_AlphaBlend]);
-	D3D_ASSERT(hr);
-	ASSERT(blendStates[BM_AlphaBlend] != NULL);
+	D3D10_BLEND_DESC addDesc;
+	addDesc.AlphaToCoverageEnable = FALSE;
+	addDesc.BlendEnable[0] = TRUE;
+	memset(addDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	addDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	addDesc.DestBlend = D3D10_BLEND_ONE;	
+	addDesc.BlendOp = D3D10_BLEND_OP_ADD;
+	addDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	addDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	addDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(addDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&addDesc, &blendStates[BM_Additive]);
 }
 
 

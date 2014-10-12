@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
 #include <list>
-
 #include <math/math.h>
 #include "Effect.h"
 #include "EffectPass.h"

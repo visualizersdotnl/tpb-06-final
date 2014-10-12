@@ -164,13 +164,13 @@ namespace Pimp
 			DWORD vbIdx = 0;
 			for (Sprite sprite : sprites)
 			{
-				gD3D->SetBlendMode(sprite.blendMode);
-
 				Vector2 aspect_corrected_scale = sprite.size;
 				aspect_corrected_scale.y *= renderAspect;
 			
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
+
+				gD3D->SetBlendMode(sprite.blendMode);
 
 				gD3D->DrawTriQuad(vbIdx);
 				vbIdx += 6;

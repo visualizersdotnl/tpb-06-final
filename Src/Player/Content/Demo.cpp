@@ -115,31 +115,45 @@ public:
 
 static std::vector<SyncTrack> syncTracks;
 
-const unsigned int kSync_SceneIdx = 0;
-const unsigned int kSync_fxTimeGlobal = 1;
+// Sync. references:
 
-// Sync. references.
-static const sync_track *st_bondBlob = nullptr;
+// global
+static const sync_track *st_SceneIdx = nullptr;
+static const sync_track *st_fxTimeGlobal = nullptr;
+
+// part: James Bond intro
+static const sync_track *st_bondBlob1 = nullptr;
+static const sync_track *st_bondBlobFade1 = nullptr;
+static const sync_track *st_bondBlob2 = nullptr;
+static const sync_track *st_bondBlobFade2 = nullptr;
+static const sync_track *st_bondAmpFade = nullptr;
+static const sync_track *st_bondGroupsFade = nullptr;
+static const sync_track *st_bondPresFade = nullptr;
 
 void CreateRocketTracks()
 {
 	syncTracks.clear();
 
-	// GLOBAL TRACKS (indexed, keep in line with the crap above)
-	//
-
-	syncTracks.push_back(SyncTrack("SceneIndex", false)); 
-	syncTracks.push_back(SyncTrack("fxTimeGlobal", true));
+	// GLOBAL TRACKS.
+	syncTracks.push_back(SyncTrack("SceneIndex", false, &st_SceneIdx)); 
+	syncTracks.push_back(SyncTrack("fxTimeGlobal", true, &st_fxTimeGlobal));
 
 	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	//
 
+	// KNOT
 	syncTracks.push_back(SyncTrack("knotTubeRadius1", true));
 	syncTracks.push_back(SyncTrack("knotTubeRadius2", true));
 	syncTracks.push_back(SyncTrack("knotTubeRadius3", true));
 	
-	syncTracks.push_back(SyncTrack("bondBlob", false, &st_bondBlob));
-	
+	// BONDTRO
+	syncTracks.push_back(SyncTrack("bondBlob1", false, &st_bondBlob1));
+	syncTracks.push_back(SyncTrack("bondBlobFade1", false, &st_bondBlobFade1));
+	syncTracks.push_back(SyncTrack("bondBlob2", false, &st_bondBlob2));
+	syncTracks.push_back(SyncTrack("bondBlobFade2", false, &st_bondBlobFade2));
+	syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
+	syncTracks.push_back(SyncTrack("bondGroupsFade", false, &st_bondGroupsFade));
+	syncTracks.push_back(SyncTrack("bondPresFade", false, &st_bondPresFade));
 }
 
  namespace Demo {
