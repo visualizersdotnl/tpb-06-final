@@ -29,7 +29,7 @@ static int MaxSoftShadowIqSteps = 80;
 static float MinimumDistance = pow(10.0, -2.6);
 
 // Maximum distance to trace.
-static float MaximumDistance = 200.0;
+static float MaximumDistance = 500.0;
 
 // Fraction of the actually calculated distance that we'll travel
 static float StepFraction = 0.7;
@@ -44,7 +44,7 @@ cbuffer paramsOnlyOnce
 	float FOV = 0.7f;
 
 	float fisheyeStrength = 6; //6;
-	float fisheyeFOV = 2.0; //1.0;
+	float fisheyeFOV = 4.0; //1.0;
 	
 	float fadeAmount = 1; // 0 = black, 1 = visible, 10 = white-ish
 
@@ -63,6 +63,7 @@ cbuffer paramsOnlyOnce
 	float knotTubeRadius2 = 0.03;
 	float knotTubeRadius3 = 0.05;
 
+	float knotFlash = 2;
 };
 
 
@@ -99,22 +100,19 @@ SamplerState samplerTexture
 
 
 
-float DistSmooth(float a, float b, out float matIndex)
+float DistSmooth(float a, float b)
 {
-	float k = 0.04;
-	
+	float k = 0.1f;
 	float d = b-a;
 	
 	// if a is much smaller than b, take a
 	if (d >= k)
 	{
-		matIndex = 0;
 		return a;
 	}
 	// if b is much smaller than a, take b
 	else if (d <= -k)
 	{
-		matIndex = 1;
 		return b;
 	}
 	// otherwise blend a little bit
@@ -127,7 +125,6 @@ float DistSmooth(float a, float b, out float matIndex)
 		float alpha = (d/(-k))*0.5 + 0.5;
 		alpha *= alpha*alpha;
 
-		matIndex = alpha;
 		
 		return lerp(a,b, alpha);
 	}
@@ -253,7 +250,7 @@ float DistToPolarTwister(float3 Pos, float Phase, float TubeRadius, float Period
 	float2 polarOffsetNorm = polarOffset / polarDist;
 	float k = 0.5 + 1.0f / ( (abs(polarOffsetNorm.x) * abs(polarOffsetNorm.y)) + 1);
 	
-	
+	k += 3.5*sin(ra*1.0 - fxTimeGlobal);
 	
 	float dist = polarDist - TubeRadius*k;
 	
@@ -290,14 +287,37 @@ float DistToKnot(float3 Pos, float Phase, float Offset, float TubeRadius, float 
 
 float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 {
-	HitMat = 0;
 	outUV = float2(0,0);
+	HitMat = 2;
+	//Pos.x = SafeMod(Pos.x, 5.0);
 
-	return
-		min(
-			min(DistToKnot(Pos, knotCycle1, 0.0f, knotTubeRadius1, 0.10),
-				DistToKnot(Pos, knotCycle2, 0.12f+knotTubeRadius1+knotTubeRadius2+knotTubeRadius3, knotTubeRadius2, 0.15)),
-			DistToKnot(Pos, knotCycle3, 0.05f+knotTubeRadius1+knotTubeRadius2, knotTubeRadius3, 0.65));
+	//Pos.z = SafeMod(Pos.z, 5.0);
+
+	float d = min(
+				DistToKnot(Pos, knotCycle1, 0.0f, knotTubeRadius1, 0.10),
+				DistToKnot(Pos, knotCycle2, 0.12f+knotTubeRadius1+knotTubeRadius2+knotTubeRadius3, knotTubeRadius2, 0.15));
+
+	float d1 = DistToKnot(Pos, knotCycle3, 0.05f+knotTubeRadius1+knotTubeRadius2, knotTubeRadius3, 0.65);
+
+	if (d1 < d)
+	{
+		d = d1;
+		HitMat = 0;
+	}
+
+
+	float dWall = Pos.y - 0.0;
+
+	if (d < dWall)
+	{
+
+		return d;
+	}
+	else
+	{
+		HitMat = 1;	
+		return dWall;
+	}
 }
 
 
@@ -402,6 +422,9 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	
 	float diffuseTerm = dot(inNormal, lightDir);
 
+	float stepsD = 5;
+	diffuseTerm = floor(diffuseTerm*stepsD)/stepsD;
+
 
 	float3 diffColor;
 	float3 specColor;
@@ -415,31 +438,32 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		// Ribbons
 		
 		float3 flatPos = inPos - inNormal*dot(inPos, inNormal);
-		float2 uv = inUV.xy * 1.20;
+		float2 uv = flatPos.xy * 0.20;
 
-		float3 texel = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		float3 texel = float3(255.0/255.0,255.0/255.0,255.0/255.0);//*texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
 		diffColor = texel * 0.90;
 
-		ambient = diffColor*0.05*texel.b;
-		specColor = (1.0).xxx;
-		specAmount = 0.2 * texel.r;// + 0.05 * texel.b;
+		ambient = diffColor*0.05;
+		specColor = texel*(1.0).xxx;
+		specAmount = 0.0 * texel.r;// + 0.05 * texel.b;
 	}
 	else if (inMatIndex == 1)
 	{
 		// Wall
 
 		float2 uv = inUV; //GetBlobbyUV(inPosLocal);
-		float3 texel = float3(0,0,0);//texture_ribbons_wall.SampleLevel(samplerTexture, uv, 0).xyz;
+		float3 texel = float3(255.0/255.0,0,42.0/255.0);//texture_ribbons_wall.SampleLevel(samplerTexture, uv, 0).xyz;
 
-		diffColor = texel * 0.6;
-		ambient = texel*0.2;
+		diffColor = texel * 0.1;
+		ambient = texel*0.4;
 		specAmount = 0.2;
 		specColor = float3(0,0,0); //float3(1,0,1);
 	}
 	else
 	{
 		// Light
-		ambient = float3(0.0, 1.0, 1.0) * 0.5;
+		ambient = float3(0.0, 0.0, 0.0) * 0.5 + knotFlash;
+		diffColor = (0.0).xxx;
 		specAmount = 0;
 		specColor = (0.0).xxx;
 	}
@@ -455,7 +479,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
-	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 6 ), 0.2);
+	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 3 ), 0.2);
 
 	return lightAmount * lightAttenuation * shadowFactor * (pow(2.0, fadeAmount)-1.0);
 }
@@ -491,7 +515,22 @@ PSOutput MainPS(VSOutput input)
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
 #else
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
-#endif			
+#endif		
+
+		if (hitMat == 1)
+		{
+			float4 hitPos2;
+			float4 reflectedDir = float4( reflect(dir.xyz, normal), 0 );
+			if (Trace(hitPos+reflectedDir*0.001, reflectedDir, hitPos2, hitMat, hitUV) && hitMat == 2)
+			{
+				float3 normal2 = Normal(hitPos2.xyz);	
+				float3 eyeDir = normalize(origin - hitPos2);
+	
+				result.color.xyz += 0.2*Shade(hitPos2.xyz, normal2, eyeDir, origin, hitMat, hitUV);
+				
+			}			
+		}
+
 	}
 	else
 	{
