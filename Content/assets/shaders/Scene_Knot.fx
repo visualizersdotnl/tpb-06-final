@@ -44,7 +44,7 @@ cbuffer paramsOnlyOnce
 	float FOV = 0.7f;
 
 	float fisheyeStrength = 6; //6;
-	float fisheyeFOV = 2.0; //1.0;
+	float fisheyeFOV = 4.0; //1.0;
 	
 	float fadeAmount = 1; // 0 = black, 1 = visible, 10 = white-ish
 
@@ -99,22 +99,19 @@ SamplerState samplerTexture
 
 
 
-float DistSmooth(float a, float b, out float matIndex)
+float DistSmooth(float a, float b)
 {
-	float k = 0.04;
-	
+	float k = 0.1f;
 	float d = b-a;
 	
 	// if a is much smaller than b, take a
 	if (d >= k)
 	{
-		matIndex = 0;
 		return a;
 	}
 	// if b is much smaller than a, take b
 	else if (d <= -k)
 	{
-		matIndex = 1;
 		return b;
 	}
 	// otherwise blend a little bit
@@ -127,7 +124,6 @@ float DistSmooth(float a, float b, out float matIndex)
 		float alpha = (d/(-k))*0.5 + 0.5;
 		alpha *= alpha*alpha;
 
-		matIndex = alpha;
 		
 		return lerp(a,b, alpha);
 	}
@@ -242,6 +238,9 @@ static float RotDenominator = 3.0;
 
 float DistToPolarTwister(float3 Pos, float Phase, float TubeRadius, float Period)
 {
+
+
+
 	float ra = Pos.z * (RotNumeratorX/RotDenominator);
 	float raz = Pos.z * (RotNumeratorY/RotDenominator);
 	
@@ -253,7 +252,7 @@ float DistToPolarTwister(float3 Pos, float Phase, float TubeRadius, float Period
 	float2 polarOffsetNorm = polarOffset / polarDist;
 	float k = 0.5 + 1.0f / ( (abs(polarOffsetNorm.x) * abs(polarOffsetNorm.y)) + 1);
 	
-	
+	k += 3.5*sin(ra*1.0 - fxTimeGlobal);
 	
 	float dist = polarDist - TubeRadius*k;
 	
@@ -293,9 +292,14 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 	HitMat = 0;
 	outUV = float2(0,0);
 
+	//Pos.x = SafeMod(Pos.x, 5.0);
+
+	//Pos.z = SafeMod(Pos.z, 5.0);
+
 	return
 		min(
-			min(DistToKnot(Pos, knotCycle1, 0.0f, knotTubeRadius1, 0.10),
+			min(
+				DistToKnot(Pos, knotCycle1, 0.0f, knotTubeRadius1, 0.10),
 				DistToKnot(Pos, knotCycle2, 0.12f+knotTubeRadius1+knotTubeRadius2+knotTubeRadius3, knotTubeRadius2, 0.15)),
 			DistToKnot(Pos, knotCycle3, 0.05f+knotTubeRadius1+knotTubeRadius2, knotTubeRadius3, 0.65));
 }

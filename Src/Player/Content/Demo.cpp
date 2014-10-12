@@ -116,12 +116,10 @@ void CreateRocketTracks()
 	// GLOBAL TRACKS (indexed, keep in line with the crap above)
 	syncTracks.push_back(SyncTrack("SceneIndex")); 
 	syncTracks.push_back(SyncTrack("fxTimeGlobal"));
-	syncTracks.push_back(SyncTrack("knotTubeRadius1"));
-	syncTracks.push_back(SyncTrack("knotTubeRadius2"));
-	syncTracks.push_back(SyncTrack("knotTubeRadius3"));
 
 	// SHADER ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	// ...
+	syncTracks.push_back(SyncTrack("knotGroupRadius"));
 }
 
  namespace Demo {
