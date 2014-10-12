@@ -120,6 +120,8 @@ void CreateRocketTracks()
 	// SHADER ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	// ...
 	syncTracks.push_back(SyncTrack("knotGroupRadius"));
+	syncTracks.push_back(SyncTrack("knotFlash"));
+	
 }
 
  namespace Demo {
