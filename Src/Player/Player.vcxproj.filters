@@ -16,9 +16,6 @@
     <Filter Include="/Content">
       <UniqueIdentifier>{edcf3efb-3bd2-42b3-8c8e-fbe460061b3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\/Assets/Shaders">
-      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="/../Libs/bass24">
       <UniqueIdentifier>{719c05ca-dba2-4523-8dac-45160c7f924a}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,9 @@
     </Filter>
     <Filter Include="/../Libs/rocket/lib">
       <UniqueIdentifier>{e65338f5-7fe1-4320-9719-c391a946dfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\/Assets/Shaders %28incomplete%29">
+      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
-      <Filter>/Content\/Assets/Shaders</Filter>
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
-      <Filter>/Content\/Assets/Shaders</Filter>
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

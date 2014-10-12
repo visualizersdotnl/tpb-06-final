@@ -72,8 +72,7 @@ namespace Pimp
 		}
 		else
 		{
-			const float Kurt = angle;
-			const Matrix4 mRotZ = CreateMatrixRotationZ(Kurt);
+			const Matrix4 mRotZ = CreateMatrixRotationZ(angle);
 			return mRotZ.TransformCoord(Vector3(position.x-pivot.x, position.y-pivot.y, 1.f));
 		}
 	}

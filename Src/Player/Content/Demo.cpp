@@ -81,12 +81,19 @@ static Pimp::MaterialParameter *CreateShaderParamFromTrack(const std::string &na
 class SyncTrack
 {
 public:
-	SyncTrack(const std::string &name) :
+	SyncTrack(const std::string &name, bool uploadForShaders, const sync_track **ppRef = nullptr) :
 		m_track(sync_get_track(s_Rocket, name.c_str())),
 		m_name(name) 
 	{
 		ASSERT(nullptr != m_track);
-		matParam = CreateShaderParamFromTrack(name);
+
+		if (true == uploadForShaders)
+			matParam = CreateShaderParamFromTrack(name);
+		else
+			matParam = nullptr;
+
+		if (nullptr != ppRef)
+			*ppRef = m_track;
 	}
 
 	float Get(double row) const 
@@ -97,7 +104,8 @@ public:
 	// Call each frame!
 	void Update(double row)
 	{
-		matParam->SetValue(Get(row));
+		if (nullptr != matParam)
+			matParam->SetValue(Get(row));
 	}
 
 	const sync_track *m_track;
@@ -110,9 +118,8 @@ static std::vector<SyncTrack> syncTracks;
 const unsigned int kSync_SceneIdx = 0;
 const unsigned int kSync_fxTimeGlobal = 1;
 
-// Indices for kSync.	
-size_t iBondBlobs = 0;
-size_t iBondBlobFade = 0;
+// Sync. references.
+static const sync_track *st_bondBlob = nullptr;
 
 void CreateRocketTracks()
 {
@@ -121,23 +128,18 @@ void CreateRocketTracks()
 	// GLOBAL TRACKS (indexed, keep in line with the crap above)
 	//
 
-	syncTracks.push_back(SyncTrack("SceneIndex")); 
-	syncTracks.push_back(SyncTrack("fxTimeGlobal"));
+	syncTracks.push_back(SyncTrack("SceneIndex", false)); 
+	syncTracks.push_back(SyncTrack("fxTimeGlobal", true));
 
 	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	//
 
-	syncTracks.push_back(SyncTrack("knotTubeRadius1"));
-	syncTracks.push_back(SyncTrack("knotTubeRadius2"));
-	syncTracks.push_back(SyncTrack("knotTubeRadius3"));
-
-	syncTracks.push_back(SyncTrack("bondBlob1"));
-	syncTracks.push_back(SyncTrack("bondBlob2"));
-	syncTracks.push_back(SyncTrack("bondBlob3"));
-	iBondBlobs = 3;
-
-	syncTracks.push_back(SyncTrack("bondBlobFade"));
-	iBondBlobFade = iBondBlobs+1;
+	syncTracks.push_back(SyncTrack("knotTubeRadius1", true));
+	syncTracks.push_back(SyncTrack("knotTubeRadius2", true));
+	syncTracks.push_back(SyncTrack("knotTubeRadius3", true));
+	
+	syncTracks.push_back(SyncTrack("bondBlob", false, &st_bondBlob));
+	
 }
 
  namespace Demo {
