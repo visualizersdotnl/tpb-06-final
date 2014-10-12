@@ -2,7 +2,7 @@
 class Bondtro : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *blaxMister;
+	Pimp::Texture2D *bondBlob;
 
 public:
 	Bondtro()
@@ -15,7 +15,7 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\ribbons_mesh.png", true, &blaxMister);
+		Assets::AddTexture2D("textures\\1\\bond-circle.png", true, &bondBlob); // 106*106
 	}
 
 	void BindAnimationNodes()
@@ -27,9 +27,42 @@ public:
 //		SetSceneMaterial(ribbonMat);
 	}
 
-	void Tick()
+	void Tick(double row)
 	{
 //		SetMainSceneAndDefaultCamera();
-		s_sprites->AddSprite(blaxMister, Pimp::D3D::BlendMode::BM_Additive, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), 1.f, 0.f);
+
+		const float assRat = Pimp::Configuration::Instance()->GetRenderAspectRatio();
+		float bal_1 = syncTracks[iBondBlobs+0].Get(row);
+//		float bal_2 = syncTracks[iBondBlobs+1].Get(row);
+//		float bal_3 = syncTracks[iBondBlobs+2].Get(row);
+			
+		const float blob_hoogte = 1080.f*0.5f-(bondBlob->GetHeight()*0.5f);
+
+	
+		s_sprites->AddSprite(
+				bondBlob,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Vector2(bal_1, blob_hoogte),
+				1.f);
+
+#if 0
+		if (balfade_1<=1.f)
+		{
+			s_sprites->AddSprite(
+					bondBlob,
+					Pimp::D3D::BlendMode::BM_Additive,
+					Vector2(bal_2, blob_hoogte),
+					1.f,
+					1.f);
+		}
+
+		s_sprites->AddSprite(
+				bondBlob,
+				Pimp::D3D::BlendMode::BM_Additive,
+				Vector2(bal_3, blob_hoogte),
+				1.f,
+				1.f);
+		}
+#endif
 	}
 };

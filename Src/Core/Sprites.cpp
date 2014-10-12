@@ -105,33 +105,32 @@ namespace Pimp
 		const unsigned int ARGB = vertexColor;
 
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(-1.f, 1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(1.f, 1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 1.f);
 		++pVertices;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(1.f, -1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
-
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(-1.f, 1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(1.f, -1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(-1.f, -1.f), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 0.f);
 		++pVertices;

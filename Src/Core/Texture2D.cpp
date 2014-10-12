@@ -99,9 +99,8 @@ namespace Pimp
 		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
 
 		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch ==  GetWidth()*4); // We're assuming this...
-
-		memcpy(destTexels, sourceTexels,  GetWidth()*GetHeight()*sizeof(DWORD));
+		for (int iY = 0; iY < GetHeight(); ++iY)
+			memcpy(destTexels + iY*mappedTex.RowPitch, sourceTexels + iY*GetWidth()*4, GetWidth()*4);
 
 		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
 	}

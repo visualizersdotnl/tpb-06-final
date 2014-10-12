@@ -31,7 +31,7 @@ public:
 		BindSceneMaterial(sceneMat);
 	}
 
-	void Tick()
+	void Tick(double row)
 	{
 		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();

@@ -1,4 +1,5 @@
 
+#include <vector>
 #include <Core/Core.h>
 #include <Shared/shared.h>
 #include <LodePNG/lodepng.h>
@@ -109,19 +110,34 @@ static std::vector<SyncTrack> syncTracks;
 const unsigned int kSync_SceneIdx = 0;
 const unsigned int kSync_fxTimeGlobal = 1;
 
+// Indices for kSync.	
+size_t iBondBlobs = 0;
+size_t iBondBlobFade = 0;
+
 void CreateRocketTracks()
 {
 	syncTracks.clear();
 
 	// GLOBAL TRACKS (indexed, keep in line with the crap above)
+	//
+
 	syncTracks.push_back(SyncTrack("SceneIndex")); 
 	syncTracks.push_back(SyncTrack("fxTimeGlobal"));
+
+	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
+	//
+
 	syncTracks.push_back(SyncTrack("knotTubeRadius1"));
 	syncTracks.push_back(SyncTrack("knotTubeRadius2"));
 	syncTracks.push_back(SyncTrack("knotTubeRadius3"));
 
-	// SHADER ONLY TRACKS (non-indexed, don't care as long as they're updated)
-	// ...
+	syncTracks.push_back(SyncTrack("bondBlob1"));
+	syncTracks.push_back(SyncTrack("bondBlob2"));
+	syncTracks.push_back(SyncTrack("bondBlob3"));
+	iBondBlobs = 3;
+
+	syncTracks.push_back(SyncTrack("bondBlobFade"));
+	iBondBlobFade = iBondBlobs+1;
 }
 
  namespace Demo {
@@ -162,7 +178,7 @@ public:
 	virtual void ReqAssets() = 0;           // Called prior to loading process: request assets only.
 	virtual void BindAnimationNodes() = 0;  // Called during loading process: create & bind animation related nodes.
 	virtual void BindAssets() = 0;          // Bind all resource based elements to the world (remember: asset loader takes care of it for assets).
-	virtual void Tick() = 0;                // To be called from Demo::Tick().
+	virtual void Tick(double row) = 0;      // To be called from Demo::Tick().
 
 protected:
 	// Assuming that each part has at least one scene shader.
@@ -185,7 +201,7 @@ protected:
 
 	void SetSceneMaterial()
 	{
-		// @plek: Why is this shit here again
+		// @plek: Why is this shit here again?
 	}
 
 	// And this one on top of Tick() to activate said scene.
@@ -215,7 +231,7 @@ const std::string GetAssetsPath()
 // World generator & resource release.
 //
 
-static std::vector<Scene *> s_scenes;
+static std::vector<Demo::Scene *> s_scenes;
 
 bool GenerateWorld(const char *rocketClient)
 {
@@ -363,9 +379,9 @@ bool Tick(Pimp::Camera *camOverride)
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
 
-	const int sceneIdx = 2; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	const int sceneIdx = 0; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
 	if (-1 != sceneIdx)
-		s_scenes[sceneIdx]->Tick();
+		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 		return false; // Demo is finished.
 
