@@ -3,7 +3,7 @@ class Bondtro : public Demo::Scene
 {
 private:
 	Pimp::Texture2D *bondBlob, *ampersand, *logoTPB, *logoInque, *present;
-	Pimp::Texture2D *bigCircle, *target, *blast, *pimp;
+	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
 
 public:
 	Bondtro()
@@ -25,6 +25,7 @@ public:
 		Assets::AddTexture2D("textures\\1\\bond-bullseye.png", false, &target);
 		Assets::AddTexture2D("textures\\1\\bond-hole.png", false, &blast);
 		Assets::AddTexture2D("textures\\1\\bond-meneer.png", false, &pimp);
+		Assets::AddTexture2D("textures\\1\\bond-title.png", false, &title);
 	}
 
 	void BindAnimationNodes()
@@ -59,6 +60,7 @@ public:
 		const float kTargetZ = 3.f;
 		const float kShotZ = 4.f;
 		const float kPimpZ = 5.f;
+		const float kTitleZ = 6.f;
 
 		// ball #1
 		s_sprites->AddSprite(
@@ -171,10 +173,20 @@ public:
 
 		// pimp
 		s_sprites->AddSpriteCenter(
-				pimp,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
-				kPimpZ,
-				pimpOpacity);
+			pimp,
+			Pimp::D3D::BlendMode::BM_AlphaBlend,
+			Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
+			kPimpZ,
+			pimpOpacity);
+
+		// title
+#if 0
+		s_sprites->AddSpriteCenter(
+			title,
+			Pimp::D3D::BlendMode::BM_Subtractive,
+			Vector2(1920.f*0.5f, 1080.f*0.5f),
+			kTitleZ,
+			1.f);
+#endif
 	}
 };

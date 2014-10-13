@@ -74,13 +74,13 @@
 		<track name="bondWhite">
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="2" row="312"/>
-			<key value="0.7" interpolation="0" row="344"/>
+			<key value="1" interpolation="0" row="344"/>
 			<key value="0" interpolation="1" row="369"/>
 			<key value="0.9" interpolation="0" row="376"/>
 			<key value="0" interpolation="1" row="381"/>
-			<key value="0.8" interpolation="0" row="392"/>
-			<key value="0.1" interpolation="2" row="404"/>
-			<key value="0.8" interpolation="0" row="419"/>
+			<key value="0.7" interpolation="0" row="392"/>
+			<key value="0.4" interpolation="2" row="404"/>
+			<key value="0" interpolation="0" row="419"/>
 		</track>
 		<track name="bondTarget">
 			<key value="0" interpolation="0" row="0"/>
