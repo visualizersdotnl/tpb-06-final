@@ -147,15 +147,14 @@ public:
 
 				for (int iShot = 0; iShot < shotFX; ++iShot)
 				{
-					if (iShot > 3)
-						break; // you done fucked up sync. brother
-
-					s_sprites->AddSprite(
-							blast,
-							Pimp::D3D::BlendMode::BM_Additive,
-							kShotPositions[iShot],
-							kShotZ,
-							1.f);
+					if (iShot < 3) {
+						s_sprites->AddSprite(
+								blast,
+								Pimp::D3D::BlendMode::BM_Additive,
+								kShotPositions[iShot],
+								kShotZ,
+								1.f);
+					}
 
 					// shotFX 4 means we play a sample only (shell drop)
 					if (false == blasted[iShot])

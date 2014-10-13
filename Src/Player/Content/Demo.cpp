@@ -414,7 +414,14 @@ void ReleaseWorld()
 	Assets::Release();
 
 	if (nullptr != s_Rocket)
+	{
+		// Dump tracks to disk.
+#ifndef SYNC_PLAYER
+		sync_save_tracks(s_Rocket);
+#endif
+
 		sync_destroy_device(s_Rocket);
+	}
 
 	delete gWorld;
 	gWorld = nullptr;
