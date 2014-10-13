@@ -155,9 +155,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_adjVP.MinDepth = 0.f;
 	m_adjVP.MaxDepth = 1.f;
 
-	// Set adj. viewport
-	device->RSSetViewports(1, &m_adjVP);
-
 	// Blend states
 	blendStates[BM_None] = NULL;
 
