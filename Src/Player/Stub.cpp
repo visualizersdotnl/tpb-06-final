@@ -533,6 +533,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 
 							// Done loading: kill loading bar.
 							gWorld->GetPostProcess()->SetLoadProgress(0.f);
+							DrawLoadProgress(nullptr, 0.f);
 
 							Stopwatch stopwatch;
 

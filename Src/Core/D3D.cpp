@@ -245,7 +245,7 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B,
 
 void D3D::Flip()
 {
-//	device->RSSetViewports(1, &m_fullVP);
+	device->RSSetViewports(1, &m_fullVP);
 	HRESULT hr = swapchain->Present(0,0);
 	D3D_ASSERT(hr);
 }
@@ -432,7 +432,7 @@ ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	ID3D10Texture2D* texture = NULL;
 	HRESULT hr = device->CreateTexture2D(&desc, NULL, &texture);
 	D3D_ASSERT(hr);
-	ASSERT(texture != NULL);	
+	ASSERT(texture != NULL);
 
 	return texture;
 }
