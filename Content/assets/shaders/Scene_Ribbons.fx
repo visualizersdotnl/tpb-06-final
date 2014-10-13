@@ -55,6 +55,7 @@ cbuffer paramsOnlyOnce
 	float ribbonsSpeed = 0.5; //< How fast do our ribbons wave?
 	float ribbonsAppear = 1.0; //< [0..1] 0=invisible, 1=visible
 	float ribbonsPhase = 0; //< Extra value added to wave time.
+	float ribbonsWonkyness = 0; //< [0..1] The higher, the more they'll wiggle with depth.
 };
 
 
@@ -181,6 +182,8 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 {
 	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
 	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+
+	Pos.z += ribbonsWonkyness*inTwirlRadius*0.4*cos(Pos.y*inTwirlFreq*7.0+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
 
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;

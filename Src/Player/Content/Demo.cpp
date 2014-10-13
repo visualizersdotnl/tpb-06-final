@@ -168,6 +168,7 @@ void CreateRocketTracks()
 	// RIBBONS
 	syncTracks.push_back(SyncTrack("ribbonsAppear", true));	
 	syncTracks.push_back(SyncTrack("ribbonsPhase", true));	
+	syncTracks.push_back(SyncTrack("ribbonsWonkyness", true));		
 	
 
 	// KNOT
