@@ -90,7 +90,7 @@ void DrawLoadProgress(float progress)
 
 	Pimp::PostProcess* postProcess = gWorld->GetPostProcess();
 	postProcess->SetLoadProgress(progress);
-	postProcess->Clear();
+	postProcess->Clear(0.f, 0.f, 0.f);
 	postProcess->BindForRenderScene();
 
 	Pimp::gD3D->ClearBackBuffer();

@@ -213,7 +213,7 @@ namespace Assets
 		s_textures.clear();
 	}
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 
 	void ReplaceMaterial(Pimp::Material *pOld, Pimp::Material *pNew)
 	{

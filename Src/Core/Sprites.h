@@ -1,7 +1,7 @@
 #pragma once
 
+#include <list>
 #include <math/math.h>
-#include <vector>
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
@@ -10,66 +10,102 @@ namespace Pimp
 {
 	class Texture2D;
 
-	class Sprite
-	{
-	private:
-		Vector2 position;
-		Vector2 size;
-		Texture2D* texture;
-
-	public:
-		Sprite(const Vector2& position, const Vector2& size, Texture2D* texture)
-			: position(position), size(size), texture(texture) 
-		{}
-
-		const Vector2& GetPosition() const 
-		{ 
-			return position; 
-		}
-		void SetPosition(const Vector2& val) 
-		{ 
-			position = val; 
-		}		
-
-		const Vector2& GetSize() const 
-		{ 
-			return size; 
-		}
-		void SetSize(const Vector2& val) 
-		{ 
-			size = val; 
-		}
-
-		Texture2D* GetTexture() const 
-		{ 
-			return texture; 
-		}
-		void SetTexture(Texture2D* val) 
-		{ 
-			texture = val; 
-		}
-	};
-
 	class Sprites
 	{
+	public:
+		Sprites();
+		~Sprites();
+
+		struct Sprite
+		{
+			/* const */ Texture2D *pTexture;
+			D3D::BlendMode blendMode;
+			Vector2 position, size;
+			float sortZ;
+			size_t vertexOffs;
+
+			// std::sort() predicate
+			bool operator <(const Sprite &RHS) const {
+				return sortZ < RHS.sortZ;
+			}
+		};
+
+		void AddSprite(
+			/* const */ Texture2D *pTexture,
+			D3D::BlendMode blendMode,
+			const unsigned int vertexColor,
+			const Vector2 &topLeft,
+			const Vector2 &size,
+			float sortZ,
+			float rotateZ = 0.f);
+
+		// simplified AddSprite()
+		void AddSprite(
+			/* const */ Texture2D *pTexture,
+			D3D::BlendMode blendMode,
+			const Vector2 &topLeft,
+			float sortZ,
+			float alpha = 1.f)
+		{
+			ASSERT(NULL != pTexture);
+			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
+			const unsigned char iAlpha = int(alpha*255.f);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ);
+		}
+
+		// AddSprite() simplified & centered
+		void AddSpriteCenter(
+			/* const */ Texture2D *pTexture,
+			Pimp::D3D::BlendMode blendMode,
+			const Vector2 &center,
+			float sortZ,
+			float alpha = 1.f)
+		{
+			ASSERT(NULL != pTexture);
+			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
+			const Vector2 topLeft = center - size*0.5f;
+			const unsigned char iAlpha = int(alpha*255.f);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ);
+		}
+
+		void Flush();		
+
 	private:
-		std::vector<Sprite*> sprites;	// Pointers to sprites. Owned by this class.
+		class SpriteVertexBuffer
+		{
+		public:
+			ID3D10Buffer* vertices;
+			ID3D10InputLayout* inputLayout;
+
+			SpriteVertexBuffer() :
+				vertices(nullptr),
+				inputLayout(nullptr) {}
+
+			~SpriteVertexBuffer() 
+			{ 
+				if (nullptr != vertices) 
+					vertices->Release(); 
+
+				if (nullptr != inputLayout) 
+					inputLayout->Release(); 
+			}
+
+			void Bind();
+		} VB;
+
+		std::list<Sprite> sprites;
+
+		struct SpriteVertex
+		{
+			Vector3 position;
+			unsigned int ARGB;
+			Vector2 UV;
+		} *pVertices;
 
 		Effect effect;
 		EffectTechnique effectTechnique;
 		EffectPass effectPass;
 
-		int varIndexPosition;
-		int varIndexSize;
 		int varIndexTextureMap;
-
-	public:
-		Sprites();
-		~Sprites();
-
-		void AddSprite(Sprite* sprite);
-		void RemoveSprite(Sprite* sprite);
-
-		void Render();		
 	};
 }

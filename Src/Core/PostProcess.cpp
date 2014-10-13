@@ -262,10 +262,10 @@ void PostProcess::InitBloomBlurSamples(Vector2 filterSizeInv)
 }
 
 
-void PostProcess::Clear()
+void PostProcess::Clear(float clearR, float clearG, float clearB)
 {
+	gD3D->Clear(renderTargetSceneMS->GetRenderTargetView(), clearR, clearG, clearB, 1.f);
 	gD3D->ClearDepthStencil();
-	gD3D->Clear(renderTargetSceneMS->GetRenderTargetView());
 }
 
 

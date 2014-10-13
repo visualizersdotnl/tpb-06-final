@@ -13,8 +13,6 @@ DebugCamera::DebugCamera(Pimp::World* world) :
 
 	AddChildToParent(xform,world->GetRootNode());
 	AddChildToParent(camera,xform);
-
-	world->SetCurrentUserCamera(camera);
 }
 
 
@@ -25,10 +23,9 @@ void DebugCamera::SetEnabled( bool enabled )
 
 	isEnabled = enabled;
 
-	world->SetUseCameraDirection(!isEnabled);
-
 	if (isEnabled)
 	{
+		// Put debug cam. into action
 		Pimp::Camera* prevDirectedCam = world->GetCurrentCamera();
 		ASSERT(prevDirectedCam->GetParents().Size() == 1);
 		Pimp::Node* prevDirectedCamParent = prevDirectedCam->GetParents()[0];
@@ -37,8 +34,9 @@ void DebugCamera::SetEnabled( bool enabled )
 
 		xform->SetTranslation(prevDirectedCamXform->GetTranslation());
 		xform->SetRotation(prevDirectedCamXform->GetRotation());
+
+		world->SetCurrentUserCamera(camera);
 	}
-	
 }
 
 void DebugCamera::Move( const Vector3& directionViewSpace )

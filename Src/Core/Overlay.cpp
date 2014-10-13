@@ -26,7 +26,7 @@ namespace Pimp
 		{
 			material->SetOverlayOpacityAndProgress(opacity, progress, max(0.0f, ownerWorld->GetCurrentTime() - startTime));
 			material->Bind(camera);
-			gD3D->DrawScreenQuad();
+			gD3D->DrawTriQuad(0);
 		}
 	}
 

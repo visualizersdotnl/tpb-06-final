@@ -27,13 +27,13 @@ namespace Pimp
 		D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain);
 		~D3D();
 
-		void Clear(ID3D10RenderTargetView* renderTarget);
+		void Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A);
 		void ClearBackBuffer();
 		void ClearDepthStencil();
 		void Flip();
 
-		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData);
-		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData);
+		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
+		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
 
 		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
 		void BindIndexBuffer(ID3D10Buffer* buffer);
@@ -43,7 +43,8 @@ namespace Pimp
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
-		void DrawScreenQuad();
+		void DrawTriQuad(DWORD offset);
+		void DrawScreenQuad() { DrawTriQuad(0); } 
 
 		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
 
@@ -88,10 +89,15 @@ namespace Pimp
 			BM_None,
 			BM_AlphaBlend,
 			BM_Additive,
+			BM_Subtractive,
 			MAX_BlendMode
 		};
 
 		void SetBlendMode(BlendMode blendMode);
+
+		// This texture is quite useful for stuff like untextured sprites.
+		// It's just 4*4 0xffffffff.
+		Texture2D *GetWhiteTex() { return pWhiteTex; }
 
 	private:
 		int viewWidth, viewHeight;
@@ -106,6 +112,7 @@ namespace Pimp
 		DepthStencil* depthStencil;
 		ID3D10DepthStencilState* depthStencilState;
 		ID3D10BlendState* blendStates[MAX_BlendMode];
+		Texture2D *pWhiteTex;
 
 		// Scale (XY) to render with. Includes aspect ratio correction (letterboxing).
 		Vector2 renderScale; 

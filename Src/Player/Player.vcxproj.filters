@@ -16,17 +16,17 @@
     <Filter Include="/Content">
       <UniqueIdentifier>{edcf3efb-3bd2-42b3-8c8e-fbe460061b3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\/Assets/Shaders">
-      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="/../Libs/bass24">
       <UniqueIdentifier>{719c05ca-dba2-4523-8dac-45160c7f924a}</UniqueIdentifier>
     </Filter>
     <Filter Include="/../Libs/bass24\/c/x64">
       <UniqueIdentifier>{ded9246d-4a35-4391-852e-9edc239b05eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/../Libs/rocket-0.9/sync">
-      <UniqueIdentifier>{613c2965-988f-4488-bb10-986bbca0c304}</UniqueIdentifier>
+    <Filter Include="/../Libs/rocket/lib">
+      <UniqueIdentifier>{e65338f5-7fe1-4320-9719-c391a946dfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\/Assets/Shaders %28incomplete%29">
+      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,14 +54,14 @@
     <ClCompile Include="Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Libs\rocket-0.9\sync\data.c">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClCompile Include="..\Libs\rocket\lib\data.c">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Libs\rocket-0.9\sync\device.c">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClCompile Include="..\Libs\rocket\lib\device.c">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Libs\rocket-0.9\sync\track.c">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClCompile Include="..\Libs\rocket\lib\track.c">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,20 +101,26 @@
     <ClInclude Include="Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\base.h">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\base.h">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\data.h">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\data.h">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\device.h">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\device.h">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\sync.h">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\sync.h">
+      <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\track.h">
-      <Filter>/../Libs/rocket-0.9/sync</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\track.h">
+      <Filter>/../Libs/rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Bondtro.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Knot.h">
+      <Filter>/Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -129,10 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
-      <Filter>/Content\/Assets/Shaders</Filter>
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
-      <Filter>/Content\/Assets/Shaders</Filter>
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

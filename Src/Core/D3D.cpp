@@ -6,11 +6,6 @@
 
 #include "D3DCompiler.h"
 
-#ifdef _DEBUG
-//#define D3D_DISABLE_SPECIFIC_WARNINGS
-//#define D3D_ENABLE_DEBUG	//< Doesn't work on Windows 8! (http://xboxforums.create.msdn.com/forums/t/110782.aspx)
-#endif
-
 namespace Pimp
 {
 
@@ -23,6 +18,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 ,	renderTargetBackBuffer(nullptr)
 ,	depthStencil(nullptr)
 ,	depthStencilState(nullptr)
+,	pWhiteTex(nullptr)
 {
 	memset(blendStates, 0, MAX_BlendMode*sizeof(BlendMode));
 
@@ -129,31 +125,83 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Blend states
 	blendStates[BM_None] = NULL;
 
-	D3D10_BLEND_DESC blend;
-	memset(&blend, 0, sizeof(D3D10_BLEND_DESC));
+	D3D10_BLEND_DESC alphaDesc;
+	alphaDesc.AlphaToCoverageEnable = FALSE;
+	alphaDesc.BlendEnable[0] = TRUE;
+	memset(alphaDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	alphaDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	alphaDesc.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
+	alphaDesc.BlendOp = D3D10_BLEND_OP_ADD;
+	alphaDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	alphaDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	alphaDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(alphaDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&alphaDesc, &blendStates[BM_AlphaBlend]);
 
-	blend.BlendEnable[0] = TRUE;
-	blend.SrcBlend = D3D10_BLEND_SRC_ALPHA;
-	blend.DestBlend = D3D10_BLEND_ONE;
-	blend.BlendOp = D3D10_BLEND_OP_ADD;
-	blend.SrcBlendAlpha = D3D10_BLEND_ZERO;
-	blend.DestBlendAlpha = D3D10_BLEND_ZERO;
-	blend.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	blend.RenderTargetWriteMask[0] = D3D10_COLOR_WRITE_ENABLE_ALL;
+	D3D10_BLEND_DESC addDesc;
+	addDesc.AlphaToCoverageEnable = FALSE;
+	addDesc.BlendEnable[0] = TRUE;
+	memset(addDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	addDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	addDesc.DestBlend = D3D10_BLEND_ONE;	
+	addDesc.BlendOp = D3D10_BLEND_OP_ADD;
+	addDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	addDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	addDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(addDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&addDesc, &blendStates[BM_Additive]);
 
-	hr = device->CreateBlendState(&blend, &blendStates[BM_Additive]);
-	D3D_ASSERT(hr);
-	ASSERT(blendStates[BM_Additive] != NULL);
+	D3D10_BLEND_DESC subDesc;
+	subDesc.AlphaToCoverageEnable = FALSE;
+	subDesc.BlendEnable[0] = TRUE;
+	memset(subDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	subDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	subDesc.DestBlend = D3D10_BLEND_ONE;
+	subDesc.BlendOp = D3D10_BLEND_OP_REV_SUBTRACT;
+	subDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	subDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	subDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(subDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&subDesc, &blendStates[BM_Subtractive]);
 
-	blend.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
-	hr = device->CreateBlendState(&blend, &blendStates[BM_AlphaBlend]);
-	D3D_ASSERT(hr);
-	ASSERT(blendStates[BM_AlphaBlend] != NULL);
+	// create default (white) texture
+	{
+		D3D10_TEXTURE2D_DESC texDesc;
+		texDesc.Width = 4;
+		texDesc.Height = 4;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.SampleDesc.Quality = 0;
+		texDesc.Usage = D3D10_USAGE_DEFAULT;
+		texDesc.BindFlags = D3D10_BIND_SHADER_RESOURCE;
+		texDesc.CPUAccessFlags = 0;
+		texDesc.MiscFlags = 0;
+
+		unsigned int whitePixels[4*4];
+		memset(whitePixels, -1, 4*4*sizeof(int));
+
+		D3D10_SUBRESOURCE_DATA whiteStuff;
+		whiteStuff.pSysMem = whitePixels;
+		whiteStuff.SysMemPitch = 4*sizeof(int);
+		whiteStuff.SysMemSlicePitch = 0;
+
+		ID3D10Texture2D *pResource;
+		VERIFY(S_OK == device->CreateTexture2D(&texDesc, &whiteStuff, &pResource));
+
+		ID3D10ShaderResourceView *pView;
+		VERIFY(S_OK == device->CreateShaderResourceView(pResource, NULL, &pView));
+
+		pWhiteTex = new Texture2D("texWhite", 4, 4, pResource, pView);
+	}
 }
 
 
 D3D::~D3D()
 {
+	delete pWhiteTex;
+
 	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
 		if (nullptr != blendStates[iBS]) blendStates[iBS]->Release();
 	
@@ -164,10 +212,11 @@ D3D::~D3D()
 }
 
 
-void D3D::Clear(ID3D10RenderTargetView* renderTarget)
+void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
 {
-	static const FloatColor clearcolor(0,0,0,1);
-	device->ClearRenderTargetView(renderTarget, (float*)&clearcolor);
+	const float RGBA[4] = { R, G, B, A };
+	device->ClearRenderTargetView(renderTarget, RGBA);
+//	ClearDepthStencil();
 }
 
 
@@ -178,15 +227,15 @@ void D3D::Flip()
 }
 
 
-ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
+ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
 	ASSERT(numBytes > 0);
 
 	D3D10_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D10_USAGE_IMMUTABLE;
+	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
 	bufferDesc.ByteWidth = numBytes;
 	bufferDesc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.CPUAccessFlags = (isDynamic) ? D3D10_CPU_ACCESS_WRITE : 0;
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
@@ -194,8 +243,9 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
 	data.SysMemPitch = 0;
 	data.SysMemSlicePitch = 0;
 
+
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (initialData == NULL) ? nullptr : &data, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 
@@ -203,22 +253,27 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData)
 }
 
 
-ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData)
+ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic)
 {
+	ASSERT(numIndices > 0);
+
 	D3D10_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D10_USAGE_IMMUTABLE;
+	bufferDesc.Usage = (isDynamic) ? D3D10_USAGE_DYNAMIC : D3D10_USAGE_IMMUTABLE;
 	bufferDesc.ByteWidth = numIndices * sizeof(DWORD);
 	bufferDesc.BindFlags = D3D10_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.CPUAccessFlags = (isDynamic) ? D3D10_CPU_ACCESS_WRITE : 0;
 	bufferDesc.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA data;
-	data.pSysMem = initialData;
-	data.SysMemPitch = 0;
-	data.SysMemSlicePitch = 0;
+	if (false == isDynamic)
+	{
+		data.pSysMem = initialData;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
+	}
 
 	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, &data, &buffer);
+	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
 	D3D_ASSERT(hr);
 	ASSERT(buffer != NULL);
 
@@ -245,9 +300,9 @@ void D3D::BindInputLayout(ID3D10InputLayout* layout)
 }
 
 
-void D3D::DrawScreenQuad()
+void D3D::DrawTriQuad(DWORD offset)
 {
-	device->Draw(6, 0);
+	device->Draw(6, offset);
 }
 
 
@@ -377,7 +432,7 @@ void D3D::GetViewportSize(int* width, int* height)
 
 void D3D::ClearBackBuffer()
 {
-	Clear(renderTargetBackBuffer->GetRenderTargetView());
+	Clear(renderTargetBackBuffer->GetRenderTargetView(), 0.f, 0.f, 0.f, 1.f);
 }
 
 void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )
@@ -550,7 +605,8 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 		&shader,
 		&errors);
 
-	D3D_ASSERT_MSG(hr, errors->GetBufferPointer());
+	char* errrs = (errors != NULL) ? (char*)errors->GetBufferPointer() : NULL;
+	D3D_ASSERT_MSG(hr, errrs);
 	if (hr != S_OK)
 		return false;
 

@@ -44,13 +44,13 @@ cbuffer paramsOnlyOnce
 	float FOV = 0.7f;
 
 	float fisheyeStrength = 6; //6;
-	float fisheyeFOV = 1.0; //1.0;
+	float fisheyeFOV = 2.0; //1.0;
 	
 	float fadeAmount = 1; // 0 = black, 1 = visible, 10 = white-ish
 
 	float4 testLightPos = float4(20.0, 20.0, 20.0, 1.0);
 
-	float testSceneTime = 0;	
+	float fxTimeGlobal = 0;	
 };
 
 
@@ -74,7 +74,7 @@ VSOutput MainVS(VSInput input)
 
 Texture2D texture_ribbons_mesh;
 Texture2D texture_ribbons_wall;
-
+Texture2D texture_even_lachen;
 
 SamplerState samplerTexture
 {
@@ -175,10 +175,8 @@ float DistToSphere(float3 p, float r)
 
 float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRadius, float inTwirlFreq, out float2 outUV)
 {
-
-
-	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + testSceneTime);
-	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + testSceneTime);
+	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
+	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
 
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;
@@ -193,7 +191,7 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.2, 0.02);
-	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + testSceneTime);
+	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + fxTimeGlobal);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.2, outUV);	
 }
@@ -202,7 +200,7 @@ float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 float DistToRibboInner(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.15, 0.03);
-	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + testSceneTime);
+	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + fxTimeGlobal);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.5, outUV);	
 }
@@ -362,9 +360,9 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		// Ribbons
 		
 		float3 flatPos = inPos - inNormal*dot(inPos, inNormal);
-		float2 uv = inUV;
+		float2 uv = inUV.xy * 1.20;
 
-		float3 texel = texture_ribbons_mesh.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		float3 texel = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
 		diffColor = texel * 0.90;
 
 		ambient = diffColor*0.05*texel.b;
@@ -376,12 +374,12 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		// Wall
 
 		float2 uv = inUV; //GetBlobbyUV(inPosLocal);
-		float3 texel = texture_ribbons_wall.SampleLevel(samplerTexture, uv, 0).xyz;
+		float3 texel = float3(0,0,0);//texture_ribbons_wall.SampleLevel(samplerTexture, uv, 0).xyz;
 
 		diffColor = texel * 0.6;
 		ambient = texel*0.2;
 		specAmount = 0.2;
-		specColor = float3(1,0,1);
+		specColor = float3(0,0,0); //float3(1,0,1);
 	}
 	else
 	{

@@ -48,8 +48,6 @@ namespace Pimp
 		PostProcess* postProcess;
 		ScreenQuadVertexBuffer* screenQuadVertexBuffer;
 
-		Sprites* sprites;
-
 		float currentTime;
 
 		float motionBlurAmount;
@@ -107,13 +105,8 @@ namespace Pimp
 			return postProcess;
 		}
 
-		Sprites* GetSprites() const
-		{
-			return sprites;
-		}
-
 		void Tick(float deltaTime);
-		void Render();
+		void Render(float clearR, float clearG, float clearB, Pimp::Sprites *);
 
 		void SetCurrentUserCamera(Camera* camera);
 		Camera* GetCurrentUserCamera() const 

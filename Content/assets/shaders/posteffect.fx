@@ -21,12 +21,16 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
-	float4x4 viewInvMatrix; // required by code, although not used.
+	// Required by code, although not used..
+	float4x4 viewInvMatrix; 
+
+	// Don't think we'll be using this.
 	float sceneRenderLOD = 1;		
 	float2 quadScaleFactor;
 	float opacity = 1;
-	
-	float fadeInOut = 0; // 0 = normal, 1 = white, -100 = real black!
+
+	// This is bound to a Rocket track!	
+	float fadeInOut; // 0 = normal, 1 = white, -100 = real black!
 };
 
 

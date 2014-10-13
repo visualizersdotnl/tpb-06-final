@@ -23,9 +23,6 @@
 	- Phase out FixedSizeList use where unnecessary.
 	- Create a general platform include (system, STL, CRT, assertions, et cetera).
 	- Remove unused (commented) code.
-
-	Note on Rocket:
-	- Enable toggle in Debug/Release, always on in Design.
 */
 
 #include <Windows.h>
@@ -81,7 +78,7 @@ static ID3D10Device1  *s_pD3D = NULL;
 static IDXGISwapChain *s_pSwapChain = NULL;
 
 // Debug camera and it's state.
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 static AutoShaderReload* s_pAutoShaderReloader;
 static DebugCamera* s_pDebugCamera;
 
@@ -161,25 +158,24 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 	switch (uMsg)
 	{
 		// debug camera mouse input
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 	case WM_LBUTTONDOWN:
 		s_isMouseTracking = true;
 		s_mouseTrackInitialX = LOWORD(lParam);
 		s_mouseTrackInitialY = HIWORD(lParam);
-		s_pDebugCamera->StartLookAt();
+		s_pDebugCamera->StartLookAt(); 
 		break;
+
 	case WM_LBUTTONUP:
 		s_isMouseTracking = false;
 		s_pDebugCamera->EndLookAt();
 		break;
+
 	case WM_MOUSEMOVE:
-		if (s_isMouseTracking)
-		{
+		if (s_isMouseTracking) {
 			int posX = LOWORD(lParam);
 			int posY = HIWORD(lParam);
-
-			s_pDebugCamera->LookAt(posX - s_mouseTrackInitialX, posY - s_mouseTrackInitialY);
-		}
+			s_pDebugCamera->LookAt(posX - s_mouseTrackInitialX, posY - s_mouseTrackInitialY); }
 		break;
 #endif
 
@@ -196,7 +192,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			break;
 		
 		// debug camera (un)pause 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 		case VK_SPACE:
 			{
 				s_isPaused = !s_isPaused;
@@ -205,14 +201,14 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 				s_pDebugCamera->SetEnabled(s_isPaused);
 
 				if (false == kWindowed)
-					ShowCursor(s_isPaused);
+					ShowCursor(true == s_isPaused);
 			}
 			break;
 #endif
 		}
 
 		// debug camera keyboard input
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 		if (s_isPaused)
 		{
 			if (wParam == 'A')
@@ -256,12 +252,14 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			{
 				// exit full screen
 				if (NULL != s_pSwapChain)
+				{
 					s_pSwapChain->SetFullscreenState(FALSE, NULL);
 
-				// push window to bottom of the Z order
-				SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+					// push window to bottom of the Z order
+					SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+				}
 			}
-			
+
 			s_wndIsActive = false;
 			break;
 		};
@@ -364,7 +362,7 @@ static bool UpdateAppWindow(bool &renderFrame)
 		// no message: window alive?
 		if (NULL != s_hWnd)
 		{
-			if (!kWindowed && s_wndIsActive)
+			if (false == kWindowed && s_wndIsActive)
 			{
 				// kill cursor for active full screen window
 				SetCursor(NULL);
@@ -460,7 +458,7 @@ static void DestroyDirect3D()
 	SAFE_RELEASE(s_pD3D);
 }
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
+int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
 	// change path to target root
 	SetCurrentDirectory("..\\");
@@ -512,9 +510,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
-						if (true == Demo::GenerateWorld())
+						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
+						if (true == Demo::GenerateWorld(rocketClient))
 						{
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
 
 							s_pDebugCamera = new DebugCamera(gWorld);
@@ -532,9 +531,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							DEBUG_LOG("============================================================================");
 #endif	
 
-							// Done loading: kill loading bar & start soundtrack.
+							// Done loading: kill loading bar.
 							gWorld->GetPostProcess()->SetLoadProgress(0.f);
-							Audio_Start();
 
 							Stopwatch stopwatch;
 
@@ -548,16 +546,30 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 							{
 								// render frame
 								float timeElapsed = stopwatch.GetSecondsElapsedAndReset();
-#ifdef _DEBUG
-								if (s_isPaused)
-									timeElapsed = 0.f;
 
+#if defined(_DEBUG) || defined(_DESIGN)
 								s_pAutoShaderReloader->Update();
-#endif
 
-								Demo::Tick();
+								if (true == s_isPaused)
+								{
+									Demo::Tick(s_pDebugCamera->Get());
+									gWorld->Tick(0.f);
+								}
+								else
+								{
+									if (false == Demo::Tick(nullptr))
+										break;
+
+									gWorld->Tick(timeElapsed);
+								}
+#else
+								if (false == Demo::Tick(nullptr))
+									break;
+
 								gWorld->Tick(timeElapsed);
-								gWorld->Render();
+#endif
+								
+								Demo::WorldRender();
 
 								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
 								// FIXME: ignoring serious errors
@@ -579,9 +591,11 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 										numFramesFPS = 0;
 									}
 								}
+
+								Audio_Update();
 							}
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN)
 							delete s_pDebugCamera;
 							delete s_pAutoShaderReloader;
 #endif	
@@ -614,6 +628,32 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdS
 		MessageBox(NULL, s_lastError.c_str(), "Error!", MB_OK | MB_ICONEXCLAMATION);
 		return 1;
 	}
+
+	return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCmdShow)
+{
+#if !defined(_DEBUG) && !defined(_DESIGN)
+	__try 
+	{
+#endif
+
+	return Main(hInstance, hPrevInstance, cmdLine, nCmdShow);
+
+#if !defined(_DEBUG) && !defined(_DESIGN)
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		// Try a few things to restore the desktop.
+		SAFE_RELEASE(s_pD3D);
+		if (NULL != s_hWnd) DestroyWindow(s_hWnd);
+
+		// Sound the alarm bell :-)
+		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", PIMPPLAYER_RELEASE_ID, MB_OK | MB_ICONEXCLAMATION);
+		_exit(1); // Better do as little as possible past this point.
+	}
+#endif
 
 	return 0;
 }

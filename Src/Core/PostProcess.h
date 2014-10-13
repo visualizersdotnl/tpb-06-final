@@ -15,7 +15,7 @@ namespace Pimp
 		PostProcess();
 		~PostProcess();
 
-		void Clear();
+		void Clear(float clearR, float clearG, float clearB);
 		void BindForRenderScene();
 		void RenderPostProcess(const Camera::DOFSettings& dofSettings);
 

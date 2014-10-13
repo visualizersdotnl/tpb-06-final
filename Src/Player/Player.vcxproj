@@ -107,7 +107,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>../;../libs;Content;./;../libs/pandora/;../libs/XAudio2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SYNC_PLAYER;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
@@ -156,9 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Libs\rocket-0.9\sync\data.c" />
-    <ClCompile Include="..\Libs\rocket-0.9\sync\device.c" />
-    <ClCompile Include="..\Libs\rocket-0.9\sync\track.c" />
+    <ClCompile Include="..\Libs\rocket\lib\data.c" />
+    <ClCompile Include="..\Libs\rocket\lib\device.c" />
+    <ClCompile Include="..\Libs\rocket\lib\track.c" />
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AutoShaderReload.cpp" />
@@ -175,15 +175,17 @@
     <ClCompile Include="Stub.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Libs\rocket-0.9\sync\base.h" />
-    <ClInclude Include="..\Libs\rocket-0.9\sync\data.h" />
-    <ClInclude Include="..\Libs\rocket-0.9\sync\device.h" />
-    <ClInclude Include="..\Libs\rocket-0.9\sync\sync.h" />
-    <ClInclude Include="..\Libs\rocket-0.9\sync\track.h" />
+    <ClInclude Include="..\Libs\rocket\lib\base.h" />
+    <ClInclude Include="..\Libs\rocket\lib\data.h" />
+    <ClInclude Include="..\Libs\rocket\lib\device.h" />
+    <ClInclude Include="..\Libs\rocket\lib\sync.h" />
+    <ClInclude Include="..\Libs\rocket\lib\track.h" />
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
+    <ClInclude Include="Content\Bondtro.h" />
     <ClInclude Include="Content\Demo.h" />
+    <ClInclude Include="Content\Knot.h" />
     <ClInclude Include="Content\Ribbons.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="gWorld.h" />

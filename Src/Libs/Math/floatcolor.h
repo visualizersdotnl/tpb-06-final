@@ -3,7 +3,7 @@
 #include "stdafx.h"
 
 
-struct FloatColor
+class FloatColor
 {
 	float r,g,b,a;
 

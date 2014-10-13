@@ -7,5 +7,5 @@
 #else
 	#define ASSERT(condition)
 	#define VERIFY(condition) (condition)
-	#define ASSERT_MSG(condition)
+	#define ASSERT_MSG(condition, message)
 #endif

@@ -10,8 +10,8 @@
 
 // Windowed (dev. only) settings.
 const bool PIMPPLAYER_WINDOWED_DEV = true;
-const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/4;
-const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/4;
+const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
+const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.
 // By enabling this boolean you can use them at runtime for public release.
@@ -21,3 +21,6 @@ const bool PIMPPLAYER_RUN_FROM_SHADER_BINARIES = false;
 const std::string PIMPPLAYER_MP3_PATH = "ROSS2.mp3"; // Relative to asset root (see Demo.cpp).
 const bool PIMPPLAYER_MUTE_AUDIO = false;
 
+// Audio sync. settings.
+const double PIMPPLAYER_ROCKET_BPM = 127.0;
+const int PIMPPLAYER_ROCKET_RPB = 16;

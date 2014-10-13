@@ -50,7 +50,6 @@ namespace Pimp
 		currentCamera = NULL;
 
 		postProcess = new PostProcess();
-		sprites = new Sprites();
 
 		screenQuadVertexBuffer = new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather());
 		screenQuadVertexBuffer->Bind();
@@ -66,7 +65,6 @@ namespace Pimp
 
 		delete screenQuadVertexBuffer;
 		delete postProcess;
-		delete sprites;
 	}
 
 	void World::Tick(float deltaTime)
@@ -107,10 +105,10 @@ namespace Pimp
 			currentCamera = currentUserCamera;
 		}
 
-		currentSceneIndex = (int)floorf(sceneDirection->GetCurrentValue());
+		//currentSceneIndex = (int)floorf(sceneDirection->GetCurrentValue());
 
-		if (!scenes.IsValidIndex(currentSceneIndex))
-			currentSceneIndex = -1;
+		//if (!scenes.IsValidIndex(currentSceneIndex))
+		//	currentSceneIndex = -1;
 
 
 		float timeSincePrevMotionBlur = currentTime - prevMotionBlurTime;
@@ -138,16 +136,17 @@ namespace Pimp
 	}
 
 
-	void World::Render()
+	void World::Render(float clearR, float clearG, float clearB, Sprites *pSprites)
 	{
-		postProcess->Clear();
+		postProcess->Clear(clearR, clearG, clearB);
+
+		// Bind render target(s)
 		postProcess->BindForRenderScene();
 
-
+		// Bind screen quad VB for first passes
+		screenQuadVertexBuffer->Bind();
 
 		// Render our scene to a single sceneColor FP16 RT
-		Camera::DOFSettings dof(0,1,2);
-
 		if (scenes.IsValidIndex(currentSceneIndex) && 
 			scenes[currentSceneIndex] != NULL &&
 			currentCamera != NULL)
@@ -158,19 +157,18 @@ namespace Pimp
 			dof = currentCamera->GetDOFSettings();
 		}
 
-
 		// Draw posteffects
 		postProcess->RenderPostProcess(dof);
 
-		gD3D->SetBlendMode(D3D::BM_AlphaBlend);
-
 		// Draw all overlays
+		gD3D->SetBlendMode(D3D::BM_AlphaBlend);
 		for (int i=overlays.Size()-1; i>=0; --i)
 			overlays[i]->Render(NULL);
 
-		// Draw the sprites
-		sprites->Render();
+		// Flush (draw & clear queue) the sprites
+		pSprites->Flush();
 
+		// Ensure blend mode is none for next frame.
 		gD3D->SetBlendMode(D3D::BM_None);
 
 		gD3D->Flip();

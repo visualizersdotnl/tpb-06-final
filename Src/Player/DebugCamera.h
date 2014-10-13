@@ -19,6 +19,9 @@ public:
 
 	void DumpCurrentTransformToOutputWindow();
 
+	// @plek: Let the client allow where and how to apply it.
+	Pimp::Camera *Get() const { return camera; }
+
 private:
 	bool isEnabled;
 
