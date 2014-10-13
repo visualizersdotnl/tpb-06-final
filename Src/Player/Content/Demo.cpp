@@ -311,7 +311,7 @@ bool GenerateWorld(const char *rocketClient)
 #endif
 
 	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
-	DrawLoadProgress(0.f);
+	DrawLoadProgress(nullptr, 0.f);
 
 	// Set asset loader root path.
 	Assets::SetRoot(assetsPath);
@@ -330,7 +330,7 @@ bool GenerateWorld(const char *rocketClient)
 		pScene->ReqAssets();
 
 	// Loaded some more! :)
-	DrawLoadProgress(0.25f);
+	DrawLoadProgress(nullptr, 0.25f);
 
 	// Req. global stuff.
 	Assets::AddMaterial("shaders\\posteffect.fx", &matUserPostFX);
@@ -340,7 +340,7 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 
 	// Loaded some more! :)
-	DrawLoadProgress(0.5f);
+	DrawLoadProgress(nullptr, 0.5f);
 
 	// Bind animation related nodes (and do other CPU-based preparation work).
 	//
@@ -367,7 +367,7 @@ bool GenerateWorld(const char *rocketClient)
 	gWorld->SetUseCameraDirection(false);
 
 	// Loaded some more! :)
-	DrawLoadProgress(0.75f);
+	DrawLoadProgress(nullptr, 0.75f);
 
 	// Wait for the asset loading to be all finished.
 	if (false == Assets::FinishLoading())
@@ -384,7 +384,7 @@ bool GenerateWorld(const char *rocketClient)
 	gWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
 
 	// Ta-daa!
-	DrawLoadProgress(1.f);
+	DrawLoadProgress(nullptr, 1.f);
 	
 	// Finish up some World business.
 	gWorld->InitAllBalls();

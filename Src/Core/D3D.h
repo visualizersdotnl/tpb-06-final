@@ -116,6 +116,9 @@ namespace Pimp
 
 		// Scale (XY) to render with. Includes aspect ratio correction (letterboxing).
 		Vector2 renderScale; 
+		
+		// Full and aspect ratio adjusted view port.
+		D3D10_VIEWPORT m_fullVP, m_adjVP;
 	};
 
 	extern D3D* gD3D;
