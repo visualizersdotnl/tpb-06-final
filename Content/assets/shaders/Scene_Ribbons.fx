@@ -344,9 +344,14 @@ float SoftShadowIq(float3 inPos, float3 inLightDir, float inMinT, float inMaxT, 
 
 static float3 ColOrange = float3(255.0,83.0,13.0)/255.0;
 
-static float3 RibbonDiffuse = 0.9 * float3(196,156,121)/255.0;
+static float3 RibbonDiffuseBack = 0.3 * float3(143,100,85)/255.0;
+
+static float3 RibbonDiffuseFront = 0.9 * float3(196,156,121)/255.0;
 static float3 RibbonAmbient = 0.1 * float3(86,44,68)/255.0;
 static float3 RibbonSpecular = float3(248,239,222)/255.0;
+
+static float3 OrangeLineAmbient = 0.4*float3(210,69,0)/255.0;
+static float3 OrangeLineDiffuse = 0.7*float3(254,173,0)/255.0;
 
 float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float2 inUV)
 {
@@ -373,11 +378,18 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		float2 uv = inUV.xy * 1.90;
 
 		float3 lineMask = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
-		diffColor = RibbonDiffuse * lineMask;
+		float depthAmount = saturate(inPos.z / -0.3);
+		diffColor = lerp(RibbonDiffuseFront, RibbonDiffuseBack, depthAmount) * lineMask;
 		ambient = RibbonAmbient;
 
 		specColor = RibbonSpecular;
 		specAmount = 0.2;
+
+		if (sin(inPos.y) > 0.99)
+		{
+			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
+			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
+		}		
 	}
 	else if (inMatIndex == 1)
 	{
@@ -398,7 +410,6 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		specAmount = 0;
 		specColor = (0.0).xxx;
 	}
-
 
 	float3 diffuse = max(diffuseTerm, 0.0) * diffColor;
 	
