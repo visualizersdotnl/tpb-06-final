@@ -156,6 +156,9 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_adjVP.MinDepth = 0.f;
 	m_adjVP.MaxDepth = 1.f;
 
+	// Readjust to aspect corrected VP
+	device->RSSetViewports(1, &m_adjVP);
+
 	// Blend states
 	blendStates[BM_None] = NULL;
 
@@ -249,19 +252,15 @@ D3D::~D3D()
 void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
 {
 	// Clear entire screen
-	device->RSSetViewports(1, &m_fullVP);
+//	device->RSSetViewports(1, &m_fullVP);
 	const float RGBA[4] = { R, G, B, A };
 	device->ClearRenderTargetView(renderTarget, RGBA);
 //	ClearDepthStencil();
-
-	// Readjust to aspect corrected VP
-	device->RSSetViewports(1, &m_adjVP);
 }
 
 
 void D3D::Flip()
 {
-//	device->RSSetViewports(1, &m_fullVP);
 	HRESULT hr = swapchain->Present(0,0);
 	D3D_ASSERT(hr);
 }
@@ -448,7 +447,7 @@ ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	ID3D10Texture2D* texture = NULL;
 	HRESULT hr = device->CreateTexture2D(&desc, NULL, &texture);
 	D3D_ASSERT(hr);
-	ASSERT(texture != NULL);	
+	ASSERT(texture != NULL);
 
 	return texture;
 }
