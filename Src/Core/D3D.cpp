@@ -18,6 +18,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 ,	renderTargetBackBuffer(nullptr)
 ,	depthStencil(nullptr)
 ,	depthStencilState(nullptr)
+,	pWhiteTex(nullptr)
 {
 	memset(blendStates, 0, MAX_BlendMode*sizeof(BlendMode));
 
@@ -149,11 +150,58 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	addDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
 	memset(addDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
 	device->CreateBlendState(&addDesc, &blendStates[BM_Additive]);
+
+	D3D10_BLEND_DESC subDesc;
+	subDesc.AlphaToCoverageEnable = FALSE;
+	subDesc.BlendEnable[0] = TRUE;
+	memset(subDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	subDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
+	subDesc.DestBlend = D3D10_BLEND_ONE;
+	subDesc.BlendOp = D3D10_BLEND_OP_REV_SUBTRACT;
+	subDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	subDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	subDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(subDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+	device->CreateBlendState(&subDesc, &blendStates[BM_Subtractive]);
+
+	// create default (white) texture
+	{
+		D3D10_TEXTURE2D_DESC texDesc;
+		texDesc.Width = 4;
+		texDesc.Height = 4;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.SampleDesc.Quality = 0;
+		texDesc.Usage = D3D10_USAGE_DEFAULT;
+		texDesc.BindFlags = D3D10_BIND_SHADER_RESOURCE;
+		texDesc.CPUAccessFlags = 0;
+		texDesc.MiscFlags = 0;
+
+		unsigned int whitePixels[4*4];
+		memset(whitePixels, -1, 4*4*sizeof(int));
+
+		D3D10_SUBRESOURCE_DATA whiteStuff;
+		whiteStuff.pSysMem = whitePixels;
+		whiteStuff.SysMemPitch = 4*sizeof(int);
+		whiteStuff.SysMemSlicePitch = 0;
+
+		ID3D10Texture2D *pResource;
+		VERIFY(S_OK == device->CreateTexture2D(&texDesc, &whiteStuff, &pResource));
+
+		ID3D10ShaderResourceView *pView;
+		VERIFY(S_OK == device->CreateShaderResourceView(pResource, NULL, &pView));
+
+		pWhiteTex = new Texture2D("texWhite", 4, 4, pResource, pView);
+	}
 }
 
 
 D3D::~D3D()
 {
+	delete pWhiteTex;
+
 	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
 		if (nullptr != blendStates[iBS]) blendStates[iBS]->Release();
 	

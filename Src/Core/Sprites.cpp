@@ -136,6 +136,7 @@ namespace Pimp
 
 		// add to list
 		Sprite sprite;
+		ASSERT(nullptr != pTexture);
 		sprite.pTexture = pTexture;
 		sprite.blendMode = blendMode;
 		sprite.size = std::move(size);
@@ -164,6 +165,7 @@ namespace Pimp
 			DWORD vbIdx = 0;
 			for (Sprite sprite : sprites)
 			{
+				// @plek: This seems unnecessary?
 				Vector2 aspect_corrected_scale = sprite.size;
 				aspect_corrected_scale.y *= renderAspect;
 			

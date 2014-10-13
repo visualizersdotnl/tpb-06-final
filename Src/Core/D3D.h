@@ -89,10 +89,15 @@ namespace Pimp
 			BM_None,
 			BM_AlphaBlend,
 			BM_Additive,
+			BM_Subtractive,
 			MAX_BlendMode
 		};
 
 		void SetBlendMode(BlendMode blendMode);
+
+		// This texture is quite useful for stuff like untextured sprites.
+		// It's just 4*4 0xffffffff.
+		Texture2D *GetWhiteTex() { return pWhiteTex; }
 
 	private:
 		int viewWidth, viewHeight;
@@ -107,6 +112,7 @@ namespace Pimp
 		DepthStencil* depthStencil;
 		ID3D10DepthStencilState* depthStencilState;
 		ID3D10BlendState* blendStates[MAX_BlendMode];
+		Texture2D *pWhiteTex;
 
 		// Scale (XY) to render with. Includes aspect ratio correction (letterboxing).
 		Vector2 renderScale; 

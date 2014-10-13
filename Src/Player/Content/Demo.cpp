@@ -11,6 +11,15 @@
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
 
+// Helper function(s).
+//
+
+inline DWORD AlphaToVtxColor(float alpha)
+{
+	const unsigned char iAlpha = int(alpha*255.f);
+	return iAlpha<<24|0xffffff;
+}
+
 //
 // Rocket stuff.
 //
@@ -122,13 +131,17 @@ static const sync_track *st_SceneIdx = nullptr;
 static const sync_track *st_fxTimeGlobal = nullptr;
 
 // part: James Bond intro
-static const sync_track *st_bondBlob1 = nullptr;
-static const sync_track *st_bondBlobFade1 = nullptr;
-static const sync_track *st_bondBlob2 = nullptr;
-static const sync_track *st_bondBlobFade2 = nullptr;
-static const sync_track *st_bondAmpFade = nullptr;
-static const sync_track *st_bondGroupsFade = nullptr;
-static const sync_track *st_bondPresFade = nullptr;
+static const sync_track *st_bondBlob1;
+static const sync_track *st_bondBlobFade1;
+static const sync_track *st_bondBlob2;
+static const sync_track *st_bondBlobFade2;
+static const sync_track *st_bondAmpFade;
+static const sync_track *st_bondGroupsFade;
+static const sync_track *st_bondPresFade;
+static const sync_track *st_bondWhite;
+static const sync_track *st_bondTarget;
+static const sync_track *st_bondSoundFX;
+static const sync_track *st_bondPimpFade;
 
 void CreateRocketTracks()
 {
@@ -154,6 +167,10 @@ void CreateRocketTracks()
 	syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
 	syncTracks.push_back(SyncTrack("bondGroupsFade", false, &st_bondGroupsFade));
 	syncTracks.push_back(SyncTrack("bondPresFade", false, &st_bondPresFade));
+	syncTracks.push_back(SyncTrack("bondWhite", false, &st_bondWhite));
+	syncTracks.push_back(SyncTrack("bondTarget", false, &st_bondTarget));
+	syncTracks.push_back(SyncTrack("bondSoundFX", false, &st_bondSoundFX));
+	syncTracks.push_back(SyncTrack("bondPimpFade", false, &st_bondPimpFade));
 }
 
  namespace Demo {
@@ -165,6 +182,9 @@ void CreateRocketTracks()
  // Default (static) world to camera transformation.
 static Pimp::Camera *s_defaultCam;
 static Pimp::Xform *s_defaultXform;
+
+// White texture (for untextured sprites).
+static Pimp::Texture2D *texWhite;
 
 // 2D sprite batcher.
 static Pimp::Sprites *s_sprites = nullptr;
@@ -285,10 +305,12 @@ bool GenerateWorld(const char *rocketClient)
 	// Create scenes.
 	s_scenes.push_back(new Bondtro());
 	s_scenes.push_back(new Ribbons());
-	s_scenes.push_back(new Knot());
+//	s_scenes.push_back(new Knot());
 
 	// Request resources.
 	//
+
+	texWhite = Pimp::gD3D->GetWhiteTex();
 
 	for (Scene *pScene : s_scenes)
 		pScene->ReqAssets();

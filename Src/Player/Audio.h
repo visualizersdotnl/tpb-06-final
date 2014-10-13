@@ -16,3 +16,7 @@ bool Audio_IsPlaying();
 
 void Audio_SetPosition(float secPos);
 float Audio_GetPosition();
+
+// for Bond intro
+void Audio_Gunshot();
+void Audio_Shelldrop();
