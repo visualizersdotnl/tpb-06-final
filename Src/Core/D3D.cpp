@@ -106,6 +106,22 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// For letterboxing..
 	float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
 
+
+	//
+	// this piece of code assures that we ALWAYS use the same aspect ratio for our rendered screens,
+	// it will assure that everything is presented (not rendered!) in our maximum aspect ratio (16:9).
+	// this is achieved by adding black bars at the top and bottom of our screen.
+	// 
+
+	float desired_aspect_ratio_on_screen = Configuration::Instance()->GetRenderAspectRatio();
+	float actual_aspect_ratio = (float)Configuration::Instance()->GetDisplayMode().width / (float)Configuration::Instance()->GetDisplayMode().height; // for example 4:3 = 1.333
+
+	float renderableAmount = actual_aspect_ratio / desired_aspect_ratio_on_screen;
+
+	renderScale.x = 1.0f;
+	renderScale.y = renderableAmount;
+
+
 	// define full & adjusted (16:9) viewport
 	m_fullVP.TopLeftX = 0;
 	m_fullVP.TopLeftY = 0;
