@@ -165,6 +165,11 @@ void CreateRocketTracks()
 	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	//
 
+	// RIBBONS
+	syncTracks.push_back(SyncTrack("ribbonsAppear", true));	
+	syncTracks.push_back(SyncTrack("ribbonsPhase", true));	
+	
+
 	// KNOT
 	syncTracks.push_back(SyncTrack("knotTubeRadius1", true));
 	syncTracks.push_back(SyncTrack("knotTubeRadius2", true));

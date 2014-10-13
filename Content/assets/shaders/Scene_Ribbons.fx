@@ -51,6 +51,10 @@ cbuffer paramsOnlyOnce
 	float4 testLightPos = float4(20.0, 20.0, 20.0, 1.0);
 
 	float fxTimeGlobal = 0;	
+
+	float ribbonsSpeed = 0.5; //< How fast do our ribbons wave?
+	float ribbonsAppear = 1.0; //< [0..1] 0=invisible, 1=visible
+	float ribbonsPhase = 0; //< Extra value added to wave time.
 };
 
 
@@ -175,8 +179,8 @@ float DistToSphere(float3 p, float r)
 
 float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRadius, float inTwirlFreq, out float2 outUV)
 {
-	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
-	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal);
+	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
 
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;
@@ -190,8 +194,8 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 
 float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 {
-	float2 BoxSize = float2(0.2, 0.02);
-	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + fxTimeGlobal);
+	float2 BoxSize = float2(0.2, 0.02) * (ribbonsAppear*1.4-0.4);
+	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.2, outUV);	
 }
@@ -199,8 +203,8 @@ float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 
 float DistToRibboInner(float3 Pos, float inPhase, out float2 outUV)
 {
-	float2 BoxSize = float2(0.15, 0.03);
-	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + fxTimeGlobal);
+	float2 BoxSize = float2(0.15, 0.03) * (ribbonsAppear*1.4-0.4);
+	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.5, outUV);	
 }
@@ -231,7 +235,6 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 	d = MinWithUV(d, DistToRibboInner(Pos, 0, uv1), outUV, uv1, outUV);
 	d = MinWithUV(d, DistToRibboInner(Pos,2.7,uv1), outUV, uv1, outUV);
 	d = MinWithUV(d, DistToRibboInner(Pos,3.9,uv1), outUV, uv1, outUV);
-
 
 	float dWall = Pos.z + 3.0;
 
