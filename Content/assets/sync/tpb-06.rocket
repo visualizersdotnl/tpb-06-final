@@ -122,10 +122,11 @@
 			<key value="0" row="0" interpolation="0"/>
 			<key value="1" row="768" interpolation="1"/>
 			<key value="0" row="792" interpolation="0"/>
-			<key value="0" row="1272" interpolation="2"/>
-			<key value="1" row="1280" interpolation="1"/>
-			<key value="0" row="1288" interpolation="0"/>
-			<key value="0" row="1440" interpolation="1"/>
+			<key value="1" row="1024" interpolation="1"/>
+			<key value="0" row="1040" interpolation="0"/>
+			<key value="1" row="1240" interpolation="1"/>
+			<key value="0" row="1248" interpolation="0"/>
+			<key value="0" row="1440" interpolation="2"/>
 			<key value="-1" row="1536" interpolation="0"/>
 		</track>
 		<track name="defRotQuat_X">
