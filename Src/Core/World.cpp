@@ -169,7 +169,7 @@ namespace Pimp
 		// Ensure blend mode is none for next frame.
 		gD3D->SetBlendMode(D3D::BM_None);
 
-		gD3D->Flip();
+//		gD3D->Flip();
 	}
 
 
