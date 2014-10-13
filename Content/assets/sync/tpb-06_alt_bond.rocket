@@ -1,0 +1,60 @@
+<sync rows="4096">
+	<tracks>
+		<track name="SceneIndex"/>
+		<track name="fxTimeGlobal"/>
+		<track name="knotTubeRadius1"/>
+		<track name="knotTubeRadius2"/>
+		<track name="knotTubeRadius3"/>
+		<track name="bondBlob1">
+			<key interpolation="1" row="0" value="-106"/>
+			<key interpolation="0" row="128" value="907"/>
+		</track>
+		<track name="bondBlobFade1">
+			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" row="128" value="0"/>
+			<key interpolation="1" row="144" value="0"/>
+			<key interpolation="0" row="152" value="1"/>
+		</track>
+		<track name="bondBlob2">
+			<key interpolation="3" row="0" value="-106"/>
+			<key interpolation="0" row="16" value="20"/>
+			<key interpolation="0" row="48" value="270"/>
+			<key interpolation="0" row="80" value="510"/>
+			<key interpolation="0" row="112" value="750"/>
+			<key interpolation="0" row="144" value="907"/>
+		</track>
+		<track name="bondBlobFade2">
+			<key interpolation="0" row="0" value="1"/>
+			<key interpolation="0" row="16" value="0"/>
+			<key interpolation="3" row="24" value="0"/>
+			<key interpolation="0" row="36" value="1"/>
+			<key interpolation="0" row="48" value="0"/>
+			<key interpolation="3" row="56" value="0"/>
+			<key interpolation="0" row="68" value="1"/>
+			<key interpolation="0" row="80" value="0"/>
+			<key interpolation="3" row="88" value="0"/>
+			<key interpolation="0" row="100" value="1"/>
+			<key interpolation="0" row="112" value="0"/>
+			<key interpolation="3" row="120" value="0"/>
+			<key interpolation="0" row="132" value="1"/>
+		</track>
+		<track name="bondAmpFade">
+			<key interpolation="0" row="0" value="1"/>
+			<key interpolation="1" row="144" value="1"/>
+			<key interpolation="0" row="152" value="0"/>
+		</track>
+		<track name="bondGroupsFade">
+			<key interpolation="0" row="0" value="1"/>
+			<key interpolation="3" row="184" value="1"/>
+			<key interpolation="0" row="192" value="0"/>
+			<key interpolation="3" row="224" value="0"/>
+			<key interpolation="0" row="232" value="0"/>
+		</track>
+		<track name="bondPresFade">
+			<key interpolation="0" row="0" value="1"/>
+			<key interpolation="1" row="251" value="1"/>
+			<key interpolation="0" row="256" value="0"/>
+		</track>
+	</tracks>
+	<bookmarks/>
+</sync>
