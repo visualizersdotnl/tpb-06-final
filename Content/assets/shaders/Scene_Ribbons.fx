@@ -188,7 +188,8 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;
 	float mc = max(di.x, di.y);
-	float d = min(mc, length(max(di, 0.0)));
+//	float d = min(mc, length(max(di, 0.0)));
+	float d = min(mc, 0.0) + length(max(di, 0.0)) - 0.05;
 
 	outUV = float2(Pos.y, Pos.x + 1.0) * 0.5;
 
@@ -343,6 +344,9 @@ float SoftShadowIq(float3 inPos, float3 inLightDir, float inMinT, float inMaxT, 
 
 static float3 ColOrange = float3(255.0,83.0,13.0)/255.0;
 
+static float3 RibbonDiffuse = 0.9 * float3(196,156,121)/255.0;
+static float3 RibbonAmbient = 0.1 * float3(86,44,68)/255.0;
+static float3 RibbonSpecular = float3(248,239,222)/255.0;
 
 float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float2 inUV)
 {
@@ -366,14 +370,14 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		// Ribbons
 		
 		float3 flatPos = inPos - inNormal*dot(inPos, inNormal);
-		float2 uv = inUV.xy * 1.20;
+		float2 uv = inUV.xy * 1.90;
 
-		float3 texel = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
-		diffColor = texel * 0.90;
+		float3 lineMask = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		diffColor = RibbonDiffuse * lineMask;
+		ambient = RibbonAmbient;
 
-		ambient = diffColor*0.05*texel.b;
-		specColor = (1.0).xxx;
-		specAmount = 0.2 * texel.r;// + 0.05 * texel.b;
+		specColor = RibbonSpecular;
+		specAmount = 0.2;
 	}
 	else if (inMatIndex == 1)
 	{
