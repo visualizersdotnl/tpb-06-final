@@ -106,7 +106,7 @@ public:
 				kTextZ,
 				1.f-presentFade);
 
-		// white background
+		// (white) background
 		s_sprites->AddSprite(
 				texWhite,
 				Pimp::D3D::BlendMode::BM_Additive,

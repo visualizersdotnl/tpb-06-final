@@ -127,8 +127,9 @@ static std::vector<SyncTrack> syncTracks;
 // Sync. references:
 
 // global
-static const sync_track *st_SceneIdx = nullptr;
-static const sync_track *st_fxTimeGlobal = nullptr;
+static const sync_track *st_SceneIdx;
+static const sync_track *st_fxTimeGlobal;
+static const sync_track *st_postFadeInOut;
 
 // part: James Bond intro
 static const sync_track *st_bondBlob1;
@@ -150,6 +151,7 @@ void CreateRocketTracks()
 	// GLOBAL TRACKS.
 	syncTracks.push_back(SyncTrack("SceneIndex", false, &st_SceneIdx)); 
 	syncTracks.push_back(SyncTrack("fxTimeGlobal", true, &st_fxTimeGlobal));
+	syncTracks.push_back(SyncTrack("fadeInOut", true, &st_postFadeInOut)); 
 
 	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	//
@@ -188,6 +190,9 @@ static Pimp::Texture2D *texWhite;
 
 // 2D sprite batcher.
 static Pimp::Sprites *s_sprites = nullptr;
+
+// Global material(s).
+static Pimp::Material *matUserPostFX;
  
 //
 // Scene (part) base class.
@@ -318,7 +323,8 @@ bool GenerateWorld(const char *rocketClient)
 	// Loaded some more! :)
 	DrawLoadProgress(0.25f);
 
-	// FIXME: Request other stuff here like the user post FX shader.
+	// Req. global stuff.
+	Assets::AddMaterial("shaders\\posteffect.fx", &matUserPostFX);
 
 	// Let the asset loader do it's thing up to where all disk I/O is verified.
 	if (false == Assets::StartLoading())
@@ -363,6 +369,10 @@ bool GenerateWorld(const char *rocketClient)
 
 	for (Scene *pScene : s_scenes)
 		pScene->BindAssets();
+
+	// Add user postFX.
+	gWorld->GetMaterials().Add(matUserPostFX);
+	gWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
 
 	// Ta-daa!
 	DrawLoadProgress(1.f);
@@ -417,7 +427,8 @@ bool Tick(Pimp::Camera *camOverride)
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
 
-	const int sceneIdx = 0; // (int) syncTracks[kSync_SceneIdx].Get(rocketRow);
+	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
+//	const int sceneIdx = 0; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
