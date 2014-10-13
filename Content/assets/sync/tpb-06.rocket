@@ -56,6 +56,7 @@
 			<key value="1" interpolation="0" row="0"/>
 			<key value="1" interpolation="1" row="144"/>
 			<key value="0" interpolation="0" row="152"/>
+			<key value="1" interpolation="0" row="344"/>
 		</track>
 		<track name="bondGroupsFade">
 			<key value="1" interpolation="0" row="0"/>
@@ -88,6 +89,8 @@
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="2" row="336"/>
 			<key value="1" interpolation="0" row="352"/>
+			<key value="1" interpolation="1" row="728"/>
+			<key value="0" interpolation="0" row="760"/>
 		</track>
 		<track name="bondSoundFX">
 			<key value="0" interpolation="0" row="0"/>
@@ -100,6 +103,8 @@
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="1" row="508"/>
 			<key value="1" interpolation="0" row="520"/>
+			<key value="1" interpolation="3" row="728"/>
+			<key value="0" interpolation="0" row="752"/>
 		</track>
 		<track name="CLEAR_R">
 			<key value="0" interpolation="0" row="0"/>
