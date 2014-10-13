@@ -212,11 +212,11 @@ D3D::~D3D()
 }
 
 
-void D3D::Clear(ID3D10RenderTargetView* renderTarget)
+void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
 {
-	static const FloatColor clearcolor(0,0,0,1);
-	device->ClearRenderTargetView(renderTarget, (float*)&clearcolor);
-	//device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.f, 0);
+	const float RGBA[4] = { R, G, B, A };
+	device->ClearRenderTargetView(renderTarget, RGBA);
+//	ClearDepthStencil();
 }
 
 
@@ -432,7 +432,7 @@ void D3D::GetViewportSize(int* width, int* height)
 
 void D3D::ClearBackBuffer()
 {
-	Clear(renderTargetBackBuffer->GetRenderTargetView());
+	Clear(renderTargetBackBuffer->GetRenderTargetView(), 0.f, 0.f, 0.f, 1.f);
 }
 
 void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )

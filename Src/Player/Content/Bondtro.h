@@ -132,9 +132,11 @@ public:
 
 		// gunshot holes
 		{
+			static bool blasted[4];
+			if (shotFX == 0) memset(blasted, 0, 4*sizeof(bool));
+
 			if (shotFX != 0)
 			{
-				static bool blasted[4] = { false };
 
 				const Vector2 kShotPositions[3] = {
 					Vector2(1920*0.5f - 100.f, ballY - 50.f),

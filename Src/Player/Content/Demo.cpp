@@ -130,6 +130,8 @@ static std::vector<SyncTrack> syncTracks;
 static const sync_track *st_SceneIdx;
 static const sync_track *st_fxTimeGlobal;
 static const sync_track *st_postFadeInOut;
+static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
+static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
 
 // part: James Bond intro
 static const sync_track *st_bondBlob1;
@@ -148,10 +150,17 @@ void CreateRocketTracks()
 {
 	syncTracks.clear();
 
-	// GLOBAL TRACKS.
+	// GLOBAL TRACKS
 	syncTracks.push_back(SyncTrack("SceneIndex", false, &st_SceneIdx)); 
 	syncTracks.push_back(SyncTrack("fxTimeGlobal", true, &st_fxTimeGlobal));
 	syncTracks.push_back(SyncTrack("fadeInOut", true, &st_postFadeInOut)); 
+	syncTracks.push_back(SyncTrack("defRotQuat_X", false, &st_defRotX));
+	syncTracks.push_back(SyncTrack("defRotQuat_y", false, &st_defRotY));
+	syncTracks.push_back(SyncTrack("defRotQuat_Z", false, &st_defRotZ));
+	syncTracks.push_back(SyncTrack("defRotQuat_W", false, &st_defRotW));
+	syncTracks.push_back(SyncTrack("defTrans_X", false, &st_defTransX));
+	syncTracks.push_back(SyncTrack("defTrans_Y", false, &st_defTransY));
+	syncTracks.push_back(SyncTrack("defTrans_Z", false, &st_defTransZ));
 
 	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
 	//
@@ -342,7 +351,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_defaultCam->SetFOVy(0.563197f);
 	s_defaultXform = new Pimp::Xform(gWorld);
 	gWorld->GetElements().Add(s_defaultXform);
-	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
+//	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
 	AddChildToParent(s_defaultXform, gWorld->GetRootNode());
 	AddChildToParent(s_defaultCam, s_defaultXform);
 	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
@@ -411,6 +420,8 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
+static float clearR = 0.f, clearG = 0.f, clearB = 0.f;
+
 bool Tick(Pimp::Camera *camOverride)
 {
 	const double rocketRow = Rocket_GetRow();
@@ -426,6 +437,21 @@ bool Tick(Pimp::Camera *camOverride)
 	// Update tracks.
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
+
+//	clearR = (float)sync_get_val(st_clearR, rocketRow);
+//	clearG = (float)sync_get_val(st_clearG, rocketRow);
+//	clearB = (float)sync_get_val(st_clearB, rocketRow);
+
+	// update default camera
+	const float defCamTrans_X = (float) sync_get_val(st_defTransX, rocketRow);
+	const float defCamTrans_Y = (float) sync_get_val(st_defTransY, rocketRow);
+	const float defCamTrans_Z = (float) sync_get_val(st_defTransZ, rocketRow);
+	const float defCamRotQuat_X = (float) sync_get_val(st_defRotX, rocketRow);
+	const float defCamRotQuat_Y = (float) sync_get_val(st_defRotY, rocketRow);
+	const float defCamRotQuat_Z = (float) sync_get_val(st_defRotZ, rocketRow);
+	const float defCamRotQuat_W = (float) sync_get_val(st_defRotW, rocketRow);
+	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
+	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
 //	const int sceneIdx = 0; // For test!
@@ -444,7 +470,7 @@ bool Tick(Pimp::Camera *camOverride)
 }
 
 void WorldRender() {
-	gWorld->Render(s_sprites); }
+	gWorld->Render(clearR, clearG, clearB, s_sprites); }
 
 
 } // namespace Demo

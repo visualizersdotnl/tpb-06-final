@@ -10,9 +10,15 @@
 			<key value="0" interpolation="1" row="768"/>
 			<key value="100" interpolation="0" row="1536"/>
 		</track>
-		<track name="knotTubeRadius1"/>
-		<track name="knotTubeRadius2"/>
-		<track name="knotTubeRadius3"/>
+		<track name="knotTubeRadius1">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="knotTubeRadius2">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="knotTubeRadius3">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
 		<track name="bondBlob1">
 			<key value="-106" interpolation="2" row="0"/>
 			<key value="212" interpolation="0" row="32"/>
@@ -94,13 +100,49 @@
 			<key value="4" interpolation="0" row="419"/>
 		</track>
 		<track name="bondPimpFade">
+			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="1" row="508"/>
 			<key value="1" interpolation="0" row="520"/>
 		</track>
+		<track name="CLEAR_R">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="768"/>
+		</track>
+		<track name="CLEAR_G">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="768"/>
+		</track>
+		<track name="CLEAR_B">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="768"/>
+		</track>
 		<track name="fadeInOut">
 			<key value="0" interpolation="0" row="0"/>
-			<key value="1" interpolation="3" row="768"/>
-			<key value="0" interpolation="0" row="808"/>
+			<key value="1" interpolation="1" row="768"/>
+			<key value="0" interpolation="0" row="792"/>
+			<key value="0" interpolation="1" row="1520"/>
+			<key value="-100" interpolation="0" row="1536"/>
+		</track>
+		<track name="defRotQuat_X">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="defRotQuat_y">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="defRotQuat_Z">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="defRotQuat_W">
+			<key value="1" interpolation="0" row="0"/>
+		</track>
+		<track name="defTrans_X">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="defTrans_Y">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="defTrans_Z">
+			<key value="4" interpolation="0" row="0"/>
 		</track>
 	</tracks>
 	<bookmarks/>

@@ -136,9 +136,9 @@ namespace Pimp
 	}
 
 
-	void World::Render(Sprites *pSprites)
+	void World::Render(float clearR, float clearG, float clearB, Sprites *pSprites)
 	{
-		postProcess->Clear();
+		postProcess->Clear(clearR, clearG, clearB);
 
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
