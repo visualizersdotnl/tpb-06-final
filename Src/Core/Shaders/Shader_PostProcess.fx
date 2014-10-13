@@ -24,10 +24,10 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
-	float4 gatherSamples[2];
-	float4 blurSamples[NUM_BLOOMBLUR_SAMPLES];
-	float blurWeights[NUM_BLOOMBLUR_SAMPLES];
-	float2 blurPixelDir;
+	float4 bloomGatherSamples[2];
+	float4 bloomBlurSamples[NUM_BLOOMBLUR_SAMPLES];
+	float bloomBlurWeights[NUM_BLOOMBLUR_SAMPLES];
+	float2 bloomBlurPixelDir;
 
 	float4 screenSizeInv; // conversion scale (XY) and offset (ZW) to convert from screen buffer's pixels to "rendered" screen buffer texels (takes sceneRenderLOD into account)
 	float2 filterSizeInv; // conversion scale (XY) to convert from filter buffer's pixels to filter buffer's texels. (just the inv of the size)
@@ -35,10 +35,6 @@ cbuffer paramsOnlyOnce
 	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 	
 	float motionBlurFrameWeight; // weight of current frame
-
-	float depthFocus;
-	float depthFarBlur;
-	float depthNearBlur;
 
 	float loadProgress = 0;	
 };
@@ -79,28 +75,7 @@ SamplerState samplerFilter
 };
 
 
-PSOutput MainPS_GatherDOF(VSOutput input)
-{
-	PSOutput result;
-	
-	float2 uv = input.screenPos.xy * filterSizeInv;
-
-	float4 average = 0; 
-
-	for (int i=0; i<2; ++i)
-	{
-		average += bufferSceneColor.Sample(samplerSceneColor, uv+gatherSamples[i].xy);
-		average += bufferSceneColor.Sample(samplerSceneColor, uv+gatherSamples[i].wz);
-	}
-
-	result.color = average / 4;
-	return result;
-}
-
-
-
-
-PSOutput MainPS_GatherBloom(VSOutput input)
+PSOutput MainPS_Gather(VSOutput input)
 {
 	PSOutput result;
 	
@@ -110,10 +85,10 @@ PSOutput MainPS_GatherBloom(VSOutput input)
 
 	for (int i=0; i<2; ++i)
 	{
-		float4 sceneColor0 = bufferSceneColor.Sample(samplerSceneColor, uv+gatherSamples[i].xy);
+		float4 sceneColor0 = bufferSceneColor.Sample(samplerSceneColor, uv+bloomGatherSamples[i].xy);
 		averageBloom += any(sceneColor0.rgb > 1) ? sceneColor0.rgb : 0;
 
-		float4 sceneColor1 = bufferSceneColor.Sample(samplerSceneColor, uv+gatherSamples[i].wz);
+		float4 sceneColor1 = bufferSceneColor.Sample(samplerSceneColor, uv+bloomGatherSamples[i].wz);
 		averageBloom += any(sceneColor1.rgb > 1) ? sceneColor1.rgb : 0;
 	}
 
@@ -135,7 +110,7 @@ PSOutput MainPS_Blur(VSOutput input)
 
 	for (int i=0; i<NUM_BLOOMBLUR_SAMPLES; i++)
 	{
-		totalSum += bufferFilter.Sample(samplerFilter, uv+blurSamples[i].xy*blurPixelDir) * blurWeights[i];
+		totalSum += bufferFilter.Sample(samplerFilter, uv+bloomBlurSamples[i].xy*bloomBlurPixelDir) * bloomBlurWeights[i];
 	}
 	
 	result.color = totalSum;
@@ -150,21 +125,9 @@ PSOutput MainPS_Combine(VSOutput input)
 	
 	float2 uv = input.screenPos.xy * screenSizeInv.xy + screenSizeInv.zw;
 
-	float4 sceneSharp = bufferSceneColor.Sample(samplerSceneColor, uv);	
-	float4 sceneBlurred = bufferFilter.Sample(samplerFilter, uv);
-	float depth = sceneSharp.a;
-
-	float blurAmount;
-	if (depth < depthFocus)
-		blurAmount = min(1.0, (depthFocus - depth)/(depthFocus - depthNearBlur));
-	else
-		blurAmount = min(1.0, (depth - depthFocus) / (depthFarBlur - depthFocus));
-
-
-	//float4 color = bufferSceneColor.Sample(samplerSceneColor, uv);	
-	//color += bufferFilter.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;	
+	float4 color = bufferSceneColor.Sample(samplerSceneColor, uv);
+	color += bufferFilter.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;	
 	
-	float4 color = lerp(sceneSharp, sceneBlurred, blurAmount);
 
 	
 	result.color = color;	
@@ -212,16 +175,10 @@ PSOutput MainPS_MotionBlur(VSOutput input)
 
 technique10 PostFX
 {
-	pass GatherDOF
+	pass Gather
 	{
 		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
-		SetPixelShader( CompileShader(ps_4_0, MainPS_GatherDOF()) );		
-	}
-
-	pass GatherBloom
-	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
-		SetPixelShader( CompileShader(ps_4_0, MainPS_GatherBloom()) );		
+		SetPixelShader( CompileShader(ps_4_0, MainPS_Gather()) );		
 	}
 	
 	pass Blur

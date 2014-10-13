@@ -3,7 +3,6 @@
 #include "SceneTools.h"
 #include "gWorld.h"
 #include "Content/Demo.h"
-#include <Core/Core.h>
 
 // 
 // Misc. scene graph helpers.
@@ -94,7 +93,7 @@ void DrawLoadProgress(float progress)
 	postProcess->BindForRenderScene();
 
 	Pimp::gD3D->ClearBackBuffer();
-	postProcess->RenderPostProcess(Pimp::Camera::DOFSettings(0,1,2));
+	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
 }
 

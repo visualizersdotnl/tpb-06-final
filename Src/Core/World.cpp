@@ -153,12 +153,10 @@ namespace Pimp
 		{
 			currentCamera->Bind();
 			scenes[currentSceneIndex]->Render(currentCamera);
-			
-			dof = currentCamera->GetDOFSettings();
 		}
 
 		// Draw posteffects
-		postProcess->RenderPostProcess(dof);
+		postProcess->RenderPostProcess();
 
 		// Draw all overlays
 		gD3D->SetBlendMode(D3D::BM_AlphaBlend);

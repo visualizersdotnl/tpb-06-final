@@ -5,8 +5,7 @@
 namespace Pimp 
 {
 	Camera::Camera(World* ownerWorld)
-		: Node(ownerWorld),
-		settingsDOF(0.0f, 5.0f, 20.0)
+		: Node(ownerWorld)
 	{
 		SetType(ET_Camera);
 
