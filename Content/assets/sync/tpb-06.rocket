@@ -20,71 +20,66 @@
 			<key value="0" interpolation="0" row="0"/>
 		</track>
 		<track name="bondBlob1">
-			<key value="-106" interpolation="2" row="0"/>
-			<key value="212" interpolation="0" row="32"/>
-			<key value="460" interpolation="1" row="58"/>
-			<key value="600" interpolation="0" row="88"/>
+			<key value="-106" interpolation="1" row="0"/>
+			<key value="907" interpolation="0" row="128"/>
 		</track>
 		<track name="bondBlobFade1">
-			<key value="1" interpolation="1" row="0"/>
-			<key value="0" interpolation="0" row="16"/>
-			<key value="0" interpolation="3" row="28"/>
-			<key value="1" interpolation="0" row="40"/>
-			<key value="1" interpolation="2" row="58"/>
-			<key value="0" interpolation="0" row="72"/>
-			<key value="0" interpolation="1" row="84"/>
-			<key value="1" interpolation="0" row="97"/>
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="128"/>
+			<key value="0" interpolation="1" row="144"/>
+			<key value="1" interpolation="0" row="152"/>
 		</track>
 		<track name="bondBlob2">
-			<key value="-106" interpolation="0" row="0"/>
-			<key value="222" interpolation="1" row="24"/>
-			<key value="440" interpolation="0" row="56"/>
-			<key value="620" interpolation="1" row="90"/>
-			<key value="906" interpolation="0" row="120"/>
+			<key value="-106" interpolation="3" row="0"/>
+			<key value="20" interpolation="0" row="16"/>
+			<key value="270" interpolation="0" row="48"/>
+			<key value="510" interpolation="0" row="80"/>
+			<key value="750" interpolation="0" row="112"/>
+			<key value="907" interpolation="0" row="144"/>
 		</track>
 		<track name="bondBlobFade2">
 			<key value="1" interpolation="0" row="0"/>
-			<key value="1" interpolation="1" row="24"/>
-			<key value="0" interpolation="0" row="40"/>
-			<key value="0" interpolation="2" row="53"/>
+			<key value="0" interpolation="0" row="16"/>
+			<key value="0" interpolation="3" row="24"/>
+			<key value="1" interpolation="0" row="36"/>
+			<key value="0" interpolation="0" row="48"/>
+			<key value="0" interpolation="3" row="56"/>
 			<key value="1" interpolation="0" row="68"/>
-			<key value="1" interpolation="2" row="90"/>
-			<key value="0" interpolation="0" row="102"/>
-			<key value="0" interpolation="1" row="120"/>
-			<key value="1" interpolation="0" row="128"/>
-			<key value="1" interpolation="2" row="312"/>
-			<key value="0" interpolation="0" row="329"/>
+			<key value="0" interpolation="0" row="80"/>
+			<key value="0" interpolation="3" row="88"/>
+			<key value="1" interpolation="0" row="100"/>
+			<key value="0" interpolation="0" row="112"/>
+			<key value="0" interpolation="3" row="120"/>
+			<key value="1" interpolation="0" row="132"/>
 		</track>
 		<track name="bondAmpFade">
 			<key value="1" interpolation="0" row="0"/>
-			<key value="1" interpolation="3" row="120"/>
-			<key value="0" interpolation="0" row="136"/>
-			<key value="0" interpolation="1" row="312"/>
-			<key value="1" interpolation="0" row="320"/>
+			<key value="1" interpolation="1" row="144"/>
+			<key value="0" interpolation="0" row="152"/>
 		</track>
 		<track name="bondGroupsFade">
 			<key value="1" interpolation="0" row="0"/>
-			<key value="1" interpolation="3" row="186"/>
+			<key value="1" interpolation="3" row="184"/>
 			<key value="0" interpolation="0" row="192"/>
-			<key value="0" interpolation="1" row="329"/>
-			<key value="1" interpolation="0" row="344"/>
+			<key value="0" interpolation="1" row="316"/>
+			<key value="1" interpolation="0" row="335"/>
 		</track>
 		<track name="bondPresFade">
 			<key value="1" interpolation="0" row="0"/>
 			<key value="1" interpolation="1" row="251"/>
 			<key value="0" interpolation="0" row="256"/>
-			<key value="0" interpolation="2" row="338"/>
-			<key value="1" interpolation="0" row="346"/>
+			<key value="0" interpolation="2" row="320"/>
+			<key value="1" interpolation="0" row="342"/>
 		</track>
 		<track name="bondWhite">
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="2" row="312"/>
 			<key value="0.7" interpolation="0" row="344"/>
-			<key value="1" interpolation="1" row="369"/>
-			<key value="0.7" interpolation="0" row="376"/>
-			<key value="1" interpolation="1" row="381"/>
-			<key value="0.7" interpolation="0" row="392"/>
-			<key value="1" interpolation="2" row="404"/>
+			<key value="0" interpolation="1" row="369"/>
+			<key value="0.9" interpolation="0" row="376"/>
+			<key value="0" interpolation="1" row="381"/>
+			<key value="0.8" interpolation="0" row="392"/>
+			<key value="0.1" interpolation="2" row="404"/>
 			<key value="0.8" interpolation="0" row="419"/>
 		</track>
 		<track name="bondTarget">
@@ -120,8 +115,8 @@
 			<key value="0" interpolation="0" row="0"/>
 			<key value="1" interpolation="1" row="768"/>
 			<key value="0" interpolation="0" row="792"/>
-			<key value="0" interpolation="1" row="1520"/>
-			<key value="-100" interpolation="0" row="1536"/>
+			<key value="0" interpolation="1" row="1440"/>
+			<key value="-1" interpolation="0" row="1536"/>
 		</track>
 		<track name="defRotQuat_X">
 			<key value="0" interpolation="0" row="0"/>
