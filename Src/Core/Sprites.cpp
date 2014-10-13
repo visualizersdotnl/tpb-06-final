@@ -103,33 +103,36 @@ namespace Pimp
 		const Vector2 quadPivot(adjTopLeft.x + adjSize.x*0.5f, adjTopLeft.y + adjSize.y*0.5f);
 		const unsigned int ARGB = vertexColor;
 
+//		const float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
+		const float rasHalf = 1.f; // renderAspect*0.5f;
+
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 1.f);
 		++pVertices;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y*rasHalf), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 0.f);
 		++pVertices;
@@ -147,8 +150,6 @@ namespace Pimp
 
 	void Sprites::Flush()
 	{
-		const float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
-
 		if (0 != sprites.size())
 		{
 			// Unlock vertex buffer.
@@ -165,10 +166,6 @@ namespace Pimp
 			DWORD vbIdx = 0;
 			for (Sprite sprite : sprites)
 			{
-				// @plek: This seems unnecessary?
-				Vector2 aspect_corrected_scale = sprite.size;
-				aspect_corrected_scale.y *= renderAspect;
-			
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
 

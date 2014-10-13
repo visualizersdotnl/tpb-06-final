@@ -6,6 +6,6 @@ void AddChildToParent(Pimp::Node* nodeChild, Pimp::Node* nodeParent);
 void RemoveNodeFromWorld(Pimp::Node* node);
 void DuplicateTransformTransformedHierarchy(Pimp::World* w, Pimp::Node* source, Pimp::Node* dest);
 
-void DrawLoadProgress(float progress);
+void DrawLoadProgress(Pimp::Texture2D *pTex,float progress);
 
 Pimp::AnimCurve* DuplicateAnimCurve(Pimp::World* world, Pimp::AnimCurve* curve, float delay);

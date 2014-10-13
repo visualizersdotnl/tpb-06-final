@@ -103,24 +103,44 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Bind our backbuffer and depth stencil by default
 	BindBackbuffer(depthStencil);
 
-	// Here we perform letterboxing. 
-	// The configuration carries the desired aspect ratio and the one we're actually rendering to is adapted from the resolution.
+	// For letterboxing..
 	float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
-	float outputAspectRatio = (float) viewWidth / viewHeight;
-	float renderableAmount = renderAspectRatio / outputAspectRatio;
-	renderScale.x = 1.0f;
-	renderScale.y = renderableAmount;
 
-	// Set viewport
-	D3D10_VIEWPORT viewport;
-	viewport.Width = viewWidth;
-	viewport.Height = viewHeight;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0;
-	viewport.MaxDepth = 1;
+	// define full & adjusted (16:9) viewport
+	m_fullVP.TopLeftX = 0;
+	m_fullVP.TopLeftY = 0;
+	m_fullVP.Width = viewWidth;
+	m_fullVP.Height = viewHeight;
+	m_fullVP.MinDepth = 0.f;
+	m_fullVP.MaxDepth = 1.f;
 
-	device->RSSetViewports(1, &viewport);
+	const float fullAspectRatio = (float) m_fullVP.Width / m_fullVP.Height;
+	unsigned int xResAdj, yResAdj;
+	if (fullAspectRatio < renderAspectRatio)
+	{
+		xResAdj = m_fullVP.Width;
+		yResAdj = (unsigned int) (m_fullVP.Width/renderAspectRatio);
+	}
+	else if (fullAspectRatio > renderAspectRatio)
+	{
+		xResAdj = (unsigned int) (m_fullVP.Height*renderAspectRatio);
+		yResAdj = m_fullVP.Height;
+	}
+	else // ==
+	{
+		xResAdj = m_fullVP.Width;
+		yResAdj = m_fullVP.Height;
+	}
+	
+	m_adjVP.Width = xResAdj;
+	m_adjVP.Height = yResAdj;
+	m_adjVP.TopLeftX = (m_fullVP.Width-xResAdj)/2;
+	m_adjVP.TopLeftY = (m_fullVP.Height-yResAdj)/2;
+	m_adjVP.MinDepth = 0.f;
+	m_adjVP.MaxDepth = 1.f;
+
+	// Set adj. viewport
+	device->RSSetViewports(1, &m_adjVP);
 
 	// Blend states
 	blendStates[BM_None] = NULL;
@@ -214,14 +234,20 @@ D3D::~D3D()
 
 void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
 {
+	// Clear entire screen
+	device->RSSetViewports(1, &m_fullVP);
 	const float RGBA[4] = { R, G, B, A };
 	device->ClearRenderTargetView(renderTarget, RGBA);
 //	ClearDepthStencil();
+
+	// Readjust to aspect corrected VP
+	device->RSSetViewports(1, &m_adjVP);
 }
 
 
 void D3D::Flip()
 {
+	device->RSSetViewports(1, &m_fullVP);
 	HRESULT hr = swapchain->Present(0,0);
 	D3D_ASSERT(hr);
 }

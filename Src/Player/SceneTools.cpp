@@ -75,7 +75,7 @@ void DuplicateTransformTransformedHierarchy(
 // Loading bar.
 //
 
-void DrawLoadProgress(float progress)
+void DrawLoadProgress(Pimp::Texture2D *pTex, float progress)
 {
 	if (gWorld == NULL)
 	{	

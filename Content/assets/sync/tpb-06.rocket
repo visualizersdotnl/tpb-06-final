@@ -81,6 +81,8 @@
 			<key value="0.7" interpolation="0" row="392"/>
 			<key value="0.4" interpolation="2" row="404"/>
 			<key value="0" interpolation="0" row="419"/>
+			<key value="0" interpolation="2" row="723"/>
+			<key value="1" interpolation="0" row="768"/>
 		</track>
 		<track name="bondTarget">
 			<key value="0" interpolation="0" row="0"/>
