@@ -32,14 +32,19 @@ inline DWORD AlphaToVtxColor(float alpha)
 // - Release: release build that runs Rocket in replay mode (globally defines SYNC_PLAYER).
 //
 
-// Library required for Rocket.
-#pragma comment(lib, "ws2_32.lib")
-
 #include "../../Libs/rocket/lib/sync.h"
+
+double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
+
+double Rocket_GetRow()
+{
+	return floor(Audio_GetPosition()*kRocketRowRate);
+}
 
 #if !defined (SYNC_PLAYER)
 
-double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
+// Library required for Rocket.
+#pragma comment(lib, "ws2_32.lib")
 
 void Rocket_Pause(void *, int bPause)
 {
@@ -58,11 +63,6 @@ void Rocket_SetRow(void *, int row)
 int Rocket_IsPlaying(void *)
 {
 	return Audio_IsPlaying();
-}
-
-double Rocket_GetRow()
-{
-	return floor(Audio_GetPosition()*kRocketRowRate);
 }
 
 // Audio player hooks.

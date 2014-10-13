@@ -105,6 +105,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 
 	// For letterboxing..
 	float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
+	renderScale = Vector2(1.f, renderAspectRatio);
 
 
 	//
@@ -260,7 +261,7 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B,
 
 void D3D::Flip()
 {
-	device->RSSetViewports(1, &m_fullVP);
+//	device->RSSetViewports(1, &m_fullVP);
 	HRESULT hr = swapchain->Present(0,0);
 	D3D_ASSERT(hr);
 }
