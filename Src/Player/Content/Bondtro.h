@@ -34,12 +34,12 @@ public:
 
 	void BindAssets()
 	{
-//		SetSceneMaterial(ribbonMat);
+		SetSceneMaterial();
 	}
 
 	void Tick(double row)
 	{
-//		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndDefaultCamera();
 
 		const float ballPos_1 = (float) sync_get_val(st_bondBlob1, row);
 		const float ballFade_1 = (float) sync_get_val(st_bondBlobFade1, row);
