@@ -19,7 +19,7 @@ public:
 		Assets::AddTexture2D("textures\\5\\greetings_projector.png", false, &projector);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_reel.png", false, &reel);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_scroller.png", false, &scroller);
-//		Assets::AddMaterial("shaders\\proj_back.fx", &backMat);
+		Assets::AddMaterial("shaders\\proj_back.fx", &backMat);
 	}
 
 	void BindAnimationNodes()
@@ -28,12 +28,12 @@ public:
 
 	void BindAssets()
 	{
-//		BindSceneMaterial(backMat);
+		BindSceneMaterial(backMat);
 	}
 
 	void Tick(double row)
 	{
-//		SetSceneMaterial();
+		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 
 		const float kProjectorZ = 1.f;
