@@ -1,5 +1,5 @@
-#include "ScreenQuadVertexBuffer.h"
 #include "D3D.h"
+#include "ScreenQuadVertexBuffer.h"
 #include "Effect.h"
 
 namespace Pimp

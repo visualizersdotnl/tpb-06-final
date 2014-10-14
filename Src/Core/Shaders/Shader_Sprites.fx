@@ -23,7 +23,7 @@ cbuffer paramsOnlyOnce
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
-	output.screenPos = float4(input.position, 1.f); // FIXME: renderScale!
+	output.screenPos = float4(input.position * float3(renderScale.xy, 1.f), 1.f);
 	output.color = input.color;
 	output.texCoord = input.texCoord;
 	return output;
