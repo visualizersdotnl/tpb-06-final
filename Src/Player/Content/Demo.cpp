@@ -146,6 +146,18 @@ static const sync_track *st_bondTarget;
 static const sync_track *st_bondSoundFX;
 static const sync_track *st_bondPimpFade;
 
+// part: Shafts
+static const sync_track *st_shaftsRot0x;
+static const sync_track *st_shaftsRot0y;
+static const sync_track *st_shaftsRot0z;
+static const sync_track *st_shaftsRot1x;
+static const sync_track *st_shaftsRot1y;
+static const sync_track *st_shaftsRot1z;
+static const sync_track *st_shaftsRot2x;
+static const sync_track *st_shaftsRot2y;
+static const sync_track *st_shaftsRot2z;
+
+
 void CreateRocketTracks()
 {
 	syncTracks.clear();
@@ -188,6 +200,18 @@ void CreateRocketTracks()
 	syncTracks.push_back(SyncTrack("bondTarget", false, &st_bondTarget));
 	syncTracks.push_back(SyncTrack("bondSoundFX", false, &st_bondSoundFX));
 	syncTracks.push_back(SyncTrack("bondPimpFade", false, &st_bondPimpFade));
+
+	// SHAFTS
+	syncTracks.push_back(SyncTrack("shaftsRot0x", false, &st_shaftsRot0x));
+	syncTracks.push_back(SyncTrack("shaftsRot0y", false, &st_shaftsRot0y));
+	syncTracks.push_back(SyncTrack("shaftsRot0z", false, &st_shaftsRot0z));
+	syncTracks.push_back(SyncTrack("shaftsRot1x", false, &st_shaftsRot1x));
+	syncTracks.push_back(SyncTrack("shaftsRot1y", false, &st_shaftsRot1y));
+	syncTracks.push_back(SyncTrack("shaftsRot1z", false, &st_shaftsRot1z));
+	syncTracks.push_back(SyncTrack("shaftsRot2x", false, &st_shaftsRot2x));
+	syncTracks.push_back(SyncTrack("shaftsRot2y", false, &st_shaftsRot2y));
+	syncTracks.push_back(SyncTrack("shaftsRot2z", false, &st_shaftsRot2z));
+	syncTracks.push_back(SyncTrack("shaftsLightAmount", true));	
 }
 
  namespace Demo {
@@ -471,8 +495,8 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
-//	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	const int sceneIdx = 3; // For test!
+	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
+	//const int sceneIdx = 3; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
