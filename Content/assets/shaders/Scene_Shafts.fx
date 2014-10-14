@@ -39,7 +39,7 @@ cbuffer paramsOnlyOnce
 {
 	float4x4 viewInvMatrix;
 	float sceneRenderLOD = 1;	
-	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
+	float2 quadScaleFactor = float2(1,1);			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 	
 	float FOV = 0.7f;
 
@@ -54,6 +54,8 @@ cbuffer paramsOnlyOnce
 	float4x4 testBallXformInv0;
 	float4x4 testBallXformInv1;
 	float4x4 testBallXformInv2;
+
+	float shaftsLightAmount = 0;
 };
 
 
@@ -75,9 +77,9 @@ VSOutput MainVS(VSInput input)
 }
 
 
-Texture2D texture_blurb_grid;
-Texture2D texture_blurb_noise;
-Texture2D texture_blurb_rock;
+Texture2D texture_shafts_room;
+Texture2D texture_shafts_noise;
+Texture2D texture_shafts_rock;
 
 
 SamplerState samplerTexture
@@ -224,7 +226,7 @@ float DistToCubeWithHoles(float3 p, float size)
 	d = max(d, -(length(k.yz) - holeR));
 
 	float2 uv = GetBlobbyUV(p);
-	float displacement = texture_blurb_noise.SampleLevel(samplerTexture, uv, 0).b;
+	float displacement = texture_shafts_noise.SampleLevel(samplerTexture, uv, 0).b;
 
 	d -= displacement*0.4;
 
@@ -414,7 +416,8 @@ float SoftShadowIq(float3 inPos, float3 inLightDir, float inMinT, float inMaxT, 
 
 
 static float3 ColOrange = float3(255.0,83.0,13.0)/255.0;
-
+static float3 OrangeLineAmbient = 0.4*float3(210,69,0)/255.0;
+static float3 OrangeLineDiffuse = 0.7*float3(254,173,0)/255.0;
 
 float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float inVolumetricLightAmount)
 {
@@ -458,12 +461,11 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		// b = diffuse color
 
 		uv *= 0.03;
-		float3 texel = texture_blurb_grid.SampleLevel(samplerTexture, uv.xy, 0).xyz;
-		diffColor = texel.rrr * 0.90;
-
-		ambient = diffColor*0.05*texel.b;
+		float3 texel = texture_shafts_room.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		diffColor = (0.0).xxx;
+		ambient = texel;
 		specColor = (1.0).xxx;
-		specAmount = 0.02 + 0.05 * texel.b;
+		specAmount = 0.02;// + 0.05 * texel.b;
 	}
 	else if (inMatIndex == 1)
 	{
@@ -471,12 +473,18 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 
 		float3 inPosLocal = mul(testBallXformInv2, float4(inPos,1)).xyz;
 		float2 uv = GetBlobbyUV(inPosLocal);
-		float3 texel = texture_blurb_rock.SampleLevel(samplerTexture, uv, 0).xyz;
+		float3 texel = texture_shafts_rock.SampleLevel(samplerTexture, uv, 0).xyz;
 
 		diffColor = texel * 0.6;
 		ambient = texel*0.2;
 		specAmount = 0.2;
 		specColor = (1.0).xxx;
+
+		if (sin(inPos.z*12.0 - inPos.y*12.0)  > 0.95)
+		{
+			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
+			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
+		}		
 	}
 	else
 	{
@@ -493,7 +501,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specular = pow( max(0, dot(reflected, inEyeDir) ), 6 ) * specAmount;	
 	
 	float3 lightAmount = 
-		diffuse + specular*specColor + ambient + inVolumetricLightAmount.xxx;
+		diffuse + specular*specColor + ambient + inVolumetricLightAmount *  0.7*float3(254,223,150)/255.0;
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
@@ -529,7 +537,7 @@ PSOutput MainPS(VSOutput input)
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);		
 #else
-		float volLightAmount = CalculateVolumetricLightAmount(origin, dir, length(hitPos - origin));
+		float volLightAmount = shaftsLightAmount*CalculateVolumetricLightAmount(origin, dir, length(hitPos - origin));
 
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, volLightAmount), 1 );
 #endif			

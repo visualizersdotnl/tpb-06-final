@@ -146,7 +146,8 @@ namespace Assets
 			if (nullptr == pTex)
 				return false;
 
-			*request.ppDest = pTex;
+			if (request.ppDest != NULL)
+				*request.ppDest = pTex;
 			s_textures.push_back(pTex);
 
 			gWorld->GetTextures().Add(pTex);
