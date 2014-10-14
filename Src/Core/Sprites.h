@@ -45,12 +45,13 @@ namespace Pimp
 			D3D::BlendMode blendMode,
 			const Vector2 &topLeft,
 			float sortZ,
-			float alpha = 1.f)
+			float alpha,
+			float rotateZ)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ);
 		}
 
 		// AddSprite() simplified & centered
@@ -59,13 +60,14 @@ namespace Pimp
 			Pimp::D3D::BlendMode blendMode,
 			const Vector2 &center,
 			float sortZ,
-			float alpha = 1.f)
+			float alpha,
+			float rotateZ)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const Vector2 topLeft = center - size*0.5f;
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ);
 		}
 
 		void Flush();		

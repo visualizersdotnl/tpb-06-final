@@ -16,8 +16,6 @@ public:
 
 	void ReqAssets()
 	{
-//		Assets::AddTexture2D("textures\\2\\ribbons_wall.png", true, &texWall);
-//		Assets::AddTexture2D("textures\\2\\ribbons_mesh.png", true, &texMesh);
 		Assets::AddTexture2D("textures\\2\\even_lachen.png", true, &texMesh);
 		Assets::AddMaterial("shaders\\Scene_Ribbons.fx", &ribbonMat);
 	}

@@ -39,7 +39,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+//		SetMainSceneAndDefaultCamera();
 
 		const float ballPos_1 = (float) sync_get_val(st_bondBlob1, row);
 		const float ballFade_1 = (float) sync_get_val(st_bondBlobFade1, row);
@@ -68,7 +68,8 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_1, ballY),
 				kTextZ,
-				1.f-ballFade_1);
+				1.f-ballFade_1,
+				0.f);
 
 		// ball #2
 		s_sprites->AddSprite(
@@ -76,7 +77,8 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
 				kTextZ,
-				1.f-ballFade_2);
+				1.f-ballFade_2,
+				0.f);
 
 		// ampersand
 		s_sprites->AddSprite(
@@ -84,7 +86,8 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
 				kTextZ,
-				1.f-ampFade);
+				1.f-ampFade,
+				0.f);
 
 		// group names
 		s_sprites->AddSprite(
@@ -92,13 +95,15 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2-690.f-25.f, ballY),
 				kTextZ,
-				1.f-groupsFade);
+				1.f-groupsFade,
+				0.f);
 		s_sprites->AddSprite(
 				logoInque,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f-20.f, ballY+5.f), // @plek: De een is net wat hoger dan de ander?
 				kTextZ,
-				1.f-groupsFade);
+				1.f-groupsFade,
+				0.f);
 
 		// "present.."
 		s_sprites->AddSprite(
@@ -106,7 +111,8 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f+260.f, ballY+5.f), // @plek: And this one is off too :)
 				kTextZ,
-				1.f-presentFade);
+				1.f-presentFade,
+				0.f);
 
 		// (white) background
 		s_sprites->AddSprite(
@@ -114,8 +120,10 @@ public:
 				Pimp::D3D::BlendMode::BM_Additive,
 				AlphaToVtxColor(whiteOpacity),
 				Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
-				kBackgroundZ);
+				kBackgroundZ,
+				0.f);
 
+#if 0
 		// big circle (FIXME: to scale up in transition)
 		s_sprites->AddSpriteCenter(
 				bigCircle,
@@ -123,6 +131,7 @@ public:
 				Vector2(1920.f*0.5f, 1080.f*0.5f),
 				kTargetZ,
 				0.f);
+#endif
 
 		// target sprite
 		s_sprites->AddSpriteCenter(
@@ -130,7 +139,8 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(1920.f*0.5f + ((1.f-targetOpacity)*100.f), 1080.f*0.5f),
 				kTargetZ+0.1f,
-				targetOpacity);
+				targetOpacity,
+				0.f);
 
 		// gunshot holes
 		{
@@ -153,7 +163,8 @@ public:
 								Pimp::D3D::BlendMode::BM_Additive,
 								kShotPositions[iShot],
 								kShotZ,
-								1.f);
+								1.f,
+								0.f);
 					}
 
 					// shotFX 4 means we play a sample only (shell drop)
@@ -176,7 +187,8 @@ public:
 			Pimp::D3D::BlendMode::BM_AlphaBlend,
 			Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 			kPimpZ,
-			pimpOpacity);
+			pimpOpacity,
+			0.f);
 
 		// title
 #if 0
@@ -185,7 +197,8 @@ public:
 			Pimp::D3D::BlendMode::BM_Subtractive,
 			Vector2(1920.f*0.5f, 1080.f*0.5f),
 			kTitleZ,
-			1.f);
+			1.f,
+			0.f);
 #endif
 	}
 };

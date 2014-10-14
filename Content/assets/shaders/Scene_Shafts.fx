@@ -43,7 +43,7 @@ cbuffer paramsOnlyOnce
 	
 	float FOV = 0.7f;
 
-	float testSceneTime = 0.0;
+	float fxTimeGlobal = 0;
 
 	float fisheyeStrength = 6; //6;
 	float fisheyeFOV = 1.0; //1.0;

@@ -122,6 +122,12 @@
     <ClInclude Include="Content\Knot.h">
       <Filter>/Content</Filter>
     </ClInclude>
+    <ClInclude Include="Content\GeneralCinema.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Volumetric.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
@@ -138,6 +144,12 @@
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
   </ItemGroup>

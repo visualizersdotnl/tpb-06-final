@@ -272,6 +272,8 @@ protected:
 #include "Bondtro.h"
 #include "Ribbons.h"
 #include "Knot.h"
+#include "GeneralCinema.h"
+#include "Volumetric.h"
 
 //
 // Asset root directory.
@@ -325,7 +327,10 @@ bool GenerateWorld(const char *rocketClient)
 	// Create scenes.
 	s_scenes.push_back(new Bondtro());
 	s_scenes.push_back(new Ribbons());
+	s_scenes.push_back(new GeneralCinema());
+	s_scenes.push_back(new Volumetric());
 //	s_scenes.push_back(new Knot());
+	
 
 	// Request resources.
 	//
@@ -466,8 +471,8 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
-	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-//	const int sceneIdx = 0; // For test!
+//	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
+	const int sceneIdx = 3; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
