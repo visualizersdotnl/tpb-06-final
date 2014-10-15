@@ -313,6 +313,9 @@ const std::string GetAssetsPath()
 // World generator & resource release.
 //
 
+// @plek: Hack to scale shit in shaders.
+Pimp::MaterialParameter *scaleParam;
+
 static std::vector<Demo::Scene *> s_scenes;
 
 bool GenerateWorld(const char *rocketClient)
@@ -430,6 +433,11 @@ bool GenerateWorld(const char *rocketClient)
 	Audio_Start();
 #endif
 
+	scaleParam = new Pimp::MaterialParameter(gWorld);
+	gWorld->GetElements().Add(scaleParam);
+	scaleParam->SetValueType(Pimp::MaterialParameter::VT_Value);
+	scaleParam->SetName("renderScale");
+
 	// Done!
 	return true;
 }
@@ -466,6 +474,9 @@ static float clearR = 0.f, clearG = 0.f, clearB = 0.f;
 
 bool Tick(Pimp::Camera *camOverride)
 {
+	// @plek: Update hack param. for aspect scaling.
+	scaleParam->SetValue(1.f/Pimp::gD3D->GetRenderScale().y);
+
 	const double rocketRow = Rocket_GetRow();
 
 #if !defined(SYNC_PLAYER)

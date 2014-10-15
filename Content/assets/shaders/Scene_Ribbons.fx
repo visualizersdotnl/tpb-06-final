@@ -39,7 +39,9 @@ cbuffer paramsOnlyOnce
 {
 	float4x4 viewInvMatrix;
 	float sceneRenderLOD = 1;	
-	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
+
+	// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
+	float2 quadScaleFactor;
 	
 	float FOV = 0.7f;
 

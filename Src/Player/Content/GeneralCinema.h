@@ -68,6 +68,6 @@ public:
 				Vector2(580.f+reelX, 650.f+yOffs),
 				kProjectorZ,
 				1.f,
-				reelRoto*2.5f);
+				reelRoto*2.1f);
 	}
 };

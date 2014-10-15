@@ -24,9 +24,11 @@ cbuffer paramsOnlyOnce
 	// Required by code, although not used..
 	float4x4 viewInvMatrix; 
 
-	// Don't think we'll be using this.
 	float sceneRenderLOD = 1;		
+
+	// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 	float2 quadScaleFactor;
+
 	float opacity = 1;
 
 	// This is bound to a Rocket track!	

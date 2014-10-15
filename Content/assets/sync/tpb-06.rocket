@@ -13,7 +13,7 @@
 			<key interpolation="1" row="768" value="0"/>
 			<key interpolation="0" row="1535" value="100"/>
 			<key interpolation="1" row="1536" value="0"/>
-			<key interpolation="0" row="2567" value="30"/>
+			<key interpolation="0" row="2567" value="40"/>
 			<key interpolation="1" row="2568" value="0"/>
 			<key interpolation="0" row="3583" value="130"/>
 			<key interpolation="0" row="3584" value="0"/>
@@ -137,6 +137,13 @@
 			<key interpolation="0" row="1536" value="0"/>
 			<key interpolation="1" row="2568" value="1"/>
 			<key interpolation="0" row="2600" value="0"/>
+			<key interpolation="1" row="2808" value="0"/>
+			<key interpolation="2" row="2813" value="1"/>
+			<key interpolation="0" row="2819" value="0"/>
+			<key interpolation="1" row="3065" value="0"/>
+			<key interpolation="2" row="3070" value="0.5"/>
+			<key interpolation="1" row="3080" value="-1"/>
+			<key interpolation="0" row="3084" value="0"/>
 		</track>
 		<track name="defRotQuat_X">
 			<key interpolation="0" row="0" value="0"/>

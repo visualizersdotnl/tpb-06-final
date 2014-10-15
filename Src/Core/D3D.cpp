@@ -108,20 +108,8 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	renderScale = Vector2(1.f, renderAspectRatio);
 
 
+	// Aspect ratio adjust.
 	//
-	// this piece of code assures that we ALWAYS use the same aspect ratio for our rendered screens,
-	// it will assure that everything is presented (not rendered!) in our maximum aspect ratio (16:9).
-	// this is achieved by adding black bars at the top and bottom of our screen.
-	// 
-
-	float desired_aspect_ratio_on_screen = Configuration::Instance()->GetRenderAspectRatio();
-	float actual_aspect_ratio = (float)Configuration::Instance()->GetDisplayMode().width / (float)Configuration::Instance()->GetDisplayMode().height; // for example 4:3 = 1.333
-
-	float renderableAmount = actual_aspect_ratio / desired_aspect_ratio_on_screen;
-
-	renderScale.x = 1.0f;
-	renderScale.y = renderableAmount;
-
 
 	// define full & adjusted (16:9) viewport
 	m_fullVP.TopLeftX = 0;
@@ -132,22 +120,16 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_fullVP.MaxDepth = 1.f;
 
 	const float fullAspectRatio = (float) m_fullVP.Width / m_fullVP.Height;
+	const float desired_aspect_ratio_on_screen = Configuration::Instance()->GetRenderAspectRatio();
+	const float renderableAmount = fullAspectRatio / desired_aspect_ratio_on_screen;
+
 	unsigned int xResAdj, yResAdj;
-	if (fullAspectRatio < renderAspectRatio)
-	{
-		xResAdj = m_fullVP.Width;
-		yResAdj = (unsigned int) (m_fullVP.Width/renderAspectRatio);
-	}
-	else if (fullAspectRatio > renderAspectRatio)
-	{
-		xResAdj = (unsigned int) (m_fullVP.Height*renderAspectRatio);
-		yResAdj = m_fullVP.Height;
-	}
-	else // ==
-	{
-		xResAdj = m_fullVP.Width;
-		yResAdj = m_fullVP.Height;
-	}
+
+	xResAdj = m_fullVP.Width;
+	yResAdj = (unsigned int) (m_fullVP.Height*renderableAmount);
+
+	renderScale.x = 1.0f;
+	renderScale.y = renderableAmount;
 	
 	m_adjVP.Width = xResAdj;
 	m_adjVP.Height = yResAdj;
@@ -252,9 +234,13 @@ D3D::~D3D()
 void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
 {
 	// Clear entire screen
-//	device->RSSetViewports(1, &m_fullVP);
+	device->RSSetViewports(1, &m_fullVP);
 	const float RGBA[4] = { R, G, B, A };
 	device->ClearRenderTargetView(renderTarget, RGBA);
+
+	// Bind adjusted (aspect) viewport
+	device->RSSetViewports(1, &m_adjVP);
+
 //	ClearDepthStencil();
 }
 

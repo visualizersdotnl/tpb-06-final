@@ -28,7 +28,7 @@ VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
 
-	output.screenPos = float4(input.position.xy * quadScaleFactor, 0, 1);
+	output.screenPos = float4(input.position.xy /* *quadScaleFactor */, 0, 1);
 	output.rayDir = float4(input.position.xy, 1.0, 1.0);
 	
 	return output;
