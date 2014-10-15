@@ -85,20 +85,16 @@
 			<key interpolation="2" row="312" value="0"/>
 			<key interpolation="0" row="344" value="1"/>
 			<key interpolation="1" row="369" value="0"/>
-			<key interpolation="0" row="376" value="0.9"/>
+			<key interpolation="0" row="376" value="1"/>
 			<key interpolation="1" row="381" value="0"/>
 			<key interpolation="0" row="392" value="0.7"/>
-			<key interpolation="2" row="404" value="0.4"/>
-			<key interpolation="0" row="419" value="0"/>
-			<key interpolation="2" row="723" value="0"/>
-			<key interpolation="0" row="768" value="1"/>
+			<key interpolation="2" row="404" value="0.7"/>
+			<key interpolation="0" row="419" value="1"/>
 		</track>
 		<track name="bondTarget">
 			<key interpolation="0" row="0" value="0"/>
 			<key interpolation="2" row="336" value="0"/>
 			<key interpolation="0" row="352" value="1"/>
-			<key interpolation="1" row="728" value="1"/>
-			<key interpolation="0" row="760" value="0"/>
 		</track>
 		<track name="bondSoundFX">
 			<key interpolation="0" row="0" value="0"/>
@@ -111,20 +107,16 @@
 			<key interpolation="0" row="0" value="0"/>
 			<key interpolation="1" row="508" value="0"/>
 			<key interpolation="0" row="520" value="1"/>
-			<key interpolation="3" row="728" value="1"/>
-			<key interpolation="0" row="752" value="0"/>
+			<key interpolation="0" row="768" value="0"/>
 		</track>
 		<track name="CLEAR_R">
 			<key interpolation="0" row="0" value="0"/>
-			<key interpolation="0" row="768" value="0"/>
 		</track>
 		<track name="CLEAR_G">
 			<key interpolation="0" row="0" value="0"/>
-			<key interpolation="0" row="768" value="0"/>
 		</track>
 		<track name="CLEAR_B">
 			<key interpolation="0" row="0" value="0"/>
-			<key interpolation="0" row="768" value="0"/>
 		</track>
 		<track name="fadeInOut">
 			<key interpolation="0" row="0" value="0"/>
@@ -137,8 +129,8 @@
 			<key interpolation="0" row="1536" value="0"/>
 			<key interpolation="1" row="2568" value="1"/>
 			<key interpolation="0" row="2600" value="0"/>
-			<key interpolation="1" row="2808" value="0"/>
-			<key interpolation="2" row="2813" value="1"/>
+			<key interpolation="2" row="2808" value="0"/>
+			<key interpolation="1" row="2813" value="1"/>
 			<key interpolation="0" row="2819" value="0"/>
 			<key interpolation="1" row="3065" value="0"/>
 			<key interpolation="2" row="3070" value="0.5"/>
@@ -353,7 +345,7 @@
 		</track>
 		<track name="shaftsLightAmount">
 			<key interpolation="0" row="2560" value="0"/>
-			<key interpolation="1" row="3072" value="0"/>
+			<key interpolation="2" row="3072" value="0"/>
 			<key interpolation="0" row="3328" value="1"/>
 		</track>
 	</tracks>

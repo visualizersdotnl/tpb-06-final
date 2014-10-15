@@ -137,7 +137,7 @@ public:
 		s_sprites->AddSpriteCenter(
 				target,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(1920.f*0.5f + ((1.f-targetOpacity)*100.f), 1080.f*0.5f),
+				Vector2(1920.f*0.5f, 1080.f*0.5f),
 				kTargetZ+0.1f,
 				targetOpacity,
 				0.f);

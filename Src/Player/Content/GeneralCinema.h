@@ -49,7 +49,7 @@ public:
 		s_sprites->AddSprite(
 				projector,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(200.f, 370.f+yOffs),
+				Vector2(100.f, 370.f+yOffs),
 				kProjectorZ,
 				1.f,
 				0.f);
@@ -58,14 +58,14 @@ public:
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(580.f+reelX, 100.f+yOffs),
+				Vector2(480.f+reelX, 100.f+yOffs),
 				kProjectorZ,
 				1.f,
 				reelRoto*2.f);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(580.f+reelX, 650.f+yOffs),
+				Vector2(480.f+reelX, 650.f+yOffs),
 				kProjectorZ,
 				1.f,
 				reelRoto*2.1f);
