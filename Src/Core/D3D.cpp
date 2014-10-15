@@ -644,8 +644,8 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 		&shader,
 		&errors);
 
-	char* errrs = (errors != NULL) ? (char*)errors->GetBufferPointer() : NULL;
-	D3D_ASSERT_MSG(hr, errrs);
+	char* _errors = (errors != NULL) ? (char*)errors->GetBufferPointer() : NULL;
+	D3D_ASSERT_MSG(hr, _errors);
 	if (hr != S_OK)
 		return false;
 

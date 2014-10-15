@@ -61,13 +61,13 @@ public:
 				Vector2(580.f+reelX, 100.f+yOffs),
 				kProjectorZ,
 				1.f,
-				reelRoto);
+				reelRoto*2.f);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(580.f+reelX, 650.f+yOffs),
 				kProjectorZ,
 				1.f,
-				-reelRoto*0.8f);
+				reelRoto*2.5f);
 	}
 };

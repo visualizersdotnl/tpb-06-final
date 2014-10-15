@@ -496,7 +496,7 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	//const int sceneIdx = 3; // For test!
+//	const int sceneIdx = 2; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
