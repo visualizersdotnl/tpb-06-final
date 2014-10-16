@@ -21,6 +21,10 @@ cbuffer paramsOnlyOnce
 	float sceneRenderLOD = 1;	
 	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 
+	// @plek: To make this thing look right.
+	float hackResX;
+	float hackResY;
+
 	float fxTimeGlobal = 0;
 };
 
@@ -41,9 +45,7 @@ SamplerState samplerTexture
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
-// RIPPED FROM SHADERTOY
-
-#if 1
+// -- RIPPED FROM SHADERTOY (FIXME: MODIFY!) --
 
 // "The Inversion Machine" by Kali
 
@@ -96,9 +98,9 @@ float light(in float3 p, in float3 dir) {
 float raymarch(in float3 from, in float3 dir, in float2 screenPos) 
 {
 	float2 uv = screenPos.xy;
-	uv.xy -= .5;
+//	uv.xy -= .5;
 //	vec2 uv = gl_FragCoord.xy / iResolution.xy*2.-1.;
-//	uv.y*=iResolution.y/iResolution.x;
+//	uv.y/= quadScaleFactor.y;
 
 	float st,d,col,totdist=st=0.;
 	float3 p;
@@ -133,9 +135,9 @@ float raymarch(in float3 from, in float3 dir, in float2 screenPos)
 float4 ripped_Main(float2 screenPos)
 {
 	float t=fxTimeGlobal*.2;
-	float2 res = { 1920, 1080 };
+	float2 res = { hackResX, hackResY };
 	float2 uv = screenPos.xy / res*2-1;//gl_FragCoord.xy / iResolution.xy*2.-1.;
-//	uv.y*=iResolution.y/iResolution.x;
+//	uv.y*=renderScale;
 	float3 from=float3(0.,0.1,-1.2);
 	float3 dir=normalize(float3(uv,1.));
 	rot=float2x2(cos(t),sin(t),-sin(t),cos(t));
@@ -146,9 +148,7 @@ float4 ripped_Main(float2 screenPos)
 	return float4(col.xxxx);
 }
 
-#endif
-
-// ^^ RIPPED FROM SHADERTOY
+// -- END OF RIP :) --
 
 PSOutput MainPS(VSOutput input)
 {

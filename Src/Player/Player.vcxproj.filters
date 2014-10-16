@@ -152,7 +152,7 @@
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\proj_back.fx">
+    <FxCompile Include="..\..\Content\assets\shaders\Spheregrid.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
   </ItemGroup>

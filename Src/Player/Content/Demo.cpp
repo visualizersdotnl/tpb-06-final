@@ -314,7 +314,7 @@ const std::string GetAssetsPath()
 //
 
 // @plek: Hack to scale shit in shaders.
-Pimp::MaterialParameter *scaleParam;
+Pimp::MaterialParameter *hackResX, *hackResY;
 
 static std::vector<Demo::Scene *> s_scenes;
 
@@ -423,6 +423,16 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
+
+	// @plek: Yeah this just sucks but it's for proj_back.fx :)
+	hackResX = new Pimp::MaterialParameter(gWorld);
+	hackResX->SetValueType(Pimp::MaterialParameter::VT_Value);
+	hackResX->SetName("hackResX");
+	hackResY = new Pimp::MaterialParameter(gWorld);
+	hackResY->SetValueType(Pimp::MaterialParameter::VT_Value);
+	hackResY->SetName("hackResY");
+	gWorld->GetElements().Add(hackResX);
+	gWorld->GetElements().Add(hackResY);
 	
 	// Finish up some World business.
 	gWorld->InitAllBalls();
@@ -432,11 +442,6 @@ bool GenerateWorld(const char *rocketClient)
 	// We're in replay mode so start the soundtrack, otherwise Rocket will tell use what to do.
 	Audio_Start();
 #endif
-
-	scaleParam = new Pimp::MaterialParameter(gWorld);
-	gWorld->GetElements().Add(scaleParam);
-	scaleParam->SetValueType(Pimp::MaterialParameter::VT_Value);
-	scaleParam->SetName("renderScale");
 
 	// Done!
 	return true;
@@ -474,9 +479,6 @@ static float clearR = 0.f, clearG = 0.f, clearB = 0.f;
 
 bool Tick(Pimp::Camera *camOverride)
 {
-	// @plek: Update hack param. for aspect scaling.
-	scaleParam->SetValue(1.f/Pimp::gD3D->GetRenderScale().y);
-
 	const double rocketRow = Rocket_GetRow();
 
 #if !defined(SYNC_PLAYER)
@@ -490,6 +492,12 @@ bool Tick(Pimp::Camera *camOverride)
 	// Update tracks.
 	for (SyncTrack &syncTrack : syncTracks)
 		syncTrack.Update(rocketRow);
+
+	// @plek: Update hack param..
+	int xRes, yRes;
+	Pimp::gD3D->GetViewportSize(&xRes, &yRes);
+	hackResX->SetValue((float) xRes);
+	hackResY->SetValue((float) yRes);
 
 //	clearR = (float)sync_get_val(st_clearR, rocketRow);
 //	clearG = (float)sync_get_val(st_clearG, rocketRow);
