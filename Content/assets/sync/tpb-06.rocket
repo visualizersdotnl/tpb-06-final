@@ -227,13 +227,15 @@
 			<key value="-1.95" row="3584" interpolation="0"/>
 		</track>
 		<track name="ribbonsAppear">
-			<key value="0" row="768" interpolation="1"/>
+			<key value="0" row="0" interpolation="0"/>
+			<key value="0.2" row="768" interpolation="1"/>
 			<key value="1" row="896" interpolation="0"/>
 			<key value="1" row="1408" interpolation="1"/>
-			<key value="-0.2" row="1535" interpolation="0"/>
+			<key value="0.2" row="1535" interpolation="0"/>
 			<key value="0" row="1536" interpolation="0"/>
 		</track>
 		<track name="ribbonsPhase">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="2" row="768" interpolation="0"/>
 			<key value="3" row="816" interpolation="0"/>
 			<key value="4" row="832" interpolation="0"/>
@@ -284,6 +286,7 @@
 			<key value="0" row="1536" interpolation="0"/>
 		</track>
 		<track name="ribbonsWonkyness">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="768" interpolation="0"/>
 			<key value="0" row="1024" interpolation="1"/>
 			<key value="1" row="1280" interpolation="0"/>
@@ -292,18 +295,22 @@
 			<key value="0" row="1536" interpolation="0"/>
 		</track>
 		<track name="shaftsRot0x">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2560" interpolation="1"/>
 			<key value="20" row="3584" interpolation="0"/>
 		</track>
 		<track name="shaftsRot0y">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2560" interpolation="1"/>
 			<key value="50" row="3584" interpolation="0"/>
 		</track>
 		<track name="shaftsRot0z">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2560" interpolation="1"/>
 			<key value="40" row="3584" interpolation="0"/>
 		</track>
 		<track name="shaftsRot1x">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2564" interpolation="1"/>
 			<key value="20" row="3592" interpolation="0"/>
 		</track>
@@ -312,22 +319,27 @@
 			<key value="50" row="3592" interpolation="0"/>
 		</track>
 		<track name="shaftsRot1z">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2564" interpolation="1"/>
 			<key value="40" row="3592" interpolation="0"/>
 		</track>
 		<track name="shaftsRot2x">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2568" interpolation="1"/>
 			<key value="20" row="3600" interpolation="0"/>
 		</track>
 		<track name="shaftsRot2y">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2568" interpolation="1"/>
 			<key value="50" row="3600" interpolation="0"/>
 		</track>
 		<track name="shaftsRot2z">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2568" interpolation="1"/>
 			<key value="40" row="3600" interpolation="0"/>
 		</track>
 		<track name="shaftsLightAmount">
+			<key value="0" row="0" interpolation="0"/>
 			<key value="0" row="2560" interpolation="0"/>
 			<key value="0" row="3072" interpolation="2"/>
 			<key value="1" row="3328" interpolation="0"/>
