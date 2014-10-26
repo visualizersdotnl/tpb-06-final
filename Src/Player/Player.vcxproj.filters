@@ -28,6 +28,12 @@
     <Filter Include="/Content\/Assets/Shaders %28incomplete%29">
       <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="/Content\Parts">
+      <UniqueIdentifier>{8c958119-07d3-444a-9b1e-c0894d66d060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\/Assets/Sync %28Rocket proj. only%29">
+      <UniqueIdentifier>{773e7b28-0021-4d5b-89a7-cbc21e5a1379}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneTools.cpp">
@@ -95,9 +101,6 @@
     <ClInclude Include="MaterialCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Ribbons.h">
-      <Filter>/Content</Filter>
-    </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -117,16 +120,19 @@
       <Filter>/../Libs/rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="Content\Bondtro.h">
-      <Filter>/Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Knot.h">
-      <Filter>/Content</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\GeneralCinema.h">
-      <Filter>/Content</Filter>
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Knot.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Ribbons.h">
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Volumetric.h">
-      <Filter>/Content</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +165,9 @@
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">
       <Filter>/../Libs/bass24</Filter>
+    </None>
+    <None Include="..\..\Content\assets\sync\tpb-06.rocket">
+      <Filter>/Content\/Assets/Sync %28Rocket proj. only%29</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

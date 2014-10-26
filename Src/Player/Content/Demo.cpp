@@ -122,96 +122,31 @@ public:
 	Pimp::MaterialParameter *matParam;
 };
 
-static std::vector<SyncTrack> syncTracks;
+static std::vector<SyncTrack> s_syncTracks;
 
-// Sync. references:
+// Global sync.
+//
 
-// global
 static const sync_track *st_SceneIdx;
 static const sync_track *st_fxTimeGlobal;
 static const sync_track *st_postFadeInOut;
 static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
 static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
 
-// part: James Bond intro
-static const sync_track *st_bondBlob1;
-static const sync_track *st_bondBlobFade1;
-static const sync_track *st_bondBlob2;
-static const sync_track *st_bondBlobFade2;
-static const sync_track *st_bondAmpFade;
-static const sync_track *st_bondGroupsFade;
-static const sync_track *st_bondPresFade;
-static const sync_track *st_bondWhite;
-static const sync_track *st_bondTarget;
-static const sync_track *st_bondSoundFX;
-static const sync_track *st_bondPimpFade;
-
-// part: Shafts
-static const sync_track *st_shaftsRot0x;
-static const sync_track *st_shaftsRot0y;
-static const sync_track *st_shaftsRot0z;
-static const sync_track *st_shaftsRot1x;
-static const sync_track *st_shaftsRot1y;
-static const sync_track *st_shaftsRot1z;
-static const sync_track *st_shaftsRot2x;
-static const sync_track *st_shaftsRot2y;
-static const sync_track *st_shaftsRot2z;
-
-
-void CreateRocketTracks()
+void CreateGlobalRocketTracks()
 {
-	syncTracks.clear();
+	s_syncTracks.clear();
 
-	// GLOBAL TRACKS
-	syncTracks.push_back(SyncTrack("SceneIndex", false, &st_SceneIdx)); 
-	syncTracks.push_back(SyncTrack("fxTimeGlobal", true, &st_fxTimeGlobal));
-	syncTracks.push_back(SyncTrack("fadeInOut", true, &st_postFadeInOut)); 
-	syncTracks.push_back(SyncTrack("defRotQuat_X", false, &st_defRotX));
-	syncTracks.push_back(SyncTrack("defRotQuat_y", false, &st_defRotY));
-	syncTracks.push_back(SyncTrack("defRotQuat_Z", false, &st_defRotZ));
-	syncTracks.push_back(SyncTrack("defRotQuat_W", false, &st_defRotW));
-	syncTracks.push_back(SyncTrack("defTrans_X", false, &st_defTransX));
-	syncTracks.push_back(SyncTrack("defTrans_Y", false, &st_defTransY));
-	syncTracks.push_back(SyncTrack("defTrans_Z", false, &st_defTransZ));
-
-	// FX ONLY TRACKS (non-indexed, don't care as long as they're updated)
-	//
-
-	// RIBBONS
-	syncTracks.push_back(SyncTrack("ribbonsAppear", true));	
-	syncTracks.push_back(SyncTrack("ribbonsPhase", true));	
-	syncTracks.push_back(SyncTrack("ribbonsWonkyness", true));		
-	
-
-	// KNOT
-	syncTracks.push_back(SyncTrack("knotTubeRadius1", true));
-	syncTracks.push_back(SyncTrack("knotTubeRadius2", true));
-	syncTracks.push_back(SyncTrack("knotTubeRadius3", true));
-	
-	// BONDTRO
-	syncTracks.push_back(SyncTrack("bondBlob1", false, &st_bondBlob1));
-	syncTracks.push_back(SyncTrack("bondBlobFade1", false, &st_bondBlobFade1));
-	syncTracks.push_back(SyncTrack("bondBlob2", false, &st_bondBlob2));
-	syncTracks.push_back(SyncTrack("bondBlobFade2", false, &st_bondBlobFade2));
-	syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
-	syncTracks.push_back(SyncTrack("bondGroupsFade", false, &st_bondGroupsFade));
-	syncTracks.push_back(SyncTrack("bondPresFade", false, &st_bondPresFade));
-	syncTracks.push_back(SyncTrack("bondWhite", false, &st_bondWhite));
-	syncTracks.push_back(SyncTrack("bondTarget", false, &st_bondTarget));
-	syncTracks.push_back(SyncTrack("bondSoundFX", false, &st_bondSoundFX));
-	syncTracks.push_back(SyncTrack("bondPimpFade", false, &st_bondPimpFade));
-
-	// SHAFTS
-	syncTracks.push_back(SyncTrack("shaftsRot0x", false, &st_shaftsRot0x));
-	syncTracks.push_back(SyncTrack("shaftsRot0y", false, &st_shaftsRot0y));
-	syncTracks.push_back(SyncTrack("shaftsRot0z", false, &st_shaftsRot0z));
-	syncTracks.push_back(SyncTrack("shaftsRot1x", false, &st_shaftsRot1x));
-	syncTracks.push_back(SyncTrack("shaftsRot1y", false, &st_shaftsRot1y));
-	syncTracks.push_back(SyncTrack("shaftsRot1z", false, &st_shaftsRot1z));
-	syncTracks.push_back(SyncTrack("shaftsRot2x", false, &st_shaftsRot2x));
-	syncTracks.push_back(SyncTrack("shaftsRot2y", false, &st_shaftsRot2y));
-	syncTracks.push_back(SyncTrack("shaftsRot2z", false, &st_shaftsRot2z));
-	syncTracks.push_back(SyncTrack("shaftsLightAmount", true));	
+	s_syncTracks.push_back(SyncTrack("g_SceneIndex", false, &st_SceneIdx)); 
+	s_syncTracks.push_back(SyncTrack("g_fxTime", true, &st_fxTimeGlobal));
+	s_syncTracks.push_back(SyncTrack("g_preSpriteFade", true, &st_postFadeInOut)); 
+	s_syncTracks.push_back(SyncTrack("g_defRotQuat_X", false, &st_defRotX));
+	s_syncTracks.push_back(SyncTrack("g_defRotQuat_y", false, &st_defRotY));
+	s_syncTracks.push_back(SyncTrack("g_defRotQuat_Z", false, &st_defRotZ));
+	s_syncTracks.push_back(SyncTrack("g_defRotQuat_W", false, &st_defRotW));
+	s_syncTracks.push_back(SyncTrack("g_defTrans_X", false, &st_defTransX));
+	s_syncTracks.push_back(SyncTrack("g_defTrans_Y", false, &st_defTransY));
+	s_syncTracks.push_back(SyncTrack("g_defTrans_Z", false, &st_defTransZ));
 }
 
  namespace Demo {
@@ -255,6 +190,8 @@ public:
 	{
 	}
 
+	virtual void ReqRocketTracks() = 0;     // Called after Rocket is fired up. Request your private tracks here.
+	                                        // ^^ Don't forget there's a global amount of tracks like g_fxTimer!
 	virtual void ReqAssets() = 0;           // Called prior to loading process: request assets only.
 	virtual void BindAnimationNodes() = 0;  // Called during loading process: create & bind animation related nodes.
 	virtual void BindAssets() = 0;          // Bind all resource based elements to the world (remember: asset loader takes care of it for assets).
@@ -333,8 +270,8 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 	}
 
-	// Instantiate all Rocket tracks.
-	CreateRocketTracks();
+	// Instantiate all global Rocket tracks.
+	CreateGlobalRocketTracks();
 
 #if !defined(SYNC_PLAYER)
 	// We're in edit mode: connect to Rocket client.
@@ -357,7 +294,10 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes.push_back(new GeneralCinema());
 	s_scenes.push_back(new Volumetric());
 //	s_scenes.push_back(new Knot());
-	
+
+	// Instantiate all local (part/scene) Rocket tracks.	
+	for (Scene *pScene : s_scenes)
+		pScene->ReqRocketTracks();
 
 	// Request resources.
 	//
@@ -424,7 +364,7 @@ bool GenerateWorld(const char *rocketClient)
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
 
-	// @plek: Yeah this just sucks but it's for proj_back.fx :)
+	// @plek: Yeah this just sucks but it's needed :)
 	hackResX = new Pimp::MaterialParameter(gWorld);
 	hackResX->SetValueType(Pimp::MaterialParameter::VT_Value);
 	hackResX->SetName("hackResX");
@@ -490,7 +430,7 @@ bool Tick(Pimp::Camera *camOverride)
 #endif
 
 	// Update tracks.
-	for (SyncTrack &syncTrack : syncTracks)
+	for (SyncTrack &syncTrack : s_syncTracks)
 		syncTrack.Update(rocketRow);
 
 	// @plek: Update hack param..
@@ -514,8 +454,8 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
-	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
 //	const int sceneIdx = 2; // For test!
+	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else

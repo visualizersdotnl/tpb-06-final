@@ -2,12 +2,22 @@
 class Volumetric : public Scene
 {
 private:
-//	Pimp::Texture2D *texWall, *texMesh;
 	Pimp::Material *shaftMat;
 	Pimp::MaterialParameter *rotation0Param;
 	Pimp::MaterialParameter *rotation1Param;
 	Pimp::MaterialParameter *rotation2Param;
 
+	const sync_track *st_shaftsRot0x;
+	const sync_track *st_shaftsRot0y;
+	const sync_track *st_shaftsRot0z;
+	const sync_track *st_shaftsRot1x;
+	const sync_track *st_shaftsRot1y;
+	const sync_track *st_shaftsRot1z;
+	const sync_track *st_shaftsRot2x;
+	const sync_track *st_shaftsRot2y;
+	const sync_track *st_shaftsRot2z;
+	
+	// FIXME: do we need this as generic?
 	Pimp::MaterialParameter* AddMaterialParam(const char* name)
 	{
 		Pimp::Xform* xform = new Pimp::Xform(gWorld);
@@ -30,6 +40,20 @@ public:
 
 	~Volumetric()
 	{
+	}
+
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("shaftsRot0x", false, &st_shaftsRot0x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot0y", false, &st_shaftsRot0y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot0z", false, &st_shaftsRot0z));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1x", false, &st_shaftsRot1x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1y", false, &st_shaftsRot1y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1z", false, &st_shaftsRot1z));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2x", false, &st_shaftsRot2x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2y", false, &st_shaftsRot2y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2z", false, &st_shaftsRot2z));
+		s_syncTracks.push_back(SyncTrack("shaftsLightAmount", true));	
 	}
 
 	void ReqAssets()

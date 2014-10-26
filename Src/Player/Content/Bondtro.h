@@ -5,6 +5,18 @@ private:
 	Pimp::Texture2D *bondBlob, *ampersand, *logoTPB, *logoInque, *present;
 	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
 
+	const sync_track *st_bondBlob1;
+	const sync_track *st_bondBlobFade1;
+	const sync_track *st_bondBlob2;
+	const sync_track *st_bondBlobFade2;
+	const sync_track *st_bondAmpFade;
+	const sync_track *st_bondGroupsFade;
+	const sync_track *st_bondPresFade;
+	const sync_track *st_bondWhite;
+	const sync_track *st_bondTarget;
+	const sync_track *st_bondSoundFX;
+	const sync_track *st_bondPimpFade;
+
 public:
 	Bondtro()
 	{
@@ -12,6 +24,21 @@ public:
 
 	~Bondtro()
 	{
+	}
+	
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("bondBlob1", false, &st_bondBlob1));
+		s_syncTracks.push_back(SyncTrack("bondBlobFade1", false, &st_bondBlobFade1));
+		s_syncTracks.push_back(SyncTrack("bondBlob2", false, &st_bondBlob2));
+		s_syncTracks.push_back(SyncTrack("bondBlobFade2", false, &st_bondBlobFade2));
+		s_syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
+		s_syncTracks.push_back(SyncTrack("bondGroupsFade", false, &st_bondGroupsFade));
+		s_syncTracks.push_back(SyncTrack("bondPresFade", false, &st_bondPresFade));
+		s_syncTracks.push_back(SyncTrack("bondWhite", false, &st_bondWhite));
+		s_syncTracks.push_back(SyncTrack("bondTarget", false, &st_bondTarget));
+		s_syncTracks.push_back(SyncTrack("bondSoundFX", false, &st_bondSoundFX));
+		s_syncTracks.push_back(SyncTrack("bondPimpFade", false, &st_bondPimpFade));
 	}
 
 	void ReqAssets()

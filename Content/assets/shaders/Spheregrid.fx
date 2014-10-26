@@ -25,7 +25,7 @@ cbuffer paramsOnlyOnce
 	float hackResX;
 	float hackResY;
 
-	float fxTimeGlobal = 0;
+	float g_fxTime = 0;
 };
 
 VSOutput MainVS(VSInput input)
@@ -62,7 +62,7 @@ float rand(float2 co){
 }
 
 float de(float3 p) {
-	float t=fxTimeGlobal;
+	float t=g_fxTime;
 	float dotp=dot(p,p);
 	p.x+=sin(t*40.)*.007;
 	p=p/dotp*scale;
@@ -104,11 +104,11 @@ float raymarch(in float3 from, in float3 dir, in float2 screenPos)
 
 	float st,d,col,totdist=st=0.;
 	float3 p;
-	float ra=rand(uv.xy*fxTimeGlobal)-.5;
-	float ras=max(0.,sign(-.5+rand(float2(1.3456,.3573)*floor(30.+fxTimeGlobal*20.))));
-	float rab=rand(float2(1.2439,2.3453)*floor(10.+fxTimeGlobal*40.))*ras;
-	float rac=rand(float2(1.1347,1.0331)*floor(40.+fxTimeGlobal));
-	float ral=rand(1.+floor(uv.yy*300.)*fxTimeGlobal)-.5;
+	float ra=rand(uv.xy*g_fxTime)-.5;
+	float ras=max(0.,sign(-.5+rand(float2(1.3456,.3573)*floor(30.+g_fxTime*20.))));
+	float rab=rand(float2(1.2439,2.3453)*floor(10.+g_fxTime*40.))*ras;
+	float rac=rand(float2(1.1347,1.0331)*floor(40.+g_fxTime));
+	float ral=rand(1.+floor(uv.yy*300.)*g_fxTime)-.5;
 	for (int i=0; i<60; i++) {
 		p=from+totdist*dir;
 		d=de(p);
@@ -127,14 +127,14 @@ float raymarch(in float3 from, in float3 dir, in float2 screenPos)
 	col+=pow(max(0.,1.-length(p)),8.)*(.5+10.*rab);
 	col+=pow(max(0.,1.-length(p)),30.)*50.;
 	col = lerp(col, backg, 1.0-exp(-.25*pow(totdist,3.)));
-	if (rac>.7) col=col*.7+(.3+ra+ral*.5)*fmod(uv.y+fxTimeGlobal*2.,.25);
-	col = lerp(col, .5+ra+ral*.5, max(0.,3.-fxTimeGlobal)/3.);
+	if (rac>.7) col=col*.7+(.3+ra+ral*.5)*fmod(uv.y+g_fxTime*2.,.25);
+	col = lerp(col, .5+ra+ral*.5, max(0.,3.-g_fxTime)/3.);
 	return col+ra*.03+(ral*.1+ra*.1)*rab;
 }
 
 float4 ripped_Main(float2 screenPos)
 {
-	float t=fxTimeGlobal*.2;
+	float t=g_fxTime*.2;
 	float2 res = { hackResX, hackResY };
 	float2 uv = screenPos.xy / res*2-1;//gl_FragCoord.xy / iResolution.xy*2.-1.;
 //	uv.y*=renderScale;
@@ -144,7 +144,7 @@ float4 ripped_Main(float2 screenPos)
 //	dir.xy=dir.xy*rot;
 	dir.xy = mul(rot, dir.xy);
 	float col=raymarch(from,dir, screenPos); 
-	col=pow(col,1.25)*clamp(60.-fxTimeGlobal,0.,1.);
+	col=pow(col,1.25)*clamp(60.-g_fxTime,0.,1.);
 	return float4(col.xxxx);
 }
 

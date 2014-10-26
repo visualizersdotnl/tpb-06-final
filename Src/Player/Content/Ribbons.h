@@ -14,6 +14,13 @@ public:
 	{
 	}
 
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("ribbonsAppear", true));	
+		s_syncTracks.push_back(SyncTrack("ribbonsPhase", true));	
+		s_syncTracks.push_back(SyncTrack("ribbonsWonkyness", true));		
+	}
+
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\2\\even_lachen.png", true, &texMesh);

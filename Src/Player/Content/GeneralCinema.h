@@ -14,6 +14,10 @@ public:
 	{
 	}
 
+	void ReqRocketTracks()
+	{
+	}
+
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\5\\greetings_projector.png", false, &projector);

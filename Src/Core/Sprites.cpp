@@ -63,7 +63,7 @@ namespace Pimp
 		// Member VB takes care of it's resources.
 	}
 
-	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle)
+	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle, float spriteAspect)
 	{
 		if (0.f == angle)
 		{
@@ -71,10 +71,9 @@ namespace Pimp
 		}
 		else
 		{
-			const float aspectY = Pimp::gD3D->GetRenderScale().y;
-			Matrix4 mRotZ = CreateMatrixRotationZ(angle);
-			const Vector3 result = mRotZ.TransformCoord(Vector3((position.x+pivot.x), (position.y+pivot.y), 1.f));
-			return Vector3((result.x-pivot.x), (result.y-pivot.y), 1.f);
+			Matrix4 rotZ;
+			rotZ = CreateMatrixRotationZ(angle);
+			return rotZ.TransformCoord(Vector3(position.x-pivot.x, position.y-pivot.y, 1.f));
 		}
 	}
 
@@ -104,33 +103,35 @@ namespace Pimp
 		const Vector2 quadPivot(adjTopLeft.x + adjSize.x*0.5f, adjTopLeft.y + adjSize.y*0.5f);
 		const unsigned int ARGB = vertexColor;
 	
+		float spriteAspect=size.y/size.x;
+
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 1.f);
 		++pVertices;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
+		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 0.f);
 		++pVertices;

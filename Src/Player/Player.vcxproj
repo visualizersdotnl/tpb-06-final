@@ -261,6 +261,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Content\assets\sync\tpb-06.rocket" />
     <None Include="..\Libs\bass24\bass.chm" />
   </ItemGroup>
   <ItemGroup>
