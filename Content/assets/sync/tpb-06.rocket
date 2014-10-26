@@ -35,7 +35,9 @@
 			<key row="0" value="0" interpolation="0"/>
 			<key row="128" value="0" interpolation="0"/>
 			<key row="144" value="0" interpolation="1"/>
-			<key row="152" value="1" interpolation="0"/>
+			<key row="156" value="0" interpolation="1"/>
+			<key row="160" value="1" interpolation="0"/>
+			<key row="176" value="0" interpolation="0"/>
 		</track>
 		<track name="bondBlob2">
 			<key row="0" value="-106" interpolation="3"/>
@@ -60,18 +62,30 @@
 			<key row="120" value="0" interpolation="3"/>
 			<key row="132" value="1" interpolation="0"/>
 		</track>
+		<track name="bondFadeTPB">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="152" value="1" interpolation="0"/>
+			<key row="208" value="1" interpolation="1"/>
+			<key row="240" value="0" interpolation="0"/>
+		</track>
 		<track name="bondAmpFade">
 			<key row="0" value="1" interpolation="0"/>
-			<key row="144" value="1" interpolation="1"/>
-			<key row="152" value="0" interpolation="0"/>
+			<key row="156" value="0" interpolation="0"/>
+			<key row="208" value="0" interpolation="1"/>
+			<key row="240" value="1" interpolation="0"/>
 			<key row="344" value="1" interpolation="0"/>
+		</track>
+		<track name="bondFadeINQ">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="160" value="1" interpolation="0"/>
+			<key row="208" value="1" interpolation="1"/>
+			<key row="240" value="0" interpolation="0"/>
 		</track>
 		<track name="bondPresFade">
 			<key row="0" value="1" interpolation="0"/>
-			<key row="251" value="1" interpolation="1"/>
-			<key row="256" value="0" interpolation="0"/>
-			<key row="320" value="0" interpolation="2"/>
-			<key row="342" value="1" interpolation="0"/>
+			<key row="164" value="0" interpolation="0"/>
+			<key row="208" value="0" interpolation="1"/>
+			<key row="240" value="1" interpolation="0"/>
 		</track>
 		<track name="bondWhite">
 			<key row="0" value="0" interpolation="0"/>
@@ -328,8 +342,6 @@
 			<key row="3072" value="0" interpolation="2"/>
 			<key row="3328" value="1" interpolation="0"/>
 		</track>
-		<track name="bondFadeTPB"/>
-		<track name="bondFadeINQ"/>
 	</tracks>
 	<bookmarks/>
 </sync>
