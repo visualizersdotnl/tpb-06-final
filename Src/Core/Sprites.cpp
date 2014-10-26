@@ -65,7 +65,7 @@ namespace Pimp
 
 	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle, float spriteAspect)
 	{
-		if (0.f == angle)
+		if (1) // (0.f == angle)
 		{
 			return Vector3(position.x, position.y, 1.f);
 		}
@@ -73,7 +73,9 @@ namespace Pimp
 		{
 			Matrix4 rotZ;
 			rotZ = CreateMatrixRotationZ(angle);
-			return rotZ.TransformCoord(Vector3(position.x-pivot.x, position.y-pivot.y, 1.f));
+			Vector3 pivoted(position.x-pivot.x, position.y-pivot.y, 1.f);
+			pivoted = rotZ.TransformCoord(pivoted);
+			return Vector3(pivoted.x+pivot.x, pivoted.y+pivot.y, 1.f);
 		}
 	}
 

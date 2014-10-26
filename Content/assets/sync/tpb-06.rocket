@@ -66,13 +66,6 @@
 			<key row="152" value="0" interpolation="0"/>
 			<key row="344" value="1" interpolation="0"/>
 		</track>
-		<track name="bondGroupsFade">
-			<key row="0" value="1" interpolation="0"/>
-			<key row="184" value="1" interpolation="3"/>
-			<key row="192" value="0" interpolation="0"/>
-			<key row="316" value="0" interpolation="1"/>
-			<key row="335" value="1" interpolation="0"/>
-		</track>
 		<track name="bondPresFade">
 			<key row="0" value="1" interpolation="0"/>
 			<key row="251" value="1" interpolation="1"/>
@@ -335,6 +328,8 @@
 			<key row="3072" value="0" interpolation="2"/>
 			<key row="3328" value="1" interpolation="0"/>
 		</track>
+		<track name="bondFadeTPB"/>
+		<track name="bondFadeINQ"/>
 	</tracks>
 	<bookmarks/>
 </sync>
