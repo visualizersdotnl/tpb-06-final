@@ -216,6 +216,22 @@ protected:
 		}
 	}
 
+	// Helper to bind a material parameter to Xform and add it to the world.
+	Pimp::MaterialParameter* AddMaterialParamWithXform(const char* name)
+	{
+		Pimp::Xform* xform = new Pimp::Xform(gWorld);
+		
+		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(gWorld);
+		gWorld->GetElements().Add(param);
+		param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
+		param->SetName(name);
+
+		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
+		Pimp::World::StaticAddChildToParent(param, xform);
+
+		return param;
+	}
+
 	void SetSceneMaterial()
 	{
 		// @plek: Why is this shit here again?

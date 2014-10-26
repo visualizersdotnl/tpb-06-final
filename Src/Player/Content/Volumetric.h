@@ -17,22 +17,6 @@ private:
 	const sync_track *st_shaftsRot2y;
 	const sync_track *st_shaftsRot2z;
 	
-	// FIXME: do we need this as generic?
-	Pimp::MaterialParameter* AddMaterialParam(const char* name)
-	{
-		Pimp::Xform* xform = new Pimp::Xform(gWorld);
-		
-		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(gWorld);
-		gWorld->GetElements().Add(param);
-		param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
-		param->SetName(name);
-
-		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
-		Pimp::World::StaticAddChildToParent(param, xform);
-
-		return param;
-	}
-
 public:
 	Volumetric()
 	{
@@ -73,9 +57,9 @@ public:
 	{
 		BindSceneMaterial(shaftMat);		
 		
-		rotation0Param = AddMaterialParam("testBallXformInv0");
-		rotation1Param = AddMaterialParam("testBallXformInv1");
-		rotation2Param = AddMaterialParam("testBallXformInv2");
+		rotation0Param = AddMaterialParamWithXform("testBallXformInv0");
+		rotation1Param = AddMaterialParamWithXform("testBallXformInv1");
+		rotation2Param = AddMaterialParamWithXform("testBallXformInv2");
 	}
 
 	void Tick(double row)
