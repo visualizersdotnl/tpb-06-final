@@ -23,7 +23,7 @@ struct PSOutput
 static int MaxRaySteps = 110; //228;
 
 // Maximum number of raymarch steps for Iq's soft shadow
-static int MaxSoftShadowIqSteps = 80;
+static int MaxSoftShadowIqSteps = 20;
 
 // Affects the minimum distance at which we consider a sample to be an intersection or not
 static float MinimumDistance = pow(10.0, -2.6);
@@ -32,7 +32,7 @@ static float MinimumDistance = pow(10.0, -2.6);
 static float MaximumDistance = 200.0;
 
 // Fraction of the actually calculated distance that we'll travel
-static float StepFraction = 0.7;
+static float StepFraction = 0.9;
 
 
 cbuffer paramsOnlyOnce
@@ -259,7 +259,7 @@ float DistToLightVolume(float3 Pos)
 	float holeR0 = holeRadius*size0*0.65;
 	float holeR1 = holeRadius*size1*0.65;
 	float holeR2 = holeRadius*size2*0.65;
-	float coneFactor = 0.2;
+	float coneFactor = 0.3;
 
 	float3 k0 = abs(localPos0);
 	float3 k1 = abs(localPos1);
@@ -405,7 +405,7 @@ float SoftShadowIq(float3 inPos, float3 inLightDir, float inMinT, float inMaxT, 
       if (d < 0.0001)
           return 0.0;
       res = min( res, inHardness * d/t );
-      t += d * 0.25;
+      t += d * 0.5;
 	  
 	  if (t > inMaxT)
 		break;
@@ -501,11 +501,11 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specular = pow( max(0, dot(reflected, inEyeDir) ), 6 ) * specAmount;	
 	
 	float3 lightAmount = 
-		diffuse + specular*specColor + ambient + inVolumetricLightAmount *  0.7*float3(254,223,150)/255.0;
+		diffuse + specular*specColor + ambient + inVolumetricLightAmount * 1.1*float3(254,223,150)/255.0;
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
-	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 4 ), 0.1); 	
+	float shadowFactor = (inMatIndex == 1) ? max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 4 ), 0.1) : 1;
 
 	return lightAmount * lightAttenuation * shadowFactor * (pow(2.0, fadeAmount)-1.0);
 }
