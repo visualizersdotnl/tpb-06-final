@@ -501,7 +501,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float specular = pow( max(0, dot(reflected, inEyeDir) ), 6 ) * specAmount;	
 	
 	float3 lightAmount = 
-		diffuse + specular*specColor + ambient + inVolumetricLightAmount * 1.1*float3(254,223,150)/255.0;
+		diffuse + specular*specColor + ambient + inVolumetricLightAmount * 0.7*float3(254,223,150)/255.0;
 
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
