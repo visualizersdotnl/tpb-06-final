@@ -52,7 +52,7 @@ cbuffer paramsOnlyOnce
 
 	float4 testLightPos = float4(20.0, 20.0, 20.0, 1.0);
 
-	float fxTimeGlobal = 0;	
+	float g_fxTime = 0;	
 
 	float ribbonsSpeed = 0.5; //< How fast do our ribbons wave?
 	float ribbonsAppear = 1.0; //< [0..1] 0=invisible, 1=visible
@@ -182,10 +182,10 @@ float DistToSphere(float3 p, float r)
 
 float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRadius, float inTwirlFreq, out float2 outUV)
 {
-	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
-	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
+	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
 
-	Pos.z += ribbonsWonkyness*inTwirlRadius*0.4*cos(Pos.y*inTwirlFreq*7.0+inPhase + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+	Pos.z += ribbonsWonkyness*inTwirlRadius*0.4*cos(Pos.y*inTwirlFreq*7.0+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
 
 	// Dist to signed box of infinite length in Y.
 	float2 di = abs(Pos.xz) - inBoxSize;
@@ -201,7 +201,7 @@ float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRad
 float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.2, 0.02) * (ribbonsAppear*1.4-0.4);
-	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+	float TwirlRadius = 1.2+0.4*sin(Pos.y * 0.134 + g_fxTime*ribbonsSpeed + ribbonsPhase);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.2, outUV);	
 }
@@ -210,7 +210,7 @@ float DistToRibbonOuter(float3 Pos, float inPhase, out float2 outUV)
 float DistToRibboInner(float3 Pos, float inPhase, out float2 outUV)
 {
 	float2 BoxSize = float2(0.15, 0.03) * (ribbonsAppear*1.4-0.4);
-	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + fxTimeGlobal*ribbonsSpeed + ribbonsPhase);
+	float TwirlRadius = 0.5+0.1*sin(Pos.y * 0.064 + 1.2 + g_fxTime*ribbonsSpeed + ribbonsPhase);
 	
 	return DistToRibbon(Pos, inPhase, BoxSize, TwirlRadius, 0.5, outUV);	
 }
