@@ -5,6 +5,19 @@ private:
 	Pimp::Texture2D *bondBlob, *ampersand, *logoTPB, *logoInque, *present;
 	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
 
+	const sync_track *st_bondBlob1;
+	const sync_track *st_bondBlobFade1;
+	const sync_track *st_bondBlob2;
+	const sync_track *st_bondBlobFade2;
+	const sync_track *st_bondAmpFade;
+	const sync_track *st_bondFadeTPB;
+	const sync_track *st_bondFadeINQ;
+	const sync_track *st_bondPresFade;
+	const sync_track *st_bondWhite;
+	const sync_track *st_bondTarget;
+	const sync_track *st_bondSoundFX;
+	const sync_track *st_bondPimpFade;
+
 public:
 	Bondtro()
 	{
@@ -12,6 +25,22 @@ public:
 
 	~Bondtro()
 	{
+	}
+	
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("bondBlob1", false, &st_bondBlob1));
+		s_syncTracks.push_back(SyncTrack("bondBlobFade1", false, &st_bondBlobFade1));
+		s_syncTracks.push_back(SyncTrack("bondBlob2", false, &st_bondBlob2));
+		s_syncTracks.push_back(SyncTrack("bondBlobFade2", false, &st_bondBlobFade2));
+		s_syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
+		s_syncTracks.push_back(SyncTrack("bondFadeTPB", false, &st_bondFadeTPB));
+		s_syncTracks.push_back(SyncTrack("bondFadeINQ", false, &st_bondFadeINQ));
+		s_syncTracks.push_back(SyncTrack("bondPresFade", false, &st_bondPresFade));
+		s_syncTracks.push_back(SyncTrack("bondWhite", false, &st_bondWhite));
+		s_syncTracks.push_back(SyncTrack("bondTarget", false, &st_bondTarget));
+		s_syncTracks.push_back(SyncTrack("bondSoundFX", false, &st_bondSoundFX));
+		s_syncTracks.push_back(SyncTrack("bondPimpFade", false, &st_bondPimpFade));
 	}
 
 	void ReqAssets()
@@ -46,7 +75,8 @@ public:
 		const float ballPos_2 = (float) sync_get_val(st_bondBlob2, row);
 		const float ballFade_2 = (float) sync_get_val(st_bondBlobFade2, row);
 		const float ampFade = (float) sync_get_val(st_bondAmpFade, row);
-		const float groupsFade = (float) sync_get_val(st_bondGroupsFade, row);
+		const float fadeTPB = (float) sync_get_val(st_bondFadeTPB, row);
+		const float fadeINQ = (float) sync_get_val(st_bondFadeINQ, row);
 		const float presentFade = (float) sync_get_val(st_bondPresFade, row);
 		const float whiteOpacity = (float) sync_get_val(st_bondWhite, row);
 		const float targetOpacity = (float) sync_get_val(st_bondTarget, row);
@@ -56,6 +86,7 @@ public:
 		const float ballY = 1080.f*0.5f-(bondBlob->GetHeight()*0.5f);
 
 		const float kTextZ = 1.f;
+		const float kAmpersandZ = 1.5f;
 		const float kBackgroundZ = 2.f;
 		const float kTargetZ = 3.f;
 		const float kShotZ = 4.f;
@@ -85,7 +116,7 @@ public:
 				ampersand,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
-				kTextZ,
+				kAmpersandZ,
 				1.f-ampFade,
 				0.f);
 
@@ -95,14 +126,14 @@ public:
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2-690.f-25.f, ballY),
 				kTextZ,
-				1.f-groupsFade,
+				fadeTPB,
 				0.f);
 		s_sprites->AddSprite(
 				logoInque,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f-20.f, ballY+5.f), // @plek: De een is net wat hoger dan de ander?
 				kTextZ,
-				1.f-groupsFade,
+				fadeINQ,
 				0.f);
 
 		// "present.."

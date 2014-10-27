@@ -14,6 +14,13 @@ public:
 	{
 	}
 
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("knotTubeRadius1", true));
+		s_syncTracks.push_back(SyncTrack("knotTubeRadius2", true));
+		s_syncTracks.push_back(SyncTrack("knotTubeRadius3", true));
+	}
+
 	void ReqAssets()
 	{
 		Assets::AddMaterial("shaders\\Scene_Knot.fx", &sceneMat);

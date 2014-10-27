@@ -2,27 +2,21 @@
 class Volumetric : public Scene
 {
 private:
-//	Pimp::Texture2D *texWall, *texMesh;
 	Pimp::Material *shaftMat;
 	Pimp::MaterialParameter *rotation0Param;
 	Pimp::MaterialParameter *rotation1Param;
 	Pimp::MaterialParameter *rotation2Param;
 
-	Pimp::MaterialParameter* AddMaterialParam(const char* name)
-	{
-		Pimp::Xform* xform = new Pimp::Xform(gWorld);
-		
-		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(gWorld);
-		gWorld->GetElements().Add(param);
-		param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
-		param->SetName(name);
-
-		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
-		Pimp::World::StaticAddChildToParent(param, xform);
-
-		return param;
-	}
-
+	const sync_track *st_shaftsRot0x;
+	const sync_track *st_shaftsRot0y;
+	const sync_track *st_shaftsRot0z;
+	const sync_track *st_shaftsRot1x;
+	const sync_track *st_shaftsRot1y;
+	const sync_track *st_shaftsRot1z;
+	const sync_track *st_shaftsRot2x;
+	const sync_track *st_shaftsRot2y;
+	const sync_track *st_shaftsRot2z;
+	
 public:
 	Volumetric()
 	{
@@ -30,6 +24,20 @@ public:
 
 	~Volumetric()
 	{
+	}
+
+	void ReqRocketTracks()
+	{
+		s_syncTracks.push_back(SyncTrack("shaftsRot0x", false, &st_shaftsRot0x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot0y", false, &st_shaftsRot0y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot0z", false, &st_shaftsRot0z));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1x", false, &st_shaftsRot1x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1y", false, &st_shaftsRot1y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot1z", false, &st_shaftsRot1z));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2x", false, &st_shaftsRot2x));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2y", false, &st_shaftsRot2y));
+		s_syncTracks.push_back(SyncTrack("shaftsRot2z", false, &st_shaftsRot2z));
+		s_syncTracks.push_back(SyncTrack("shaftsLightAmount", true));	
 	}
 
 	void ReqAssets()
@@ -49,9 +57,9 @@ public:
 	{
 		BindSceneMaterial(shaftMat);		
 		
-		rotation0Param = AddMaterialParam("testBallXformInv0");
-		rotation1Param = AddMaterialParam("testBallXformInv1");
-		rotation2Param = AddMaterialParam("testBallXformInv2");
+		rotation0Param = AddMaterialParamWithXform("testBallXformInv0");
+		rotation1Param = AddMaterialParamWithXform("testBallXformInv1");
+		rotation2Param = AddMaterialParamWithXform("testBallXformInv2");
 	}
 
 	void Tick(double row)
