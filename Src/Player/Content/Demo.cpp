@@ -231,7 +231,7 @@ protected:
 
 		return param;
 	}
-
+		
 	void SetSceneMaterial()
 	{
 		// @plek: Why is this shit here again?

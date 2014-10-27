@@ -86,6 +86,7 @@ public:
 		const float ballY = 1080.f*0.5f-(bondBlob->GetHeight()*0.5f);
 
 		const float kTextZ = 1.f;
+		const float kAmpersandZ = 1.5f;
 		const float kBackgroundZ = 2.f;
 		const float kTargetZ = 3.f;
 		const float kShotZ = 4.f;
@@ -115,7 +116,7 @@ public:
 				ampersand,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
-				kTextZ,
+				kAmpersandZ,
 				1.f-ampFade,
 				0.f);
 
