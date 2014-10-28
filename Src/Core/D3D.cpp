@@ -335,6 +335,12 @@ void D3D::BindInputLayout(ID3D10InputLayout* layout)
 }
 
 
+void D3D::DrawTriList(DWORD numTris)
+{
+	device->Draw(numTris*3, 0);
+}
+
+
 void D3D::DrawTriQuad(DWORD offset)
 {
 	device->Draw(6, offset);

@@ -7,6 +7,8 @@
 #include "Metaballs.h"
 #include "mctables.h"
 
+#include "Shaders/Shader_Sprites.h"
+
 struct Vertex
 {
 	Vector3 position;
@@ -333,7 +335,10 @@ namespace Pimp {
 
 Metaballs::Metaballs(World *ownerWorld) :
 	Geometry(ownerWorld),
-	m_pVB(nullptr), m_pIB(nullptr)
+	m_pVB(nullptr), m_pIB(nullptr),
+	effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
+	effectTechnique(&effect, "Sprites"),
+	effectPass(&effectTechnique, "Default")
 {
 }
 
@@ -341,6 +346,7 @@ Metaballs::~Metaballs()
 {
 	if (nullptr != m_pVB) m_pVB->Release();
 	if (nullptr != m_pIB) m_pIB->Release();
+	if (nullptr != m_inputLayout) m_inputLayout->Release();
 }
 
 bool Metaballs::Initialize()
@@ -348,6 +354,36 @@ bool Metaballs::Initialize()
 	// FIXME: error check
 	gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
 	gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
+
+	unsigned char* signature;
+	int signatureLength;
+	effectPass.GetVSInputSignature(&signature, &signatureLength);
+
+	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[3];
+	elemDesc[0].SemanticName = "POSITION";
+	elemDesc[0].SemanticIndex = 0;
+	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	elemDesc[0].InputSlot = 0;
+	elemDesc[0].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
+	elemDesc[0].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[0].InstanceDataStepRate = 0;
+	elemDesc[1].SemanticName = "NORMAL";
+	elemDesc[1].SemanticIndex = 0;
+	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	elemDesc[1].InputSlot = 0;
+	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
+	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[1].InstanceDataStepRate = 0;
+	m_inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
+
+	delete [] signature;
+
+	// fix up shader variables
+	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
+	const Vector2& visible_area = gD3D->GetRenderScale();
+	effect.SetVariableValue(varIndexRenderScale, visible_area);
+	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
+
 	return true;
 }
 
@@ -447,6 +483,18 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 
 void Metaballs::Draw()
 {
+	// Bind buffers.
+	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
+	gD3D->BindInputLayout(m_inputLayout);
+	gD3D->BindIndexBuffer(m_pIB);
+
+	// Set shader vars.
+	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
+	effectPass.Apply();
+
+	// Kick off.
+	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
+	gD3D->DrawTriList(s_genNumFaces);
 }
 
 } // namespace Pimp

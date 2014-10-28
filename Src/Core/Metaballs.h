@@ -4,6 +4,9 @@
 #include "D3D.h"
 #include "Node.h"
 #include "Geometry.h"
+#include "Effect.h"
+#include "EffectPass.h"
+#include "EffectTechnique.h"
 
 namespace Pimp 
 {
@@ -33,5 +36,12 @@ namespace Pimp
 
 	private:
 		ID3D10Buffer *m_pVB, *m_pIB;
+		ID3D10InputLayout *m_inputLayout;
+
+		Effect effect;
+		EffectTechnique effectTechnique;
+		EffectPass effectPass;
+
+		int varIndexTextureMap;
 	};
 }

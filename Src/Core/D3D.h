@@ -43,6 +43,7 @@ namespace Pimp
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
+		void DrawTriList(DWORD numTris);
 		void DrawTriQuad(DWORD offset);
 		void DrawScreenQuad() { DrawTriQuad(0); } 
 
