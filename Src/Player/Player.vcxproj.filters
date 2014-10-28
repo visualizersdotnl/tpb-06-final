@@ -1,123 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
-    </Filter>
-    <Filter Include="/Content">
-      <UniqueIdentifier>{edcf3efb-3bd2-42b3-8c8e-fbe460061b3e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/../Libs/bass24">
-      <UniqueIdentifier>{719c05ca-dba2-4523-8dac-45160c7f924a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/../Libs/bass24\/c/x64">
-      <UniqueIdentifier>{ded9246d-4a35-4391-852e-9edc239b05eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/../Libs/rocket/lib">
-      <UniqueIdentifier>{e65338f5-7fe1-4320-9719-c391a946dfa0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/Content\/Assets/Shaders %28incomplete%29">
-      <UniqueIdentifier>{2fd9a436-b26b-47d3-b02d-c52ff20d75f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/Content\Parts">
-      <UniqueIdentifier>{8c958119-07d3-444a-9b1e-c0894d66d060}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/Content\/Assets/Sync %28Rocket proj. only%29">
-      <UniqueIdentifier>{773e7b28-0021-4d5b-89a7-cbc21e5a1379}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Spheregrid.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons2.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SceneTools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Stub.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AutoShaderReload.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="AutoShaderReload.cpp" />
+    <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="MaterialCompiler.cpp" />
+    <ClCompile Include="SceneTools.cpp" />
+    <ClCompile Include="Stub.cpp" />
     <ClCompile Include="Content\Demo.cpp">
       <Filter>/Content</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialCompiler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Libs\rocket\lib\data.c">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClCompile>
     <ClCompile Include="..\Libs\rocket\lib\device.c">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClCompile>
     <ClCompile Include="..\Libs\rocket\lib\track.c">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneTools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SetLastError.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoShaderReload.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Assets.h" />
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="AutoShaderReload.h" />
+    <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="gWorld.h" />
+    <ClInclude Include="MaterialCompiler.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SceneTools.h" />
+    <ClInclude Include="SetLastError.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Content\Demo.h">
       <Filter>/Content</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialCompiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Libs\rocket\lib\data.h">
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Libs\rocket\lib\base.h">
-      <Filter>/../Libs/rocket/lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\data.h">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Libs\rocket\lib\device.h">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Libs\rocket\lib\sync.h">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="..\Libs\rocket\lib\track.h">
-      <Filter>/../Libs/rocket/lib</Filter>
+      <Filter>../Libs/Rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Blobs.h">
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Bondtro.h">
       <Filter>/Content\Parts</Filter>
@@ -131,51 +85,50 @@
     <ClInclude Include="Content\Ribbons.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Ribbons2.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
     <ClInclude Include="Content\Volumetric.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Blobs.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Player.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Content\Scratchpad.txt">
-      <Filter>/Content</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Spheregrid.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
+    <ResourceCompile Include="Player.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">
       <Filter>/../Libs/bass24</Filter>
     </None>
     <None Include="..\..\Content\assets\sync\tpb-06.rocket">
-      <Filter>/Content\/Assets/Sync %28Rocket proj. only%29</Filter>
+      <Filter>../../Content/assets/sync</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Content\Scratchpad.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="/Content">
+      <UniqueIdentifier>{31eaa5f6-ed09-44c7-8a77-2163e31dade5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="../Libs/Rocket/lib">
+      <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\/Shaders">
+      <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\Parts">
+      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/../Libs/bass24">
+      <UniqueIdentifier>{38c19be1-fee2-4a3f-b6b4-f7f2a1454244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="../../Content/assets/sync">
+      <UniqueIdentifier>{478dcaf9-1f80-4aca-84ee-0d5451f20923}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
     <Library Include="..\Libs\bass24\c\x64\bass.lib">
-      <Filter>/../Libs/bass24\/c/x64</Filter>
+      <Filter>/../Libs/bass24</Filter>
     </Library>
   </ItemGroup>
 </Project>

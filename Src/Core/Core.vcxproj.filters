@@ -227,12 +227,18 @@
     <ClInclude Include="mctables.h">
       <Filter>Header Files\Nodes</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\Shader_Blobs.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_PostProcess.fx">
       <Filter>Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Shaders\Shader_Sprites.fx">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Shaders\Shader_Blobs.fx">
       <Filter>Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

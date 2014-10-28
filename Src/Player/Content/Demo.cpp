@@ -252,6 +252,7 @@ protected:
 #include "GeneralCinema.h"
 #include "Volumetric.h"
 #include "Blobs.h"
+#include "Ribbons2.h"
 
 //
 // Asset root directory.
@@ -312,6 +313,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes.push_back(new Volumetric());
 //	s_scenes.push_back(new Knot());
 	s_scenes.push_back(new Blobs());
+	s_scenes.push_back(new Ribbons2());
 
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)

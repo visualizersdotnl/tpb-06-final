@@ -148,12 +148,13 @@ namespace Pimp
 		// Bind screen quad VB for first passes
 		screenQuadVertexBuffer->Bind();
 
+		if (currentCamera != NULL)
+			currentCamera->Bind();
+
 		// Render our scene to a single sceneColor FP16 RT
 		if (scenes.IsValidIndex(currentSceneIndex) && 
-			scenes[currentSceneIndex] != NULL &&
-			currentCamera != NULL)
+			scenes[currentSceneIndex] != NULL)
 		{
-			currentCamera->Bind();
 			scenes[currentSceneIndex]->Render(currentCamera);
 		}
 
@@ -161,7 +162,7 @@ namespace Pimp
 		for (int iElem = 0; iElem < elements.Size(); ++iElem)
 		{
 			if (elements[iElem]->GetType() == ET_Metaballs)
-				static_cast<Metaballs *>(elements[iElem])->Draw();
+				static_cast<Metaballs *>(elements[iElem])->Draw(currentCamera);
 		}
 
 		// Draw posteffects

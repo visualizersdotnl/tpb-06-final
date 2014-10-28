@@ -487,7 +487,7 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 	m_pIB->Unmap();
 }
 
-void Metaballs::Draw()
+void Metaballs::Draw(Camera* camera)
 {
 	// Bind buffers.
 	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
