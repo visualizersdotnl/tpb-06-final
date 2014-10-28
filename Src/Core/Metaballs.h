@@ -29,6 +29,7 @@ namespace Pimp
 		virtual bool HasGeometry() const { return true; }
 		virtual bool ShouldRender() const { return isVisible; }
 
+		// @plek: Override, not called by World tick.
 		void Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
 
 		bool Initialize();

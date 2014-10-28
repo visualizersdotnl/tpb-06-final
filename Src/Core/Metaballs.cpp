@@ -335,11 +335,13 @@ namespace Pimp {
 
 Metaballs::Metaballs(World *ownerWorld) :
 	Geometry(ownerWorld),
-	m_pVB(nullptr), m_pIB(nullptr),
+	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
 	effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
 	effectTechnique(&effect, "Sprites"),
 	effectPass(&effectTechnique, "Default")
 {
+	// don't impose CPU load by default
+	isVisible = false;
 }
 
 Metaballs::~Metaballs()
@@ -359,7 +361,7 @@ bool Metaballs::Initialize()
 	int signatureLength;
 	effectPass.GetVSInputSignature(&signature, &signatureLength);
 
-	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[3];
+	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[2];
 	elemDesc[0].SemanticName = "POSITION";
 	elemDesc[0].SemanticIndex = 0;
 	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -389,6 +391,10 @@ bool Metaballs::Initialize()
 
 void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
+	// Don't do shit if we're not rendering these.
+	if (false == isVisible)
+		return;
+
 	// (re)set temp. variables
 	s_numBall4s = numBall4s;
 	s_pBall4s = pBall4s;

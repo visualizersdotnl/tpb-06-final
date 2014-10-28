@@ -194,7 +194,7 @@ public:
 					if (iShot < 3) {
 						s_sprites->AddSprite(
 								blast,
-								Pimp::D3D::BlendMode::BM_Additive,
+								Pimp::D3D::BlendMode::BM_Subtractive,
 								kShotPositions[iShot],
 								kShotZ,
 								1.f,
