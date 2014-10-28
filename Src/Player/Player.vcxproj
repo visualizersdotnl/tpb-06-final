@@ -188,6 +188,7 @@
     <ClInclude Include="Content\GeneralCinema.h" />
     <ClInclude Include="Content\Knot.h" />
     <ClInclude Include="Content\Ribbons.h" />
+    <ClInclude Include="Content\Ribbons2.h" />
     <ClInclude Include="Content\Volumetric.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="gWorld.h" />

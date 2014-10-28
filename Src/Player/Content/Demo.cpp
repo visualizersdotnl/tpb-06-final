@@ -248,6 +248,7 @@ protected:
 // Scenes:
 #include "Bondtro.h"
 #include "Ribbons.h"
+#include "Ribbons2.h"
 #include "Knot.h"
 #include "GeneralCinema.h"
 #include "Volumetric.h"
@@ -309,7 +310,9 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes.push_back(new Ribbons());
 	s_scenes.push_back(new GeneralCinema());
 	s_scenes.push_back(new Volumetric());
+	s_scenes.push_back(new Ribbons2());
 //	s_scenes.push_back(new Knot());
+	
 
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)

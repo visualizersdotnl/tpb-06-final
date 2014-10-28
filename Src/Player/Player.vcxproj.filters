@@ -134,6 +134,9 @@
     <ClInclude Include="Content\Volumetric.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Ribbons2.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
