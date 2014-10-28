@@ -234,12 +234,12 @@
     <Text Include="Content\Scratchpad.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
+    <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Spheregrid.fx">
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Spheregrid.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

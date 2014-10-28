@@ -327,7 +327,7 @@ bool GenerateWorld(const char *rocketClient)
 	DrawLoadProgress(nullptr, 0.25f);
 
 	// Req. global stuff.
-	Assets::AddMaterial("shaders\\posteffect.fx", &matUserPostFX);
+	Assets::AddMaterial("shaders\\UserPosteffect.fx", &matUserPostFX);
 
 	// Let the asset loader do it's thing up to where all disk I/O is verified.
 	if (false == Assets::StartLoading())

@@ -146,9 +146,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Content\assets\shaders\posteffect.fx">
-      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
@@ -158,7 +155,10 @@
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Spheregrid.fx">
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Spheregrid.fx">
+      <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
       <Filter>/Content\/Assets/Shaders %28incomplete%29</Filter>
     </FxCompile>
   </ItemGroup>

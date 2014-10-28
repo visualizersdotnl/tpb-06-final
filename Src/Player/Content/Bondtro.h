@@ -86,7 +86,7 @@ public:
 		const float ballY = 1080.f*0.5f-(bondBlob->GetHeight()*0.5f);
 
 		const float kTextZ = 1.f;
-		const float kAmpersandZ = 1.5f;
+		const float kAmpersandZ = 1.1f;
 		const float kBackgroundZ = 2.f;
 		const float kTargetZ = 3.f;
 		const float kShotZ = 4.f;
@@ -182,9 +182,9 @@ public:
 			{
 
 				const Vector2 kShotPositions[3] = {
-					Vector2(1920*0.5f - 100.f, ballY - 50.f),
+					Vector2(1920*0.5f - 190.f, ballY - 135.f),
 					Vector2(1920*0.5f + 135.f, ballY + 130.f),
-					Vector2(1920*0.5f + 200.f, ballY) };
+					Vector2(1920*0.5f + 190.f, ballY) };
 
 				for (int iShot = 0; iShot < shotFX; ++iShot)
 				{
