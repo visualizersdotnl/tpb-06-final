@@ -5,7 +5,6 @@
 			<key row="768" interpolation="0" value="1"/>
 			<key row="1536" interpolation="0" value="2"/>
 			<key row="2568" interpolation="0" value="3"/>
-			<key row="3583" interpolation="0" value="0"/>
 			<key row="3584" interpolation="0" value="-1"/>
 		</track>
 		<track name="g_fxTime">

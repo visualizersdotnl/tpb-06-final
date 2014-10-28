@@ -23,7 +23,7 @@ public:
 		Assets::AddTexture2D("textures\\5\\greetings_projector.png", false, &projector);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_reel.png", false, &reel);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_scroller.png", false, &scroller);
-		Assets::AddMaterial("shaders\\Spheregrid.fx", &backMat);
+		Assets::AddMaterial("shaders\\Scene_Spheregrid.fx", &backMat);
 	}
 
 	void BindAnimationNodes()

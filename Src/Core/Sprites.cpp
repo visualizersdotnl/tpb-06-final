@@ -164,16 +164,13 @@ namespace Pimp
 
 			sprites.sort();
 
-			DWORD vbIdx = 0;
 			for (Sprite sprite : sprites)
 			{
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
 
 				gD3D->SetBlendMode(sprite.blendMode);
-
-				gD3D->DrawTriQuad(vbIdx);
-				vbIdx += 6;
+				gD3D->DrawTriQuad(sprite.vertexOffs);
 			}
 		}
 
