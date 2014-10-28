@@ -139,6 +139,7 @@
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ScreenQuadVertexBuffer.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Shaders\Shader_Blobs.h" />
     <ClInclude Include="Shaders\Shader_Sprites.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Texture.h" />
@@ -185,6 +186,17 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_Sprites.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling sprites shader...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling sprites shader...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Shaders\Shader_Blobs.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling sprites shader...</Message>

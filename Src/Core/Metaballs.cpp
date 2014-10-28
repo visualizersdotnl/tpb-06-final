@@ -7,7 +7,7 @@
 #include "Metaballs.h"
 #include "mctables.h"
 
-#include "Shaders/Shader_Sprites.h"
+#include "Shaders/Shader_Blobs.h"
 
 struct Vertex
 {
@@ -336,8 +336,8 @@ namespace Pimp {
 Metaballs::Metaballs(World *ownerWorld) :
 	Geometry(ownerWorld),
 	m_pVB(nullptr), m_pIB(nullptr),
-	effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
-	effectTechnique(&effect, "Sprites"),
+	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
+	effectTechnique(&effect, "Blobs"),
 	effectPass(&effectTechnique, "Default")
 {
 }
@@ -382,7 +382,9 @@ bool Metaballs::Initialize()
 	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 	const Vector2& visible_area = gD3D->GetRenderScale();
 	effect.SetVariableValue(varIndexRenderScale, visible_area);
+
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
+	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
 
 	return true;
 }
@@ -481,7 +483,7 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 	m_pIB->Unmap();
 }
 
-void Metaballs::Draw()
+void Metaballs::Draw(Camera* camera)
 {
 	// Bind buffers.
 	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
@@ -490,6 +492,8 @@ void Metaballs::Draw()
 
 	// Set shader vars.
 	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
+	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());
+
 	effectPass.Apply();
 
 	// Kick off.

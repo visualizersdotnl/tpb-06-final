@@ -7,6 +7,7 @@
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
+#include "Camera.h"
 
 namespace Pimp 
 {
@@ -32,7 +33,7 @@ namespace Pimp
 		void Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
 
 		bool Initialize();
-		void Draw();
+		void Draw(Camera* camera);
 
 	private:
 		ID3D10Buffer *m_pVB, *m_pIB;
@@ -43,5 +44,6 @@ namespace Pimp
 		EffectPass effectPass;
 
 		int varIndexTextureMap;
+		int varIndexViewProjMatrix;
 	};
 }
