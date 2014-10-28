@@ -7,6 +7,8 @@
 #include "Shaders/Shader_Sprites.h"
 #include "Configuration.h"
 
+#include "../Player/Settings.h"
+
 namespace Pimp
 {
 	const unsigned int kMaxSprites = 4096;
@@ -63,19 +65,23 @@ namespace Pimp
 		// Member VB takes care of it's resources.
 	}
 
-	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle, float spriteAspect)
+	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle)
 	{
-		if (1) // (0.f == angle)
+		// to convert back, as we get coordinates on X in [-aspectRatio, aspectRatio]
+		const float aspectRatio = PIMPPLAYER_RENDER_ASPECT_RATIO;
+
+		if (0.f == angle)
 		{
-			return Vector3(position.x, position.y, 1.f);
+			return Vector3(position.x/aspectRatio, position.y, 1.f);
 		}
 		else
 		{
-			Matrix4 rotZ;
-			rotZ = CreateMatrixRotationZ(angle);
-			Vector3 pivoted(position.x-pivot.x, position.y-pivot.y, 1.f);
-			pivoted = rotZ.TransformCoord(pivoted);
-			return Vector3(pivoted.x+pivot.x, pivoted.y+pivot.y, 1.f);
+			const Vector2 renderScale = gD3D->GetRenderScale();
+			const Matrix4 rotZ = CreateMatrixRotationZ(angle);
+			const Vector2 adjPos = position - pivot;
+			Vector3 rotPos = rotZ.TransformCoord(Vector3(adjPos.x, adjPos.y, 1.f));
+			rotPos = rotPos + Vector3(pivot.x, pivot.y, 1.f);
+			return Vector3(rotPos.x/aspectRatio, rotPos.y, 1.f);
 		}
 	}
 
@@ -98,42 +104,44 @@ namespace Pimp
 			VERIFY(SUCCEEDED(VB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pVertices))));
 		}
 
-		// hack: transform from top-left aligned 1920*1080 to homogenous space
-		Vector2 adjTopLeft = Vector2(-1.f + topLeft.x/1920.f*2.f, 1.f - topLeft.y/1080.f*2.f);
-		Vector2 adjSize = Vector2(size.x/1920.f*2.f, -size.y/1080.f*2.f);
+		// hack: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space
+		// transformed to true homogenous by Rotate() above
+		const float aspectRatio = PIMPPLAYER_RENDER_ASPECT_RATIO;
+		const float adjTopLeftX = -aspectRatio + (topLeft.x/1920.f)*aspectRatio*2.f;
+		const float adjTopLeftY = 1.f - (topLeft.y/1080.f)*2.f;
+		const Vector2 adjTopLeft(adjTopLeftX, adjTopLeftY);
+		const Vector2 adjSize((size.x/1920.f)*aspectRatio*2.f, -size.y/1080.f*2.f);
 		const Vector2 bottomRight = adjTopLeft + adjSize;
 		const Vector2 quadPivot(adjTopLeft.x + adjSize.x*0.5f, adjTopLeft.y + adjSize.y*0.5f);
 		const unsigned int ARGB = vertexColor;
-	
-		float spriteAspect=size.y/size.x;
 
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 1.f);
 		++pVertices;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 1.f);
 		++pVertices;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(0.f, 0.f);
 		++pVertices;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ, spriteAspect);
+		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
 		pVertices->ARGB = ARGB;
 		pVertices->UV = Vector2(1.f, 0.f);
 		++pVertices;
@@ -146,7 +154,7 @@ namespace Pimp
 		sprite.size = std::move(size);
 		sprite.sortZ = sortZ;
 		sprite.vertexOffs = sprites.size()*6;
-		sprites.push_back(sprite);
+		sprites.push_back(std::move(sprite));
 	}
 
 	void Sprites::Flush()
@@ -170,7 +178,7 @@ namespace Pimp
 				effectPass.Apply();
 
 				gD3D->SetBlendMode(sprite.blendMode);
-				gD3D->DrawTriQuad(sprite.vertexOffs);
+				gD3D->DrawTriQuad((DWORD) sprite.vertexOffs);
 			}
 		}
 
