@@ -71,7 +71,8 @@ namespace Pimp
 			DXGI_FORMAT format);
 
 		void GetViewportSize(int* width, int* height);
-
+		
+		void UseDepthStencil(bool enabled);
 		DepthStencil* GetDefaultDepthStencil() const;
 
 		const Vector2& GetRenderScale() const 
@@ -110,7 +111,7 @@ namespace Pimp
 		ID3D10RasterizerState* rasterizerState;
 		RenderTarget* renderTargetBackBuffer;
 		DepthStencil* depthStencil;
-		ID3D10DepthStencilState* depthStencilState;
+		ID3D10DepthStencilState* depthStencilState[2]; // See D3D.cpp
 		ID3D10BlendState* blendStates[MAX_BlendMode];
 		Texture2D *pWhiteTex;
 

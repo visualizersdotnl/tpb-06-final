@@ -23,6 +23,7 @@ public:
 		Assets::AddTexture2D("textures\\5\\greetings_projector.png", false, &projector);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_reel.png", false, &reel);
 		Assets::AddTexture2D("textures\\5\\greetings_projector_scroller.png", false, &scroller);
+
 		Assets::AddMaterial("shaders\\Scene_Spheregrid.fx", &backMat);
 	}
 
@@ -72,6 +73,6 @@ public:
 				Vector2(480.f+reelX, 650.f+yOffs),
 				kProjectorZ,
 				0.7f,
-				reelRoto*2.1f);
+				-reelRoto*2.f);
 	}
 };

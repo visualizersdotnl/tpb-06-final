@@ -5,6 +5,7 @@
 #include "Geometry.h"
 #include "ParticleSpline.h"
 #include "Overlay.h"
+#include "Metaballs.h"
 
 // FIXME: Introduce regular STL vectors instead?
 #define PIMP_MAX_NUM_WORLD_ELEMENTS 8192
@@ -138,7 +139,8 @@ namespace Pimp
 
 	void World::Render(float clearR, float clearG, float clearB, Sprites *pSprites)
 	{
-		postProcess->Clear(clearR, clearG, clearB);
+		// Clears (default) depth stencil as well!
+		postProcess->Clear(clearR, clearG, clearB); 
 
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
@@ -153,6 +155,13 @@ namespace Pimp
 		{
 			currentCamera->Bind();
 			scenes[currentSceneIndex]->Render(currentCamera);
+		}
+
+		// Draw geometry (FIXME: expand)
+		for (int iElem = 0; iElem < elements.Size(); ++iElem)
+		{
+			if (elements[iElem]->GetType() == ET_Metaballs)
+				static_cast<Metaballs *>(elements[iElem])->Draw();
 		}
 
 		// Draw posteffects

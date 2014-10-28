@@ -97,6 +97,7 @@
     <ClCompile Include="EffectTechnique.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Metaballs.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ScreenQuadVertexBuffer.cpp" />
@@ -131,6 +132,8 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementTypes.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="mctables.h" />
+    <ClInclude Include="Metaballs.h" />
     <ClInclude Include="PIX.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="RenderTarget.h" />
