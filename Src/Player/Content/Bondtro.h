@@ -2,7 +2,7 @@
 class Bondtro : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *bondBlob, *ampersand, *logoTPB, *logoInque, *present;
+	Pimp::Texture2D *background, *blob, *ampersand, *logoTPB, *logoInque, *present;
 	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
 
 	const sync_track *st_bondBlob1;
@@ -45,16 +45,19 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &bondBlob); // 106*106
-		Assets::AddTexture2D("textures\\1\\bond-01.png", false, &ampersand); // 106*106
+		Assets::AddTexture2D("textures\\1\\bg.png", false, &background);
+		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &blob);
+		Assets::AddTexture2D("textures\\1\\bond-01.png", false, &ampersand);
 		Assets::AddTexture2D("textures\\1\\bond-00.png", false, &logoTPB);
 		Assets::AddTexture2D("textures\\1\\bond-02.png", false, &logoInque);
 		Assets::AddTexture2D("textures\\1\\bond-03.png", false, &present);
-		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &bigCircle);
 		Assets::AddTexture2D("textures\\1\\bond-bullseye.png", false, &target);
 		Assets::AddTexture2D("textures\\1\\bond-hole.png", false, &blast);
 		Assets::AddTexture2D("textures\\1\\bond-meneer.png", false, &pimp);
 		Assets::AddTexture2D("textures\\1\\bond-title.png", false, &title);
+
+//		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &bigCircle);
+		bigCircle = nullptr;
 	}
 
 	void BindAnimationNodes()
@@ -83,7 +86,7 @@ public:
 		const int   shotFX = (int) sync_get_val(st_bondSoundFX, row);
 		const float pimpOpacity = (float) sync_get_val(st_bondPimpFade, row);
 
-		const float ballY = 1080.f*0.5f-(bondBlob->GetHeight()*0.5f);
+		const float ballY = 1080.f*0.5f-(blob->GetHeight()*0.5f);
 
 		const float kTextZ = 1.f;
 		const float kAmpersandZ = 1.1f;
@@ -95,7 +98,7 @@ public:
 
 		// ball #1
 		s_sprites->AddSprite(
-				bondBlob,
+				blob,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_1, ballY),
 				kTextZ,
@@ -104,7 +107,7 @@ public:
 
 		// ball #2
 		s_sprites->AddSprite(
-				bondBlob,
+				blob,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
 				kTextZ,
@@ -145,9 +148,9 @@ public:
 				1.f-presentFade,
 				0.f);
 
-		// (white) background
+		// background
 		s_sprites->AddSprite(
-				texWhite,
+				background,
 				Pimp::D3D::BlendMode::BM_Additive,
 				AlphaToVtxColor(whiteOpacity),
 				Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),

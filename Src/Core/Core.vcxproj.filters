@@ -108,6 +108,9 @@
     <ClCompile Include="Sprites.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Metaballs.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimCurve.h">
@@ -217,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Shaders\Shader_Sprites.h">
       <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Metaballs.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="mctables.h">
+      <Filter>Header Files\Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

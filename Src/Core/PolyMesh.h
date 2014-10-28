@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Node.h"
-
 #include "Geometry.h"
 
 namespace Pimp 

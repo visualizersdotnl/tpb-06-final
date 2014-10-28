@@ -17,7 +17,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 ,	rasterizerState(nullptr)
 ,	renderTargetBackBuffer(nullptr)
 ,	depthStencil(nullptr)
-,	depthStencilState(nullptr)
 ,	pWhiteTex(nullptr)
 {
 	memset(blendStates, 0, MAX_BlendMode*sizeof(BlendMode));
@@ -86,19 +85,28 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Create depth-stencil
 	depthStencil = CreateDepthStencil(true);
 
-	// Depth-stencil state
-	D3D10_DEPTH_STENCIL_DESC descDepthS;
-	memset(&descDepthS, 0, sizeof(descDepthS));
-	descDepthS.DepthEnable = true;
-	descDepthS.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
-	descDepthS.DepthFunc = D3D10_COMPARISON_LESS;
+	// Depth-stencil states (on and off)
+	D3D10_DEPTH_STENCIL_DESC descDepthS[2];
+	memset(&descDepthS[0], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
+	memset(&descDepthS[1], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
 
-	depthStencilState = NULL;
-	hr = device->CreateDepthStencilState(&descDepthS, &depthStencilState);
-	D3D_ASSERT(hr);
-	ASSERT(depthStencilState != NULL);
+	// on
+	descDepthS[0].DepthEnable = true;
+	descDepthS[0].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
+	descDepthS[0].DepthFunc = D3D10_COMPARISON_LESS;
 
-	device->OMSetDepthStencilState(depthStencilState, 0);
+	// off
+	descDepthS[0].DepthEnable = false;
+
+	for (int iState = 0; iState < 2; ++iState)
+	{
+		depthStencilState[iState] = nullptr; // FIXME: move out of loop.
+		hr = device->CreateDepthStencilState(&descDepthS[iState], &depthStencilState[iState]);
+		D3D_ASSERT(hr);
+	}
+
+	// DS off by default.
+	UseDepthStencil(false);
 
 	// Bind our backbuffer and depth stencil by default
 	BindBackbuffer(depthStencil);
@@ -224,7 +232,9 @@ D3D::~D3D()
 	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
 		if (nullptr != blendStates[iBS]) blendStates[iBS]->Release();
 	
-	if (nullptr != depthStencilState) depthStencilState->Release();
+	for (int iState = 0; iState < 2; ++iState)
+		if (nullptr != depthStencilState[iState]) depthStencilState[iState]->Release();
+
 	delete depthStencil;
 	if (nullptr != rasterizerState) rasterizerState->Release();
 	delete renderTargetBackBuffer;
@@ -322,6 +332,12 @@ void D3D::BindIndexBuffer(ID3D10Buffer* buffer)
 void D3D::BindInputLayout(ID3D10InputLayout* layout)
 {
 	device->IASetInputLayout(layout);
+}
+
+
+void D3D::DrawTriList(DWORD numTris)
+{
+	device->Draw(numTris*3, 0);
 }
 
 
@@ -521,6 +537,12 @@ void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
 void D3D::ClearDepthStencil()
 {
 	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0, 0 );
+}
+
+
+void D3D::UseDepthStencil(bool enabled)
+{
+	device->OMSetDepthStencilState(depthStencilState[true == enabled], 0);
 }
 
 DepthStencil* D3D::GetDefaultDepthStencil() const

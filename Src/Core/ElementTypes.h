@@ -20,6 +20,7 @@ namespace Pimp
 		ET_ParticleAttractor,
 		ET_Scene,
 		ET_Balls,
+		ET_Metaballs,
 
 		MAX_ElementType
 	};
