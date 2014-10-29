@@ -8,7 +8,7 @@ struct VSInput
 struct VSOutput
 {
 	float4 screenPos : SV_Position;
-	float4 color : COLOR0;
+	float4 color : COLOR;
 	float2 texCoord : TEXCOORD0;
 };
 

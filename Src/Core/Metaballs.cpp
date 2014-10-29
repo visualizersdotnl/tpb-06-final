@@ -394,7 +394,6 @@ bool Metaballs::Initialize()
 
 void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
-	// Don't do shit if we're not rendering these.
 	if (false == isVisible)
 		return;
 
@@ -492,6 +491,9 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 
 void Metaballs::Draw(Camera* camera)
 {
+	if (false == isVisible)
+		return;
+
 	// Bind buffers.
 	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
 	gD3D->BindInputLayout(m_inputLayout);
