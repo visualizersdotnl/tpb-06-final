@@ -96,7 +96,9 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	descDepthS[0].DepthFunc = D3D10_COMPARISON_LESS;
 
 	// off
-	descDepthS[0].DepthEnable = false;
+	descDepthS[1].DepthEnable = false;
+	descDepthS[1].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
+	descDepthS[1].DepthFunc = D3D10_COMPARISON_ALWAYS;
 
 	for (int iState = 0; iState < 2; ++iState)
 	{
@@ -548,7 +550,7 @@ void D3D::ClearDepthStencil()
 
 void D3D::UseDepthStencil(bool enabled)
 {
-	device->OMSetDepthStencilState(depthStencilState[true == enabled], 0);
+	device->OMSetDepthStencilState(depthStencilState[!enabled], 0);
 }
 
 DepthStencil* D3D::GetDefaultDepthStencil() const
