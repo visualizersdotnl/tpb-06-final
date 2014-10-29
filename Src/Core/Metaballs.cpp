@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "Metaballs.h"
 #include "mctables.h"
+#include "World.h"
 
 #include "Shaders/Shader_Blobs.h"
 
@@ -18,9 +19,9 @@ struct Vertex
 // triangle face (used to address index buffer)
 struct Face
 {
-	uint16_t iA;
-	uint16_t iB;
-	uint16_t iC;
+	uint32_t iA;
+	uint32_t iB;
+	uint32_t iC;
 };
 
 const unsigned int kGridDepth = 48;
@@ -392,6 +393,18 @@ bool Metaballs::Initialize()
 	return true;
 }
 
+// HACK: We shouldn't need these...
+static const Vertex screenQuad[] = 
+{
+	{ Vector3(-1, 1, 0), Vector3(0,0,1) }, // 0
+	{ Vector3( 1, 1, 0), Vector3(0,0,1) }, // 1
+	{ Vector3( 1,-1, 0), Vector3(0,0,1) }, // 3
+	{ Vector3(-1, 1, 0), Vector3(0,0,1) }, // 0
+	{ Vector3( 1,-1, 0), Vector3(0,0,1) }, // 3
+	{ Vector3(-1,-1, 0), Vector3(0,0,1) }, // 2						
+};
+//--
+
 void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
 	if (false == isVisible)
@@ -405,6 +418,14 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 	s_genNumFaces = 0;
 	VERIFY(SUCCEEDED(m_pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
 	VERIFY(SUCCEEDED(m_pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
+
+	// HACK: Without this things really break somehow... These verts shouldn't be needed.
+	for (int i=0; i<6; ++i)
+	{
+		s_pVertices[i] = screenQuad[i];
+		++s_genNumVerts;
+	}
+
 
 	// invalidate grid & vertex cache
 	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));

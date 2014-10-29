@@ -60,6 +60,6 @@ public:
 		pMetaballs->Tick(0.f, kNumMetaball4s, s_metaball4s, 21.f);
 
 		// Disable heavy CPU stuff.
-		pMetaballs->SetVisible(false);
+		//pMetaballs->SetVisible(false);
 	}
 };
