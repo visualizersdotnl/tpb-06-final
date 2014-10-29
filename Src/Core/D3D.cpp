@@ -347,6 +347,12 @@ void D3D::DrawTriQuad(DWORD offset)
 }
 
 
+void D3D::DrawIndexedTriList(DWORD numTris)
+{
+	device->DrawIndexed(numTris*3, 0, 0);
+}
+
+
 ID3D10Effect* D3D::CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength)
 {
 	ID3D10Effect* effect = NULL;

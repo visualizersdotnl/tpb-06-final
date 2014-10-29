@@ -21,12 +21,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets.cpp" />
-    <ClCompile Include="Audio.cpp" />
-    <ClCompile Include="AutoShaderReload.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="MaterialCompiler.cpp" />
-    <ClCompile Include="SceneTools.cpp" />
     <ClCompile Include="Stub.cpp" />
     <ClCompile Include="Content\Demo.cpp">
       <Filter>/Content</Filter>
@@ -40,18 +34,26 @@
     <ClCompile Include="..\Libs\rocket\lib\track.c">
       <Filter>../Libs/Rocket/lib</Filter>
     </ClCompile>
+    <ClCompile Include="Assets.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoShaderReload.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialCompiler.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTools.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets.h" />
-    <ClInclude Include="Audio.h" />
-    <ClInclude Include="AutoShaderReload.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="gWorld.h" />
-    <ClInclude Include="MaterialCompiler.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="SceneTools.h" />
-    <ClInclude Include="SetLastError.h" />
-    <ClInclude Include="Settings.h" />
     <ClInclude Include="Content\Demo.h">
       <Filter>/Content</Filter>
     </ClInclude>
@@ -91,9 +93,36 @@
     <ClInclude Include="Content\Volumetric.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Player.rc" />
+    <ClInclude Include="Assets.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoShaderReload.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="gWorld.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialCompiler.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTools.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="SetLastError.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">
@@ -102,9 +131,6 @@
     <None Include="..\..\Content\assets\sync\tpb-06.rocket">
       <Filter>../../Content/assets/sync</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Content\Scratchpad.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="/Content">
@@ -125,10 +151,23 @@
     <Filter Include="../../Content/assets/sync">
       <UniqueIdentifier>{478dcaf9-1f80-4aca-84ee-0d5451f20923}</UniqueIdentifier>
     </Filter>
+    <Filter Include="/Stub &amp; helper code">
+      <UniqueIdentifier>{0b7b473f-2360-431d-afdd-c21a67bf549b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Libs\bass24\c\x64\bass.lib">
       <Filter>/../Libs/bass24</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Player.rc">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Content\Scratchpad.txt">
+      <Filter>/Stub &amp; helper code</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -2,14 +2,13 @@
 struct VSInput
 {	
 	float3 position : POSITION;
-	float4 color : COLOR;
-	float2 texCoord : TEXCOORD0;	
+	float3 normal : NORMAL;
 };
 
 struct VSOutput
 {
 	float4 screenPos : SV_Position;
-	float4 color : COLOR;
+	float4 color : COLOR0;
 	float2 texCoord : TEXCOORD0;
 };
 
@@ -20,14 +19,28 @@ cbuffer paramsOnlyOnce
 	float4x4 viewProjMatrix;
 };
 
+/*
+float3 VL_CalculateDiffuseTerm(
+	float3 position,
+	float3 normal,
+	float3 lightPos,
+	float3 lightColor)
+{
+	lightPos = mul(lightPos, mCustom);
+	float3 lightVec = normalize(lightPos - position);
+	float diffuse = max(dot(normal, lightVec), 0);
+	float3 diffuseTerm = diffuse * lightColor;
+	return diffuseTerm;
+}	
+*/
 
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
-	// todo: transform input.position to screenspace using the viewProjMatrix...
-	output.screenPos = float4(input.position * float3(renderScale.xy, 1.f), 1.f);
-	output.color = input.color;
-	output.texCoord = input.texCoord;
+	output.screenPos = mul(float4(input.position, 1.f), viewProjMatrix);
+	float3 rotNormal = input.normal; // FIXME: transform by world matrix.
+	output.color = 1.f; // 0.25f + float4(VL_CalculateDiffuseTerm(input.position, input.normal, float3(0.f, 0.f -1.f), float3(1.f, 1.f, 1.f), 1.f);
+	output.texCoord = rotNormal*0.5f + 0.5f;
 	return output;
 }
 
@@ -47,7 +60,7 @@ float4 MainPS(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);	
-	return texColor*input.color;
+	return float4(1.f, 1.f, 1.f, 1.f); // texColor*input.color;
 }
 
 

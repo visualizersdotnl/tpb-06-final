@@ -384,7 +384,7 @@ bool GenerateWorld(const char *rocketClient)
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
 
-	// @plek: Yeah this just sucks but it's needed :)
+	// @plek: This is no longer needed but might be if we rip more Shadertoy stuff.
 	hackResX = new Pimp::MaterialParameter(gWorld);
 	hackResX->SetValueType(Pimp::MaterialParameter::VT_Value);
 	hackResX->SetName("hackResX");

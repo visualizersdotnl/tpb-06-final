@@ -145,9 +145,13 @@ namespace Pimp
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
 
-		// Bind screen quad VB for first passes
+		// Bind screen quad VB for first pass
 		screenQuadVertexBuffer->Bind();
 
+		// Disable depth stencil
+		gD3D->UseDepthStencil(false);
+
+		// Bind camera
 		if (currentCamera != NULL)
 			currentCamera->Bind();
 
@@ -158,12 +162,18 @@ namespace Pimp
 			scenes[currentSceneIndex]->Render(currentCamera);
 		}
 
+		// Enable depth stencil
+		gD3D->UseDepthStencil(true);
+
 		// Draw geometry (FIXME: expand)
 		for (int iElem = 0; iElem < elements.Size(); ++iElem)
 		{
 			if (elements[iElem]->GetType() == ET_Metaballs)
 				static_cast<Metaballs *>(elements[iElem])->Draw(currentCamera);
 		}
+
+		// Disable depth stencil
+		gD3D->UseDepthStencil(false);
 
 		// Draw posteffects
 		postProcess->RenderPostProcess();

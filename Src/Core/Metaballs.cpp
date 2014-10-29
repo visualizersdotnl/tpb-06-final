@@ -7,7 +7,7 @@
 #include "Metaballs.h"
 #include "mctables.h"
 
-#include "Shaders/Shader_Sprites.h"
+#include "Shaders/Shader_Blobs.h"
 
 struct Vertex
 {
@@ -29,12 +29,12 @@ const unsigned int kGridDepthSqr = kGridDepth*kGridDepth;
 const float kGridStep = 2.f / (float) kGridCubes;
 
 const unsigned int kMaxFaces = 65536;      // should be sufficient (assert)
-const unsigned int kMaxVertices = 10000;   // 65536 is max. for 16-bit indices (assert)
+const unsigned int kMaxVertices = 65536;   // 65536 is max. for 16-bit indices (assert)
 const size_t kVertexBufferSize = kMaxVertices * sizeof(Vertex);
 
 // grid & cache arrays (huge!)
-static float s_isoValues[kGridDepth*kGridDepth*kGridDepth];
-static uint32_t s_gridCache[kGridCubes*kGridCubes*kGridCubes*3 + 3];
+static __declspec(align(16)) float s_isoValues[kGridDepth*kGridDepth*kGridDepth];
+static __declspec(align(16)) uint32_t s_gridCache[kGridCubes*kGridCubes*kGridCubes*3 + 3];
 
 // (relative) indices for a cube in the grid
 const unsigned int kCubeIndices[8] =
@@ -66,7 +66,7 @@ const Vector3 kCubeOffsets[8] =
 static unsigned int s_numBall4s;
 static const Pimp::Metaballs::Metaball4 *s_pBall4s;
 static float s_surfaceLevel;
-static float s_cube[8]; // current grid cube
+static __declspec(align(16)) float s_cube[8]; // current grid cube
 static unsigned int s_genNumVerts, s_genNumFaces;
 static Vertex *s_pVertices;
 static Face *s_pFaces;
@@ -336,12 +336,14 @@ namespace Pimp {
 Metaballs::Metaballs(World *ownerWorld) :
 	Geometry(ownerWorld),
 	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
-	effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
-	effectTechnique(&effect, "Sprites"),
+	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
+	effectTechnique(&effect, "Blobs"),
 	effectPass(&effectTechnique, "Default")
 {
 	// don't impose CPU load by default
 	isVisible = false;
+
+	SetType(ET_Metaballs);
 }
 
 Metaballs::~Metaballs()
@@ -354,8 +356,8 @@ Metaballs::~Metaballs()
 bool Metaballs::Initialize()
 {
 	// FIXME: error check
-	gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
-	gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
+	m_pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
+	m_pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
 
 	unsigned char* signature;
 	int signatureLength;
@@ -371,7 +373,7 @@ bool Metaballs::Initialize()
 	elemDesc[0].InstanceDataStepRate = 0;
 	elemDesc[1].SemanticName = "NORMAL";
 	elemDesc[1].SemanticIndex = 0;
-	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	elemDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	elemDesc[1].InputSlot = 0;
 	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
 	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
@@ -385,6 +387,7 @@ bool Metaballs::Initialize()
 	const Vector2& visible_area = gD3D->GetRenderScale();
 	effect.SetVariableValue(varIndexRenderScale, visible_area);
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
+	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
 
 	return true;
 }
@@ -496,11 +499,12 @@ void Metaballs::Draw(Camera* camera)
 
 	// Set shader vars.
 	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
+	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
 	effectPass.Apply();
 
 	// Kick off.
 	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
-	gD3D->DrawTriList(s_genNumFaces);
+	gD3D->DrawIndexedTriList(s_genNumFaces);
 }
 
 } // namespace Pimp

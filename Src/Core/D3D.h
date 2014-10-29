@@ -43,9 +43,13 @@ namespace Pimp
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
+		// Non-indexed draw methods
 		void DrawTriList(DWORD numTris);
 		void DrawTriQuad(DWORD offset);
 		void DrawScreenQuad() { DrawTriQuad(0); } 
+
+		// Indexed draw methods
+		void DrawIndexedTriList(DWORD numTris);
 
 		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
 

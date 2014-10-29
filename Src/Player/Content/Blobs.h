@@ -1,8 +1,8 @@
 
 #pragma once
 
-static const unsigned int kNumMetaball4s = 2; // = 8
-static Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
+static const unsigned int kNumMetaball4s = 2;
+static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
 
 class Blobs : public Scene
 {
@@ -39,6 +39,8 @@ public:
 
 	void Tick(double row)
 	{
+		SetMainSceneAndDefaultCamera();
+
 		// Enable heavy CPU stuff.
 		pMetaballs->SetVisible(true);
 
