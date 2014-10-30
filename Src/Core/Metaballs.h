@@ -3,7 +3,6 @@
 
 #include "D3D.h"
 #include "Node.h"
-#include "Geometry.h"
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
@@ -11,8 +10,7 @@
 
 namespace Pimp 
 {
-	class Metaballs : 
-		public Geometry 
+	class Metaballs : public Node
 	{
 	protected:
 
@@ -26,14 +24,17 @@ namespace Pimp
 
 		Metaballs(World* ownerWorld);
 		virtual ~Metaballs();
-
+		
+		virtual void Tick(float deltaTime);
 		virtual bool HasGeometry() const { return true; }
-		virtual bool ShouldRender() const { return isVisible; }
 
-		// @plek: Override, not called by World tick.
-		void Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
+		bool ShouldRender() const 
+		{
+			return isVisible;
+		}
 
 		bool Initialize();
+		void Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
 		void Draw(Camera* camera);
 
 	private:
@@ -46,5 +47,12 @@ namespace Pimp
 
 		int varIndexTextureMap;
 		int varIndexViewProjMatrix;
+
+		bool isVisible;
+
+		__forceinline unsigned int GetEdgeTableIndex();
+		float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ);
+		void ProcessCube(unsigned int iGrid, unsigned int iX, unsigned int iY, unsigned int iZ);
+		void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsigned int iEdgeTab, unsigned int edgeBits);
 	};
 }

@@ -49,11 +49,7 @@ public:
 		Assets::AddMaterial("shaders\\Scene_Shafts.fx", &shaftMat);
 	}
 
-	void BindAnimationNodes()
-	{
-	}
-
-	void BindAssets()
+	void BindToWorld()
 	{
 		BindSceneMaterial(shaftMat);		
 		
@@ -82,7 +78,6 @@ public:
 		((Pimp::Xform*)rotation1Param->GetParents()[0])->SetRotation(rotation1);
 		((Pimp::Xform*)rotation2Param->GetParents()[0])->SetRotation(rotation2);
 
-		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 	}
 };

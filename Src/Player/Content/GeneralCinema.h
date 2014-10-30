@@ -27,18 +27,13 @@ public:
 		Assets::AddMaterial("shaders\\Scene_Spheregrid.fx", &backMat);
 	}
 
-	void BindAnimationNodes()
-	{
-	}
-
-	void BindAssets()
+	void BindToWorld()
 	{
 		BindSceneMaterial(backMat);
 	}
 
 	void Tick(double row)
 	{
-		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 
 		const float kProjectorZ = 1.f;
@@ -48,7 +43,7 @@ public:
 		const float yOffs = -50.f;
 		const float reelX = -3.f;
 
-		const float reelRoto = (float) sync_get_val(st_fxTimeGlobal, row);
+		const float reelRoto = (float) sync_get_val(st_fxTime, row);
 
 		// "projector"
 		s_sprites->AddSprite(

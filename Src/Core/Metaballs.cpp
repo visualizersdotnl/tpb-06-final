@@ -1,13 +1,20 @@
 
-// the world famous TPB CPU blobs
-// FIXME: quickly ported from Xbox 1 project, static stuff must be moved into class instance!
+// The world famous TPB blobs.
+
+// It was quickly ported from an Xbox 1 project (added some SSE3 though),
+// FIXME #1: move all static stuff into class, this practically just supports a single instance.
+
+// Until then most parameters (except ball position) can be modified in this file, a little below.
+
 
 #include <stdint.h>
 #include "Metaballs.h"
-#include "mctables.h"
+#include "MarchingCubesTables.h"
 #include "World.h"
 
 #include "Shaders/Shader_Blobs.h"
+
+namespace Pimp {
 
 struct Vertex
 {
@@ -23,7 +30,7 @@ struct Face
 	uint32_t iC;
 };
 
-const unsigned int kGridDepth = 48;
+const unsigned int kGridDepth = 64;
 const unsigned int kGridCubes = kGridDepth-1;
 const unsigned int kGridDepthSqr = kGridDepth*kGridDepth;
 const float kGridStep = 2.f / (float) kGridCubes;
@@ -78,7 +85,181 @@ template<typename T> inline const T lerpf(const T &A, const T &B, float factor)
 	return A*(1.f - factor) + B*factor;
 }
 
-__forceinline unsigned int GetEdgeTableIndex()
+Metaballs::Metaballs(World *ownerWorld) :
+	Node(ownerWorld),
+	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
+	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
+	effectTechnique(&effect, "Blobs"),
+	effectPass(&effectTechnique, "Default")
+{
+	SetType(ET_Metaballs);
+}
+
+Metaballs::~Metaballs()
+{
+	if (nullptr != m_pVB) m_pVB->Release();
+	if (nullptr != m_pIB) m_pIB->Release();
+	if (nullptr != m_inputLayout) m_inputLayout->Release();
+}
+
+void Metaballs::Tick(float deltaTime)
+{
+	Node::Tick(deltaTime);
+
+	// FIXME: Eventually we'll want to generate geometry right here.
+}
+
+bool Metaballs::Initialize()
+{
+	// FIXME: error check
+	m_pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
+	m_pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
+
+	unsigned char* signature;
+	int signatureLength;
+	effectPass.GetVSInputSignature(&signature, &signatureLength);
+
+	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[2];
+	elemDesc[0].SemanticName = "POSITION";
+	elemDesc[0].SemanticIndex = 0;
+	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	elemDesc[0].InputSlot = 0;
+	elemDesc[0].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
+	elemDesc[0].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[0].InstanceDataStepRate = 0;
+	elemDesc[1].SemanticName = "NORMAL";
+	elemDesc[1].SemanticIndex = 0;
+	elemDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	elemDesc[1].InputSlot = 0;
+	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
+	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[1].InstanceDataStepRate = 0;
+	m_inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
+
+	delete [] signature;
+
+	// fix up shader variables
+	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
+	const Vector2& visible_area = gD3D->GetRenderScale();
+	effect.SetVariableValue(varIndexRenderScale, visible_area);
+	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
+	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
+
+	return true;
+}
+
+void Metaballs::Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
+{
+	// (re)set temp. variables
+	s_numBall4s = numBall4s;
+	s_pBall4s = pBall4s;
+	s_surfaceLevel = surfaceLevel;
+	s_genNumVerts = 0;
+	s_genNumFaces = 0;
+	VERIFY(SUCCEEDED(m_pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
+	VERIFY(SUCCEEDED(m_pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
+
+	// invalidate grid & vertex cache
+	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));
+	memset(s_gridCache, 0xff, (3 + 3*kGridCubes*kGridCubes*kGridCubes) * sizeof(int));
+
+	// for each ball, walk towards it's edge and see if it needs processing
+	for (unsigned int iBall4 = 0; iBall4 < numBall4s; ++iBall4)
+	{
+		for (unsigned int iBall = 0; iBall < 4; ++iBall)
+		{
+			// transform ball's center to grid index
+			float gridX = (pBall4s[iBall4].X[iBall]*0.5f + 0.5f) * kGridCubes;
+			float gridY = (pBall4s[iBall4].Y[iBall]*0.5f + 0.5f) * kGridCubes;
+			float gridZ = (pBall4s[iBall4].Z[iBall]*0.5f + 0.5f) * kGridCubes;
+
+			// round index down to integer
+			// for now, any ball with it's center outside the grid will cause a page fault: fix this!
+			unsigned int iX, iY, iZ;
+			iX = (unsigned int) gridX;
+			iY = (unsigned int) gridY;
+			iZ = (unsigned int) gridZ;
+			unsigned int iGrid = iZ*kGridDepthSqr + iY*kGridDepth + iX;
+			
+			// transform rounded down index back to grid space
+			gridX = floorf(gridX)/kGridCubes*2.f - 1.f;
+			gridY = floorf(gridY)/kGridCubes*2.f - 1.f;
+			gridZ = floorf(gridZ)/kGridCubes*2.f - 1.f;
+			
+			// figure out which way to to walk towards the center of the grid
+			// this also needs expansion, for now we "assume" and walk along the X axis
+			int walkDir;
+			if (gridX < 0.f) walkDir = 1;
+			else walkDir = -1;
+
+			// forward, march!
+			do
+			{
+				// must this grid cube still be processed? (i.e. upper 8 bits set)
+				if ((s_gridCache[iGrid] & 0xff000000) != 0xff000000)
+				{
+					// no, so it's safe to assume that this ball's geometry has been generated
+					break;
+				}
+
+				// obtain iso values for each corner of grid cube
+				for (unsigned int iCorner = 0; iCorner < 8; ++iCorner)
+				{
+					const unsigned int iCube = iGrid + kCubeIndices[iCorner];
+					if (*(reinterpret_cast<int *>(s_isoValues+iCube)) != 0xffffffff)
+					{
+						// cached: copy
+						s_cube[iCorner] = s_isoValues[iCube];
+					}
+					else
+					{
+						// uncached: calculate
+						const float cubeX = gridX + kCubeOffsets[iCorner].x;
+						const float cubeY = gridY + kCubeOffsets[iCorner].y;
+						const float cubeZ = gridZ + kCubeOffsets[iCorner].z;
+						s_cube[iCorner] = CalculateIsoValue(iCube, cubeX, cubeY, cubeZ);
+					}
+				}
+
+				// hit an edge?
+				if (GetEdgeTableIndex() != 0)
+				{
+					// process this cube and traverse
+					ProcessCube(iGrid, iX, iY, iZ);
+					break;
+				}
+
+				// walk along X axis...
+				iX += walkDir;			
+				iGrid += walkDir;
+				gridX += kGridStep*walkDir;
+			}
+			while (iX < kGridCubes);
+		}
+	}
+
+	m_pVB->Unmap();
+	m_pIB->Unmap();
+}
+
+void Metaballs::Draw(Camera* camera)
+{
+	// Bind buffers.
+	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
+	gD3D->BindInputLayout(m_inputLayout);
+	gD3D->BindIndexBuffer(m_pIB);
+
+	// Set shader vars.
+	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
+	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
+	effectPass.Apply();
+
+	// Kick off.
+	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
+	gD3D->DrawIndexedTriList(s_genNumFaces);
+}
+
+__forceinline unsigned int Metaballs::GetEdgeTableIndex()
 {
 	// flip a bit for each of the current grid cube's corners that lie below surface level
 	const __m128 cubeVals1 = _mm_load_ps(s_cube);
@@ -89,9 +270,7 @@ __forceinline unsigned int GetEdgeTableIndex()
 	return _mm_movemask_ps(cmpMask1) | _mm_movemask_ps(cmpMask2) << 4;
 }
 
-void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsigned int iEdgeTab, unsigned int edgeBits);
-
-static float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ)
+float Metaballs::CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ)
 {
 	const __m128 gridXXXX = _mm_load1_ps(&gridX);
 	const __m128 gridYYYY = _mm_load1_ps(&gridY);
@@ -121,7 +300,7 @@ static float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, flo
 	return isoValues.m128_f32[0];			
 }
 
-static void ProcessCube(unsigned int iGrid, unsigned int iX, unsigned int iY, unsigned int iZ)
+void Metaballs::ProcessCube(unsigned int iGrid, unsigned int iX, unsigned int iY, unsigned int iZ)
 {
 	// must this grid cube still be processed? (i.e. upper 8 bits set)
 	if ((s_gridCache[iGrid] & 0xff000000) == 0xff000000)
@@ -223,7 +402,7 @@ static void ProcessCube(unsigned int iGrid, unsigned int iX, unsigned int iY, un
 	}
 }
 
-void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsigned int iEdgeTab, unsigned int edgeBits)
+void Metaballs::Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsigned int iEdgeTab, unsigned int edgeBits)
 {
 	unsigned int vertexIndices[12];
 
@@ -253,11 +432,6 @@ void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsi
 				const float pX = lerpf(aX, bX, distance);
 				const float pY = lerpf(aY, bY, distance);
 				const float pZ = lerpf(aZ, bZ, distance);
-
-				// vertex: store position
-				s_pVertices[s_genNumVerts].position.x = pX;
-				s_pVertices[s_genNumVerts].position.y = pY;
-				s_pVertices[s_genNumVerts].position.z = pZ;
 
 				// calculate normal
 				// works much like CalculateIsoValue()
@@ -295,13 +469,9 @@ void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsi
 				oneOverNormLen = _mm_shuffle_ps(oneOverNormLen, oneOverNormLen, 0);
 				const __m128 normal = _mm_mul_ps(nXYZZ, oneOverNormLen);
 
-				// vertex: normalize and store normal
-				_mm_store_ss(&s_pVertices[s_genNumVerts].normal.x, _mm_mul_ss(oneOverNormLen, normalXXXX));
-				_mm_store_ss(&s_pVertices[s_genNumVerts].normal.y, _mm_mul_ss(oneOverNormLen, normalYYYY));
-				_mm_store_ss(&s_pVertices[s_genNumVerts].normal.z, _mm_mul_ss(oneOverNormLen, normalZZZZ));
-
-				// vertex: store color
-//				s_pVertices[s_genNumVerts].color = 0xffffffff;
+				// vertex: store position & normal (keep write sequential)
+				s_pVertices[s_genNumVerts].position = std::move(Vector3(pX, pY, pZ));
+				memcpy(&s_pVertices[s_genNumVerts].normal, normal.m128_f32, 3*sizeof(float));
 
 				// vertex: store and cache index
 				vertexIndices[iEdge] = iVertex = s_genNumVerts++;
@@ -319,194 +489,16 @@ void Triangulate(unsigned int iGrid, float gridX, float gridY, float gridZ, unsi
 	const int *pTriIndices = kTriangleTable[iEdgeTab];
 	while (*pTriIndices != -1)
 	{
-		// build face -- reverse order to obtain CCW face
-		const unsigned int iC = vertexIndices[*pTriIndices++];
-		const unsigned int iB = vertexIndices[*pTriIndices++];
+		// build face
 		const unsigned int iA = vertexIndices[*pTriIndices++];
+		const unsigned int iB = vertexIndices[*pTriIndices++];
+		const unsigned int iC = vertexIndices[*pTriIndices++];
 		s_pFaces[s_genNumFaces].iA = iA;
 		s_pFaces[s_genNumFaces].iB = iB;
 		s_pFaces[s_genNumFaces].iC = iC;
 		++s_genNumFaces;
 		ASSERT(s_genNumFaces <= kMaxFaces);
 	}
-}
-
-namespace Pimp {
-
-Metaballs::Metaballs(World *ownerWorld) :
-	Geometry(ownerWorld),
-	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
-	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
-	effectTechnique(&effect, "Blobs"),
-	effectPass(&effectTechnique, "Default")
-{
-	// don't impose CPU load by default
-	isVisible = false;
-
-	SetType(ET_Metaballs);
-}
-
-Metaballs::~Metaballs()
-{
-	if (nullptr != m_pVB) m_pVB->Release();
-	if (nullptr != m_pIB) m_pIB->Release();
-	if (nullptr != m_inputLayout) m_inputLayout->Release();
-}
-
-bool Metaballs::Initialize()
-{
-	// FIXME: error check
-	m_pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
-	m_pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
-
-	unsigned char* signature;
-	int signatureLength;
-	effectPass.GetVSInputSignature(&signature, &signatureLength);
-
-	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[2];
-	elemDesc[0].SemanticName = "POSITION";
-	elemDesc[0].SemanticIndex = 0;
-	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	elemDesc[0].InputSlot = 0;
-	elemDesc[0].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-	elemDesc[0].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
-	elemDesc[0].InstanceDataStepRate = 0;
-	elemDesc[1].SemanticName = "NORMAL";
-	elemDesc[1].SemanticIndex = 0;
-	elemDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	elemDesc[1].InputSlot = 0;
-	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
-	elemDesc[1].InstanceDataStepRate = 0;
-	m_inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
-
-	delete [] signature;
-
-	// fix up shader variables
-	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
-	const Vector2& visible_area = gD3D->GetRenderScale();
-	effect.SetVariableValue(varIndexRenderScale, visible_area);
-	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
-	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
-
-	return true;
-}
-
-void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
-{
-	if (false == isVisible)
-		return;
-
-	// (re)set temp. variables
-	s_numBall4s = numBall4s;
-	s_pBall4s = pBall4s;
-	s_surfaceLevel = surfaceLevel;
-	s_genNumVerts = 0;
-	s_genNumFaces = 0;
-	VERIFY(SUCCEEDED(m_pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
-	VERIFY(SUCCEEDED(m_pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
-
-	// invalidate grid & vertex cache
-	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));
-	memset(s_gridCache, 0xff, (3 + 3*kGridCubes*kGridCubes*kGridCubes) * sizeof(int));
-
-	// for each ball, walk towards it's edge and see if it needs processing
-	for (unsigned int iBall4 = 0; iBall4 < numBall4s; ++iBall4)
-	{
-		for (unsigned int iBall = 0; iBall < 4; ++iBall)
-		{
-			// transform ball's center to grid index
-			float gridX = (pBall4s[iBall4].X[iBall]*0.5f + 0.5f) * kGridCubes;
-			float gridY = (pBall4s[iBall4].Y[iBall]*0.5f + 0.5f) * kGridCubes;
-			float gridZ = (pBall4s[iBall4].Z[iBall]*0.5f + 0.5f) * kGridCubes;
-
-			// round index down to integer
-			// for now, any ball with it's center outside the grid will cause a page fault: fix this!
-			unsigned int iX, iY, iZ;
-			iX = (unsigned int) gridX;
-			iY = (unsigned int) gridY;
-			iZ = (unsigned int) gridZ;
-			unsigned int iGrid = iZ*kGridDepthSqr + iY*kGridDepth + iX;
-			
-			// transform rounded down index back to grid space
-			gridX = floorf(gridX)/kGridCubes*2.f - 1.f;
-			gridY = floorf(gridY)/kGridCubes*2.f - 1.f;
-			gridZ = floorf(gridZ)/kGridCubes*2.f - 1.f;
-			
-			// figure out which way to to walk towards the center of the grid
-			// this also needs expansion, for now we "assume" and walk along the X axis
-			int walkDir;
-			if (gridX < 0.f) walkDir = 1;
-			else walkDir = -1;
-
-			// forward, march!
-			do
-			{
-				// must this grid cube still be processed? (i.e. upper 8 bits set)
-				if ((s_gridCache[iGrid] & 0xff000000) != 0xff000000)
-				{
-					// no, so it's safe to assume that this ball's geometry has been generated
-					break;
-				}
-
-				// obtain iso values for each corner of grid cube
-				for (unsigned int iCorner = 0; iCorner < 8; ++iCorner)
-				{
-					const unsigned int iCube = iGrid + kCubeIndices[iCorner];
-					if (*(reinterpret_cast<int *>(s_isoValues+iCube)) != 0xffffffff)
-					{
-						// cached: copy
-						s_cube[iCorner] = s_isoValues[iCube];
-					}
-					else
-					{
-						// uncached: calculate
-						const float cubeX = gridX + kCubeOffsets[iCorner].x;
-						const float cubeY = gridY + kCubeOffsets[iCorner].y;
-						const float cubeZ = gridZ + kCubeOffsets[iCorner].z;
-						s_cube[iCorner] = CalculateIsoValue(iCube, cubeX, cubeY, cubeZ);
-					}
-				}
-
-				// hit an edge?
-				if (GetEdgeTableIndex() != 0)
-				{
-					// process this cube and traverse
-					ProcessCube(iGrid, iX, iY, iZ);
-					break;
-				}
-
-				// walk along X axis...
-				iX += walkDir;			
-				iGrid += walkDir;
-				gridX += kGridStep*walkDir;
-			}
-			while (iX < kGridCubes);
-		}
-	}
-
-	m_pVB->Unmap();
-	m_pIB->Unmap();
-}
-
-void Metaballs::Draw(Camera* camera)
-{
-	if (false == isVisible)
-		return;
-
-	// Bind buffers.
-	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
-	gD3D->BindInputLayout(m_inputLayout);
-	gD3D->BindIndexBuffer(m_pIB);
-
-	// Set shader vars.
-	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
-	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
-	effectPass.Apply();
-
-	// Kick off.
-	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
-	gD3D->DrawIndexedTriList(s_genNumFaces);
 }
 
 } // namespace Pimp

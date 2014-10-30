@@ -166,11 +166,14 @@ namespace Pimp
 		gD3D->UseDepthStencil(true);
 		gD3D->ClearDepthStencil();
 
-		// Draw geometry (FIXME: expand)
+		// Draw geometry (FIXME: expand!)
 		for (int iElem = 0; iElem < elements.Size(); ++iElem)
 		{
 			if (elements[iElem]->GetType() == ET_Metaballs)
-				static_cast<Metaballs *>(elements[iElem])->Draw(currentCamera);
+			{
+				Metaballs *pInst = static_cast<Metaballs *>(elements[iElem]);
+				pInst->Draw(currentCamera);
+			}
 		}
 
 		// Disable depth stencil

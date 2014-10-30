@@ -224,11 +224,11 @@
     <ClInclude Include="Metaballs.h">
       <Filter>Header Files\Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="mctables.h">
-      <Filter>Header Files\Nodes</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders\Shader_Blobs.h">
       <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="MarchingCubesTables.h">
+      <Filter>Header Files\Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -132,7 +132,7 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementTypes.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="mctables.h" />
+    <ClInclude Include="MarchingCubesTables.h" />
     <ClInclude Include="Metaballs.h" />
     <ClInclude Include="PIX.h" />
     <ClInclude Include="PostProcess.h" />

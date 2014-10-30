@@ -60,13 +60,8 @@ public:
 		bigCircle = nullptr;
 	}
 
-	void BindAnimationNodes()
+	void BindToWorld()
 	{
-	}
-
-	void BindAssets()
-	{
-		SetSceneMaterial();
 	}
 
 	void Tick(double row)

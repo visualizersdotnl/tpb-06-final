@@ -19,28 +19,28 @@ cbuffer paramsOnlyOnce
 	float4x4 viewProjMatrix;
 };
 
-/*
 float3 VL_CalculateDiffuseTerm(
 	float3 position,
 	float3 normal,
 	float3 lightPos,
 	float3 lightColor)
 {
-	lightPos = mul(lightPos, mCustom);
+//	FIXME: relevant when using a world trans. (inverse transform)
+//	lightPos = mul(lightPos, mCustom);
+
 	float3 lightVec = normalize(lightPos - position);
 	float diffuse = max(dot(normal, lightVec), 0);
 	float3 diffuseTerm = diffuse * lightColor;
 	return diffuseTerm;
 }	
-*/
 
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
 	output.screenPos = mul(float4(input.position, 1.f), viewProjMatrix);
-	float3 rotNormal = input.normal; // FIXME: transform by world matrix.
-	output.color = 1.f; // 0.25f + float4(VL_CalculateDiffuseTerm(input.position, input.normal, float3(0.f, 0.f -1.f), float3(1.f, 1.f, 1.f), 1.f);
-	output.texCoord = rotNormal*0.5f + 0.5f;
+	float3 rotNormal = input.normal; // FIXME: transform when using a world trans.
+	output.color = 0.25f + float4(VL_CalculateDiffuseTerm(input.position, rotNormal, float3(0.f, 0.f, 1.f), float3(1.f, 1.f, 1.f)), 1.f);
+	output.texCoord = rotNormal.xy*0.5f + 0.5f;
 	return output;
 }
 

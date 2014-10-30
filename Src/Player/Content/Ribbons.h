@@ -27,18 +27,13 @@ public:
 		Assets::AddMaterial("shaders\\Scene_Ribbons.fx", &ribbonMat);
 	}
 
-	void BindAnimationNodes()
-	{
-	}
-
-	void BindAssets()
+	void BindToWorld()
 	{
 		BindSceneMaterial(ribbonMat);
 	}
 
 	void Tick(double row)
 	{
-		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 	}
 };

@@ -26,18 +26,13 @@ public:
 		Assets::AddMaterial("shaders\\Scene_Knot.fx", &sceneMat);
 	}
 
-	void BindAnimationNodes()
-	{
-	}
-
-	void BindAssets()
+	void BindToWorld()
 	{
 		BindSceneMaterial(sceneMat);
 	}
 
 	void Tick(double row)
 	{
-		SetSceneMaterial();
 		SetMainSceneAndDefaultCamera();
 	}
 };

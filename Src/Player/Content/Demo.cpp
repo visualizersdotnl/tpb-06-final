@@ -128,8 +128,8 @@ static std::vector<SyncTrack> s_syncTracks;
 //
 
 static const sync_track *st_SceneIdx;
-static const sync_track *st_fxTimeGlobal;
-static const sync_track *st_postFadeInOut;
+static const sync_track *st_fxTime;
+static const sync_track *st_sceneFadeInOut;
 static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
 static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
 
@@ -138,8 +138,8 @@ void CreateGlobalRocketTracks()
 	s_syncTracks.clear();
 
 	s_syncTracks.push_back(SyncTrack("g_SceneIndex", false, &st_SceneIdx)); 
-	s_syncTracks.push_back(SyncTrack("g_fxTime", true, &st_fxTimeGlobal));
-	s_syncTracks.push_back(SyncTrack("g_preSpriteFade", true, &st_postFadeInOut)); 
+	s_syncTracks.push_back(SyncTrack("g_fxTime", true, &st_fxTime));
+	s_syncTracks.push_back(SyncTrack("g_preSpriteFade", true, &st_sceneFadeInOut)); 
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_X", false, &st_defRotX));
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_y", false, &st_defRotY));
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_Z", false, &st_defRotZ));
@@ -193,8 +193,7 @@ public:
 	virtual void ReqRocketTracks() = 0;     // Called after Rocket is fired up. Request your private tracks here.
 	                                        // ^^ Don't forget there's a global amount of tracks like g_fxTimer!
 	virtual void ReqAssets() = 0;           // Called prior to loading process: request assets only.
-	virtual void BindAnimationNodes() = 0;  // Called during loading process: create & bind animation related nodes.
-	virtual void BindAssets() = 0;          // Bind all resource based elements to the world (remember: asset loader takes care of it for assets).
+	virtual void BindToWorld() = 0;         // Bind and create elements to the world (remember: asset loader takes care of it for assets).
 	virtual void Tick(double row) = 0;      // To be called from Demo::Tick().
 
 protected:
@@ -230,11 +229,6 @@ protected:
 		Pimp::World::StaticAddChildToParent(param, xform);
 
 		return param;
-	}
-		
-	void SetSceneMaterial()
-	{
-		// @plek: Why is this shit here again?
 	}
 
 	// And this one on top of Tick() to activate said scene.
@@ -357,9 +351,6 @@ bool GenerateWorld(const char *rocketClient)
 	// Sprite batcher.
 	s_sprites = new Pimp::Sprites();
 
-	for (Scene *pScene : s_scenes)
-		pScene->BindAnimationNodes();
-
 	// We're using Rocket- or debug-driven cameras only!
 	gWorld->SetCurrentUserCamera(s_defaultCam);
 	gWorld->SetUseCameraDirection(false);
@@ -371,11 +362,11 @@ bool GenerateWorld(const char *rocketClient)
 	if (false == Assets::FinishLoading())
 		return false;
 
-	// Setup resource related world objects.
+	// Setup and bind world objects.
 	//
 
 	for (Scene *pScene : s_scenes)
-		pScene->BindAssets();
+		pScene->BindToWorld();
 
 	// Add user postFX.
 	gWorld->GetMaterials().Add(matUserPostFX);
