@@ -2,10 +2,12 @@
 // The world famous TPB blobs.
 
 // It was quickly ported from an Xbox 1 project (added some SSE3 though),
+
 // FIXME #1: move all static stuff into class, this practically just supports a single instance.
+// FIXME #2: make sure it adhere's to Node protocol (use Tick() properly, fix visibility check et cetera).
 
 // Until then most parameters (except ball position) can be modified in this file, a little below.
-
+// Do remember that some should remain static for speed reasons.
 
 #include <stdint.h>
 #include "Metaballs.h"
@@ -148,8 +150,13 @@ bool Metaballs::Initialize()
 	return true;
 }
 
+// FIXME: dirty hack to make sure we don't draw if nothing was generated (i.e. rendering in the right scene(s) only)
+static bool s_visibleHack = false;
+
 void Metaballs::Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
+	s_visibleHack = true;
+
 	// (re)set temp. variables
 	s_numBall4s = numBall4s;
 	s_pBall4s = pBall4s;
@@ -244,6 +251,12 @@ void Metaballs::Generate(float deltaTime, unsigned int numBall4s, const Metaball
 
 void Metaballs::Draw(Camera* camera)
 {
+	// FIXME: hack to ensure only one Draw() per Generate()
+	if (!s_visibleHack)
+		return;
+
+	s_visibleHack = false;
+
 	// Bind buffers.
 	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
 	gD3D->BindInputLayout(m_inputLayout);

@@ -96,6 +96,8 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
+      <StackReserveSize>1024*1024*4</StackReserveSize>
+      <StackCommitSize>65536</StackCommitSize>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -125,6 +127,8 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
+      <StackReserveSize>1024*1024*4</StackReserveSize>
+      <StackCommitSize>65536</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Design|x64'">
@@ -153,6 +157,8 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
+      <StackReserveSize>4194304</StackReserveSize>
+      <StackCommitSize>65536</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
