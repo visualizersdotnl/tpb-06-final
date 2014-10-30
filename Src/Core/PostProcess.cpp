@@ -156,7 +156,7 @@ void PostProcess::RenderPostProcess()
 	passBloomBlur.Apply();	
 	gD3D->DrawScreenQuad();
 
-	// Combine bloom results
+	// Combine bloom results to back buffer
 	const Vector2& visible_area = gD3D->GetRenderScale();
 	effect.SetVariableValue(varIndexRenderScale, visible_area);
 
@@ -166,7 +166,6 @@ void PostProcess::RenderPostProcess()
 	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	passBloomCombine.Apply();	
 	gD3D->DrawScreenQuad();
-
 
 	// Reset bound variables again
 	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D10ShaderResourceView*)NULL);
@@ -248,10 +247,9 @@ void PostProcess::InitBloomBlurSamples(Vector2 filterSizeInv)
 }
 
 
-void PostProcess::Clear(float clearR, float clearG, float clearB)
+void PostProcess::Clear()
 {
-	gD3D->Clear(renderTargetSceneMS->GetRenderTargetView(), clearR, clearG, clearB, 1.f);
-	gD3D->ClearDepthStencil();
+	gD3D->Clear(renderTargetSceneMS->GetRenderTargetView());
 }
 
 

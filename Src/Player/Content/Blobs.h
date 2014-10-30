@@ -41,7 +41,7 @@ public:
 	{
 		SetMainSceneAndDefaultCamera();
 
-		// Enable heavy CPU stuff.
+		// Always visible.
 		pMetaballs->SetVisible(true);
 
 		float blobT = 0.f;
@@ -50,16 +50,13 @@ public:
 			for (unsigned int iBall = 0; iBall < 4; ++iBall)
 			{
 				const unsigned int ballCnt = iBall4*4 + iBall;
-				s_metaball4s[iBall4].X[iBall] = 0.f; // 0.6f*sinf(ballCnt + blobT*1.29f);
-				s_metaball4s[iBall4].Y[iBall] = 0.f; // 0.5f*sinf((ballCnt^8) + blobT*2.75f);
-				s_metaball4s[iBall4].Z[iBall] = 0.f; // 0.5f*cosf((ballCnt^5) + blobT*1.25f);
+				s_metaball4s[iBall4].X[iBall] = 0.6f*sinf(ballCnt + blobT*1.29f);
+				s_metaball4s[iBall4].Y[iBall] = 0.5f*sinf((ballCnt^8) + blobT*2.75f);
+				s_metaball4s[iBall4].Z[iBall] = 0.5f*cosf((ballCnt^5) + blobT*1.25f);
 			}
 		}
 
 		// Tick manually.
 		pMetaballs->Tick(0.f, kNumMetaball4s, s_metaball4s, 21.f);
-
-		// Disable heavy CPU stuff.
-		//pMetaballs->SetVisible(false);
 	}
 };

@@ -14,7 +14,7 @@ namespace Pimp
 		PostProcess();
 		~PostProcess();
 
-		void Clear(float clearR, float clearG, float clearB);
+		void Clear();
 		void BindForRenderScene();
 		void RenderPostProcess();
 

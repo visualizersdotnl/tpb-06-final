@@ -1,7 +1,6 @@
 
 // the world famous TPB CPU blobs
-// this is a little bit fucked up since most functions and variables need to be moved into the class
-// but it works for now :-)
+// FIXME: quickly ported from Xbox 1 project, static stuff must be moved into class instance!
 
 #include <stdint.h>
 #include "Metaballs.h"
@@ -29,8 +28,8 @@ const unsigned int kGridCubes = kGridDepth-1;
 const unsigned int kGridDepthSqr = kGridDepth*kGridDepth;
 const float kGridStep = 2.f / (float) kGridCubes;
 
-const unsigned int kMaxFaces = 65536;      // should be sufficient (assert)
-const unsigned int kMaxVertices = 65536;   // 65536 is max. for 16-bit indices (assert)
+const unsigned int kMaxFaces = 65536*4;      
+const unsigned int kMaxVertices = 65536*4;   
 const size_t kVertexBufferSize = kMaxVertices * sizeof(Vertex);
 
 // grid & cache arrays (huge!)
@@ -393,18 +392,6 @@ bool Metaballs::Initialize()
 	return true;
 }
 
-// HACK: We shouldn't need these...
-static const Vertex screenQuad[] = 
-{
-	{ Vector3(-1, 1, 0), Vector3(0,0,1) }, // 0
-	{ Vector3( 1, 1, 0), Vector3(0,0,1) }, // 1
-	{ Vector3( 1,-1, 0), Vector3(0,0,1) }, // 3
-	{ Vector3(-1, 1, 0), Vector3(0,0,1) }, // 0
-	{ Vector3( 1,-1, 0), Vector3(0,0,1) }, // 3
-	{ Vector3(-1,-1, 0), Vector3(0,0,1) }, // 2						
-};
-//--
-
 void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
 	if (false == isVisible)
@@ -418,14 +405,6 @@ void Metaballs::Tick(float deltaTime, unsigned int numBall4s, const Metaball4 *p
 	s_genNumFaces = 0;
 	VERIFY(SUCCEEDED(m_pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
 	VERIFY(SUCCEEDED(m_pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
-
-	// HACK: Without this things really break somehow... These verts shouldn't be needed.
-	for (int i=0; i<6; ++i)
-	{
-		s_pVertices[i] = screenQuad[i];
-		++s_genNumVerts;
-	}
-
 
 	// invalidate grid & vertex cache
 	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));

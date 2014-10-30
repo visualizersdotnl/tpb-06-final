@@ -137,10 +137,10 @@ namespace Pimp
 	}
 
 
-	void World::Render(float clearR, float clearG, float clearB, Sprites *pSprites)
+	void World::Render(Sprites *pSprites)
 	{
-		// Clears (default) depth stencil as well!
-		postProcess->Clear(clearR, clearG, clearB); 
+		// Clear
+		postProcess->Clear(); 
 
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
@@ -162,8 +162,9 @@ namespace Pimp
 			scenes[currentSceneIndex]->Render(currentCamera);
 		}
 
-		// Enable depth stencil
+		// Clear & enable depth stencil
 		gD3D->UseDepthStencil(true);
+		gD3D->ClearDepthStencil();
 
 		// Draw geometry (FIXME: expand)
 		for (int iElem = 0; iElem < elements.Size(); ++iElem)
@@ -175,8 +176,13 @@ namespace Pimp
 		// Disable depth stencil
 		gD3D->UseDepthStencil(false);
 
+		// Bind screen quad VB for RenderPostProcess()
+		screenQuadVertexBuffer->Bind();
+
 		// Draw posteffects
 		postProcess->RenderPostProcess();
+
+		// ** At this point, the back buffer will be bound **
 
 		// Draw all overlays
 		gD3D->SetBlendMode(D3D::BM_AlphaBlend);
@@ -189,8 +195,7 @@ namespace Pimp
 		// Ensure blend mode is none for next frame.
 		gD3D->SetBlendMode(D3D::BM_None);
 
-		// @plek: This one seems excessive.
-//		gD3D->Flip();
+		gD3D->Flip();
 	}
 
 

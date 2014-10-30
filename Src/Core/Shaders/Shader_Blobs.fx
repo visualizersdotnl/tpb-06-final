@@ -60,7 +60,7 @@ float4 MainPS(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);	
-	return float4(1.f, 1.f, 1.f, 1.f); // texColor*input.color;
+	return texColor*input.color;
 }
 
 

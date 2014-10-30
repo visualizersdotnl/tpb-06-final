@@ -243,17 +243,15 @@ D3D::~D3D()
 }
 
 
-void D3D::Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A)
+void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 {
-	// Clear entire screen
+	// Clear entire buffer
 	device->RSSetViewports(1, &m_fullVP);
-	const float RGBA[4] = { R, G, B, A };
+	const float RGBA[4] = { 0.f };
 	device->ClearRenderTargetView(renderTarget, RGBA);
 
 	// Bind adjusted (aspect) viewport
 	device->RSSetViewports(1, &m_adjVP);
-
-//	ClearDepthStencil();
 }
 
 
@@ -481,7 +479,7 @@ void D3D::GetViewportSize(int* width, int* height)
 
 void D3D::ClearBackBuffer()
 {
-	Clear(renderTargetBackBuffer->GetRenderTargetView(), 0.f, 0.f, 0.f, 1.f);
+	Clear(renderTargetBackBuffer->GetRenderTargetView());
 }
 
 void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )

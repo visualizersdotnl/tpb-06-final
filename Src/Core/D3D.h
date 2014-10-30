@@ -27,7 +27,7 @@ namespace Pimp
 		D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain);
 		~D3D();
 
-		void Clear(ID3D10RenderTargetView* renderTarget, float R, float G, float B, float A);
+		void Clear(ID3D10RenderTargetView* renderTarget);
 		void ClearBackBuffer();
 		void ClearDepthStencil();
 		void Flip();

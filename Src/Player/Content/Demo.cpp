@@ -269,7 +269,7 @@ const std::string GetAssetsPath()
 //
 
 // @plek: Hack to scale shit in shaders.
-Pimp::MaterialParameter *hackResX, *hackResY;
+// Pimp::MaterialParameter *hackResX, *hackResY;
 
 static std::vector<Demo::Scene *> s_scenes;
 
@@ -384,15 +384,17 @@ bool GenerateWorld(const char *rocketClient)
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
 
-	// @plek: This is no longer needed but might be if we rip more Shadertoy stuff.
+#if 0
+	// @plek: Sometimes comes in handy when ripping Shadertoy stuff.
 	hackResX = new Pimp::MaterialParameter(gWorld);
 	hackResX->SetValueType(Pimp::MaterialParameter::VT_Value);
-	hackResX->SetName("hackResX");
+	hackResX->SetName("screenResX");
 	hackResY = new Pimp::MaterialParameter(gWorld);
 	hackResY->SetValueType(Pimp::MaterialParameter::VT_Value);
-	hackResY->SetName("hackResY");
+	hackResY->SetName("screenResY");
 	gWorld->GetElements().Add(hackResX);
 	gWorld->GetElements().Add(hackResY);
+#endif
 	
 	// Finish up some World business.
 	gWorld->InitAllBalls();
@@ -435,8 +437,6 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
-static float clearR = 0.f, clearG = 0.f, clearB = 0.f;
-
 bool Tick(Pimp::Camera *camOverride)
 {
 	const double rocketRow = Rocket_GetRow();
@@ -454,14 +454,10 @@ bool Tick(Pimp::Camera *camOverride)
 		syncTrack.Update(rocketRow);
 
 	// @plek: Update hack param..
-	int xRes, yRes;
-	Pimp::gD3D->GetViewportSize(&xRes, &yRes);
-	hackResX->SetValue((float) xRes);
-	hackResY->SetValue((float) yRes);
-
-//	clearR = (float)sync_get_val(st_clearR, rocketRow);
-//	clearG = (float)sync_get_val(st_clearG, rocketRow);
-//	clearB = (float)sync_get_val(st_clearB, rocketRow);
+//	int xRes, yRes;
+//	Pimp::gD3D->GetViewportSize(&xRes, &yRes);
+//	hackResX->SetValue((float) xRes);
+//	hackResY->SetValue((float) yRes);
 
 	// update default camera
 	const float defCamTrans_X = (float) sync_get_val(st_defTransX, rocketRow);
@@ -474,8 +470,8 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
-//	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	const int sceneIdx = 4; // For test!
+	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
+//	const int sceneIdx = 4; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
@@ -491,7 +487,7 @@ bool Tick(Pimp::Camera *camOverride)
 }
 
 void WorldRender() {
-	gWorld->Render(clearR, clearG, clearB, s_sprites); }
+	gWorld->Render(s_sprites); }
 
 
 } // namespace Demo

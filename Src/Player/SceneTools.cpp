@@ -89,9 +89,8 @@ void DrawLoadProgress(Pimp::Texture2D *pTex, float progress)
 
 	Pimp::PostProcess* postProcess = gWorld->GetPostProcess();
 	postProcess->SetLoadProgress(progress);
-	postProcess->Clear(0.f, 0.f, 0.f);
+	postProcess->Clear();
 	postProcess->BindForRenderScene();
-
 	Pimp::gD3D->ClearBackBuffer();
 	postProcess->RenderPostProcess();
 	Pimp::gD3D->Flip();
