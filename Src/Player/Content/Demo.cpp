@@ -20,7 +20,7 @@ inline DWORD AlphaToVtxColor(float alpha)
 	return iAlpha<<24|0xffffff;
 }
 
-const float kTileMulX = PIMPPLAYER_RENDER_ASPECT_RATIO;
+const float kTileMul = (PIMPPLAYER_RENDER_ASPECT_RATIO);
 
 //
 // Rocket stuff.

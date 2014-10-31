@@ -41,7 +41,7 @@ public:
 			-1, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f), 
-			Vector2(3.f*kTileMulX, 2.f));
+			Vector2(1.f*kTileMul, 1.f));
 
 		float time = (float) sync_get_val(st_fxTime, row);
 
