@@ -190,6 +190,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
     <ClInclude Include="Content\Blobs.h" />
+    <ClInclude Include="Content\Blobs2.h" />
     <ClInclude Include="Content\Bondtro.h" />
     <ClInclude Include="Content\Demo.h" />
     <ClInclude Include="Content\GeneralCinema.h" />

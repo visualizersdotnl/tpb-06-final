@@ -258,7 +258,13 @@ protected:
 #include "Knot.h"
 #include "GeneralCinema.h"
 #include "Shafts.h"
+
+// They belong.
+static const unsigned int kNumMetaball4s = 14;
+static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
 #include "Blobs.h"
+#include "Blobs2.h"
+
 #include "Ribbons2.h"
 
 //
@@ -280,13 +286,14 @@ const std::string GetAssetsPath()
 
 static std::vector<Demo::Scene *> s_scenes;
 
-#define NUM_SCENES 6
+#define NUM_SCENES 7
 #define SCENE_BONDTRO 0
 #define SCENE_RIBBONS1 1
 #define SCENE_GENCINEMA 2
 #define SCENE_SHAFTS 3
 #define SCENE_BLOBS 4 
-#define SCENE_RIBBONS2 5
+#define SCENE_BLOBS2 5
+#define SCENE_RIBBONS2 6
 // #define SCENE_KNOTS
 
 bool GenerateWorld(const char *rocketClient)
@@ -329,6 +336,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes[SCENE_GENCINEMA] = new GeneralCinema();
 	s_scenes[SCENE_SHAFTS] = new Shafts();
 	s_scenes[SCENE_BLOBS] = new Blobs();
+	s_scenes[SCENE_BLOBS2] = new Blobs2();
 	s_scenes[SCENE_RIBBONS2] = new Ribbons2();
 
 	// Instantiate all local (part/scene) Rocket tracks.	
@@ -530,7 +538,7 @@ void WorldRender()
 	// FIXME: hack, only pass metaballs object in scene's they're used to get drawn.
 	const double rocketRow = Rocket_GetRow();
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	gWorld->Render(s_sprites, (SCENE_BLOBS == sceneIdx) ? s_pMetaballs : nullptr); 
+	gWorld->Render(s_sprites, ((SCENE_BLOBS == sceneIdx)||(SCENE_BLOBS2 == sceneIdx)) ? s_pMetaballs : nullptr); 
 }
 
 

@@ -5,7 +5,7 @@
 			<key value="1" interpolation="0" row="768"/>
 			<key value="4" interpolation="0" row="1536"/>
 			<key value="3" interpolation="0" row="2568"/>
-			<key value="4" interpolation="0" row="3584"/>
+			<key value="5" interpolation="0" row="3584"/>
 			<key value="2" interpolation="0" row="4064"/>
 			<key value="-1" interpolation="0" row="5120"/>
 		</track>
@@ -214,6 +214,8 @@
 			<key value="-2.53" interpolation="0" row="1535"/>
 			<key value="0" interpolation="2" row="1536"/>
 			<key value="0.7" interpolation="0" row="1552"/>
+			<key value="0.2" interpolation="1" row="2048"/>
+			<key value="0.7" interpolation="0" row="2064"/>
 			<key value="-8.31" interpolation="1" row="2568"/>
 			<key value="11.25" interpolation="1" row="2816"/>
 			<key value="-13.79" interpolation="1" row="2817"/>
@@ -221,7 +223,8 @@
 			<key value="11.46" interpolation="1" row="3073"/>
 			<key value="20.96" interpolation="1" row="3328"/>
 			<key value="21.43" interpolation="0" row="3583"/>
-			<key value="0" interpolation="0" row="3584"/>
+			<key value="0" interpolation="1" row="3584"/>
+			<key value="-0.4" interpolation="0" row="3648"/>
 			<key value="0" interpolation="0" row="4064"/>
 			<key value="-8.31" interpolation="1" row="5088"/>
 		</track>
@@ -397,9 +400,14 @@
 			<key value="0" interpolation="0" row="1040"/>
 			<key value="0.7" interpolation="1" row="1536"/>
 			<key value="0" interpolation="0" row="1556"/>
+			<key value="1" interpolation="2" row="2048"/>
+			<key value="0" interpolation="0" row="2064"/>
 			<key value="0" interpolation="2" row="2792"/>
 			<key value="1" interpolation="0" row="2815"/>
 			<key value="0" interpolation="0" row="2816"/>
+			<key value="0" interpolation="1" row="4082"/>
+			<key value="0.7" interpolation="1" row="4088"/>
+			<key value="0" interpolation="0" row="4092"/>
 		</track>
 		<track name="g_postFade">
 			<key value="0" interpolation="0" row="0"/>
@@ -410,15 +418,23 @@
 			<key value="0" interpolation="2" row="1520"/>
 			<key value="1" interpolation="0" row="1535"/>
 			<key value="0" interpolation="0" row="1536"/>
+			<key value="0" interpolation="1" row="1984"/>
+			<key value="1" interpolation="0" row="2047"/>
+			<key value="0" interpolation="0" row="2048"/>
+			<key value="0" interpolation="3" row="2496"/>
+			<key value="1" interpolation="0" row="2567"/>
 			<key value="1" interpolation="1" row="2568"/>
 			<key value="0" interpolation="0" row="2592"/>
 			<key value="1" interpolation="3" row="2816"/>
 			<key value="0" interpolation="0" row="2832"/>
 			<key value="1" interpolation="2" row="3072"/>
 			<key value="0" interpolation="0" row="3085"/>
+			<key value="1" interpolation="2" row="3584"/>
+			<key value="0" interpolation="0" row="3600"/>
 			<key value="0" interpolation="2" row="4048"/>
 			<key value="1" interpolation="0" row="4063"/>
-			<key value="0" interpolation="0" row="4064"/>
+			<key value="1" interpolation="1" row="4064"/>
+			<key value="0" interpolation="0" row="4088"/>
 		</track>
 	</tracks>
 	<bookmarks/>

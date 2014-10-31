@@ -123,6 +123,9 @@
     <ClInclude Include="Content\Shafts.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Blobs2.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">
