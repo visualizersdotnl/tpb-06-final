@@ -68,9 +68,9 @@ public:
 class Texture2DRequest
 {
 public:
-	Texture2DRequest(const std::string &path, bool gammaCorrect, Pimp::Texture2D **ppDest) :
+	Texture2DRequest(const std::string &path, Pimp::Texture2D **ppDest) :
 		path(path),
-		gammaCorrect(gammaCorrect),
+		gammaCorrect(true),
 		ppDest(ppDest) {}
 
 	const std::string path;
@@ -133,9 +133,9 @@ namespace Assets
 		return true;
 	}
 
-	void AddTexture2D(const std::string &path, bool gammaCorrect, Pimp::Texture2D **ppTexture2D)
+	void AddTexture2D(const std::string &path, Pimp::Texture2D **ppTexture2D)
 	{
-		s_textureReqs.push_back(Texture2DRequest(s_root + path, gammaCorrect, ppTexture2D));
+		s_textureReqs.push_back(Texture2DRequest(s_root + path, ppTexture2D));
 	}
 
 	static bool LoadTextures()

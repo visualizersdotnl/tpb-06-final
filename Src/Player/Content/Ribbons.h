@@ -23,7 +23,7 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\ribbons1\\even_lachen.png", true, &texMesh);
+		Assets::AddTexture2D("textures\\ribbons1\\even_lachen.png", &texMesh);
 		Assets::AddMaterial("shaders\\Scene_Ribbons.fx", &ribbonMat);
 	}
 

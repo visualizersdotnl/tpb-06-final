@@ -24,7 +24,7 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\bgtiles\\tile-00.png", false, &bgTile);
+		Assets::AddTexture2D("textures\\bgtiles\\tile-00.png", &bgTile);
 	}
 
 	void BindToWorld()
