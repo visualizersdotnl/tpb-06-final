@@ -18,14 +18,16 @@ namespace Pimp
 		effectTechnique(&effect, "Sprites"),
 		effectPass(&effectTechnique, "Default")
 	{
-		// Glow's business.
+		// Get shader var. indices.
 		int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 		const Vector2& visible_area = gD3D->GetRenderScale();
 		effect.SetVariableValue(varIndexRenderScale, visible_area);
 		varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 
-		// Plek's business.
+		// Initialize buffers.
 		VB.vertices = gD3D->CreateVertexBuffer(6*kMaxSprites*sizeof(SpriteVertex), nullptr, true);
+		bgVB.vertices = gD3D->CreateVertexBuffer(6*sizeof(SpriteVertex), nullptr, true);
+
 		sprites.clear();
 
 		unsigned char* signature;
@@ -58,11 +60,13 @@ namespace Pimp
 
 		delete [] signature;
 
+		// Invalidate background.
+		AddBackgroundSprite(gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f));
 	}
 
 	Sprites::~Sprites()
 	{
-		// Member VB takes care of it's resources.
+		// Member VB/bgVB takes care of it's resources.
 	}
 
 	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle)
@@ -96,12 +100,26 @@ namespace Pimp
 	{
 		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
+		ASSERT(sortZ == kBGSpriteZ || sortZ >= 0.f);
 
-		// first sprite?
-		if (sprites.empty())
+		SpriteVertex *pDest = nullptr;
+
+		if (sortZ != kBGSpriteZ)
 		{
-			// yes: lock vertex buffer
-			VERIFY(SUCCEEDED(VB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pVertices))));
+			// first sprite?
+			if (sprites.empty())
+			{
+				// yes: lock vertex buffer
+				VERIFY(SUCCEEDED(VB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pVertices))));
+			}
+
+			pDest = pVertices;
+			pVertices += 6;
+		}
+		else
+		{
+			// lock tiny vertex buffer
+			VERIFY(SUCCEEDED(bgVB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pDest))));
 		}
 
 		// hack: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space
@@ -116,52 +134,78 @@ namespace Pimp
 		const unsigned int ARGB = vertexColor;
 
 		// triangle 1: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(1.f, 1.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(1.f, 1.f);
+		++pDest;
 		// triangle 1: bottom left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(0.f, 1.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(0.f, 1.f);
+		++pDest;
 		// triangle 1: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(0.f, 0.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(0.f, 0.f);
+		++pDest;
 		// triangle 2: bottom right
-		pVertices->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(1.f, 1.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(1.f, 1.f);
+		++pDest;
 		// triangle 2: top left
-		pVertices->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(0.f, 0.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(0.f, 0.f);
+		++pDest;
 		// triangle 2: top right
-		pVertices->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
-		pVertices->ARGB = ARGB;
-		pVertices->UV = Vector2(1.f, 0.f);
-		++pVertices;
+		pDest->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->ARGB = ARGB;
+		pDest->UV = Vector2(1.f, 0.f);
+		++pDest;
 
-		// add to list
-		Sprite sprite;
 		ASSERT(nullptr != pTexture);
-		sprite.pTexture = pTexture;
-		sprite.blendMode = blendMode;
-		sprite.size = std::move(size);
-		sprite.sortZ = sortZ;
-		sprite.vertexOffs = sprites.size()*6;
-		sprites.push_back(std::move(sprite));
+		if (sortZ != kBGSpriteZ)
+		{
+			// add to list
+			Sprite sprite;
+			sprite.pTexture = pTexture;
+			sprite.blendMode = blendMode;
+			sprite.sortZ = sortZ;
+			sprite.vertexOffs = sprites.size()*6;
+			sprites.push_back(std::move(sprite));	
+		}
+		else
+		{
+			// set up background sprite
+			bgSprite.pTexture = pTexture;
+			bgSprite.blendMode = blendMode;
+
+			// and unmap it's buffer
+			bgVB.vertices->Unmap();
+		}
 	}
 
-	void Sprites::Flush()
+	void Sprites::DrawBackgroundSprite()
+	{
+		// Bind buffers.
+		gD3D->BindVertexBuffer(0, bgVB.vertices, sizeof(SpriteVertex));
+		gD3D->BindInputLayout(VB.inputLayout); // FIXME: bgVB doesn't have one, as they're identical :)
+		
+		// Set state.
+		effect.SetVariableValue(varIndexTextureMap, bgSprite.pTexture->GetShaderResourceView());
+		effectPass.Apply();
+		gD3D->SetBlendMode(bgSprite.blendMode);
+
+		// Draw.
+		gD3D->DrawTriQuad(0);
+	}
+
+	void Sprites::FlushSprites()
 	{
 		if (0 != sprites.size())
 		{
-			// Unlock vertex buffer.
+			// Unmap vertex buffer.
 			ASSERT(nullptr != VB.vertices);
 			VB.vertices->Unmap();
 			pVertices = nullptr;
@@ -170,18 +214,21 @@ namespace Pimp
 			gD3D->BindVertexBuffer(0, VB.vertices, sizeof(SpriteVertex));
 			gD3D->BindInputLayout(VB.inputLayout);
 
+			// Sort 'em.
 			sprites.sort();
 
 			for (Sprite sprite : sprites)
 			{
+				// Set state.
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
 				effectPass.Apply();
-
 				gD3D->SetBlendMode(sprite.blendMode);
+
+				// Draw.
 				gD3D->DrawTriQuad((DWORD) sprite.vertexOffs);
 			}
-		}
 
-		sprites.clear();
+			sprites.clear();
+		}
 	}
 }

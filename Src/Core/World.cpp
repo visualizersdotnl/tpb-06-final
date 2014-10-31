@@ -138,17 +138,22 @@ namespace Pimp
 
 	void World::Render(Sprites *pSprites, Metaballs *pMetaballs)
 	{
+		ASSERT(nullptr != pSprites);
+
 		// Clear
 		postProcess->Clear(); 
 
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
 
-		// Bind screen quad VB for first pass
-		screenQuadVertexBuffer->Bind();
+		// Draw background sprite
+		pSprites->DrawBackgroundSprite();
 
 		// Disable depth stencil
 		gD3D->UseDepthStencil(false);
+
+		// Bind screen quad VB for first pass
+		screenQuadVertexBuffer->Bind();
 
 		// Bind camera
 		if (currentCamera != NULL)
@@ -183,9 +188,9 @@ namespace Pimp
 		// ** At this point, the back buffer will be bound **
 
 		// Flush (draw & clear queue) the sprites
-		pSprites->Flush();
+		pSprites->FlushSprites();
 
-		// Ensure blend mode is none for next frame.
+		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);
 
 		gD3D->Flip();

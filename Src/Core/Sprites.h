@@ -10,17 +10,30 @@ namespace Pimp
 {
 	class Texture2D;
 
+	// This sortZ is reserved.
+	// The idea is to keep your regular sortZ zero and upwards.
+	const float kBGSpriteZ = -1.f;
+
 	class Sprites
 	{
-	public:
-		Sprites();
-		~Sprites();
+	private:
+		struct SpriteVertex
+		{
+			Vector3 position;
+			unsigned int ARGB;
+			Vector2 UV;
+		} *pVertices;
+
+		struct BGSprite
+		{
+			/* const */ Texture2D *pTexture;
+			D3D::BlendMode blendMode;
+		};
 
 		struct Sprite
 		{
 			/* const */ Texture2D *pTexture;
 			D3D::BlendMode blendMode;
-			Vector2 position, size;
 			float sortZ;
 			size_t vertexOffs;
 
@@ -30,6 +43,10 @@ namespace Pimp
 			}
 		};
 
+	public:
+		Sprites();
+		~Sprites();
+
 		void AddSprite(
 			/* const */ Texture2D *pTexture,
 			D3D::BlendMode blendMode,
@@ -38,6 +55,17 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ = 0.f);
+
+		// to add (single) background sprite (drawn first, behind the scene)
+		void AddBackgroundSprite(
+			/* const */ Texture2D *pTexture,
+			D3D::BlendMode blendMode,
+			const unsigned int vertexColor,
+			const Vector2 &topLeft,
+			const Vector2 &size)
+		{
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f);
+		}
 
 		// simplified AddSprite()
 		void AddSprite(
@@ -70,7 +98,8 @@ namespace Pimp
 			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ);
 		}
 
-		void Flush();		
+		void DrawBackgroundSprite();
+		void FlushSprites();	
 
 	private:
 		class SpriteVertexBuffer
@@ -93,16 +122,10 @@ namespace Pimp
 			}
 
 			void Bind();
-		} VB;
+		} VB, bgVB;
 
+		BGSprite bgSprite;
 		std::list<Sprite> sprites;
-
-		struct SpriteVertex
-		{
-			Vector3 position;
-			unsigned int ARGB;
-			Vector2 UV;
-		} *pVertices;
 
 		Effect effect;
 		EffectTechnique effectTechnique;
