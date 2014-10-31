@@ -120,8 +120,6 @@ namespace Pimp
 				if (nullptr != inputLayout) 
 					inputLayout->Release(); 
 			}
-
-			void Bind();
 		} VB, bgVB;
 
 		BGSprite bgSprite;

@@ -252,7 +252,7 @@ protected:
 #include "Ribbons.h"
 #include "Knot.h"
 #include "GeneralCinema.h"
-#include "Volumetric.h"
+#include "Shafts.h"
 #include "Blobs.h"
 #include "Ribbons2.h"
 
@@ -274,6 +274,15 @@ const std::string GetAssetsPath()
 // Pimp::MaterialParameter *hackResX, *hackResY;
 
 static std::vector<Demo::Scene *> s_scenes;
+
+#define NUM_SCENES 6
+#define SCENE_BONDTRO 0
+#define SCENE_RIBBONS1 1
+#define SCENE_GENCINEMA 2
+#define SCENE_SHAFTS 3
+#define SCENE_BLOBS 4 
+#define SCENE_RIBBONS2 5
+// #define SCENE_KNOTS
 
 bool GenerateWorld(const char *rocketClient)
 {
@@ -309,13 +318,13 @@ bool GenerateWorld(const char *rocketClient)
 	Assets::SetRoot(assetsPath);
 
 	// Create scenes.
-	s_scenes.push_back(new Bondtro());
-	s_scenes.push_back(new Ribbons());
-	s_scenes.push_back(new GeneralCinema());
-	s_scenes.push_back(new Volumetric());
-//	s_scenes.push_back(new Knot());
-	s_scenes.push_back(new Blobs());
-	s_scenes.push_back(new Ribbons2());
+	s_scenes.resize(NUM_SCENES);
+	s_scenes[SCENE_BONDTRO] = new Bondtro();
+	s_scenes[SCENE_RIBBONS1] = new Ribbons();
+	s_scenes[SCENE_GENCINEMA] = new GeneralCinema();
+	s_scenes[SCENE_SHAFTS] = new Shafts();
+	s_scenes[SCENE_BLOBS] = new Blobs();
+	s_scenes[SCENE_RIBBONS2] = new Ribbons2();
 
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)
@@ -345,15 +354,14 @@ bool GenerateWorld(const char *rocketClient)
 	// Bind animation related nodes (and do other CPU-based preparation work).
 	//
 	
-	// Add (static) default transformation.
+	// Add default camera transformation.
 	s_defaultCam = new Pimp::Camera(gWorld);
 	gWorld->GetElements().Add(s_defaultCam);
-	s_defaultCam->SetFOVy(0.563197f);
 	s_defaultXform = new Pimp::Xform(gWorld);
 	gWorld->GetElements().Add(s_defaultXform);
-//	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
 	AddChildToParent(s_defaultXform, gWorld->GetRootNode());
 	AddChildToParent(s_defaultCam, s_defaultXform);
+	s_defaultCam->SetFOVy(0.563197f);
 	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
 
 	// Sprite batcher.
@@ -476,7 +484,6 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-//	const int sceneIdx = 4; // For test!
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
@@ -496,7 +503,7 @@ void WorldRender()
 	// FIXME: hack, only pass metaballs object in scene's they're used to get drawn.
 	const double rocketRow = Rocket_GetRow();
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	gWorld->Render(s_sprites, (4 == sceneIdx) ? s_pMetaballs : nullptr); 
+	gWorld->Render(s_sprites, (SCENE_BLOBS == sceneIdx) ? s_pMetaballs : nullptr); 
 }
 
 

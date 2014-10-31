@@ -1,5 +1,5 @@
 
-class Volumetric : public Scene
+class Shafts : public Scene
 {
 private:
 	Pimp::Material *shaftMat;
@@ -18,11 +18,11 @@ private:
 	const sync_track *st_shaftsRot2z;
 	
 public:
-	Volumetric()
+	Shafts()
 	{
 	}
 
-	~Volumetric()
+	~Shafts()
 	{
 	}
 

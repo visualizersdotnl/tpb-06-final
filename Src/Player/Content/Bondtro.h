@@ -45,16 +45,16 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\1\\bg.png", false, &background);
-		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &blob);
-		Assets::AddTexture2D("textures\\1\\bond-01.png", false, &ampersand);
-		Assets::AddTexture2D("textures\\1\\bond-00.png", false, &logoTPB);
-		Assets::AddTexture2D("textures\\1\\bond-02.png", false, &logoInque);
-		Assets::AddTexture2D("textures\\1\\bond-03.png", false, &present);
-		Assets::AddTexture2D("textures\\1\\bond-bullseye.png", false, &target);
-		Assets::AddTexture2D("textures\\1\\bond-hole.png", false, &blast);
-		Assets::AddTexture2D("textures\\1\\bond-meneer.png", false, &pimp);
-		Assets::AddTexture2D("textures\\1\\bond-title.png", false, &title);
+		Assets::AddTexture2D("textures\\bondtro\\bg.png", false, &background);
+		Assets::AddTexture2D("textures\\bondtro\\bond-circle.png", false, &blob);
+		Assets::AddTexture2D("textures\\bondtro\\bond-01.png", false, &ampersand);
+		Assets::AddTexture2D("textures\\bondtro\\bond-00.png", false, &logoTPB);
+		Assets::AddTexture2D("textures\\bondtro\\bond-02.png", false, &logoInque);
+		Assets::AddTexture2D("textures\\bondtro\\bond-03.png", false, &present);
+		Assets::AddTexture2D("textures\\bondtro\\bond-bullseye.png", false, &target);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", false, &blast);
+		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", false, &pimp);
+		Assets::AddTexture2D("textures\\bondtro\\bond-title.png", false, &title);
 
 //		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &bigCircle);
 		bigCircle = nullptr;

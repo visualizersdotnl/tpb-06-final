@@ -249,7 +249,7 @@
 			<key value="3.53" interpolation="1" row="1024"/>
 			<key value="3.46" interpolation="1" row="1280"/>
 			<key value="3" interpolation="0" row="1535"/>
-			<key value="2.5" interpolation="0" row="1536"/>
+			<key value="3" interpolation="0" row="1536"/>
 			<key value="23.57" interpolation="1" row="2568"/>
 			<key value="14.44" interpolation="1" row="2816"/>
 			<key value="22.29" interpolation="1" row="2817"/>
@@ -257,7 +257,7 @@
 			<key value="21.67" interpolation="1" row="3073"/>
 			<key value="12.54" interpolation="1" row="3328"/>
 			<key value="-1.95" interpolation="0" row="3583"/>
-			<key value="2" interpolation="0" row="3584"/>
+			<key value="2.5" interpolation="0" row="3584"/>
 			<key value="0" interpolation="0" row="4064"/>
 			<key value="23.57" interpolation="1" row="5088"/>
 		</track>

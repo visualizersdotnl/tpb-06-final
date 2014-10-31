@@ -20,11 +20,11 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\5\\greetings_projector.png", false, &projector);
-		Assets::AddTexture2D("textures\\5\\greetings_projector_reel.png", false, &reel);
-		Assets::AddTexture2D("textures\\5\\greetings_projector_scroller.png", false, &scroller);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector.png", false, &projector);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", false, &reel);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", false, &scroller);
 
-		Assets::AddMaterial("shaders\\Scene_Spheregrid.fx", &backMat);
+		Assets::AddMaterial("shaders\\Scene_Empty.fx", &backMat);
 	}
 
 	void BindToWorld()
