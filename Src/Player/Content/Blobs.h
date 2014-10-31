@@ -46,7 +46,7 @@ public:
 		float time = (float) sync_get_val(st_fxTime, row);
 
 		// FIXME: parametrize w/Rocket
-		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.4f, time*0.6f, time*0.2f);
+		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
 		s_pMetaballs->SetRotation(rotation);
 
 		// FIXME: make it look interesting (attractors?)

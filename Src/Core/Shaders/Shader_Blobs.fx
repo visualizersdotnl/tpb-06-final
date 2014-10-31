@@ -21,17 +21,23 @@ cbuffer paramsOnlyOnce
 	float4x4 mWorldInv;
 };
 
-float3 VL_CalculateDiffuseTerm(
+float3 LightVertex(
 	float3 position,
 	float3 normal,
 	float3 lightPos,
 	float3 lightColor)
 {
 	lightPos = mul(lightPos, (float3x3) mWorldInv);
-	float3 lightVec = normalize(lightPos - position);
-	float diffuse = max(dot(normal, lightVec), 0);
-	float3 diffuseTerm = diffuse * lightColor;
-	return diffuseTerm;
+
+	float3 L = normalize(lightPos - position);
+	float diffuse = max(dot(normal, L), 0.f);
+
+	float3 eyePos = lightPos; // Not ideal, but it'll do the trick.
+	float3 V = normalize(eyePos - position);
+	float3 H = normalize(L + V);
+	float specular = 1.5f*pow(max(dot(normal, H), 0), 9.f);
+
+	return lightColor*diffuse + specular;
 }	
 
 VSOutput MainVS(VSInput input)
@@ -40,7 +46,14 @@ VSOutput MainVS(VSInput input)
 
 	float4 worldPos = mul(input.position, mWorld);
 	output.screenPos = mul(worldPos, viewProjMatrix);
-	output.color = 0.25f + float4(VL_CalculateDiffuseTerm(input.position.xyz, input.normal, float3(0.f, 0.f, 1.f), float3(1.f, 1.f, 1.f)), 1.f);
+
+	output.color = 0.f + 
+		float4(LightVertex(
+			input.position.xyz, 
+			input.normal, 
+			float3(0.f, 0.f, 1.f), 
+			1.2f*float3(47.f/255.f, 156.f/255.f, 152.f/255.f)), 1.f);
+
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
 

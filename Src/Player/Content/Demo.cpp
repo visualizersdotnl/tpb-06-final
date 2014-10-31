@@ -14,10 +14,10 @@ Pimp::World *gWorld = nullptr;
 // Misc. helper stuff.
 //
 
-inline DWORD AlphaToVtxColor(float alpha)
+inline DWORD AlphaToVtxColor(float alpha, unsigned int RGB = 0xffffff)
 {
 	const unsigned char iAlpha = int(alpha*255.f);
-	return iAlpha<<24|0xffffff;
+	return iAlpha<<24|RGB;
 }
 
 const float kTileMul = (PIMPPLAYER_RENDER_ASPECT_RATIO);
@@ -131,6 +131,7 @@ static std::vector<SyncTrack> s_syncTracks;
 
 static const sync_track *st_SceneIdx;
 static const sync_track *st_fxTime;
+static const sync_track *st_postFlash ,*st_postFade;
 static const sync_track *st_sceneFadeInOut;
 static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
 static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
@@ -141,6 +142,8 @@ void CreateGlobalRocketTracks()
 
 	s_syncTracks.push_back(SyncTrack("g_SceneIndex", false, &st_SceneIdx)); 
 	s_syncTracks.push_back(SyncTrack("g_fxTime", true, &st_fxTime));
+	s_syncTracks.push_back(SyncTrack("g_postFlash", true, &st_postFlash));
+	s_syncTracks.push_back(SyncTrack("g_postFade", true, &st_postFade));
 	s_syncTracks.push_back(SyncTrack("g_preSpriteFade", true, &st_sceneFadeInOut)); 
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_X", false, &st_defRotX));
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_y", false, &st_defRotY));
@@ -490,6 +493,28 @@ bool Tick(Pimp::Camera *camOverride)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 		return false; // Demo is finished.
+
+	// Tie in final flash and fade in the sprite batch at "improbable" Zs.
+	const float postFlash = (float) sync_get_val(st_postFlash, rocketRow);
+	const float postFade = (float) sync_get_val(st_postFade, rocketRow);
+	const float kPostFlashZ = 5000.f;
+	const float kPostFadeZ = 6000.f;
+	if (postFlash != 0.f)
+		s_sprites->AddSprite(
+			texWhite,
+			Pimp::D3D::BM_AlphaBlend,
+			AlphaToVtxColor(postFlash, 0xffffff), 
+			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+			kPostFlashZ,
+			0.f);
+	if (postFade != 0.f)
+		s_sprites->AddSprite(
+			texWhite,
+			Pimp::D3D::BM_AlphaBlend,
+			AlphaToVtxColor(postFade, 0),
+			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+			kPostFadeZ,
+			0.f);
 
 	// This is primarily used to feed the debug camera if need be.
 	if (nullptr != camOverride)
