@@ -11,7 +11,7 @@
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
 
-// Helper function(s).
+// Misc. helper stuff.
 //
 
 inline DWORD AlphaToVtxColor(float alpha)
@@ -19,6 +19,8 @@ inline DWORD AlphaToVtxColor(float alpha)
 	const unsigned char iAlpha = int(alpha*255.f);
 	return iAlpha<<24|0xffffff;
 }
+
+const float kTileMulX = PIMPPLAYER_RENDER_ASPECT_RATIO;
 
 //
 // Rocket stuff.

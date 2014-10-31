@@ -67,6 +67,7 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
+		s_sprites->AddBackgroundSprite(Pimp::gD3D->GetWhiteTex(), Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 		const float ballPos_1 = (float) sync_get_val(st_bondBlob1, row);
 		const float ballFade_1 = (float) sync_get_val(st_bondBlobFade1, row);

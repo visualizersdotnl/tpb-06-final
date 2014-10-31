@@ -16,8 +16,8 @@ cbuffer paramsOnlyOnce
 Texture2D textureMap;
 SamplerState samplerTexture
 {
-    AddressU = uint(CLAMP /* 3 */);
-    AddressV = uint(CLAMP /* 3 */);
+    AddressU = uint(WRAP /* 1 */);
+    AddressV = uint(WRAP /* 1 */);
     Filter   = uint(MIN_MAG_MIP_LINEAR /* 21 */);
 };
 
@@ -135,10 +135,10 @@ technique10 Sprites
 
 const BYTE gCompiledShader_Sprites[] =
 {
-     68,  88,  66,  67, 197,  76, 
-    226, 101,  47,  46,  18,  38, 
-     23, 128,  88,  74, 190,  70, 
-    166,  21,   1,   0,   0,   0, 
+     68,  88,  66,  67,   7,  97, 
+    162,  43, 223, 234,  78, 238, 
+    217, 194, 109, 100,  83, 204, 
+     18, 247,   1,   0,   0,   0, 
      35,   8,   0,   0,   1,   0, 
       0,   0,  36,   0,   0,   0, 
      70,  88,  49,  48, 247,   7, 
@@ -184,9 +184,9 @@ const BYTE gCompiledShader_Sprites[] =
     115,  97, 109, 112, 108, 101, 
     114,  84, 101, 120, 116, 117, 
     114, 101,   0,   1,   0,   0, 
-      0,   2,   0,   0,   0,   3, 
+      0,   2,   0,   0,   0,   1, 
       0,   0,   0,   1,   0,   0, 
-      0,   2,   0,   0,   0,   3, 
+      0,   2,   0,   0,   0,   1, 
       0,   0,   0,   1,   0,   0, 
       0,   2,   0,   0,   0,  21, 
       0,   0,   0,  83, 112, 114, 

@@ -7,6 +7,7 @@ static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetabal
 class Blobs : public Scene
 {
 private:
+	Pimp::Texture2D *bgTile;
 
 public:
 	Blobs()
@@ -23,6 +24,7 @@ public:
 
 	void ReqAssets()
 	{
+		Assets::AddTexture2D("textures\\bgtiles\\tile-00.png", false, &bgTile);
 	}
 
 	void BindToWorld()
@@ -32,6 +34,14 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
+		
+		s_sprites->AddBackgroundSprite(
+			bgTile, 
+			Pimp::D3D::BlendMode::BM_None, 
+			-1, 
+			Vector2(0.f, 0.f), 
+			Vector2(1920.f, 1080.f), 
+			Vector2(3.f*kTileMulX, 2.f));
 
 		float time = (float) sync_get_val(st_fxTime, row);
 

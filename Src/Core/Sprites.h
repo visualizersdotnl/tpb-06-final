@@ -54,7 +54,8 @@ namespace Pimp
 			const Vector2 &topLeft,
 			const Vector2 &size,
 			float sortZ,
-			float rotateZ = 0.f);
+			float rotateZ,
+			const Vector2 &uvTile = Vector2(1.f, 1.f));
 
 		// to add (single) background sprite (drawn first, behind the scene)
 		void AddBackgroundSprite(
@@ -62,9 +63,10 @@ namespace Pimp
 			D3D::BlendMode blendMode,
 			const unsigned int vertexColor,
 			const Vector2 &topLeft,
-			const Vector2 &size)
+			const Vector2 &size,
+			const Vector2 &uvTile)
 		{
-			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f);
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, uvTile);
 		}
 
 		// simplified AddSprite()

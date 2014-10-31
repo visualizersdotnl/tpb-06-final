@@ -34,8 +34,8 @@ Texture2D textureMap;
 
 SamplerState samplerTexture
 {
-	AddressU = CLAMP;
-	AddressV = CLAMP;
+	AddressU = WRAP;
+	AddressV = WRAP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 

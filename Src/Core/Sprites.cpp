@@ -61,7 +61,7 @@ namespace Pimp
 		delete [] signature;
 
 		// Invalidate background.
-		AddBackgroundSprite(gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f));
+		AddBackgroundSprite(gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 	}
 
 	Sprites::~Sprites()
@@ -96,7 +96,8 @@ namespace Pimp
 			const Vector2 &topLeft,
 			const Vector2 &size,
 			float sortZ,
-			float rotateZ /* = 0.f */)
+			float rotateZ,
+			const Vector2 &uvTile /* = Vector2(1.f, 1.f) */)
 	{
 		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
@@ -136,12 +137,12 @@ namespace Pimp
 		// triangle 1: bottom right
 		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f, 1.f);
+		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y);
 		++pDest;
 		// triangle 1: bottom left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(0.f, 1.f);
+		pDest->UV = Vector2(0.f, 1.f*uvTile.y);
 		++pDest;
 		// triangle 1: top left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
@@ -151,7 +152,7 @@ namespace Pimp
 		// triangle 2: bottom right
 		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f, 1.f);
+		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y);
 		++pDest;
 		// triangle 2: top left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
@@ -161,7 +162,7 @@ namespace Pimp
 		// triangle 2: top right
 		pDest->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f, 0.f);
+		pDest->UV = Vector2(1.f*uvTile.x, 0.f);
 		++pDest;
 
 		ASSERT(nullptr != pTexture);
