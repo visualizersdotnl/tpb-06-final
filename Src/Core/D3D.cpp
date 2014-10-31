@@ -113,11 +113,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Bind our backbuffer and depth stencil by default
 	BindBackbuffer(depthStencil);
 
-	// For letterboxing..
-	float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
-	renderScale = Vector2(1.f, renderAspectRatio);
-
-
 	// Aspect ratio adjust.
 	//
 
@@ -140,7 +135,8 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 
 	renderScale.x = 1.0f;
 	renderScale.y = renderableAmount;
-	
+
+#if 0
 	m_adjVP.Width = xResAdj;
 	m_adjVP.Height = yResAdj;
 	m_adjVP.TopLeftX = (m_fullVP.Width-xResAdj)/2;
@@ -148,8 +144,9 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_adjVP.MinDepth = 0.f;
 	m_adjVP.MaxDepth = 1.f;
 
-	// Readjust to aspect corrected VP
+	// Readjust to aspect corrected VP	
 	device->RSSetViewports(1, &m_adjVP);
+#endif
 
 	// Blend states
 	blendStates[BM_None] = NULL;
@@ -250,8 +247,10 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 	const float RGBA[4] = { 0.f };
 	device->ClearRenderTargetView(renderTarget, RGBA);
 
+#if 0
 	// Bind adjusted (aspect) viewport
 	device->RSSetViewports(1, &m_adjVP);
+#endif
 }
 
 
@@ -471,7 +470,7 @@ void D3D::BindBackbuffer(DepthStencil* depth)
 	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : NULL);
 }
 
-void D3D::GetViewportSize(int* width, int* height)
+void D3D::GetFullViewportSize(int* width, int* height)
 {
 	*width = viewWidth;
 	*height = viewHeight;

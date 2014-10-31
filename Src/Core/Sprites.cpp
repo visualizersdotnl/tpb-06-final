@@ -19,9 +19,7 @@ namespace Pimp
 		effectPass(&effectTechnique, "Default")
 	{
 		// Get shader var. indices.
-		int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
-		const Vector2& visible_area = gD3D->GetRenderScale();
-		effect.SetVariableValue(varIndexRenderScale, visible_area);
+		varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 		varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 
 		// Initialize buffers.
@@ -97,7 +95,8 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
-			const Vector2 &uvTile /* = Vector2(1.f, 1.f) */)
+			const Vector2 &uvTile /* = Vector2(1.f, 1.f) */,
+			const Vector2 &uvScroll /* = Vector2(1.f, 1.f) */)
 	{
 		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
@@ -137,32 +136,32 @@ namespace Pimp
 		// triangle 1: bottom right
 		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y);
+		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 1: bottom left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(0.f, 1.f*uvTile.y);
+		pDest->UV = Vector2(0.f, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 1: top left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(0.f, 0.f);
+		pDest->UV = Vector2(0.f, 0.f)+uvScroll;
 		++pDest;
 		// triangle 2: bottom right
 		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y);
+		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 2: top left
 		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(0.f, 0.f);
+		pDest->UV = Vector2(0.f, 0.f)+uvScroll;
 		++pDest;
 		// triangle 2: top right
 		pDest->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
 		pDest->ARGB = ARGB;
-		pDest->UV = Vector2(1.f*uvTile.x, 0.f);
+		pDest->UV = Vector2(1.f*uvTile.x, 0.f)+uvScroll;
 		++pDest;
 
 		ASSERT(nullptr != pTexture);
@@ -194,9 +193,14 @@ namespace Pimp
 		gD3D->BindInputLayout(VB.inputLayout); // FIXME: bgVB doesn't have one, as they're identical :)
 		
 		// Set state.
+		effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
 		effect.SetVariableValue(varIndexTextureMap, bgSprite.pTexture->GetShaderResourceView());
 		effectPass.Apply();
 		gD3D->SetBlendMode(bgSprite.blendMode);
+
+		// * - For some reason on the render targets the scale for the background sprites is too much as it is 
+		//     already compensated elsewhere. Can't be bothered to find out where now. 
+		//     @plek, 2014
 
 		// Draw.
 		gD3D->DrawTriQuad(0);
@@ -217,6 +221,10 @@ namespace Pimp
 
 			// Sort 'em.
 			sprites.sort();
+
+			// Set correct visible area.
+			const Vector2& visible_area = gD3D->GetRenderScale();
+			effect.SetVariableValue(varIndexRenderScale, visible_area);
 
 			for (Sprite sprite : sprites)
 			{

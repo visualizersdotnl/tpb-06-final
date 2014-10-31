@@ -75,7 +75,7 @@ namespace Pimp
 			ID3D10Texture2D* source,
 			DXGI_FORMAT format);
 
-		void GetViewportSize(int* width, int* height);
+		void GetFullViewportSize(int* width, int* height);
 		
 		void UseDepthStencil(bool enabled);
 		DepthStencil* GetDefaultDepthStencil() const;

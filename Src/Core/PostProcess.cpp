@@ -72,7 +72,7 @@ void PostProcess::SetParameters()
 	float sceneRenderLod = Scene::GetSceneRenderLOD();
 
 	int w, h;
-	gD3D->GetViewportSize(&w, &h);
+	gD3D->GetFullViewportSize(&w, &h);
 
 	// Also take our scene render lod into account.
 	// This maps the renderable part of our screen buffer to the whole screen quad.
@@ -176,7 +176,7 @@ void PostProcess::RenderPostProcess()
 void PostProcess::InitBloomGatherSamples()
 {
 	int w, h;
-	gD3D->GetViewportSize(&w, &h);
+	gD3D->GetFullViewportSize(&w, &h);
 
 	Vector3 offsets[4];
 

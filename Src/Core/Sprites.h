@@ -55,7 +55,8 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
-			const Vector2 &uvTile = Vector2(1.f, 1.f));
+			const Vector2 &uvTile = Vector2(1.f, 1.f),
+			const Vector2 &uvScroll = Vector2(0.f, 0.f));
 
 		// to add (single) background sprite (drawn first, behind the scene)
 		void AddBackgroundSprite(
@@ -64,9 +65,10 @@ namespace Pimp
 			const unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
-			const Vector2 &uvTile)
+			const Vector2 &uvTile, 
+			const Vector2 &uvScroll = Vector2(0.f, 0.f))
 		{
-			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, uvTile);
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, uvTile, uvScroll);
 		}
 
 		// simplified AddSprite()
@@ -131,6 +133,7 @@ namespace Pimp
 		EffectTechnique effectTechnique;
 		EffectPass effectPass;
 
+		int varIndexRenderScale;
 		int varIndexTextureMap;
 	};
 }
