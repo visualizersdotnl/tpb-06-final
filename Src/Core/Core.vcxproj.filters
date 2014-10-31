@@ -87,9 +87,6 @@
     <ClCompile Include="Node.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="Overlay.cpp">
-      <Filter>Source Files\Nodes</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleAttractor.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
@@ -109,7 +106,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Metaballs.cpp">
-      <Filter>Source Files\Nodes</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,9 +188,6 @@
     <ClInclude Include="Node.h">
       <Filter>Header Files\Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="Overlay.h">
-      <Filter>Header Files\Nodes</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleAttractor.h">
       <Filter>Header Files\Nodes</Filter>
     </ClInclude>
@@ -221,14 +215,14 @@
     <ClInclude Include="Shaders\Shader_Sprites.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Metaballs.h">
-      <Filter>Header Files\Nodes</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders\Shader_Blobs.h">
       <Filter>Shaders</Filter>
     </ClInclude>
     <ClInclude Include="MarchingCubesTables.h">
       <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Metaballs.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

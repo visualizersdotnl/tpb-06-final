@@ -167,6 +167,9 @@ static Pimp::Sprites *s_sprites = nullptr;
 
 // Global material(s).
 static Pimp::Material *matUserPostFX;
+
+// Single metaballs instance (see .cpp for explanation).
+static Pimp::Metaballs *s_pMetaballs = nullptr;
  
 //
 // Scene (part) base class.
@@ -356,6 +359,11 @@ bool GenerateWorld(const char *rocketClient)
 	// Sprite batcher.
 	s_sprites = new Pimp::Sprites();
 
+	// Metaballs.
+	s_pMetaballs = new Pimp::Metaballs();
+	if (false == s_pMetaballs->Initialize())
+		return false;
+
 	// We're using Rocket- or debug-driven cameras only!
 	gWorld->SetCurrentUserCamera(s_defaultCam);
 	gWorld->SetUseCameraDirection(false);
@@ -408,6 +416,7 @@ bool GenerateWorld(const char *rocketClient)
 void ReleaseWorld()
 {
 	delete s_sprites;
+	delete s_pMetaballs;
 
 	for (Scene *pScene : s_scenes)
 		delete pScene;
@@ -482,8 +491,13 @@ bool Tick(Pimp::Camera *camOverride)
 	return true;
 }
 
-void WorldRender() {
-	gWorld->Render(s_sprites); }
+void WorldRender() 
+{
+	// FIXME: hack, only pass metaballs object in scene's they're used to get drawn.
+	const double rocketRow = Rocket_GetRow();
+	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
+	gWorld->Render(s_sprites, (4 == sceneIdx) ? s_pMetaballs : nullptr); 
+}
 
 
 } // namespace Demo

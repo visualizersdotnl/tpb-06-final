@@ -13,11 +13,13 @@
 #include "Texture.h"
 #include "ScreenQuadVertexBuffer.h"
 #include "Scene.h"
-#include "Overlay.h"
-#include "Sprites.h"
 
 namespace Pimp 
 {
+	// Rogue geometry.
+	class Sprites;
+	class Metaballs;
+
 	class World
 	{
 	private:
@@ -41,9 +43,6 @@ namespace Pimp
 
 		FixedSizeList<Camera*> directionCameras;
 		FixedSizeList<Scene*> scenes;	// List of scenes. Each scene is also included in the elements list.
-		
-
-		FixedSizeList<Overlay*> overlays;  // List of overlays. Each overlay is also included in the elements list.
 
 		PostProcess* postProcess;
 		ScreenQuadVertexBuffer* screenQuadVertexBuffer;
@@ -80,11 +79,6 @@ namespace Pimp
 			return scenes;
 		}
 
-		FixedSizeList<Overlay*>& GetOverlays()
-		{
-			return overlays;
-		}
-
 		Node* GetRootNode() const 
 		{
 			return rootNode;
@@ -106,7 +100,7 @@ namespace Pimp
 		}
 
 		void Tick(float deltaTime);
-		void Render(Pimp::Sprites *);
+		void Render(Pimp::Sprites *, Pimp::Metaballs *);
 
 		void SetCurrentUserCamera(Camera* camera);
 		Camera* GetCurrentUserCamera() const 

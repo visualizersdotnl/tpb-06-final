@@ -111,7 +111,6 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="MaterialParameter.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="ParticleAttractor.cpp" />
     <ClCompile Include="ParticleSpline.cpp" />
     <ClCompile Include="PolyMesh.cpp" />
@@ -151,7 +150,6 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="MaterialParameter.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="Overlay.h" />
     <ClInclude Include="ParticleAttractor.h" />
     <ClInclude Include="ParticleSpline.h" />
     <ClInclude Include="PolyMesh.h" />

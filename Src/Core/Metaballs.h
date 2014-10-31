@@ -2,7 +2,6 @@
 #pragma once
 
 #include "D3D.h"
-//#include "Node.h"
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
@@ -11,10 +10,8 @@
 
 namespace Pimp 
 {
-	class Metaballs : public Node
+	class Metaballs
 	{
-	protected:
-
 	public:
 		struct Metaball4
 		{
@@ -23,27 +20,18 @@ namespace Pimp
 			float Z[4];
 		};
 
-		Metaballs(World* ownerWorld);
-		virtual ~Metaballs();
-		
-		virtual void Tick(float deltaTime);
-		virtual bool HasGeometry() const { return true; }
-
-		bool ShouldRender() const 
-		{
-			return isVisible;
-		}
+		Metaballs();
+		~Metaballs();
 
 		bool Initialize();
-		void Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
+		void Generate(unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
 		void Draw(Camera* camera);
 		
-		// FIXME: hack to rotate locally (via world matrix)
 		void SetRotation(const Quaternion &rotation);
 
 	private:
-		ID3D10Buffer *m_pVB, *m_pIB;
-		ID3D10InputLayout *m_inputLayout;
+		ID3D10Buffer *pVB, *pIB;
+		ID3D10InputLayout *inputLayout;
 
 		Effect effect;
 		EffectTechnique effectTechnique;
@@ -56,7 +44,6 @@ namespace Pimp
 
 		bool isVisible;
 
-		// FIXME
 		Xform *worldTrans; 
 
 		__forceinline unsigned int GetEdgeTableIndex();

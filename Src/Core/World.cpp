@@ -4,8 +4,9 @@
 #include "Xform.h"
 #include "Geometry.h"
 #include "ParticleSpline.h"
-#include "Overlay.h"
+
 #include "Metaballs.h"
+#include "Sprites.h"
 
 // FIXME: Introduce regular STL vectors instead?
 #define PIMP_MAX_NUM_WORLD_ELEMENTS 8192
@@ -14,7 +15,6 @@
 #define PIMP_MAX_NUM_SCENES 256
 #define PIMP_MAX_NUM_CAMERADIRECTIONSHOTS 256
 #define PIMP_MAX_NUM_MATERIALS 256
-#define PIMP_MAX_NUM_OVERLAYS 256
 
 namespace Pimp 
 {
@@ -24,7 +24,6 @@ namespace Pimp
 		directionCameras(PIMP_MAX_NUM_CAMERADIRECTIONSHOTS),
 		scenes(PIMP_MAX_NUM_SCENES),
 		materials(PIMP_MAX_NUM_MATERIALS),
-		overlays(PIMP_MAX_NUM_OVERLAYS),
 		currentUserCamera(NULL),
 		currentTime(0),
 		prevMotionBlurTime(9999999.0),
@@ -137,7 +136,7 @@ namespace Pimp
 	}
 
 
-	void World::Render(Sprites *pSprites)
+	void World::Render(Sprites *pSprites, Metaballs *pMetaballs)
 	{
 		// Clear
 		postProcess->Clear(); 
@@ -162,22 +161,18 @@ namespace Pimp
 			scenes[currentSceneIndex]->Render(currentCamera);
 		}
 
-		// Clear & enable depth stencil
-		gD3D->UseDepthStencil(true);
-		gD3D->ClearDepthStencil();
-
-		// Draw geometry (FIXME: expand!)
-		for (int iElem = 0; iElem < elements.Size(); ++iElem)
+		// Draw metaballs?
+		if (nullptr != pMetaballs)
 		{
-			if (elements[iElem]->GetType() == ET_Metaballs)
-			{
-				Metaballs *pInst = static_cast<Metaballs *>(elements[iElem]);
-				pInst->Draw(currentCamera);
-			}
-		}
+			// Clear & enable depth stencil
+			gD3D->UseDepthStencil(true);
+			gD3D->ClearDepthStencil();
 
-		// Disable depth stencil
-		gD3D->UseDepthStencil(false);
+			pMetaballs->Draw(currentCamera);
+
+			// Disable depth stencil
+			gD3D->UseDepthStencil(false);
+		}
 
 		// Bind screen quad VB for RenderPostProcess()
 		screenQuadVertexBuffer->Bind();
@@ -186,11 +181,6 @@ namespace Pimp
 		postProcess->RenderPostProcess();
 
 		// ** At this point, the back buffer will be bound **
-
-		// Draw all overlays
-		gD3D->SetBlendMode(D3D::BM_AlphaBlend);
-		for (int i=overlays.Size()-1; i>=0; --i)
-			overlays[i]->Render(NULL);
 
 		// Flush (draw & clear queue) the sprites
 		pSprites->Flush();

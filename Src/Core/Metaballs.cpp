@@ -4,17 +4,16 @@
 // It was quickly ported from an Xbox 1 project (added some SSE3 though).
 
 // FIXME:
-// 1. Move all static junk into class, this way we practically support a single instance only.
-// 2. Adhere to Node/World protocol (use Tick()) properly, visibility, transformation et cetera).
-// 3. Remove hacks :)
+// 1. Move all static junk into class (right now only a single instance works properly).
+//    Do keep an eye on constant parameters that may have to remain that way for speed.
+// 2. Consider making this a proper Element?
+// 3. Remove any remaining hacks.
 
 // Until then most parameters (except ball position) can be modified in this file, a little below.
-// Do remember that some should remain static for speed reasons.
 
 #include <stdint.h>
 #include "Metaballs.h"
 #include "MarchingCubesTables.h"
-#include "World.h"
 
 #include "Shaders/Shader_Blobs.h"
 
@@ -89,38 +88,29 @@ template<typename T> inline const T lerpf(const T &A, const T &B, float factor)
 	return A*(1.f - factor) + B*factor;
 }
 
-Metaballs::Metaballs(World *ownerWorld) :
-	Node(ownerWorld),
-	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
+Metaballs::Metaballs() :
+	pVB(nullptr), pIB(nullptr), inputLayout(nullptr),
 	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
 	effectTechnique(&effect, "Blobs"),
 	effectPass(&effectTechnique, "Default"),
 	worldTrans(new Xform(nullptr))
 {
-	SetType(ET_Metaballs);
 }
 
 Metaballs::~Metaballs()
 {
 	delete worldTrans;
 
-	if (nullptr != m_pVB) m_pVB->Release();
-	if (nullptr != m_pIB) m_pIB->Release();
-	if (nullptr != m_inputLayout) m_inputLayout->Release();
-}
-
-void Metaballs::Tick(float deltaTime)
-{
-	Node::Tick(deltaTime);
-
-	// FIXME: Eventually we'll want to generate geometry right here.
+	if (nullptr != pVB) pVB->Release();
+	if (nullptr != pIB) pIB->Release();
+	if (nullptr != inputLayout) inputLayout->Release();
 }
 
 bool Metaballs::Initialize()
 {
 	// FIXME: error check
-	m_pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
-	m_pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
+	pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
+	pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
 
 	unsigned char* signature;
 	int signatureLength;
@@ -141,7 +131,7 @@ bool Metaballs::Initialize()
 	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
 	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
 	elemDesc[1].InstanceDataStepRate = 0;
-	m_inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
+	inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
 
 	delete [] signature;
 
@@ -157,21 +147,16 @@ bool Metaballs::Initialize()
 	return true;
 }
 
-// FIXME: dirty hack to make sure we don't draw if nothing was generated (i.e. rendering in the right scene(s) only)
-static bool s_visibleHack = false;
-
-void Metaballs::Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
+void Metaballs::Generate(unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel)
 {
-	s_visibleHack = true;
-
 	// (re)set temp. variables
 	s_numBall4s = numBall4s;
 	s_pBall4s = pBall4s;
 	s_surfaceLevel = surfaceLevel;
 	s_genNumVerts = 0;
 	s_genNumFaces = 0;
-	VERIFY(SUCCEEDED(m_pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
-	VERIFY(SUCCEEDED(m_pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
+	VERIFY(SUCCEEDED(pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
+	VERIFY(SUCCEEDED(pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
 
 	// invalidate grid & vertex cache
 	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));
@@ -252,22 +237,16 @@ void Metaballs::Generate(float deltaTime, unsigned int numBall4s, const Metaball
 		}
 	}
 
-	m_pVB->Unmap();
-	m_pIB->Unmap();
+	pVB->Unmap();
+	pIB->Unmap();
 }
 
 void Metaballs::Draw(Camera* camera)
 {
-	// FIXME: hack to ensure only one Draw() per Generate()
-	if (!s_visibleHack)
-		return;
-
-	s_visibleHack = false;
-
 	// Bind buffers.
-	gD3D->BindVertexBuffer(0, m_pVB, sizeof(Vertex));
-	gD3D->BindInputLayout(m_inputLayout);
-	gD3D->BindIndexBuffer(m_pIB);
+	gD3D->BindVertexBuffer(0, pVB, sizeof(Vertex));
+	gD3D->BindInputLayout(inputLayout);
+	gD3D->BindIndexBuffer(pIB);
 
 	// Set shader vars.
 	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
@@ -464,7 +443,6 @@ void Metaballs::Triangulate(unsigned int iGrid, float gridX, float gridY, float 
 
 				// calculate normal
 				// works much like CalculateIsoValue()
-				// post-loop code still unsatisfactory (was SSE3), but considerably better than it's C/FPU counterpart
 
 				const __m128 pXXXX = _mm_load1_ps(&pX);
 				const __m128 pYYYY = _mm_load1_ps(&pY);

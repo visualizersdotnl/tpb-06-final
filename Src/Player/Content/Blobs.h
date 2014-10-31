@@ -7,7 +7,6 @@ static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetabal
 class Blobs : public Scene
 {
 private:
-	Pimp::Metaballs *pMetaballs;
 
 public:
 	Blobs()
@@ -28,10 +27,6 @@ public:
 
 	void BindToWorld()
 	{
-		pMetaballs = new Pimp::Metaballs(gWorld);
-		pMetaballs->Initialize();
-		gWorld->GetElements().Add(pMetaballs);
-		Pimp::World::StaticAddChildToParent(pMetaballs, gWorld->GetRootNode());
 	}
 
 	void Tick(double row)
@@ -42,7 +37,7 @@ public:
 
 		// FIXME: parametrize w/Rocket
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.4f, time*0.6f, time*0.2f);
-		pMetaballs->SetRotation(rotation);
+		s_pMetaballs->SetRotation(rotation);
 
 		// FIXME: make it look interesting (attractors?)
 		for (unsigned int iBall4 = 0; iBall4 < kNumMetaball4s; ++iBall4)
@@ -57,6 +52,6 @@ public:
 		}
 
 		// Generate geometry (triggers visibility).
-		pMetaballs->Generate(0.f, kNumMetaball4s, s_metaball4s, 190.f);
+		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
 	}
 };
