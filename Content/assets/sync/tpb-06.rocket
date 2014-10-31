@@ -1,4 +1,4 @@
-<sync rows="4096">
+<sync rows="8192">
 	<tracks>
 		<track name="g_SceneIndex">
 			<key value="0" interpolation="0" row="0"/>

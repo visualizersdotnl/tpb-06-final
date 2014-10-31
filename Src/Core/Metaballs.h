@@ -2,11 +2,12 @@
 #pragma once
 
 #include "D3D.h"
-#include "Node.h"
+//#include "Node.h"
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
 #include "Camera.h"
+#include "Xform.h"
 
 namespace Pimp 
 {
@@ -36,6 +37,9 @@ namespace Pimp
 		bool Initialize();
 		void Generate(float deltaTime, unsigned int numBall4s, const Metaball4 *pBall4s, float surfaceLevel);
 		void Draw(Camera* camera);
+		
+		// FIXME: hack to rotate locally (via world matrix)
+		void SetRotation(const Quaternion &rotation);
 
 	private:
 		ID3D10Buffer *m_pVB, *m_pIB;
@@ -47,8 +51,13 @@ namespace Pimp
 
 		int varIndexTextureMap;
 		int varIndexViewProjMatrix;
+		int varIndexWorldMatrix;
+		int varIndexWorldMatrixInv;
 
 		bool isVisible;
+
+		// FIXME
+		Xform *worldTrans; 
 
 		__forceinline unsigned int GetEdgeTableIndex();
 		float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ);

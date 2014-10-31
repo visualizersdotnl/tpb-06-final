@@ -1,7 +1,7 @@
 
 struct VSInput
 {	
-	float3 position : POSITION;
+	float4 position : POSITION;
 	float3 normal : NORMAL;
 };
 
@@ -17,6 +17,8 @@ cbuffer paramsOnlyOnce
 {
 	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 	float4x4 viewProjMatrix;
+	float4x4 mWorld;
+	float4x4 mWorldInv;
 };
 
 float3 VL_CalculateDiffuseTerm(
@@ -25,9 +27,7 @@ float3 VL_CalculateDiffuseTerm(
 	float3 lightPos,
 	float3 lightColor)
 {
-//	FIXME: relevant when using a world trans. (inverse transform)
-//	lightPos = mul(lightPos, mCustom);
-
+	lightPos = mul(lightPos, (float3x3) mWorldInv);
 	float3 lightVec = normalize(lightPos - position);
 	float diffuse = max(dot(normal, lightVec), 0);
 	float3 diffuseTerm = diffuse * lightColor;
@@ -37,10 +37,13 @@ float3 VL_CalculateDiffuseTerm(
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
-	output.screenPos = mul(float4(input.position, 1.f), viewProjMatrix);
-	float3 rotNormal = input.normal; // FIXME: transform when using a world trans.
-	output.color = 0.25f + float4(VL_CalculateDiffuseTerm(input.position, rotNormal, float3(0.f, 0.f, 1.f), float3(1.f, 1.f, 1.f)), 1.f);
-	output.texCoord = rotNormal.xy*0.5f + 0.5f;
+
+	float4 worldPos = mul(input.position, mWorld);
+	output.screenPos = mul(worldPos, viewProjMatrix);
+	output.color = 0.25f + float4(VL_CalculateDiffuseTerm(input.position.xyz, input.normal, float3(0.f, 0.f, 1.f), float3(1.f, 1.f, 1.f)), 1.f);
+	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
+	output.texCoord = worldNormal.xy*0.5f + 0.5f;
+
 	return output;
 }
 

@@ -1,10 +1,12 @@
 
 // The world famous TPB blobs.
 
-// It was quickly ported from an Xbox 1 project (added some SSE3 though),
+// It was quickly ported from an Xbox 1 project (added some SSE3 though).
 
-// FIXME #1: move all static stuff into class, this practically just supports a single instance.
-// FIXME #2: make sure it adhere's to Node protocol (use Tick() properly, fix visibility check et cetera).
+// FIXME:
+// 1. Move all static junk into class, this way we practically support a single instance only.
+// 2. Adhere to Node/World protocol (use Tick()) properly, visibility, transformation et cetera).
+// 3. Remove hacks :)
 
 // Until then most parameters (except ball position) can be modified in this file, a little below.
 // Do remember that some should remain static for speed reasons.
@@ -92,13 +94,16 @@ Metaballs::Metaballs(World *ownerWorld) :
 	m_pVB(nullptr), m_pIB(nullptr), m_inputLayout(nullptr),
 	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
 	effectTechnique(&effect, "Blobs"),
-	effectPass(&effectTechnique, "Default")
+	effectPass(&effectTechnique, "Default"),
+	worldTrans(new Xform(nullptr))
 {
 	SetType(ET_Metaballs);
 }
 
 Metaballs::~Metaballs()
 {
+	delete worldTrans;
+
 	if (nullptr != m_pVB) m_pVB->Release();
 	if (nullptr != m_pIB) m_pIB->Release();
 	if (nullptr != m_inputLayout) m_inputLayout->Release();
@@ -140,12 +145,14 @@ bool Metaballs::Initialize()
 
 	delete [] signature;
 
-	// fix up shader variables
+	// Get shader constant indices.
 	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
-	const Vector2& visible_area = gD3D->GetRenderScale();
+	const Vector2& visible_area = gD3D->GetRenderScale(); // Fixed
 	effect.SetVariableValue(varIndexRenderScale, visible_area);
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
+	varIndexWorldMatrix = effect.RegisterVariable("mWorld", true);
+	varIndexWorldMatrixInv = effect.RegisterVariable("mWorldInv", true);
 
 	return true;
 }
@@ -265,11 +272,20 @@ void Metaballs::Draw(Camera* camera)
 	// Set shader vars.
 	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
 	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
+	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
+	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
 	effectPass.Apply();
+
+	// * A transpose serves just as well for an orthogonal matrix.
 
 	// Kick off.
 	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
 	gD3D->DrawIndexedTriList(s_genNumFaces);
+}
+
+void Metaballs::SetRotation(const Quaternion &rotation)
+{
+	worldTrans->SetRotation(rotation);
 }
 
 __forceinline unsigned int Metaballs::GetEdgeTableIndex()

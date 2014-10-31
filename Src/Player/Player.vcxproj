@@ -96,7 +96,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <StackReserveSize>1024*1024*4</StackReserveSize>
+      <StackReserveSize>4194304</StackReserveSize>
       <StackCommitSize>65536</StackCommitSize>
     </Link>
     <ProjectReference>
@@ -127,7 +127,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <StackReserveSize>1024*1024*4</StackReserveSize>
+      <StackReserveSize>4194304</StackReserveSize>
       <StackCommitSize>65536</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>

@@ -53,9 +53,9 @@ public:
 	{
 		BindSceneMaterial(shaftMat);		
 		
-		rotation0Param = AddMaterialParamWithXform("testBallXformInv0");
-		rotation1Param = AddMaterialParamWithXform("testBallXformInv1");
-		rotation2Param = AddMaterialParamWithXform("testBallXformInv2");
+		rotation0Param = AddMaterialParamWithXform("testBallXformInv0", true);
+		rotation1Param = AddMaterialParamWithXform("testBallXformInv1", true);
+		rotation2Param = AddMaterialParamWithXform("testBallXformInv2", true);
 	}
 
 	void Tick(double row)

@@ -215,14 +215,19 @@ protected:
 		}
 	}
 
-	// Helper to bind a material parameter to Xform and add it to the world.
-	Pimp::MaterialParameter* AddMaterialParamWithXform(const char* name)
+	// Helper to bind a material parameter to Xform (regular or inverse) and add it to the world.
+	static Pimp::MaterialParameter* AddMaterialParamWithXform(const char* name, bool inverse)
 	{
 		Pimp::Xform* xform = new Pimp::Xform(gWorld);
 		
 		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(gWorld);
 		gWorld->GetElements().Add(param);
-		param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
+		
+		if (true ==  inverse)
+			param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
+		else
+			param->SetValueType(Pimp::MaterialParameter::VT_NodeXform);
+
 		param->SetName(name);
 
 		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
