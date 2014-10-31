@@ -42,9 +42,9 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\6\\shafts_noise.png", true, NULL);
-		Assets::AddTexture2D("textures\\6\\shafts_rock.png", true, NULL);
-		Assets::AddTexture2D("textures\\6\\shafts_room.png", true, NULL);
+		Assets::AddTexture2D("textures\\shafts\\shafts_noise.png", true, NULL);
+		Assets::AddTexture2D("textures\\shafts\\shafts_rock.png", true, NULL);
+		Assets::AddTexture2D("textures\\shafts\\shafts_room.png", true, NULL);
 
 		Assets::AddMaterial("shaders\\Scene_Shafts.fx", &shaftMat);
 	}
