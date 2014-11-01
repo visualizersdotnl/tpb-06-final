@@ -5,6 +5,9 @@ class Blobs2 : public Scene
 {
 private:
 	Pimp::Texture2D *bgTile;
+	Pimp::Texture2D *toy[8];
+	
+	const sync_track *st_toy;
 
 public:
 	Blobs2()
@@ -17,11 +20,20 @@ public:
 
 	void ReqRocketTracks()
 	{
+		s_syncTracks.push_back(SyncTrack("toypusher", false, &st_toy));
 	}
 
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\bgtiles\\tile-00-yellow.png", &bgTile);
+		Assets::AddTexture2D("textures\\toypusher\\1.png", &toy[0]);
+		Assets::AddTexture2D("textures\\toypusher\\1b.png", &toy[1]);
+		Assets::AddTexture2D("textures\\toypusher\\2.png", &toy[2]);
+		Assets::AddTexture2D("textures\\toypusher\\2b.png", &toy[3]);
+		Assets::AddTexture2D("textures\\toypusher\\3.png", &toy[4]);
+		Assets::AddTexture2D("textures\\toypusher\\3b.png", &toy[5]);
+		Assets::AddTexture2D("textures\\toypusher\\4.png", &toy[6]);
+		Assets::AddTexture2D("textures\\toypusher\\4b.png", &toy[7]);
 	}
 
 	void BindToWorld()
@@ -40,8 +52,31 @@ public:
 			-1, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f), 
-			Vector2(4.f*kTileMul, 4.f),
-			Vector2(time*0.1f, time));
+			Vector2(3.f*kTileMul, 3.f),
+			Vector2(time*0.3f, time));
+
+		// Toypusher stuff
+		const float toySync = (float) sync_get_val(st_toy, row);
+		const float kToyZ = 1.f;
+		const float kToySpacing = 128.f;
+		const float kToyOffsY = (1080.f-(8.f*kToySpacing))/2.f;
+
+		for (int iToy = 0; iToy < 8; ++ iToy)
+		{
+			if (toySync >= (float) iToy)
+			{
+				const float iToy1 = 1.f + iToy;
+				float alpha = (toySync >= iToy1) ? 1.f : toySync-iToy;
+				float rotZ = 0.25f-(alpha*0.25f);
+				s_sprites->AddSprite(
+					toy[iToy], 
+					Pimp::D3D::BlendMode::BM_AlphaBlend,
+					Vector2(125.f, kToyOffsY + kToySpacing*iToy), 
+					kToyZ,
+					alpha,
+					rotZ);
+			}
+		}
 
 		// FIXME: parametrize w/Rocket
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
@@ -60,6 +95,6 @@ public:
 		}
 
 		// Generate geometry (triggers visibility).
-		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
+		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 170.f);
 	}
 };
