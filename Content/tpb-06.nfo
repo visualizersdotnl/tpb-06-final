@@ -1,25 +1,57 @@
 
-yes, it's here: TPB-06
-it's been a lousy 11 years since tpb-06 but we're back
-we're in cahoots with Inque these days
+TPB-06: Excessination
+
+A deal was made spring 2014 in Cologne, Germany between two men,
+at least one an avid reader of the Art of Manliness.
+
+Getting started after 11(?) years of doing almost jack shit was hard,
+and the result is not what I had in mind. But is it ever?
+
+We're a little bit in cahoots with Inque these days.
+Saved our day and then some.
 
 
--- programming
-glow & superplek
+** System req. **
 
--- art/direction
-shifter
+64-bit Windows.
+Semi-modern CPU and a fashionable GPU.
+Something that spits out audio.
 
--- music
-okkie & punqtured (2014 edit)
+Demo will automatically adapt to your current output slash desktop
+resolution and adjust accordingly (aspect ratio), but you'll be well
+advised to use something near 16:9.
+
+The party version has a severe lack of D3D error checking and soforth
+because this was buit upon a size-optimized 64KB system, but we'll fix
+that in the final. If you run into any trouble, e-mail me (ndewit@gmail.com)
+with your specifications if you can be bothered.
 
 
-there's only a 64 bit windows build
-we require a semi-hefty video card
+** Organizers **
+
+Set your beamer to 720p and rock and roll.
 
 
+** Credits **
 
-have fun.
-see ya next year.
+Programming:
+  Superplek & Glow
 
-// plek, out
+2D:
+  Shifter
+
+Soundtrack:
+  Guy Sybian & Punqtured (2014 edit)
+
+Rocket editing a.k.a synchronisation:
+  All of us.
+
+
+We use Rocket by Kusma & Skrebbel and BASS by Ian Luck.
+
+Thank you and if I have a stroke and get run over by a car, I might
+just try this one more time.
+
+
+Thank you,
+  Superplek/Bypass
