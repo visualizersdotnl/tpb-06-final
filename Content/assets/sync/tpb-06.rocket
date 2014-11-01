@@ -7,6 +7,7 @@
 			<key value="3" interpolation="0" row="2568"/>
 			<key value="5" interpolation="0" row="3584"/>
 			<key value="2" interpolation="0" row="4064"/>
+			<key value="7" interpolation="0" row="5120"/>
 		</track>
 		<track name="g_fxTime">
 			<key value="0" interpolation="0" row="0"/>
@@ -21,6 +22,8 @@
 			<key value="0" interpolation="0" row="4064"/>
 			<key value="0" interpolation="1" row="4096"/>
 			<key value="45" interpolation="0" row="5119"/>
+			<key value="0" interpolation="1" row="5120"/>
+			<key value="50" interpolation="0" row="5648"/>
 		</track>
 		<track name="knotTubeRadius1">
 			<key value="0" interpolation="0" row="0"/>

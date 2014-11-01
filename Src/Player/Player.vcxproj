@@ -195,6 +195,7 @@
     <ClInclude Include="Content\Demo.h" />
     <ClInclude Include="Content\GeneralCinema.h" />
     <ClInclude Include="Content\Knot.h" />
+    <ClInclude Include="Content\Pompom.h" />
     <ClInclude Include="Content\Ribbons.h" />
     <ClInclude Include="Content\Ribbons2.h" />
     <ClInclude Include="Content\Shafts.h" />
@@ -243,6 +244,11 @@
     <Text Include="Content\Scratchpad.txt" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Pompom.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons2.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Design|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

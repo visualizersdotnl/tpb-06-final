@@ -258,14 +258,14 @@ protected:
 #include "Knot.h"
 #include "GeneralCinema.h"
 #include "Shafts.h"
+#include "Ribbons2.h"
+#include "Pompom.h"
 
-// They belong.
+// Shared statics.
 static const unsigned int kNumMetaball4s = 14;
 static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
 #include "Blobs.h"
 #include "Blobs2.h"
-
-#include "Ribbons2.h"
 
 //
 // Asset root directory.
@@ -281,12 +281,9 @@ const std::string GetAssetsPath()
 // World generator & resource release.
 //
 
-// @plek: Hack to scale shit in shaders.
-// Pimp::MaterialParameter *hackResX, *hackResY;
-
 static std::vector<Demo::Scene *> s_scenes;
 
-#define NUM_SCENES 7
+#define NUM_SCENES 8
 #define SCENE_BONDTRO 0
 #define SCENE_RIBBONS1 1
 #define SCENE_GENCINEMA 2
@@ -294,6 +291,7 @@ static std::vector<Demo::Scene *> s_scenes;
 #define SCENE_BLOBS 4 
 #define SCENE_BLOBS2 5
 #define SCENE_RIBBONS2 6
+#define SCENE_POMPOM 7
 // #define SCENE_KNOTS
 
 bool GenerateWorld(const char *rocketClient)
@@ -338,6 +336,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes[SCENE_BLOBS] = new Blobs();
 	s_scenes[SCENE_BLOBS2] = new Blobs2();
 	s_scenes[SCENE_RIBBONS2] = new Ribbons2();
+	s_scenes[SCENE_POMPOM] = new Pompom();
 
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)
@@ -408,18 +407,6 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
-
-#if 0
-	// @plek: Sometimes comes in handy when ripping Shadertoy stuff.
-	hackResX = new Pimp::MaterialParameter(gWorld);
-	hackResX->SetValueType(Pimp::MaterialParameter::VT_Value);
-	hackResX->SetName("screenResX");
-	hackResY = new Pimp::MaterialParameter(gWorld);
-	hackResY->SetValueType(Pimp::MaterialParameter::VT_Value);
-	hackResY->SetName("screenResY");
-	gWorld->GetElements().Add(hackResX);
-	gWorld->GetElements().Add(hackResY);
-#endif
 	
 	// Finish up some World business.
 	gWorld->InitAllBalls();
@@ -478,12 +465,6 @@ bool Tick(Pimp::Camera *camOverride)
 	// Update tracks.
 	for (SyncTrack &syncTrack : s_syncTracks)
 		syncTrack.Update(rocketRow);
-
-	// @plek: Update hack param..
-//	int xRes, yRes;
-//	Pimp::gD3D->GetViewportSize(&xRes, &yRes);
-//	hackResX->SetValue((float) xRes);
-//	hackResY->SetValue((float) yRes);
 
 	// update default camera
 	const float defCamTrans_X = (float) sync_get_val(st_defTransX, rocketRow);

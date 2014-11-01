@@ -46,7 +46,7 @@ PSOutput MainPS(VSOutput input)
 	PSOutput result;
 
 	float4 screenPos = input.screenPos;
-	result.color = float4(0.f, 0.f, 0.f, 0.f);
+	result.color = float4(1.f, 1.f, 0.f, 1.f);
 
     return result;
 }

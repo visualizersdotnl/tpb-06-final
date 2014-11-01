@@ -79,7 +79,7 @@ public:
 		}
 
 		// FIXME: parametrize w/Rocket
-		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
+		Quaternion rotation = CreateQuaternionFromYawPitchRoll(-time*0.6f, time*0.7f, time*0.5f);
 		s_pMetaballs->SetRotation(rotation);
 
 		// FIXME: make it look interesting (attractors?)

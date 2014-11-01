@@ -19,6 +19,9 @@
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Empty.fx">
       <Filter>/Content\/Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Pompom.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stub.cpp" />
@@ -124,6 +127,9 @@
       <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs2.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Pompom.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
   </ItemGroup>
