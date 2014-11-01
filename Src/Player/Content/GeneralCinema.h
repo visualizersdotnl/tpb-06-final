@@ -41,34 +41,35 @@ public:
 		const float kReelZ = 2.f;
 		const float kScrollZ = 3.f;
 
-		const float yOffs = -50.f;
-		const float reelX = -3.f;
-
-		const float reelRoto = (float) sync_get_val(st_fxTime, row);
-
 		// "projector"
 		s_sprites->AddSprite(
 				projector,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(100.f, 370.f+yOffs),
+				Vector2(100.f, (1080.f-439.f)*0.5f),
 				kProjectorZ,
-				0.7f,
+				1.f,
 				0.f);
 
-		// reels
+		const float kReelX = 484.f;
+		const float kReelY = (1080.f-439.f)*0.5f;
+		const float kReelYOffs = 35.f;
+
+		const float reelRoto = (float) sync_get_val(st_fxTime, row);
+
+		// reels (rotate quickly in same direction in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(480.f+reelX, 100.f+yOffs),
+				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-kReelYOffs),
 				kProjectorZ,
-				0.7f,
-				reelRoto*2.f);
+				1.f,
+				-reelRoto*2.f);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(480.f+reelX, 650.f+yOffs),
+				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+kReelYOffs+7.f), // @plek: Lower this one a few pixels.
 				kProjectorZ,
-				0.7f,
+				1.f,
 				-reelRoto*2.f);
 	}
 };

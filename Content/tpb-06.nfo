@@ -22,9 +22,11 @@ resolution and adjust accordingly (aspect ratio), but you'll be well
 advised to use something near 16:9.
 
 The party version has a severe lack of D3D error checking and soforth
-because this was buit upon a size-optimized 64KB system, but we'll fix
-that in the final. If you run into any trouble, e-mail me (ndewit@gmail.com)
-with your specifications if you can be bothered.
+because this was built upon a size-optimized 64KB system, but we'll fix
+that in the final. 
+
+If you run into any trouble, e-mail me (ndewit@gmail.com) with your specifications 
+if you can be bothered. Otherwise: http://www.youtube.com
 
 
 ** Organizers **
