@@ -2,6 +2,7 @@
 	<tracks>
 		<track name="g_SceneIndex">
 			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="121"/>
 			<key value="1" interpolation="0" row="768"/>
 			<key value="4" interpolation="0" row="1536"/>
 			<key value="3" interpolation="0" row="2568"/>
@@ -18,6 +19,7 @@
 			<key value="0" interpolation="1" row="2568"/>
 			<key value="130" interpolation="0" row="3583"/>
 			<key value="0" interpolation="1" row="3584"/>
+			<key value="9.5" interpolation="0" row="4032"/>
 			<key value="10" interpolation="0" row="4063"/>
 			<key value="0" interpolation="0" row="4064"/>
 			<key value="0" interpolation="1" row="4096"/>
