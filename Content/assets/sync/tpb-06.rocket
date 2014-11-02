@@ -23,7 +23,7 @@
 			<key value="10" interpolation="0" row="4063"/>
 			<key value="0" interpolation="0" row="4064"/>
 			<key value="0" interpolation="1" row="4096"/>
-			<key value="20" interpolation="0" row="5119"/>
+			<key value="30" interpolation="0" row="5119"/>
 			<key value="0" interpolation="1" row="5120"/>
 			<key value="50" interpolation="0" row="5648"/>
 		</track>
@@ -223,8 +223,7 @@
 			<key value="11.46" interpolation="1" row="3073"/>
 			<key value="20.96" interpolation="1" row="3328"/>
 			<key value="21.43" interpolation="0" row="3583"/>
-			<key value="0.2" interpolation="1" row="3584"/>
-			<key value="-0.3" interpolation="0" row="3648"/>
+			<key value="-0.3" interpolation="0" row="3584"/>
 			<key value="0" interpolation="0" row="4064"/>
 		</track>
 		<track name="g_defTrans_Y">
@@ -242,7 +241,8 @@
 			<key value="-7.03" interpolation="1" row="3073"/>
 			<key value="-2.8" interpolation="1" row="3328"/>
 			<key value="16.08" interpolation="0" row="3583"/>
-			<key value="0" interpolation="0" row="3584"/>
+			<key value="-0.6" interpolation="1" row="3584"/>
+			<key value="0" interpolation="0" row="3608"/>
 			<key value="0" interpolation="0" row="4064"/>
 		</track>
 		<track name="g_defTrans_Z">
@@ -420,7 +420,7 @@
 			<key value="1" interpolation="2" row="3072"/>
 			<key value="0" interpolation="0" row="3085"/>
 			<key value="1" interpolation="3" row="3584"/>
-			<key value="0" interpolation="0" row="3600"/>
+			<key value="0" interpolation="0" row="3608"/>
 			<key value="0" interpolation="2" row="4048"/>
 			<key value="1" interpolation="0" row="4063"/>
 			<key value="1" interpolation="1" row="4064"/>
