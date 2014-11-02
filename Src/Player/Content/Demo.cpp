@@ -263,6 +263,7 @@ protected:
 #include "Shafts.h"
 #include "Ribbons2.h"
 #include "Pompom.h"
+#include "BulletsAndBitches.h"
 
 // Shared statics.
 static const unsigned int kNumMetaball4s = 14;
@@ -286,7 +287,7 @@ const std::string GetAssetsPath()
 
 static std::vector<Demo::Scene *> s_scenes;
 
-#define NUM_SCENES 8
+#define NUM_SCENES 9
 #define SCENE_BONDTRO 0
 #define SCENE_RIBBONS1 1
 #define SCENE_GENCINEMA 2
@@ -295,6 +296,7 @@ static std::vector<Demo::Scene *> s_scenes;
 #define SCENE_BLOBS2 5
 #define SCENE_RIBBONS2 6
 #define SCENE_POMPOM 7
+#define SCENE_BULLESANDBITCHES 8
 // #define SCENE_KNOTS
 
 bool GenerateWorld(const char *rocketClient)
@@ -340,6 +342,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes[SCENE_BLOBS2] = new Blobs2();
 	s_scenes[SCENE_RIBBONS2] = new Ribbons2();
 	s_scenes[SCENE_POMPOM] = new Pompom();
+	s_scenes[SCENE_BULLESANDBITCHES] = new BulletsAndBitches();
 
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)

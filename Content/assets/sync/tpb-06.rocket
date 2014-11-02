@@ -9,6 +9,7 @@
 			<key value="5" interpolation="0" row="3584"/>
 			<key value="2" interpolation="0" row="4064"/>
 			<key value="7" interpolation="0" row="5120"/>
+			<key value="8" interpolation="0" row="6136"/>
 		</track>
 		<track name="g_fxTime">
 			<key value="0" interpolation="0" row="0"/>
@@ -398,6 +399,11 @@
 			<key value="0" interpolation="1" row="4082"/>
 			<key value="1" interpolation="1" row="4088"/>
 			<key value="0" interpolation="0" row="4099"/>
+			<key value="1" interpolation="1" row="6136"/>
+			<key value="0" interpolation="0" row="6150"/>
+			<key value="0" interpolation="1" row="6512"/>
+			<key value="1" interpolation="3" row="6528"/>
+			<key value="0" interpolation="0" row="6536"/>
 		</track>
 		<track name="g_postFade">
 			<key value="0" interpolation="0" row="0"/>
@@ -425,6 +431,9 @@
 			<key value="1" interpolation="0" row="4063"/>
 			<key value="1" interpolation="1" row="4064"/>
 			<key value="0" interpolation="0" row="4088"/>
+			<key value="0" interpolation="1" row="6120"/>
+			<key value="1" interpolation="0" row="6135"/>
+			<key value="0" interpolation="0" row="6136"/>
 		</track>
 		<track name="toypusher">
 			<key value="0" interpolation="1" row="3584"/>
@@ -453,9 +462,10 @@
 		<track name="g_sceneNoiseT">
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="1" row="4096"/>
-			<key value="10" interpolation="0" row="5119"/>
+			<key value="0.2" interpolation="0" row="5119"/>
 			<key value="0" interpolation="0" row="5120"/>
 		</track>
+		<track name="bitchBullets"/>
 	</tracks>
 	<bookmarks/>
 </sync>
