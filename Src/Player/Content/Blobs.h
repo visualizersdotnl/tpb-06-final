@@ -5,6 +5,7 @@ class Blobs : public Scene
 {
 private:
 	Pimp::Texture2D *bgTile;
+	Pimp::Texture2D *envMap, *projMap;
 
 public:
 	Blobs()
@@ -21,7 +22,9 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\bgtiles\\tile-00.png", &bgTile);
+		Assets::AddTexture2D("textures\\creds\\tile-00.png", &bgTile);
+		Assets::AddTexture2D("textures\\creds\\envmap.png", &envMap);
+		Assets::AddTexture2D("textures\\creds\\projmap.png", &projMap);
 	}
 
 	void BindToWorld()
@@ -31,6 +34,8 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
+
+		float time = (float) sync_get_val(st_fxTime, row);
 		
 		s_sprites->AddBackgroundSprite(
 			bgTile, 
@@ -38,9 +43,8 @@ public:
 			-1, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f), 
-			Vector2(1.f*kTileMul, 1.f));
-
-		float time = (float) sync_get_val(st_fxTime, row);
+			Vector2(3.f*kTileMul, 3.f),
+			Vector2(-time*0.4f, -time));
 
 		// FIXME: parametrize w/Rocket
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
@@ -60,5 +64,8 @@ public:
 
 		// Generate geometry (triggers visibility).
 		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
+		
+		// Set maps.
+		s_pMetaballs->SetMaps(envMap, projMap);
 	}
 };

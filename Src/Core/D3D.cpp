@@ -190,6 +190,19 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	memset(subDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
 	device->CreateBlendState(&subDesc, &blendStates[BM_Subtractive]);
 
+	D3D10_BLEND_DESC alphaMaskDesc;
+	alphaMaskDesc.AlphaToCoverageEnable = FALSE;
+	alphaMaskDesc.BlendEnable[0] = TRUE;
+	memset(alphaMaskDesc.BlendEnable+1, FALSE, 7*sizeof(BOOL));
+	alphaMaskDesc.SrcBlend = D3D10_BLEND_ZERO;
+	alphaMaskDesc.DestBlend = D3D10_BLEND_SRC_ALPHA;
+	alphaMaskDesc.BlendOp = D3D10_BLEND_OP_ADD;
+	alphaMaskDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
+	alphaMaskDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
+	alphaMaskDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+	memset(alphaMaskDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
+    device->CreateBlendState(&alphaMaskDesc, &blendStates[BM_AlphaMask]);
+
 	// create default (white) texture
 	{
 		D3D10_TEXTURE2D_DESC texDesc;

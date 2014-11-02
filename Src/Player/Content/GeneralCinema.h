@@ -38,7 +38,7 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 
-		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);
+		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
 
 	void BindToWorld()

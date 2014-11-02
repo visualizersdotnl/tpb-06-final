@@ -31,8 +31,10 @@ cbuffer paramsOnlyOnce
 
 	float opacity = 1;
 
-	// This is bound to a Rocket track!	
-	float fadeInOut; // 0 = normal, 1 = white, -100 = real black!
+	// These are bound to a Rocket tracks.
+	float g_preSpriteFade; // 0 = normal, 1 = white, -100 = real black!
+	float g_sceneNoise; // 0 = none, 1 = full (before fade)
+	float g_sceneNoiseT;
 };
 
 
@@ -54,8 +56,10 @@ SamplerState samplerSceneBuffer
 	Filter = MIN_MAG_LINEAR_MIP_POINT;
 };
 
-
-
+// Noise function
+float rand(float2 co){
+    return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453);
+}
 
 PSOutput MainPS(VSOutput input)
 {
@@ -66,7 +70,8 @@ PSOutput MainPS(VSOutput input)
 	float2 screenUV = input.normalizedPos*float2(0.5, -0.5) + (0.5).xx;
 
 	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, screenUV, 0);
-	result.color.xyz += fadeInOut.xxx;
+	result.color.xyz += rand(screenUV+g_sceneNoiseT.xx)*g_sceneNoise;
+	result.color.xyz += g_preSpriteFade.xxx;
 
 	return result;
 }

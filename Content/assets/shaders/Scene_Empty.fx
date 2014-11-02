@@ -44,10 +44,7 @@ SamplerState samplerTexture
 PSOutput MainPS(VSOutput input)
 {
 	PSOutput result;
-
-	float4 screenPos = input.screenPos;
 	result.color = float4(0.f, 0.f, 0.f, 0.f);
-
     return result;
 }
 

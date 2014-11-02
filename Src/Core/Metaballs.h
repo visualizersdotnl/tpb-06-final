@@ -28,6 +28,7 @@ namespace Pimp
 		void Draw(Camera* camera);
 		
 		void SetRotation(const Quaternion &rotation);
+		void SetMaps(Texture2D *envMap, Texture2D *projMap);
 
 	private:
 		ID3D10Buffer *pVB, *pIB;
@@ -38,13 +39,17 @@ namespace Pimp
 		EffectPass effectPass;
 
 		int varIndexTextureMap;
+		int varIndexProjMap;
 		int varIndexViewProjMatrix;
+		int varIndexProjMat;
 		int varIndexWorldMatrix;
 		int varIndexWorldMatrixInv;
 
 		bool isVisible;
 
 		Xform *worldTrans; 
+
+		Texture2D *envMap, *projMap;
 
 		__forceinline unsigned int GetEdgeTableIndex();
 		float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ);
