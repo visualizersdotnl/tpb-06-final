@@ -22,6 +22,9 @@
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Pompom.fx">
       <Filter>/Content\/Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Tentacle.fx">
+      <Filter>/Content\/Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stub.cpp" />
