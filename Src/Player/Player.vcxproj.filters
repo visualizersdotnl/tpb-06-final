@@ -132,6 +132,9 @@
     <ClInclude Include="Content\Pompom.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="Content\BulletsAndBitches.h">
+      <Filter>/Content\Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">

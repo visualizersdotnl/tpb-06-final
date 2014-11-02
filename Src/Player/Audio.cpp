@@ -9,6 +9,7 @@
 #include "Demo.h" // for asset path
 
 static HSTREAM s_hMP3[3] = { 0 };
+static HFX s_hFX = 0;
 
 bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, bool mute)
 {
@@ -54,7 +55,9 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 	int iMP3 = 0;
 	for (const std::string &path : MP3s)
 	{
-		const DWORD streamFlags = BASS_MP3_SETPOS | BASS_STREAM_PRESCAN | ( (0 == iDevice) ? BASS_STREAM_DECODE : 0 );
+		DWORD streamFlags = BASS_SAMPLE_FX | BASS_MP3_SETPOS | BASS_STREAM_PRESCAN;
+		if (0 != iMP3) streamFlags |= (0 == iDevice) ? BASS_STREAM_DECODE : 0; // Decode disables FX.
+//		const DWORD streamFlags = BASS_SAMPLE_FX | BASS_MP3_SETPOS | BASS_STREAM_PRESCAN | ( (0 == iDevice) ? BASS_STREAM_DECODE : 0 );
 		HSTREAM hMP3 = BASS_StreamCreateFile(FALSE, path.c_str(), 0, 0, streamFlags /* BASS_UNICODE */);
 		if (hMP3 == NULL)
 		{
@@ -81,7 +84,30 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 		s_hMP3[iMP3++] = hMP3;
 	}
 
-	// soundtrack must loop for Rocket
+	s_hFX = BASS_ChannelSetFX(s_hMP3[0], BASS_FX_DX8_FLANGER, 1);
+	if (0 == s_hFX)
+	{
+		SetLastError("Can't enable DirectX 8.x sound effect on our MP3 through BASS.");
+		return false;
+	}
+
+	BASS_DX8_FLANGER fxParams;
+	fxParams.fWetDryMix = 0.f; // 0 = silent, 100 = wet
+	fxParams.fDepth = 100.f;
+	fxParams.fFeedback = -	50.f;
+	fxParams.fFrequency = 0.25f; // upwards of 6 is cool
+	fxParams.lWaveform = 1; // Sine
+	fxParams.fDelay = 2.f;
+	fxParams.lPhase = BASS_DX8_PHASE_ZERO;
+
+	if (FALSE == BASS_FXSetParameters(s_hFX, &fxParams))
+	{
+		int errCode = BASS_ErrorGetCode();
+		ASSERT(0);
+	}
+
+
+	// soundtrack must loop for Rocket (well not really, but it's convenient in editing)
 	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
 
 	if (true == mute)
@@ -144,4 +170,22 @@ float Audio_GetPosition()
 	const QWORD chanPos = BASS_ChannelGetPosition(s_hMP3[0], BASS_POS_BYTE);
 	const double secPos = BASS_ChannelBytes2Seconds(s_hMP3[0], chanPos);
 	return (float) secPos;
+}
+
+void Audio_FlangerMP3(float wetDry, float freqMod)
+{
+	BASS_DX8_FLANGER fxParams;
+	fxParams.fWetDryMix = 0.f;
+	fxParams.fDepth = 100.f;
+	fxParams.fFeedback = -50.f;
+	fxParams.fFrequency = 0.25f;
+	fxParams.lWaveform = 1; // Sine
+	fxParams.fDelay = 2.f;
+	fxParams.lPhase = BASS_DX8_PHASE_ZERO;
+
+	if (FALSE == BASS_FXSetParameters(s_hFX, &fxParams))
+	{
+		int errCode = BASS_ErrorGetCode();
+		ASSERT(0);
+	}
 }

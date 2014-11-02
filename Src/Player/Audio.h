@@ -20,3 +20,6 @@ float Audio_GetPosition();
 // for Bond intro
 void Audio_Gunshot();
 void Audio_Shelldrop();
+
+// for end
+void Audio_FlangerMP3(float wetDry, float freqMod); // freqMod 0.25 is normal, 6 to 8 is fucked up
