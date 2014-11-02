@@ -1,0 +1,449 @@
+<sync rows="8192">
+	<tracks>
+		<track name="g_SceneIndex">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="121"/>
+			<key value="1" interpolation="0" row="768"/>
+			<key value="4" interpolation="0" row="1536"/>
+			<key value="3" interpolation="0" row="2568"/>
+			<key value="5" interpolation="0" row="3584"/>
+			<key value="2" interpolation="0" row="4064"/>
+			<key value="7" interpolation="0" row="5120"/>
+		</track>
+		<track name="g_fxTime">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="768"/>
+			<key value="100" interpolation="0" row="1535"/>
+			<key value="0" interpolation="1" row="1536"/>
+			<key value="24" interpolation="0" row="2567"/>
+			<key value="0" interpolation="1" row="2568"/>
+			<key value="130" interpolation="0" row="3583"/>
+			<key value="0" interpolation="1" row="3584"/>
+			<key value="9.5" interpolation="0" row="4032"/>
+			<key value="10" interpolation="0" row="4063"/>
+			<key value="0" interpolation="0" row="4064"/>
+			<key value="0" interpolation="1" row="4096"/>
+			<key value="20" interpolation="0" row="5119"/>
+			<key value="0" interpolation="1" row="5120"/>
+			<key value="50" interpolation="0" row="5648"/>
+		</track>
+		<track name="knotTubeRadius1">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="knotTubeRadius2">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="knotTubeRadius3">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="bondBlob1">
+			<key value="-106" interpolation="1" row="0"/>
+			<key value="907" interpolation="0" row="128"/>
+			<key value="907" interpolation="1" row="256"/>
+			<key value="1387" interpolation="0" row="320"/>
+		</track>
+		<track name="bondBlobFade1">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="3" row="323"/>
+			<key value="1" interpolation="0" row="333"/>
+		</track>
+		<track name="bondBlob2">
+			<key value="-106" interpolation="3" row="0"/>
+			<key value="20" interpolation="0" row="16"/>
+			<key value="270" interpolation="0" row="48"/>
+			<key value="510" interpolation="0" row="80"/>
+			<key value="750" interpolation="0" row="112"/>
+			<key value="907" interpolation="0" row="144"/>
+			<key value="1024" interpolation="0" row="272"/>
+			<key value="1260" interpolation="0" row="304"/>
+		</track>
+		<track name="bondBlobFade2">
+			<key value="1" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="16"/>
+			<key value="0" interpolation="3" row="24"/>
+			<key value="1" interpolation="0" row="36"/>
+			<key value="0" interpolation="0" row="48"/>
+			<key value="0" interpolation="3" row="56"/>
+			<key value="1" interpolation="0" row="68"/>
+			<key value="0" interpolation="0" row="80"/>
+			<key value="0" interpolation="3" row="88"/>
+			<key value="1" interpolation="0" row="100"/>
+			<key value="0" interpolation="0" row="112"/>
+			<key value="0" interpolation="3" row="120"/>
+			<key value="1" interpolation="0" row="132"/>
+			<key value="0" interpolation="0" row="272"/>
+			<key value="0" interpolation="3" row="280"/>
+			<key value="1" interpolation="0" row="292"/>
+			<key value="0" interpolation="0" row="304"/>
+			<key value="0" interpolation="3" row="312"/>
+			<key value="1" interpolation="0" row="324"/>
+		</track>
+		<track name="bondFadeTPB">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="152"/>
+			<key value="1" interpolation="1" row="208"/>
+			<key value="1" interpolation="2" row="224"/>
+			<key value="0" interpolation="0" row="240"/>
+		</track>
+		<track name="bondAmpFade">
+			<key value="1" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="156"/>
+			<key value="0" interpolation="1" row="208"/>
+			<key value="0" interpolation="2" row="224"/>
+			<key value="1" interpolation="0" row="240"/>
+		</track>
+		<track name="bondFadeINQ">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="160"/>
+			<key value="1" interpolation="1" row="208"/>
+			<key value="1" interpolation="2" row="224"/>
+			<key value="0" interpolation="0" row="240"/>
+		</track>
+		<track name="bondPresFade">
+			<key value="1" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="164"/>
+			<key value="0" interpolation="1" row="208"/>
+			<key value="0" interpolation="2" row="224"/>
+			<key value="1" interpolation="0" row="240"/>
+		</track>
+		<track name="bondWhite">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="2" row="312"/>
+			<key value="1" interpolation="0" row="344"/>
+			<key value="0" interpolation="1" row="369"/>
+			<key value="1" interpolation="0" row="376"/>
+			<key value="0" interpolation="1" row="381"/>
+			<key value="1" interpolation="0" row="392"/>
+			<key value="0.2" interpolation="2" row="404"/>
+			<key value="1" interpolation="0" row="419"/>
+		</track>
+		<track name="bondTarget">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="2" row="336"/>
+			<key value="1" interpolation="0" row="352"/>
+		</track>
+		<track name="bondSoundFX">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="0" row="369"/>
+			<key value="2" interpolation="0" row="381"/>
+			<key value="3" interpolation="0" row="404"/>
+			<key value="4" interpolation="0" row="419"/>
+		</track>
+		<track name="bondPimpFade">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="508"/>
+			<key value="1" interpolation="0" row="520"/>
+			<key value="0" interpolation="0" row="768"/>
+		</track>
+		<track name="g_preSpriteFade">
+			<key value="0" interpolation="0" row="0"/>
+		</track>
+		<track name="g_defRotQuat_X">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.07" interpolation="1" row="768"/>
+			<key value="0.02" interpolation="1" row="1024"/>
+			<key value="-0.11" interpolation="1" row="1280"/>
+			<key value="-0.21" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="-0.25" interpolation="1" row="2568"/>
+			<key value="-0.17" interpolation="1" row="2816"/>
+			<key value="-0.38" interpolation="1" row="2817"/>
+			<key value="-0.43" interpolation="0" row="3072"/>
+			<key value="0.13" interpolation="2" row="3073"/>
+			<key value="0.21" interpolation="2" row="3328"/>
+			<key value="0.04" interpolation="0" row="3583"/>
+			<key value="0" interpolation="0" row="3584"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defRotQuat_y">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.05" interpolation="1" row="768"/>
+			<key value="-0.09" interpolation="1" row="1024"/>
+			<key value="-0.13" interpolation="1" row="1280"/>
+			<key value="-0.25" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="-0.11" interpolation="1" row="2568"/>
+			<key value="0.32" interpolation="1" row="2816"/>
+			<key value="-0.14" interpolation="1" row="2817"/>
+			<key value="0.46" interpolation="0" row="3072"/>
+			<key value="0.3" interpolation="2" row="3073"/>
+			<key value="0.53" interpolation="2" row="3328"/>
+			<key value="0.74" interpolation="0" row="3583"/>
+			<key value="0" interpolation="0" row="3584"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defRotQuat_Z">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.67" interpolation="1" row="768"/>
+			<key value="0.72" interpolation="1" row="1024"/>
+			<key value="0.75" interpolation="1" row="1280"/>
+			<key value="0.57" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="-0.12" interpolation="1" row="2568"/>
+			<key value="-0.04" interpolation="1" row="2816"/>
+			<key value="0.19" interpolation="1" row="2817"/>
+			<key value="0.05" interpolation="0" row="3072"/>
+			<key value="0.11" interpolation="2" row="3073"/>
+			<key value="0.24" interpolation="2" row="3328"/>
+			<key value="0.46" interpolation="0" row="3583"/>
+			<key value="0" interpolation="0" row="3584"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defRotQuat_W">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.74" interpolation="1" row="768"/>
+			<key value="0.7" interpolation="1" row="1024"/>
+			<key value="0.66" interpolation="1" row="1280"/>
+			<key value="0.77" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="0.95" interpolation="1" row="2568"/>
+			<key value="0.93" interpolation="1" row="2816"/>
+			<key value="0.89" interpolation="1" row="2817"/>
+			<key value="0.77" interpolation="0" row="3072"/>
+			<key value="0.92" interpolation="2" row="3073"/>
+			<key value="0.76" interpolation="2" row="3328"/>
+			<key value="0.44" interpolation="0" row="3583"/>
+			<key value="0" interpolation="0" row="3584"/>
+			<key value="1" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defTrans_X">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="-0.16" interpolation="1" row="768"/>
+			<key value="-0.62" interpolation="1" row="1024"/>
+			<key value="-1.86" interpolation="1" row="1280"/>
+			<key value="-2.53" interpolation="0" row="1535"/>
+			<key value="0" interpolation="2" row="1536"/>
+			<key value="0.7" interpolation="0" row="1552"/>
+			<key value="0.9" interpolation="1" row="2048"/>
+			<key value="0.7" interpolation="0" row="2064"/>
+			<key value="-8.31" interpolation="1" row="2568"/>
+			<key value="11.25" interpolation="1" row="2816"/>
+			<key value="-13.79" interpolation="1" row="2817"/>
+			<key value="12.82" interpolation="0" row="3072"/>
+			<key value="11.46" interpolation="1" row="3073"/>
+			<key value="20.96" interpolation="1" row="3328"/>
+			<key value="21.43" interpolation="0" row="3583"/>
+			<key value="0.2" interpolation="1" row="3584"/>
+			<key value="-0.3" interpolation="0" row="3648"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defTrans_Y">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.08" interpolation="1" row="768"/>
+			<key value="20" interpolation="1" row="1024"/>
+			<key value="40" interpolation="1" row="1280"/>
+			<key value="60" interpolation="0" row="1535"/>
+			<key value="-0.1" interpolation="1" row="1536"/>
+			<key value="0" interpolation="0" row="1552"/>
+			<key value="15.72" interpolation="1" row="2568"/>
+			<key value="6.15" interpolation="1" row="2816"/>
+			<key value="20.23" interpolation="1" row="2817"/>
+			<key value="19.7" interpolation="0" row="3072"/>
+			<key value="-7.03" interpolation="1" row="3073"/>
+			<key value="-2.8" interpolation="1" row="3328"/>
+			<key value="16.08" interpolation="0" row="3583"/>
+			<key value="0" interpolation="0" row="3584"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="g_defTrans_Z">
+			<key value="4" interpolation="0" row="0"/>
+			<key value="3.02" interpolation="1" row="768"/>
+			<key value="3.53" interpolation="1" row="1024"/>
+			<key value="3.46" interpolation="1" row="1280"/>
+			<key value="3" interpolation="0" row="1535"/>
+			<key value="2.7" interpolation="0" row="1536"/>
+			<key value="23.57" interpolation="1" row="2568"/>
+			<key value="14.44" interpolation="1" row="2816"/>
+			<key value="22.29" interpolation="1" row="2817"/>
+			<key value="10.11" interpolation="0" row="3072"/>
+			<key value="21.67" interpolation="1" row="3073"/>
+			<key value="12.54" interpolation="1" row="3328"/>
+			<key value="-1.95" interpolation="0" row="3583"/>
+			<key value="2.5" interpolation="0" row="3584"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="ribbonsAppear">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0.2" interpolation="1" row="768"/>
+			<key value="1" interpolation="0" row="896"/>
+			<key value="1" interpolation="1" row="1408"/>
+			<key value="0.2" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="ribbonsPhase">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="2" interpolation="0" row="768"/>
+			<key value="3" interpolation="0" row="816"/>
+			<key value="4" interpolation="0" row="832"/>
+			<key value="5" interpolation="0" row="848"/>
+			<key value="6" interpolation="0" row="864"/>
+			<key value="7" interpolation="0" row="880"/>
+			<key value="8" interpolation="0" row="896"/>
+			<key value="9" interpolation="0" row="912"/>
+			<key value="10" interpolation="0" row="928"/>
+			<key value="11" interpolation="0" row="944"/>
+			<key value="12" interpolation="0" row="960"/>
+			<key value="13" interpolation="0" row="976"/>
+			<key value="14" interpolation="0" row="992"/>
+			<key value="15" interpolation="0" row="1008"/>
+			<key value="16" interpolation="0" row="1024"/>
+			<key value="17" interpolation="0" row="1040"/>
+			<key value="18" interpolation="0" row="1056"/>
+			<key value="19" interpolation="0" row="1072"/>
+			<key value="20" interpolation="0" row="1088"/>
+			<key value="21" interpolation="0" row="1104"/>
+			<key value="22" interpolation="0" row="1120"/>
+			<key value="23" interpolation="0" row="1136"/>
+			<key value="24" interpolation="0" row="1152"/>
+			<key value="25" interpolation="0" row="1168"/>
+			<key value="26" interpolation="0" row="1184"/>
+			<key value="27" interpolation="0" row="1200"/>
+			<key value="28" interpolation="0" row="1216"/>
+			<key value="29" interpolation="0" row="1232"/>
+			<key value="30" interpolation="0" row="1248"/>
+			<key value="31" interpolation="0" row="1264"/>
+			<key value="32" interpolation="0" row="1280"/>
+			<key value="33" interpolation="0" row="1296"/>
+			<key value="34" interpolation="0" row="1312"/>
+			<key value="35" interpolation="0" row="1328"/>
+			<key value="36" interpolation="0" row="1344"/>
+			<key value="37" interpolation="0" row="1360"/>
+			<key value="38" interpolation="0" row="1376"/>
+			<key value="39" interpolation="0" row="1392"/>
+			<key value="40" interpolation="0" row="1408"/>
+			<key value="41" interpolation="0" row="1424"/>
+			<key value="42" interpolation="0" row="1440"/>
+			<key value="43" interpolation="0" row="1456"/>
+			<key value="44" interpolation="0" row="1472"/>
+			<key value="45" interpolation="0" row="1488"/>
+			<key value="46" interpolation="0" row="1504"/>
+			<key value="47" interpolation="0" row="1520"/>
+			<key value="48" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="ribbonsWonkyness">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="768"/>
+			<key value="0" interpolation="1" row="1024"/>
+			<key value="1" interpolation="0" row="1280"/>
+			<key value="1" interpolation="1" row="1408"/>
+			<key value="1.5" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="0" interpolation="0" row="4064"/>
+		</track>
+		<track name="shaftsRot0x">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2560"/>
+			<key value="20" interpolation="0" row="3584"/>
+		</track>
+		<track name="shaftsRot0y">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2560"/>
+			<key value="50" interpolation="0" row="3584"/>
+		</track>
+		<track name="shaftsRot0z">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2560"/>
+			<key value="40" interpolation="0" row="3584"/>
+		</track>
+		<track name="shaftsRot1x">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2564"/>
+			<key value="20" interpolation="0" row="3592"/>
+		</track>
+		<track name="shaftsRot1y">
+			<key value="0" interpolation="1" row="2564"/>
+			<key value="50" interpolation="0" row="3592"/>
+		</track>
+		<track name="shaftsRot1z">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2564"/>
+			<key value="40" interpolation="0" row="3592"/>
+		</track>
+		<track name="shaftsRot2x">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2568"/>
+			<key value="20" interpolation="0" row="3600"/>
+		</track>
+		<track name="shaftsRot2y">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2568"/>
+			<key value="50" interpolation="0" row="3600"/>
+		</track>
+		<track name="shaftsRot2z">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="2568"/>
+			<key value="40" interpolation="0" row="3600"/>
+		</track>
+		<track name="shaftsLightAmount">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="0" row="2568"/>
+			<key value="16" interpolation="1" row="3072"/>
+			<key value="8" interpolation="3" row="3080"/>
+			<key value="1" interpolation="0" row="3328"/>
+		</track>
+		<track name="g_postFlash">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="1" interpolation="1" row="1024"/>
+			<key value="0" interpolation="0" row="1040"/>
+			<key value="0.7" interpolation="1" row="1536"/>
+			<key value="0" interpolation="0" row="1556"/>
+			<key value="1" interpolation="2" row="2048"/>
+			<key value="0" interpolation="0" row="2064"/>
+			<key value="0" interpolation="2" row="2792"/>
+			<key value="1" interpolation="0" row="2815"/>
+			<key value="0" interpolation="0" row="2816"/>
+			<key value="0" interpolation="1" row="4082"/>
+			<key value="1" interpolation="1" row="4088"/>
+			<key value="0" interpolation="0" row="4099"/>
+		</track>
+		<track name="g_postFade">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="2" row="753"/>
+			<key value="1" interpolation="0" row="767"/>
+			<key value="1" interpolation="1" row="768"/>
+			<key value="0" interpolation="0" row="776"/>
+			<key value="0" interpolation="2" row="1520"/>
+			<key value="1" interpolation="0" row="1535"/>
+			<key value="0" interpolation="0" row="1536"/>
+			<key value="0" interpolation="1" row="1984"/>
+			<key value="1" interpolation="0" row="2047"/>
+			<key value="0" interpolation="0" row="2048"/>
+			<key value="0" interpolation="3" row="2496"/>
+			<key value="1" interpolation="0" row="2567"/>
+			<key value="1" interpolation="1" row="2568"/>
+			<key value="0" interpolation="0" row="2592"/>
+			<key value="1" interpolation="3" row="2816"/>
+			<key value="0" interpolation="0" row="2832"/>
+			<key value="1" interpolation="2" row="3072"/>
+			<key value="0" interpolation="0" row="3085"/>
+			<key value="1" interpolation="3" row="3584"/>
+			<key value="0" interpolation="0" row="3600"/>
+			<key value="0" interpolation="2" row="4048"/>
+			<key value="1" interpolation="0" row="4063"/>
+			<key value="1" interpolation="1" row="4064"/>
+			<key value="0" interpolation="0" row="4088"/>
+		</track>
+		<track name="toypusher">
+			<key value="0" interpolation="1" row="3584"/>
+			<key value="1" interpolation="1" row="3600"/>
+			<key value="2" interpolation="1" row="3624"/>
+			<key value="3" interpolation="0" row="3640"/>
+			<key value="3" interpolation="1" row="3656"/>
+			<key value="4" interpolation="0" row="3672"/>
+			<key value="4" interpolation="2" row="3688"/>
+			<key value="5" interpolation="0" row="3704"/>
+			<key value="5" interpolation="1" row="3720"/>
+			<key value="6" interpolation="0" row="3744"/>
+			<key value="6" interpolation="2" row="3768"/>
+			<key value="7" interpolation="0" row="3784"/>
+			<key value="7" interpolation="1" row="3816"/>
+			<key value="8" interpolation="0" row="3840"/>
+			<key value="8" interpolation="1" row="4024"/>
+			<key value="0" interpolation="0" row="4047"/>
+		</track>
+	</tracks>
+	<bookmarks/>
+</sync>
