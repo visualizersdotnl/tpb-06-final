@@ -41,7 +41,7 @@ namespace Pimp
 		int varIndexTextureMap;
 		int varIndexProjMap;
 		int varIndexViewProjMatrix;
-		int varIndexViewProjMatrixInv;
+		int varIndexProjMat;
 		int varIndexWorldMatrix;
 		int varIndexWorldMatrixInv;
 

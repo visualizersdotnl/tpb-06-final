@@ -143,7 +143,7 @@ bool Metaballs::Initialize()
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 	varIndexProjMap = effect.RegisterVariable("projMap", true);
 	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
-	varIndexViewProjMatrixInv = effect.RegisterVariable("viewProjMatrixInv", true);
+	varIndexProjMat = effect.RegisterVariable("projMat", true);
 	varIndexWorldMatrix = effect.RegisterVariable("mWorld", true);
 	varIndexWorldMatrixInv = effect.RegisterVariable("mWorldInv", true);
 
@@ -255,7 +255,7 @@ void Metaballs::Draw(Camera* camera)
 	effect.SetVariableValue(varIndexTextureMap, envMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexProjMap, projMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
-	effect.SetVariableValue(varIndexViewProjMatrixInv, *camera->GetViewProjectionMatrixPtr()); // FIXME
+//	effect.SetVariableValue(varIndexProjMat, *camera->GetViewProjectionMatrixPtr()); // FIXME
 	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
 	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
 	effectPass.Apply();

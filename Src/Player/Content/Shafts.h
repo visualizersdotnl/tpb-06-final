@@ -85,6 +85,6 @@ public:
 		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 		// vignette (hides artifacts on the corners of the background box)
-//		s_sprites->AddSpriteCenter(vignette, Pimp::D3D::BlendMode::BM_Additive, Vector2(1920.f*0.5f, 1080.f*0.5f), 1.f, 1.f, 0.f);
+		s_sprites->AddSpriteCenter(vignette, Pimp::D3D::BlendMode::BM_AlphaMask, Vector2(1920.f*0.5f, 1080.f*0.5f), 1.f, 1.f, 0.f);
 	}
 };
