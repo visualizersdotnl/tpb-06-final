@@ -10,6 +10,7 @@ struct VSOutput
 	float4 screenPos : SV_Position;
 	float4 color : COLOR;
 	float2 texCoord : TEXCOORD0;
+	float2 texCoordProj : TEXCOORD1;
 };
 
 
@@ -17,6 +18,7 @@ cbuffer paramsOnlyOnce
 {
 	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 	float4x4 viewProjMatrix;
+	float4x4 viewProjMatrixInv;
 	float4x4 mWorld;
 	float4x4 mWorldInv;
 };
@@ -52,16 +54,20 @@ VSOutput MainVS(VSInput input)
 			input.position.xyz, 
 			input.normal, 
 			float3(0.f, 0.f, 1.f), 
-			1.2f*float3(47.f/255.f, 156.f/255.f, 152.f/255.f)), 1.f);
+			1.2f*float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
+//			1.2f*float3(47.f/255.f, 156.f/255.f, 152.f/255.f)), 1.f);
 
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
+	
+	output.texCoordProj = float2(0.f, 0.f);
 
 	return output;
 }
 
 	
 Texture2D textureMap;
+Texture2D projMap;
 
 SamplerState samplerTexture
 {
@@ -76,6 +82,7 @@ float4 MainPS(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);	
+//	return projMap.Sample(samplerTexture, input.texCoordProj);
 	return texColor*input.color;
 }
 

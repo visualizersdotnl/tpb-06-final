@@ -3,7 +3,7 @@ class GeneralCinema : public Demo::Scene
 {
 private:
 	Pimp::Texture2D *projector, *reel, *scroller;
-	Pimp::Material *backMat;
+//	Pimp::Material *backMat;
 
 public:
 	GeneralCinema()
@@ -24,12 +24,12 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 
-		Assets::AddMaterial("shaders\\Scene_Empty.fx", &backMat);
+//		Assets::AddMaterial("shaders\\Scene_IQ.fx", &backMat);
 	}
 
 	void BindToWorld()
 	{
-		BindSceneMaterial(backMat);
+//		BindSceneMaterial(backMat);
 	}
 
 	void Tick(double row)

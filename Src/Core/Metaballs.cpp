@@ -93,7 +93,8 @@ Metaballs::Metaballs() :
 	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
 	effectTechnique(&effect, "Blobs"),
 	effectPass(&effectTechnique, "Default"),
-	worldTrans(new Xform(nullptr))
+	worldTrans(new Xform(nullptr)),
+	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex())
 {
 }
 
@@ -140,7 +141,9 @@ bool Metaballs::Initialize()
 	const Vector2& visible_area = gD3D->GetRenderScale(); // Fixed
 	effect.SetVariableValue(varIndexRenderScale, visible_area);
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
+	varIndexProjMap = effect.RegisterVariable("projMap", true);
 	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
+	varIndexViewProjMatrixInv = effect.RegisterVariable("viewProjMatrixInv", true);
 	varIndexWorldMatrix = effect.RegisterVariable("mWorld", true);
 	varIndexWorldMatrixInv = effect.RegisterVariable("mWorldInv", true);
 
@@ -249,8 +252,10 @@ void Metaballs::Draw(Camera* camera)
 	gD3D->BindIndexBuffer(pIB);
 
 	// Set shader vars.
-	effect.SetVariableValue(varIndexTextureMap, gD3D->GetWhiteTex()->GetShaderResourceView());
+	effect.SetVariableValue(varIndexTextureMap, envMap->GetShaderResourceView());
+	effect.SetVariableValue(varIndexProjMap, projMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
+	effect.SetVariableValue(varIndexViewProjMatrixInv, *camera->GetViewProjectionMatrixPtr()); // FIXME
 	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
 	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
 	effectPass.Apply();
@@ -265,6 +270,13 @@ void Metaballs::Draw(Camera* camera)
 void Metaballs::SetRotation(const Quaternion &rotation)
 {
 	worldTrans->SetRotation(rotation);
+}
+
+void Metaballs::SetMaps(Texture2D *envMap, Texture2D *projMap)
+{
+//	ASSERT(nullptr != envMap &&& nullptr != projMap);
+	this->envMap = envMap;
+	this->projMap = projMap;
 }
 
 __forceinline unsigned int Metaballs::GetEdgeTableIndex()

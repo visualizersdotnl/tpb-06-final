@@ -7,6 +7,8 @@ private:
 	Pimp::MaterialParameter *rotation1Param;
 	Pimp::MaterialParameter *rotation2Param;
 
+	Pimp::Texture2D *vignette;
+
 	const sync_track *st_shaftsRot0x;
 	const sync_track *st_shaftsRot0y;
 	const sync_track *st_shaftsRot0z;
@@ -45,6 +47,7 @@ public:
 		Assets::AddTexture2D("textures\\shafts\\shafts_noise.png", NULL);
 		Assets::AddTexture2D("textures\\shafts\\shafts_rock.png", NULL);
 		Assets::AddTexture2D("textures\\shafts\\shafts_room.png", NULL);
+		Assets::AddTexture2D("textures\\shafts\\vignette.png", &vignette);
 
 		Assets::AddMaterial("shaders\\Scene_Shafts.fx", &shaftMat);
 	}
@@ -80,5 +83,8 @@ public:
 
 		SetMainSceneAndDefaultCamera();
 		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+
+		// vignette (hides artifacts on the corners of the background box)
+//		s_sprites->AddSpriteCenter(vignette, Pimp::D3D::BlendMode::BM_Additive, Vector2(1920.f*0.5f, 1080.f*0.5f), 1.f, 1.f, 0.f);
 	}
 };

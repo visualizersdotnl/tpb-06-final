@@ -9,6 +9,8 @@ private:
 	
 	const sync_track *st_toy;
 
+	Pimp::Texture2D *envMap, *projMap;
+
 public:
 	Blobs2()
 	{
@@ -25,7 +27,8 @@ public:
 
 	void ReqAssets()
 	{
-		Assets::AddTexture2D("textures\\bgtiles\\tile-00-yellow.png", &bgTile);
+		Assets::AddTexture2D("textures\\toypusher\\tile-00-yellow.png", &bgTile);
+
 		Assets::AddTexture2D("textures\\toypusher\\1.png", &toy[0]);
 		Assets::AddTexture2D("textures\\toypusher\\1b.png", &toy[1]);
 		Assets::AddTexture2D("textures\\toypusher\\2.png", &toy[2]);
@@ -34,6 +37,9 @@ public:
 		Assets::AddTexture2D("textures\\toypusher\\3b.png", &toy[5]);
 		Assets::AddTexture2D("textures\\toypusher\\4.png", &toy[6]);
 		Assets::AddTexture2D("textures\\toypusher\\4b.png", &toy[7]);
+
+		Assets::AddTexture2D("textures\\toypusher\\envmap.png", &envMap);
+		Assets::AddTexture2D("textures\\toypusher\\projmap.png", &projMap);
 	}
 
 	void BindToWorld()
@@ -53,7 +59,7 @@ public:
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f), 
 			Vector2(3.f*kTileMul, 3.f),
-			Vector2(time*0.3f, time));
+			Vector2(time*0.4f, time));
 
 		// Toypusher stuff
 		const float toySync = (float) sync_get_val(st_toy, row);
@@ -96,5 +102,8 @@ public:
 
 		// Generate geometry (triggers visibility).
 		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 170.f);
+
+		// Set maps.
+		s_pMetaballs->SetMaps(envMap, projMap);
 	}
 };
