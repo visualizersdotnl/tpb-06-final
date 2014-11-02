@@ -23,7 +23,7 @@ public:
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\creds\\tile-00.png", &bgTile);
-		Assets::AddTexture2D("textures\\creds\\envmap.png", &envMap);
+		Assets::AddTexture2D("textures\\creds\\mfx_envmap.png", &envMap);
 		Assets::AddTexture2D("textures\\creds\\projmap.png", &projMap);
 	}
 

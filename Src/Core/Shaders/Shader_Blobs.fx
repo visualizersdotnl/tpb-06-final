@@ -82,10 +82,10 @@ float4 MainPS(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);
-	return texColor*input.color;
-//	float4 projColor = projMap.Sample(samplerTexture, input.texCoordProj);
-//	return texColor*(input.color - (projColor));
+//	return texColor*input.color;
+	float4 projColor = projMap.Sample(samplerTexture, input.texCoordProj);
 //	return projColor;
+	return texColor*projColor*input.color;
 }
 
 
