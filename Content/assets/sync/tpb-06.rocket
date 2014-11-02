@@ -214,7 +214,7 @@
 			<key value="-2.53" interpolation="0" row="1535"/>
 			<key value="0" interpolation="2" row="1536"/>
 			<key value="0.7" interpolation="0" row="1552"/>
-			<key value="0.9" interpolation="1" row="2048"/>
+			<key value="1.2" interpolation="1" row="2048"/>
 			<key value="0.7" interpolation="0" row="2064"/>
 			<key value="-8.31" interpolation="1" row="2568"/>
 			<key value="11.25" interpolation="1" row="2816"/>
@@ -443,6 +443,18 @@
 			<key value="8" interpolation="0" row="3840"/>
 			<key value="8" interpolation="1" row="4024"/>
 			<key value="0" interpolation="0" row="4047"/>
+		</track>
+		<track name="g_sceneNoise">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="4096"/>
+			<key value="0.15" interpolation="0" row="4152"/>
+			<key value="0" interpolation="0" row="5120"/>
+		</track>
+		<track name="g_sceneNoiseT">
+			<key value="0" interpolation="0" row="0"/>
+			<key value="0" interpolation="1" row="4096"/>
+			<key value="10" interpolation="0" row="5119"/>
+			<key value="0" interpolation="0" row="5120"/>
 		</track>
 	</tracks>
 	<bookmarks/>

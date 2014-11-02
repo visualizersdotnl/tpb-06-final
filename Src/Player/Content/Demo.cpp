@@ -133,6 +133,7 @@ static const sync_track *st_SceneIdx;
 static const sync_track *st_fxTime;
 static const sync_track *st_postFlash ,*st_postFade;
 static const sync_track *st_sceneFadeInOut;
+static const sync_track *st_sceneNoise, *st_sceneNoiseT;
 static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
 static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
 
@@ -145,6 +146,8 @@ void CreateGlobalRocketTracks()
 	s_syncTracks.push_back(SyncTrack("g_postFlash", true, &st_postFlash));
 	s_syncTracks.push_back(SyncTrack("g_postFade", true, &st_postFade));
 	s_syncTracks.push_back(SyncTrack("g_preSpriteFade", true, &st_sceneFadeInOut)); 
+	s_syncTracks.push_back(SyncTrack("g_sceneNoise", true, &st_sceneNoise)); 
+	s_syncTracks.push_back(SyncTrack("g_sceneNoiseT", true, &st_sceneNoiseT)); 
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_X", false, &st_defRotX));
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_y", false, &st_defRotY));
 	s_syncTracks.push_back(SyncTrack("g_defRotQuat_Z", false, &st_defRotZ));
