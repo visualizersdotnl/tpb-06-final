@@ -483,6 +483,9 @@ bool Tick(Pimp::Camera *camOverride)
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
+	// play MP3 normally by default
+	Audio_FlangerMP3(0.f, 0.25f);
+
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);

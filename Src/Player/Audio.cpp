@@ -94,7 +94,7 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 	BASS_DX8_FLANGER fxParams;
 	fxParams.fWetDryMix = 0.f; // 0 = silent, 100 = wet
 	fxParams.fDepth = 100.f;
-	fxParams.fFeedback = -	50.f;
+	fxParams.fFeedback = -50.f;
 	fxParams.fFrequency = 0.25f; // upwards of 6 is cool
 	fxParams.lWaveform = 1; // Sine
 	fxParams.fDelay = 2.f;
@@ -175,10 +175,10 @@ float Audio_GetPosition()
 void Audio_FlangerMP3(float wetDry, float freqMod)
 {
 	BASS_DX8_FLANGER fxParams;
-	fxParams.fWetDryMix = 0.f;
+	fxParams.fWetDryMix = wetDry; // 0 = silent, 100 = wet
 	fxParams.fDepth = 100.f;
 	fxParams.fFeedback = -50.f;
-	fxParams.fFrequency = 0.25f;
+	fxParams.fFrequency = freqMod; // upwards of 6 is cool
 	fxParams.lWaveform = 1; // Sine
 	fxParams.fDelay = 2.f;
 	fxParams.lPhase = BASS_DX8_PHASE_ZERO;

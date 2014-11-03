@@ -37,7 +37,7 @@ float3 LightVertex(
 	float3 eyePos = lightPos; // Not ideal, but it'll do the trick.
 	float3 V = normalize(eyePos - position);
 	float3 H = normalize(L + V);
-	float specular = 1.5f*pow(max(dot(normal, H), 0), 9.f);
+	float specular = 2.f*pow(max(dot(normal, H), 0), 9.f);
 
 	return lightColor*diffuse + specular;
 }	
@@ -54,13 +54,14 @@ VSOutput MainVS(VSInput input)
 			input.position.xyz, 
 			input.normal, 
 			float3(0.f, 0.f, 1.f), 
-			1.2f*float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
+			1.5f*float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
+			// ^ But still put it in overdrive to hit the bloom if we can.
 //			1.2f*float3(47.f/255.f, 156.f/255.f, 152.f/255.f)), 1.f);
 
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
 	
-	output.texCoordProj = input.position.xy;
+	output.texCoordProj = worldPos.xy; // input.position.xy;
 
 	return output;
 }
@@ -71,8 +72,8 @@ Texture2D projMap;
 
 SamplerState samplerTexture
 {
-	AddressU = CLAMP;
-	AddressV = CLAMP;
+	AddressU = WRAP;
+	AddressV = WRAP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 

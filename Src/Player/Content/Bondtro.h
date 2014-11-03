@@ -1,10 +1,11 @@
 
 class Bondtro : public Demo::Scene
 {
-private:
+public: // public since I'll borrow these in BulletsAndBitches.h
 	Pimp::Texture2D *background, *blob, *ampersand, *logoTPB, *logoInque, *present;
 	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
 
+private:
 	const sync_track *st_bondBlob1;
 	const sync_track *st_bondBlobFade1;
 	const sync_track *st_bondBlob2;
