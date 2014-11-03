@@ -589,11 +589,17 @@
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0.05" interpolation="0" row="4088"/>
 			<key value="0" interpolation="0" row="5120"/>
+			<key value="0" interpolation="3" row="6256"/>
+			<key value="0.2" interpolation="0" row="6543"/>
+			<key value="0" interpolation="0" row="6544"/>
 		</track>
 		<track name="g_sceneNoiseT">
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="1" row="4088"/>
 			<key value="0.01" interpolation="0" row="5119"/>
+			<key value="0" interpolation="3" row="6136"/>
+			<key value="0.1" interpolation="0" row="6543"/>
+			<key value="0" interpolation="0" row="6544"/>
 		</track>
 		<track name="bitchBullets">
 			<key value="0" interpolation="0" row="0"/>

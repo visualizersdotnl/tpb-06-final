@@ -44,8 +44,6 @@ public:
 
 	void Tick(double row)
 	{
-		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-
 		const float wetDry = (float) sync_get_val(st_endFlangerWet, row);
 		const float freqMod = (float) sync_get_val(st_endFlangerFreqMod, row);
 		Audio_FlangerMP3(wetDry, freqMod);
@@ -57,17 +55,22 @@ public:
 		// if this is still zero we're not blasting the guns yet
 		if (bitchBullets == 0.f)
 		{
+			// this way it's part of the scene process and thus we can cover it with noise
+			s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+
 			// background (or what used to be our loading screen)
-			s_sprites->AddSprite(
-					background,
-					Pimp::D3D::BlendMode::BM_Additive,
-					AlphaToVtxColor(1.f),
-					Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
-					1.f,
-					0.f);
+//			s_sprites->AddSprite(
+//					background,
+//					Pimp::D3D::BlendMode::BM_Additive,
+//					AlphaToVtxColor(1.f),
+//					Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+//					1.f,
+//					0.f);
 		}
 		else
 		{
+			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+
 			float backAlpha = (bitchBullets<1.f) ? bitchBullets : 1.f;
 
 			// background
