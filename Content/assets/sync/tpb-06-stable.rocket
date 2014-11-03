@@ -516,8 +516,6 @@
 			<key value="0" interpolation="2" row="6128"/>
 			<key value="1" interpolation="1" row="6144"/>
 			<key value="0" interpolation="0" row="6160"/>
-			<key value="0" interpolation="1" row="6624"/>
-			<key value="1" interpolation="0" row="6655"/>
 		</track>
 		<track name="g_postFade">
 			<key value="0" interpolation="0" row="0"/>
