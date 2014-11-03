@@ -18,7 +18,6 @@
 	To do (@plek, issues not already in Github, most of these are non-critical for TPB-06):
 	- Set up error checking on most critical D3D calls.
 	- Fix (D3D)ASSERT_MSG.
-	- Check FIXMEs (esp. the ALT+ENTER block).
 	- Leaks.
 	- Phase out FixedSizeList use where unnecessary.
 	- Create a general platform include (system, STL, CRT, assertions, et cetera).
@@ -431,9 +430,9 @@ static bool CreateDirect3D()
 
 		if SUCCEEDED(s_pDXGIFactory->CreateSwapChain(s_pD3D, &swapDesc, &s_pSwapChain))
 		{
-			// FIXME: block automatic ALT+ENTER (doesn't quite work?)
-			s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_ALT_ENTER);
-
+			HRESULT hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
+//			HRESULT hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_ALT_ENTER);
+			ASSERT(hRes == S_OK);
 			return true;
 		}
 	}
@@ -463,6 +462,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 	// change path to target root
 	SetCurrentDirectory("..\\");
 
+#if 0 // Screw this, if you're running 64-bit Windows you'll have SSE4 at least.
 	// check for SSE2
 	int cpuInfo[4];
 	__cpuid(cpuInfo, 1);
@@ -471,6 +471,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 		MessageBox(NULL, "Processor does not support SSE2 instructions.", "Error!", MB_OK | MB_ICONEXCLAMATION);
 		return 1;
 	}
+#endif
 
 	if (false == kWindowed)
 	{
