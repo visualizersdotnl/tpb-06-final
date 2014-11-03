@@ -108,7 +108,7 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 
 
 	// soundtrack must loop for Rocket (well not really, but it's convenient in editing)
-	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+//	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
 
 	if (true == mute)
 	{

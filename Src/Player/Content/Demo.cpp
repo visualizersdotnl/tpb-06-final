@@ -490,7 +490,12 @@ bool Tick(Pimp::Camera *camOverride)
 	if (-1 != sceneIdx)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
-		return false; // Demo is finished.
+	{
+		// Wait for esc.
+		return true;
+
+//		return false; // Demo is finished.
+	}
 
 	// Tie in final flash and fade in the sprite batch at "improbable" Zs.
 	const float postFlash = (float) sync_get_val(st_postFlash, rocketRow);
