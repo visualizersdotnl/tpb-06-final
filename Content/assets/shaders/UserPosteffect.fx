@@ -68,9 +68,8 @@ PSOutput MainPS(VSOutput input)
 
 	// Screen uv in [0,1] for both x and y
 	float2 screenUV = input.normalizedPos*float2(0.5, -0.5) + (0.5).xx;
-
 	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, screenUV, 0);
-	result.color.xyz += rand(screenUV+g_sceneNoiseT.xx)*g_sceneNoise;
+	result.color.xyz = lerp(result.color.xyz, rand(screenUV+g_sceneNoiseT.xx).xxx, g_sceneNoise);
 	result.color.xyz += g_preSpriteFade.xxx;
 
 	return result;

@@ -75,14 +75,14 @@ public:
 		// reels (rotate quickly in same direction in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-kReelYOffs),
 				kProjectorZ,
 				1.f,
 				-reelRoto*2.f);
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+kReelYOffs+7.f), // @plek: Lower this one a few pixels.
 				kProjectorZ,
 				1.f,
