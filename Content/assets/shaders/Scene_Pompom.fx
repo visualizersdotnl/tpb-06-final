@@ -22,6 +22,12 @@ cbuffer paramsOnlyOnce
 	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 
 	float g_fxTime;
+
+	// taken from Scene_Ribbons.fx
+	float FOV = 0.7f;
+
+	float fisheyeStrength = 6; //6;
+	float fisheyeFOV = 2.0; //1.0;
 };
 
 VSOutput MainVS(VSInput input)
@@ -41,16 +47,196 @@ SamplerState samplerTexture
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+Texture2D texture_pompom_noise;
+
+// --------------------------------------------------------------------------------------------
+
+// fur ball
+// (c) simon green 2013
+// @simesgreen
+// v1.1
+
+static const float uvScale = 1.0;
+static const float colorUvScale = 0.1;
+static const float furDepth = 0.2;
+static const int furLayers = 64;
+static const float rayStep = furDepth*2.0 / float(furLayers);
+static const float furThreshold = 0.4;
+static const float shininess = 50.0;
+
+bool intersectSphere(float3 ro, float3 rd, float r, out float t)
+{
+	float b = dot(-ro, rd);
+	float det = b*b - dot(ro, ro) + r*r;
+	if (det < 0.0) return false;
+	det = sqrt(det);
+	t = b - det;
+	return t > 0.0;
+}
+
+float3 rotateX(float3 p, float a)
+{
+    float sa = sin(a);
+    float ca = cos(a);
+    return float3(p.x, ca*p.y - sa*p.z, sa*p.y + ca*p.z);
+}
+
+float3 rotateY(float3 p, float a)
+{
+    float sa = sin(a);
+    float ca = cos(a);
+    return float3(ca*p.x + sa*p.z, p.y, -sa*p.x + ca*p.z);
+}
+
+float2 cartesianToSpherical(float3 p)
+{		
+	float r = length(p);
+
+	float t = (r - (1.0 - furDepth)) / furDepth;	
+	p = rotateX(p.zyx, -cos(g_fxTime*1.5)*t*t*0.4).zyx;	// curl
+
+	p /= r;	
+	float2 uv = float2(atan2(p.y, p.x), acos(p.z));
+
+	//uv.x += cos(g_fxTime*1.5)*t*t*0.4;	// curl
+	//uv.y += sin(g_fxTime*1.7)*t*t*0.2;
+	uv.y -= t*t*0.1;	// curl down
+	return uv;
+}
+
+// returns fur density at given position
+float furDensity(float3 pos, out float2 uv)
+{
+	uv = cartesianToSpherical(pos.xzy);	
+	float4 tex = texture_pompom_noise.Sample(samplerTexture, uv*uvScale); // texture2D(iChannel0, uv*uvScale);
+
+	// thin out hair
+	float density = smoothstep(furThreshold, 1.0, tex.x);
+	
+	float r = length(pos);
+	float t = (r - (1.0 - furDepth)) / furDepth;
+	
+	// fade out along length
+	float len = tex.y;
+	density *= smoothstep(len, len-0.2, t);
+
+	return density;	
+}
+
+// calculate normal from density
+float3 furNormal(float3 pos, float density)
+{
+    float eps = 0.01;
+    float3 n;
+	float2 uv;
+    n.x = furDensity( float3(pos.x+eps, pos.y, pos.z), uv ) - density;
+    n.y = furDensity( float3(pos.x, pos.y+eps, pos.z), uv ) - density;
+    n.z = furDensity( float3(pos.x, pos.y, pos.z+eps), uv ) - density;
+    return normalize(n);
+}
+
+float3 furShade(float3 pos, float2 uv, float3 ro, float density)
+{
+	// lighting
+	const float3 L = float3(0, 1, 0);
+	float3 V = normalize(ro - pos);
+	float3 H = normalize(V + L);
+
+	float3 N = -furNormal(pos, density);
+	//float diff = max(0.0, dot(N, L));
+	float diff = max(0.0, dot(N, L)*0.5+0.5);
+	float spec = pow(max(0.0, dot(N, H)), shininess);
+	
+	// base color
+	float3 color = float3(1.f, 1.f, 1.f); // texture2D(iChannel1, uv*colorUvScale).xyz;
+
+	// darken with depth
+	float r = length(pos);
+	float t = (r - (1.0 - furDepth)) / furDepth;
+	t = clamp(t, 0.0, 1.0);
+	float i = t*0.5+0.5;
+		
+	return color*diff*i + float3(spec.xxx*i);
+}		
+
+float4 scene(float3 ro,float3 rd)
+{
+	float3 p = float3(0.0, 0.0, 0.0);
+	const float r = 1.0;
+	float t;				  
+	bool hit = intersectSphere(ro - p, rd, r, t);
+	
+	float4 c = float4(0.0, 0.0, 0.0, 0.0);
+	if (hit) {
+		float3 pos = ro + rd*t;
+
+		// ray-march into volume
+		for(int i=0; i<furLayers; i++) {
+			float4 sampleCol;
+			float2 uv;
+			sampleCol.a = furDensity(pos, uv);
+			if (sampleCol.a > 0.0) {
+				sampleCol.rgb = furShade(pos, uv, ro, sampleCol.a);
+
+				// pre-multiply alpha
+				sampleCol.rgb *= sampleCol.a;
+				c = c + sampleCol*(1.0 - c.a);
+				if (c.a > 0.95) break;
+			}
+			
+			pos += rd*rayStep;
+		}
+	}
+	
+	return c;
+}
+
+float4 ripped_main(float3 ro, float3 rd)
+{
+//	float2 uv = gl_FragCoord.xy / iResolution.xy;
+//	uv = uv*2.0-1.0;
+//	uv.x *= iResolution.x / iResolution.y;
+	
+//	float3 ro = float3(0.0, 0.0, 2.5);
+//	float3 rd = normalize(float3(uv, -2.0));
+	
+//	float2 mouse = iMouse.xy / iResolution.xy;
+	float roty = 0.0;
+	float rotx = 0.0;
+//	if (iMouse.z > 0.0) {
+//		rotx = (mouse.y-0.5)*3.0;
+//		roty = -(mouse.x-0.5)*6.0;
+//	} else {
+		roty = sin(g_fxTime*1.5);
+//	}
+	
+    ro = rotateX(ro, rotx);	
+    ro = rotateY(ro, roty);	
+    rd = rotateX(rd, rotx);
+    rd = rotateY(rd, roty);
+	
+	return scene(ro, rd);
+}
+
+// --------------------------------------------------------------------------------------------
+
+
 PSOutput MainPS(VSOutput input)
 {
 	PSOutput result;
 
-	float4 screenPos = input.screenPos;
-	result.color = float4(1.f, 1.f, 0.f, 1.f);
+	// What Glow does.
+	float strength = 1.0 + pow(length(input.rayDir.xy), fisheyeStrength);// * 0.025;	
+	float4 fishEyeScale = float4(strength.xx, 1.0, 0.0);	
+    float4 rayDir = mul(input.rayDir*fishEyeScale, viewInvMatrix) * FOV * fisheyeFOV + -viewInvMatrix._31_32_33_34; // -forward vector
+	float4 origin = viewInvMatrix._41_42_43_44;
+	float4 dir = normalize(rayDir);
 
-    return result;
+	// Shadertoy rip
+    result.color = ripped_main(origin.xyz, dir.xyz);
+
+	return result;
 }
-
 
 technique10 Default
 {
