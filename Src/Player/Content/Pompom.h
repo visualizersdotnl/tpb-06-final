@@ -20,6 +20,7 @@ public:
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\pompom\\pompom_noise.png", NULL);
+		Assets::AddTexture2D("textures\\pompom\\pompom_color.png", NULL);
 		Assets::AddMaterial("shaders\\Scene_Pompom.fx", &sceneMat);
 	}
 

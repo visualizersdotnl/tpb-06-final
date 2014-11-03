@@ -22,12 +22,6 @@ cbuffer paramsOnlyOnce
 	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 
 	float g_fxTime;
-
-	// taken from Scene_Ribbons.fx
-	float FOV = 0.7f;
-
-	float fisheyeStrength = 6; //6;
-	float fisheyeFOV = 2.0; //1.0;
 };
 
 VSOutput MainVS(VSInput input)
@@ -47,7 +41,8 @@ SamplerState samplerTexture
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
-Texture2D texture_pompom_noise;
+Texture2D texture_pompom_noise;	
+Texture2D texture_pompom_color;
 
 // --------------------------------------------------------------------------------------------
 
@@ -108,7 +103,7 @@ float2 cartesianToSpherical(float3 p)
 float furDensity(float3 pos, out float2 uv)
 {
 	uv = cartesianToSpherical(pos.xzy);	
-	float4 tex = texture_pompom_noise.Sample(samplerTexture, uv*uvScale); // texture2D(iChannel0, uv*uvScale);
+	float4 tex = texture_pompom_noise.SampleLevel(samplerTexture, uv*uvScale, 0); // texture2D(iChannel0, uv*uvScale);
 
 	// thin out hair
 	float density = smoothstep(furThreshold, 1.0, tex.x);
@@ -148,7 +143,7 @@ float3 furShade(float3 pos, float2 uv, float3 ro, float density)
 	float spec = pow(max(0.0, dot(N, H)), shininess);
 	
 	// base color
-	float3 color = float3(1.f, 1.f, 1.f); // texture2D(iChannel1, uv*colorUvScale).xyz;
+	float3 color = float3(1.f, 0.f, 1.f); // texture_pompom_color.SampleLevel(samplerTexture, uv*colorUvScale, 0); 
 
 	// darken with depth
 	float r = length(pos);
@@ -191,24 +186,16 @@ float4 scene(float3 ro,float3 rd)
 	return c;
 }
 
-float4 ripped_main(float3 ro, float3 rd)
+float4 ripped_main(float4 rayDir)
 {
-//	float2 uv = gl_FragCoord.xy / iResolution.xy;
-//	uv = uv*2.0-1.0;
-//	uv.x *= iResolution.x / iResolution.y;
+	float2 uv = float2(rayDir.x, rayDir.y);
 	
-//	float3 ro = float3(0.0, 0.0, 2.5);
-//	float3 rd = normalize(float3(uv, -2.0));
+	float3 ro = float3(0.0, 0.0, 2.5);
+	float3 rd = normalize(float3(uv, -2.0));
 	
-//	float2 mouse = iMouse.xy / iResolution.xy;
 	float roty = 0.0;
 	float rotx = 0.0;
-//	if (iMouse.z > 0.0) {
-//		rotx = (mouse.y-0.5)*3.0;
-//		roty = -(mouse.x-0.5)*6.0;
-//	} else {
-		roty = sin(g_fxTime*1.5);
-//	}
+	roty = sin(g_fxTime*1.5);
 	
     ro = rotateX(ro, rotx);	
     ro = rotateY(ro, roty);	
@@ -225,15 +212,7 @@ PSOutput MainPS(VSOutput input)
 {
 	PSOutput result;
 
-	// What Glow does.
-	float strength = 1.0 + pow(length(input.rayDir.xy), fisheyeStrength);// * 0.025;	
-	float4 fishEyeScale = float4(strength.xx, 1.0, 0.0);	
-    float4 rayDir = mul(input.rayDir*fishEyeScale, viewInvMatrix) * FOV * fisheyeFOV + -viewInvMatrix._31_32_33_34; // -forward vector
-	float4 origin = viewInvMatrix._41_42_43_44;
-	float4 dir = normalize(rayDir);
-
-	// Shadertoy rip
-    result.color = ripped_main(origin.xyz, dir.xyz);
+    result.color = ripped_main(input.rayDir);
 
 	return result;
 }
