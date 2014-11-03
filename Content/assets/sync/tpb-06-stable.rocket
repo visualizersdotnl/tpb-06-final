@@ -10,6 +10,7 @@
 			<key value="2" interpolation="0" row="4064"/>
 			<key value="7" interpolation="0" row="5120"/>
 			<key value="8" interpolation="0" row="6144"/>
+			<key value="-1" interpolation="0" row="6656"/>
 		</track>
 		<track name="g_fxTime">
 			<key value="0" interpolation="0" row="0"/>
@@ -515,7 +516,7 @@
 			<key value="0" interpolation="2" row="6128"/>
 			<key value="1" interpolation="1" row="6144"/>
 			<key value="0" interpolation="0" row="6160"/>
-			<key value="0" interpolation="1" row="6640"/>
+			<key value="0" interpolation="1" row="6624"/>
 			<key value="1" interpolation="0" row="6655"/>
 		</track>
 		<track name="g_postFade">
@@ -547,7 +548,7 @@
 			<key value="0" interpolation="1" row="6272"/>
 			<key value="1" interpolation="0" row="6544"/>
 			<key value="0" interpolation="0" row="6585"/>
-			<key value="0" interpolation="2" row="6648"/>
+			<key value="0" interpolation="1" row="6640"/>
 			<key value="1" interpolation="0" row="6655"/>
 		</track>
 		<track name="toypusher">
@@ -594,7 +595,7 @@
 		<track name="g_sceneNoiseT">
 			<key value="0" interpolation="0" row="0"/>
 			<key value="0" interpolation="1" row="4088"/>
-			<key value="11" interpolation="0" row="5119"/>
+			<key value="0.01" interpolation="0" row="5119"/>
 		</track>
 		<track name="bitchBullets">
 			<key value="0" interpolation="0" row="0"/>
@@ -604,6 +605,7 @@
 			<key value="3" interpolation="0" row="6627"/>
 			<key value="4" interpolation="0" row="6636"/>
 			<key value="5" interpolation="0" row="6644"/>
+			<key value="6" interpolation="0" row="6655"/>
 		</track>
 		<track name="endFlangerWet">
 			<key value="0" interpolation="0" row="0"/>
