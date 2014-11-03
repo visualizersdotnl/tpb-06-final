@@ -94,7 +94,8 @@ Metaballs::Metaballs() :
 	effectTechnique(&effect, "Blobs"),
 	effectPass(&effectTechnique, "Default"),
 	worldTrans(new Xform(nullptr)),
-	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex())
+	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex()),
+	shininess(9.f), overbright(1.5f)
 {
 }
 
@@ -146,6 +147,8 @@ bool Metaballs::Initialize()
 	varIndexProjMat = effect.RegisterVariable("projMat", true);
 	varIndexWorldMatrix = effect.RegisterVariable("mWorld", true);
 	varIndexWorldMatrixInv = effect.RegisterVariable("mWorldInv", true);
+	varIndexShininess = effect.RegisterVariable("shininess", true);
+	varIndexOverbright = effect.RegisterVariable("overbright", true);
 
 	return true;
 }
@@ -258,6 +261,8 @@ void Metaballs::Draw(Camera* camera)
 //	effect.SetVariableValue(varIndexProjMat, *camera->GetViewProjectionMatrixPtr()); // FIXME
 	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
 	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
+	effect.SetVariableValue(varIndexShininess, shininess);
+	effect.SetVariableValue(varIndexOverbright, overbright);
 	effectPass.Apply();
 
 	// * A transpose serves just as well for an orthogonal matrix.
@@ -277,6 +282,12 @@ void Metaballs::SetMaps(Texture2D *envMap, Texture2D *projMap)
 //	ASSERT(nullptr != envMap &&& nullptr != projMap);
 	this->envMap = envMap;
 	this->projMap = projMap;
+}
+
+void Metaballs::SetLighting(float shininess, float overbright)
+{
+	this->shininess = shininess;
+	this->overbright = overbright;
 }
 
 __forceinline unsigned int Metaballs::GetEdgeTableIndex()

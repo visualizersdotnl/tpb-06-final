@@ -21,6 +21,8 @@ cbuffer paramsOnlyOnce
 	float4x4 projMat;
 	float4x4 mWorld;
 	float4x4 mWorldInv;
+	float shininess;
+	float overbright;
 };
 
 float3 LightVertex(
@@ -37,9 +39,9 @@ float3 LightVertex(
 	float3 eyePos = lightPos; // Not ideal, but it'll do the trick.
 	float3 V = normalize(eyePos - position);
 	float3 H = normalize(L + V);
-	float specular = 2.f*pow(max(dot(normal, H), 0), 9.f);
+	float specular = overbright*pow(max(dot(normal, H), 0), shininess);
 
-	return lightColor*diffuse + specular;
+	return overbright*(lightColor*diffuse + specular);
 }	
 
 VSOutput MainVS(VSInput input)
@@ -54,9 +56,7 @@ VSOutput MainVS(VSInput input)
 			input.position.xyz, 
 			input.normal, 
 			float3(0.f, 0.f, 1.f), 
-			1.5f*float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
-			// ^ But still put it in overdrive to hit the bloom if we can.
-//			1.2f*float3(47.f/255.f, 156.f/255.f, 152.f/255.f)), 1.f);
+			float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
 
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
@@ -83,9 +83,7 @@ float4 MainPS(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);
-//	return texColor*input.color;
 	float4 projColor = projMap.Sample(samplerTexture, input.texCoordProj);
-//	return projColor;
 	return texColor*projColor*input.color;
 }
 

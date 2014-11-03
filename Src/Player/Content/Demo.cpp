@@ -89,6 +89,7 @@ static Pimp::MaterialParameter *CreateShaderParamFromTrack(const std::string &na
 }
 
 // @plek: Note, Rocket tracks do not have to be released individually, neither does my container.
+// Also as there's nothing to delete, using the copy constructor (w/ std::vector::push_back) is safe.
 class SyncTrack
 {
 public:
@@ -265,9 +266,11 @@ protected:
 #include "Pompom.h"
 #include "BulletsAndBitches.h"
 
-// Shared statics.
+// Shared statics for blob parts.
 static const unsigned int kNumMetaball4s = 14;
 static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
+static const sync_track *st_blobsShininess, *st_blobsOverbright;
+
 #include "Blobs.h"
 #include "Blobs2.h"
 
@@ -347,6 +350,10 @@ bool GenerateWorld(const char *rocketClient)
 	// Instantiate all local (part/scene) Rocket tracks.	
 	for (Scene *pScene : s_scenes)
 		pScene->ReqRocketTracks();
+
+	// 2 blob parts share these (must be uploaded manually since it's not a dyn. loaded shader).
+	s_syncTracks.push_back(SyncTrack("blobsShininess", false, &st_blobsShininess));
+	s_syncTracks.push_back(SyncTrack("blobsOverbright", false, &st_blobsOverbright));
 
 	// Request resources.
 	//

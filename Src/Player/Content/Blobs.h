@@ -46,7 +46,7 @@ public:
 			Vector2(3.f*kTileMul, 3.f),
 			Vector2(-time*0.4f, -time));
 
-		// FIXME: parametrize w/Rocket
+		// FIXME: parametrize w/Rocket?
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
 		s_pMetaballs->SetRotation(rotation);
 
@@ -65,7 +65,10 @@ public:
 		// Generate geometry (triggers visibility).
 		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
 		
-		// Set maps.
+		// Set maps & lighting.
 		s_pMetaballs->SetMaps(envMap, projMap);
+		s_pMetaballs->SetLighting(
+			(float) sync_get_val(st_blobsShininess, row),
+			(float) sync_get_val(st_blobsOverbright, row));
 	}
 };

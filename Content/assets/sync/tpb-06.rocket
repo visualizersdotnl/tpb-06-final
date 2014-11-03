@@ -621,6 +621,12 @@
 			<key value="0.25" interpolation="3" row="6136"/>
 			<key value="7" interpolation="0" row="6608"/>
 		</track>
+		<track name="blobsShininess">
+			<key value="9" interpolation="0" row="0"/>
+		</track>
+		<track name="blobsOverbright">
+			<key value="2" interpolation="0" row="0"/>
+		</track>
 	</tracks>
 	<bookmarks/>
 </sync>

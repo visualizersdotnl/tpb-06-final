@@ -29,6 +29,7 @@ namespace Pimp
 		
 		void SetRotation(const Quaternion &rotation);
 		void SetMaps(Texture2D *envMap, Texture2D *projMap);
+		void SetLighting(float shininess, float overbright);
 
 	private:
 		ID3D10Buffer *pVB, *pIB;
@@ -44,10 +45,14 @@ namespace Pimp
 		int varIndexProjMat;
 		int varIndexWorldMatrix;
 		int varIndexWorldMatrixInv;
+		int varIndexShininess;
+		int varIndexOverbright;
 
 		bool isVisible;
 
-		Xform *worldTrans; 
+		Xform *worldTrans;
+		float shininess;
+		float overbright;
 
 		Texture2D *envMap, *projMap;
 
