@@ -675,17 +675,19 @@
 		</track>
 		<track name="bondBigBlob">
 			<key row="0" value="0" interpolation="0"/>
-			<key row="323" value="1387" interpolation="3"/>
+			<key row="323" value="1367" interpolation="1"/>
 			<key row="352" value="650" interpolation="0"/>
 		</track>
 		<track name="bondBigBlobFade">
 			<key row="0" value="0" interpolation="0"/>
-			<key row="323" value="1" interpolation="1"/>
-			<key row="351" value="1" interpolation="0"/>
+			<key row="323" value="0" interpolation="1"/>
+			<key row="328" value="1" interpolation="1"/>
+			<key row="344" value="1" interpolation="2"/>
+			<key row="351" value="0" interpolation="0"/>
 			<key row="352" value="0" interpolation="0"/>
 		</track>
 		<track name="bondBigBlobScale">
-			<key row="323" value="1" interpolation="1"/>
+			<key row="323" value="1" interpolation="3"/>
 			<key row="352" value="6" interpolation="0"/>
 		</track>
 	</tracks>
