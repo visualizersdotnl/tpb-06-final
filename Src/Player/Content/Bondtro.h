@@ -166,6 +166,7 @@ public:
 				0.f);
 
 		// die grote cirkel die naar het target moet morphen
+		// FIXME: centreren is niet correct, maar hij is toch buiten gebruik
 		if (bigFade != 0.f)
 		{		
 			float ratioX = (float)blob->GetWidth()/bigCircle->GetWidth();

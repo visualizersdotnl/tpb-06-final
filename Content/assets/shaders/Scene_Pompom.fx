@@ -46,7 +46,7 @@ Texture2D texture_pompom_color;
 
 // --------------------------------------------------------------------------------------------
 
-static const float uvScale = 0.4;
+static const float uvScale = 0.2;
 static const float colorUvScale = 0.1;
 static const float furDepth = 0.2;
 static const int furLayers = 64;
@@ -99,7 +99,7 @@ float furDensity(float3 pos, out float2 uv)
 {
 	uv = cartesianToSpherical(pos.xzy);	
 	float4 tex = texture_pompom_noise.SampleLevel(samplerTexture, uv*uvScale, 0); // texture2D(iChannel0, uv*uvScale);
-
+	
 	// thin out hair
 	float density = smoothstep(furThreshold, 1.0, tex.x);
 	
@@ -138,7 +138,7 @@ float3 furShade(float3 pos, float2 uv, float3 ro, float density)
 	float spec = pow(max(0.0, dot(N, H)), shininess);
 	
 	// base color
-	float3 color = float3(1.f, 0.f, 1.f); // texture_pompom_color.SampleLevel(samplerTexture, uv*colorUvScale, 0); 
+	float3 color = texture_pompom_color.SampleLevel(samplerTexture, uv*colorUvScale, 0); 
 
 	// darken with depth
 	float r = length(pos);

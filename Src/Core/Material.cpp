@@ -22,6 +22,7 @@ namespace Pimp
 		varIndexOverlayProgress(0),
 		varIndexSceneRenderLOD(0),
 		varIndexSceneBuffer(0),
+		blendMode(D3D::BM_None),
 #ifdef _DEBUG
 		shaderFileName(shaderFileName),
 #endif

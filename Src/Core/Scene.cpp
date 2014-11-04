@@ -27,7 +27,9 @@ namespace Pimp
 		if (material != NULL)
 		{
 			material->Bind(camera);
+			gD3D->SetBlendMode(material->GetBlendMode());
 			gD3D->DrawScreenQuad();
+			gD3D->SetBlendMode(D3D::BlendMode::BM_None);
 		}
 	}
 }

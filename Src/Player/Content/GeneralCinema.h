@@ -2,7 +2,7 @@
 class GeneralCinema : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *projector, *reel, *scroller;
+	Pimp::Texture2D *projector, *reel, *scroller, *background;
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
 
@@ -39,6 +39,7 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
+		Assets::AddTexture2D("textures\\generalcinema\\background.png", &background);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
@@ -46,6 +47,7 @@ public:
 	void BindToWorld()
 	{
 		BindSceneMaterial(backMat);
+		backMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
 
 		foldXformParam = AddMaterialParamWithXform("foldXformInv", true);
 	}
@@ -53,7 +55,7 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 		const float kProjectorZ = 1.f;
 		const float kReelZ = 2.f;

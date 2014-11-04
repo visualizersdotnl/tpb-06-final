@@ -42,6 +42,7 @@ namespace Pimp
 		int varIndexSceneRenderLOD;			// scene render LOD. 1 = full screen, 0.5 = half size, 0.25 = quarter of screen, etc...
 		int varIndexSceneBuffer;			// scene buffer texture (only allowed in post effect material)
 
+		D3D::BlendMode blendMode;
 
 		// complete path to shader source file
 		std::string shaderFileName; 
@@ -67,5 +68,8 @@ protected:
 
 		void SetOverlayOpacityAndProgress(float opacity, float progress, float timeSoFar);
 		void SetSceneBuffer(ID3D10ShaderResourceView* resourceView);
+
+		void SetBlendMode(D3D::BlendMode blendMode) { this->blendMode = blendMode; }
+		D3D::BlendMode GetBlendMode() const { return blendMode; }
 	};
 }
