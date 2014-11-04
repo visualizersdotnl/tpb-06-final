@@ -2,7 +2,7 @@
 class GeneralCinema : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *projector, *reel, *scroller, *background;
+	Pimp::Texture2D *projector, *reel, *reel2, *scroller, *background;
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
 
@@ -36,6 +36,7 @@ public:
 	{
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector.png", &projector);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
+//		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel_2.png", &reel2);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
@@ -76,6 +77,9 @@ public:
 
 		const float reelRoto = (float) sync_get_val(st_fxTime, row);
 
+		// stationary position (opening forward, like in 80s bumper)
+		const float reelStat = 0.9f;
+
 		// reels (rotate quickly in same direction in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
@@ -83,14 +87,14 @@ public:
 				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-kReelYOffs),
 				kProjectorZ,
 				1.f,
-				-reelRoto*2.f);
+				reelStat + reelRoto*1.5f); // - (M_PI/2.f) + 0.26f);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
 				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+kReelYOffs+7.f), // @plek: Lower this one a few pixels.
 				kProjectorZ,
 				1.f,
-				-reelRoto*2.f);
+				reelStat + -reelRoto*1.5f);
 
 
 		// Update inv param
