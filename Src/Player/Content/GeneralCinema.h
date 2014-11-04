@@ -37,6 +37,8 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector.png", &projector);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
+		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
+		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}

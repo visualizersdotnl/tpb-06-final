@@ -85,6 +85,8 @@ VSOutput MainVS(VSInput input)
 Texture2D texture_ribbons_mesh;
 Texture2D texture_ribbons_wall;
 Texture2D texture_even_lachen;
+Texture2D texture_tentacles_pattern;
+Texture2D texture_tentacles_noise;
 
 SamplerState samplerTexture
 {
@@ -189,11 +191,12 @@ float DistanceToSpiral(float3 Pos)
 	// pos.z = 1 --> poo = 1
 	// pos.z = 3 --> poo = 0
 
-	float poo = 0;//(1.0 - (Pos.z-1.0)/(3.0-1.0));
+	float poo = 1;//(1.0 - (Pos.z-1.0)/(3.0-1.0));
 
+	float wobbleSpeed = 1.2;
 
-	float k1 = 1.5 + 0.1*sin((Pos.z-g_fxTime)*2.0);
-	float k2 = 1.5 + 0.1*cos((Pos.z-g_fxTime)*3.0);
+	float k1 = wobbleSpeed + 0.1*sin((Pos.z)*0.2);
+	float k2 = wobbleSpeed + 0.1*cos((Pos.z)*0.2);
 
 	k1*=poo;
 	k2*=poo;
@@ -300,10 +303,21 @@ float DistToCenterSphere(float3 p)
 
 float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV) 
 {
+	// float k = 15.0;
+	// Pos.z = SafeMod(Pos.z + 0.5*k, k) - 0.5*k;
+
+
+
 	outUV = float2(0,0);
 
 	HitMat = 0;
-	return DistSmooth(DistanceToFoldedSpiral(Pos), DistToCenterSphere(Pos));
+	float d= DistSmooth(DistanceToFoldedSpiral(Pos), DistToCenterSphere(Pos));
+
+	float2 uv = float2(atan2(Pos.x, Pos.y)*0.3, atan2(Pos.y, Pos.z)*0.4);
+	d += 0.1*texture_tentacles_noise.SampleLevel(samplerTexture, uv.xy, 0).x;
+
+
+	return d;
 
 	// float2 uv0, uv1;
 
@@ -448,10 +462,11 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	{		
 		// Ribbons
 		
-		float3 flatPos = inPos - inNormal*dot(inPos, inNormal);
-		float2 uv = inUV.xy * 1.90;
+		float3 flatPos = inPos;// - inNormal*dot(inPos, inNormal);
+		float2 uv = float2(atan2(inPos.x, inPos.y)*0.3, atan2(inPos.y, inPos.z)*0.4);
+		//inPos.xz * 0.60;
 
-		float3 lineMask = texture_even_lachen.SampleLevel(samplerTexture, uv.xy, 0).xyz;
+		float3 lineMask = texture_tentacles_pattern.SampleLevel(samplerTexture, uv.xy, 0).xyz;
 		float depthAmount = saturate(inPos.z / -0.3);
 		diffColor = lerp(RibbonDiffuseFront, RibbonDiffuseBack, depthAmount) * lineMask;
 		ambient = RibbonAmbient;
@@ -459,11 +474,14 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		specColor = RibbonSpecular;
 		specAmount = 0.2;
 
-		if (sin(inPos.y) > 0.99)
+		float eps = sin((inPos.x - inPos.y)*12.0);
+		float epsThreshold = 0.95;
+		if (eps > epsThreshold)
 		{
-			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
-			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
-		}	
+			eps = saturate(1.5*(eps - epsThreshold)/(1.0 - epsThreshold));
+			ambient = lerp(ambient, OrangeLineAmbient, 0.1*eps);
+			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.1*eps);
+		}		
 	}
 	else if (inMatIndex == 1)
 	{
@@ -493,7 +511,8 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float3 lightAmount = 
 		diffuse + specular*specColor + ambient;
 
-	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
+	float lightAttenuation = 1.0 / (1.0 + 0.1*dot(inPos,inPos));
+	//1.0 / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
 	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 6 ), 0.2);
 
