@@ -270,6 +270,9 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+
+#include "resource.h"
+
 static bool CreateAppWindow(HINSTANCE hInstance, int nCmdShow)
 {
 	WNDCLASSEX wndClass;
@@ -279,12 +282,12 @@ static bool CreateAppWindow(HINSTANCE hInstance, int nCmdShow)
 	wndClass.cbClsExtra = 0;
 	wndClass.cbWndExtra = 0;
 	wndClass.hInstance = hInstance;
-	wndClass.hIcon = NULL; // LoadIcon(hInstance, MAKEINTRESOURCE(IDI_INDIGO)); // FIXME!
+	wndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wndClass.hCursor = NULL;
 	wndClass.hbrBackground = (kWindowed) ? (HBRUSH) GetStockObject(BLACK_BRUSH) : NULL;
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = PIMPPLAYER_RELEASE_ID;
-	wndClass.hIconSm = NULL;
+	wndClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	
 	if (0 == RegisterClassEx(&wndClass))
 	{

@@ -185,4 +185,7 @@
       <Filter>/Stub &amp; helper code</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="1b.ico" />
+  </ItemGroup>
 </Project>

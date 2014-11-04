@@ -501,11 +501,16 @@ bool Tick(Pimp::Camera *camOverride)
 		// Wait for esc (or timer).
 		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic();
 
-#if defined(_DEBUG) &&  defined(_DESIGN)
-		return true;
-#else
-		return true;
-#endif
+		static Stopwatch sw;
+		const float t = 12.f;
+		static bool waren_we_hier_eerder = false;
+		if (false == waren_we_hier_eerder)
+		{
+			sw.Reset();
+			waren_we_hier_eerder = true;
+		}
+
+		return !(sw.GetSecondsElapsed() > t);
 	}
 
 	// Tie in final flash and fade in the sprite batch at "improbable" Zs.

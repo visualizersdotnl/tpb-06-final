@@ -293,6 +293,9 @@
   <ItemGroup>
     <Library Include="..\Libs\bass24\c\x64\bass.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="1b.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
