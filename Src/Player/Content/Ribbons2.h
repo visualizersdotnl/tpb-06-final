@@ -19,6 +19,8 @@ public:
 		s_syncTracks.push_back(SyncTrack("ribbonsAppear", true));	
 		s_syncTracks.push_back(SyncTrack("ribbonsPhase", true));	
 		s_syncTracks.push_back(SyncTrack("ribbonsWonkyness", true));		
+		s_syncTracks.push_back(SyncTrack("ribbons2Separate", true));		
+		
 	}
 
 	void ReqAssets()

@@ -58,6 +58,8 @@ cbuffer paramsOnlyOnce
 	float ribbonsAppear = 1.0; //< [0..1] 0=invisible, 1=visible
 	float ribbonsPhase = 0; //< Extra value added to wave time.
 	float ribbonsWonkyness = 0; //< [0..1] The higher, the more they'll wiggle with depth.
+
+	float ribbons2Separate = 0;
 };
 
 
@@ -182,16 +184,19 @@ float DistToSphere(float3 p, float r)
 
 float DistToRibbon(float3 Pos, float inPhase, float2 inBoxSize, float inTwirlRadius, float inTwirlFreq, out float2 outUV)
 {
-	Pos.x += inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
+	Pos.x += (1+ribbons2Separate)*inTwirlRadius*cos(Pos.y*inTwirlFreq+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
 	Pos.z += inTwirlRadius*sin(Pos.y*inTwirlFreq+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
 
 	Pos.z += ribbonsWonkyness*inTwirlRadius*0.4*cos(Pos.y*inTwirlFreq*7.0+inPhase + g_fxTime*ribbonsSpeed + ribbonsPhase);
 
-	// Dist to signed box of infinite length in Y.
-	float2 di = abs(Pos.xz) - inBoxSize;
-	float mc = max(di.x, di.y);
-//	float d = min(mc, length(max(di, 0.0)));
-	float d = min(mc, 0.0) + length(max(di, 0.0)) - 0.05;
+	// Dist to cylinder of infinite length in Y
+	float d = length(Pos.xz) - inBoxSize.y;
+
+	// Dist to signed box of infinite length in Y.	
+// 	float2 di = abs(Pos.xz) - inBoxSize;
+// 	float mc = max(di.x, di.y);
+// //	float d = min(mc, length(max(di, 0.0)));
+// 	float d = min(mc, 0.0) + length(max(di, 0.0)) - 0.05;
 
 	outUV = float2(Pos.y, Pos.x + 1.0) * 0.5;
 
@@ -247,17 +252,8 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 
 	float dWall = Pos.z + 3.0;
 
-	if (d < dWall)
-	{
-		HitMat = 0;
-		return d;
-	}
-	else
-	{
-		HitMat = 1;
-		outUV = Pos.xy * 0.1;		
-		return dWall;
-	}
+	HitMat = 0;
+	return d;
 }
 
 
@@ -390,10 +386,11 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		specColor = RibbonSpecular;
 		specAmount = 0.6;
 
-		if (sin(inPos.y) > 0.99)
+		if (sin(inPos.y * 4.0) > 0.995)
 		{
-			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
+			ambient = lerp(ambient, OrangeLineAmbient, 0.8);
 			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
+			specAmount = 0.5;
 		}		
 	}
 	else if (inMatIndex == 1)
@@ -458,11 +455,19 @@ PSOutput MainPS(VSOutput input)
 
 		float depth = 1;//length(hitPos - origin);
 
-#if SHOW_NORMALS		
-		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
-#else
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
-#endif			
+
+		// Add some reflections
+		float4 hitPos2;
+		float2 hitUV2;
+		float4 reflectedDir = float4( reflect(dir.xyz, normal), 0 );
+		if (Trace(hitPos+reflectedDir*0.001, reflectedDir, hitPos2, hitMat, hitUV2))
+		{
+			float3 normal2 = Normal(hitPos2.xyz);
+			float3 eyeDir = normalize(origin - hitPos2);
+
+			result.color.xyz += 0.7*Shade(hitPos2.xyz, normal2, eyeDir, origin, hitMat, hitUV2);			
+		}		
 	}
 	else
 	{
