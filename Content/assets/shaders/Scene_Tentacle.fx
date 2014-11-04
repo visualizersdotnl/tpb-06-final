@@ -194,6 +194,7 @@ float DistanceToSpiral(float3 Pos)
 	float poo = 1;//(1.0 - (Pos.z-1.0)/(3.0-1.0));
 
 	float wobbleSpeed = 1.2;
+	float wobbleSpeed2 = 1.5;
 
 	float k1 = wobbleSpeed + 0.1*sin((Pos.z)*0.2);
 	float k2 = wobbleSpeed + 0.1*cos((Pos.z)*0.2);
@@ -204,7 +205,7 @@ float DistanceToSpiral(float3 Pos)
 //	k1 *= saturate(1.0 + Pos.z*0.4);
 //	k2 *= saturate(1.0 + Pos.z*0.4);
 
-	float2 p = Pos.xy + float2(r*sin((Pos.z-g_fxTime) * k1), r*cos( (Pos.z-g_fxTime) * k2));
+	float2 p = Pos.xy + float2(r*sin((Pos.z-g_fxTime*wobbleSpeed2) * k1), r*cos( (Pos.z-g_fxTime*wobbleSpeed2) * k2));
 	
 	
 	
@@ -441,7 +442,7 @@ static float3 RibbonSpecular = float3(248,239,222)/255.0;
 static float3 OrangeLineAmbient = 0.4*float3(210,69,0)/255.0;
 static float3 OrangeLineDiffuse = 0.7*float3(254,173,0)/255.0;
 
-float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float2 inUV)
+float4 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float2 inUV)
 {
 	float3 lightOffset = (testLightPos.xyz - inPos);
 	
@@ -516,7 +517,9 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 
 	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 6 ), 0.2);
 
-	return lightAmount * lightAttenuation * shadowFactor * (pow(2.0, fadeAmount)-1.0);
+	float3 col = lightAmount * lightAttenuation * shadowFactor * (pow(2.0, fadeAmount)-1.0);
+	float opacity = saturate(lightAttenuation*1.2);
+	return float4(col, opacity);
 }
 
 
@@ -549,7 +552,7 @@ PSOutput MainPS(VSOutput input)
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
 #else
-		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
+		result.color = Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV);
 #endif			
 	}
 	else
