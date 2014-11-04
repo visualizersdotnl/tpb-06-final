@@ -514,6 +514,9 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
+						if (LoadLoadingTexture())
+						{
+
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
 						if (true == Demo::GenerateWorld(rocketClient))
 						{
@@ -608,6 +611,10 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 						}
 
 						Demo::ReleaseWorld();
+
+						} // LoadingTexture
+
+						DumpLoadingTexture();
 					}
 
 					delete Pimp::gD3D;

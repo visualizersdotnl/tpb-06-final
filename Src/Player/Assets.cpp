@@ -16,7 +16,7 @@
 // PNG loader.
 //
 
-static Pimp::Texture2D *LoadPNG(const std::string &path, bool gammaCorrect)
+Pimp::Texture2D *LoadPNG(const std::string &path, bool gammaCorrect)
 {
 	const std::string ID = LowerCase(GetFilenameWithoutExtFromPath(path));
 

@@ -21,7 +21,9 @@ PostProcess::PostProcess() :
 	passBloomBlur(&techniquePostFX, "Blur"),
 	passBloomCombine(&techniquePostFX, "Combine"),
 	passMotionBlurBlend(&techniquePostFX, "MotionBlur"),
-	userPostEffect(NULL)
+	userPostEffect(NULL),
+	loadingTexture(nullptr),
+	quadVB(nullptr)
 {
 	renderTargetSceneMS = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 	renderTargetSceneSingle = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
@@ -43,15 +45,19 @@ PostProcess::PostProcess() :
 	varIndexBloomBlurPixelDir = effect.RegisterVariable("bloomBlurPixelDir", true);
 	varIndexLoadProgress = effect.RegisterVariable("loadProgress", true);
 	varIndexMotionBlurWeight = effect.RegisterVariable("motionBlurFrameWeight", true);
+	varIndexLoadTexture = effect.RegisterVariable("loadingTexture", true);
 
 	SetMotionBlurFrameWeight(1.0f);
 
 	SetParameters();
+
+//	quadVB = new ScreenQuadVertexBuffer(GetEffectPassBloomGather());
 }
 
 
 PostProcess::~PostProcess()
 {
+	delete quadVB;
 	delete renderTargetSceneMS;
 	delete renderTargetSceneSingle;
 	delete renderTargetSceneMotionBlurred;
@@ -267,6 +273,12 @@ void PostProcess::SetMotionBlurFrameWeight(float w)
 {
 	this->w = w;
 	effect.SetVariableValue(varIndexMotionBlurWeight, w);	
+}
+
+void PostProcess::SetLoadingTexture(Texture2D *texture) 
+{ 
+	loadingTexture = texture;
+	effect.SetVariableValue(varIndexLoadTexture, texture->GetShaderResourceView());
 }
 
 } // namespace
