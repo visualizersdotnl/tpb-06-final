@@ -82,7 +82,7 @@ static Pimp::Texture2D *coolness = nullptr;
 bool LoadLoadingTexture()
 {
 	const std::string assPath = Demo::GetAssetsPath();
-	coolness = LoadPNG(assPath + "tpb-02-bond.png", true);
+	coolness = LoadPNG(assPath + "textures\\tpb-02-bond.png", true);
 	if (nullptr == coolness)
 		return false;
 
