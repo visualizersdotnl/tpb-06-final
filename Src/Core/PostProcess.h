@@ -3,6 +3,7 @@
 #include "EffectPass.h"
 #include "RenderTarget.h"
 #include "Settings.h"
+#include "ScreenQuadVertexBuffer.h"
 
 namespace Pimp
 {
@@ -37,6 +38,9 @@ namespace Pimp
 		// Sets the weight of the current frame.
 		void SetMotionBlurFrameWeight(float w);
 
+		// Set background loading texture
+		void SetLoadingTexture(Texture2D *texture);
+
 	private:
 
 		void SetParameters();
@@ -65,11 +69,16 @@ namespace Pimp
 		int varIndexBloomBlurSamples;
 		int varIndexBloomBlurWeights;
 		int varIndexBloomBlurPixelDir;
-		int varIndexLoadProgress; // loadProgress
 		int varIndexMotionBlurWeight;
+
+		int varIndexLoadProgress; // loadProgress
+		int varIndexLoadTexture; // 1920*1080 background texture
+		Texture2D *loadingTexture;
 
 		Vector2 bloomBlurDirH;
 		Vector2 bloomBlurDirV;
+
+		ScreenQuadVertexBuffer *quadVB;
 
 		Material* userPostEffect;
 		float w;

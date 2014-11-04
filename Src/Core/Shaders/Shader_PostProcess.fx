@@ -39,6 +39,7 @@ cbuffer paramsOnlyOnce
 	float loadProgress = 0;	
 };
 
+Texture2D loadingTexture; // 1920*1080 16:9
 
 VSOutput MainVS(VSInput input)
 { 
@@ -132,6 +133,11 @@ PSOutput MainPS_Combine(VSOutput input)
 	
 	result.color = color;	
 
+	if (loadProgress > 0)
+	{
+		float2 loadUV = uv;
+		result.color = loadingTexture.SampleLevel(samplerSceneColor, loadUV, 0);
+	}
 	
 	if (loadProgress > 0 && 
 		uv.y >= 0.40 && uv.y <= 0.60 && 
@@ -151,7 +157,10 @@ PSOutput MainPS_Combine(VSOutput input)
 		else 
 			v = 0.0;
 
-		result.color = float4(v,v,v,1);	
+		// @plek: blend into Bond background
+		v *= 1.f-uv.x;
+
+		result.color += float4(v,v,v,1);	
 	}
 	
 	return result;

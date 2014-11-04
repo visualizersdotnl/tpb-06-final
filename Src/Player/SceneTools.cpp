@@ -75,6 +75,25 @@ void DuplicateTransformTransformedHierarchy(
 // Loading bar.
 //
 
+#include "Demo.h"
+#include "Assets.h"
+static Pimp::Texture2D *coolness = nullptr;
+
+bool LoadLoadingTexture()
+{
+	const std::string assPath = Demo::GetAssetsPath();
+	coolness = LoadPNG(assPath + "tpb-02-bond.png", true);
+	if (nullptr == coolness)
+		return false;
+
+	return true;
+}
+
+void DumpLoadingTexture()
+{
+	delete coolness;
+}
+
 void DrawLoadProgress(Pimp::Texture2D *pTex, float progress)
 {
 	if (gWorld == NULL)
@@ -88,6 +107,7 @@ void DrawLoadProgress(Pimp::Texture2D *pTex, float progress)
 		progress = 1.f;
 
 	Pimp::PostProcess* postProcess = gWorld->GetPostProcess();
+	postProcess->SetLoadingTexture(coolness);
 	postProcess->SetLoadProgress(progress);
 	postProcess->Clear();
 	postProcess->BindForRenderScene();
