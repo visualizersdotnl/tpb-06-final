@@ -11,6 +11,8 @@ struct VSOutput
 	float4 color : COLOR;
 	float2 texCoord : TEXCOORD0;
 	float2 texCoordProj : TEXCOORD1;
+	float3 normal : TEXCOORD2;
+	float3 view : TEXCOORD3;
 };
 
 
@@ -51,17 +53,22 @@ VSOutput MainVS(VSInput input)
 	float4 worldPos = mul(input.position, mWorld);
 	output.screenPos = mul(worldPos, viewProjMatrix);
 
+	float3 lightPos = float3(0.f, 0.f, 1.f);
+
 	output.color = 0.f + 
 		float4(LightVertex(
 			input.position.xyz, 
 			input.normal, 
-			float3(0.f, 0.f, 1.f), 
+			lightPos, 
 			float3(1.f, 1.f, 1.f)), 1.f); // Let the env. map take care of color.
 
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
 	
 	output.texCoordProj = worldPos.xy; // input.position.xy;
+
+	output.normal = worldNormal;
+	output.view = normalize(viewProjMatrix._41_42_43 - worldPos);
 
 	return output;
 }
@@ -81,10 +88,14 @@ SamplerState samplerTexture
 
 float4 MainPS(VSOutput input) : SV_Target0
 {
+	float viewFacing = dot(normalize(input.view), normalize(input.normal));
+	float rim = saturate((viewFacing - 0.2)*8.0);
+
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);
 	float4 projColor = projMap.Sample(samplerTexture, input.texCoordProj);
-	return texColor*projColor*input.color;
+
+	return texColor*projColor*input.color*float4(rim.xxx,1.0);
 }
 
 
