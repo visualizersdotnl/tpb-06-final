@@ -18,6 +18,7 @@ private:
 	const sync_track *st_bondTarget;
 	const sync_track *st_bondSoundFX;
 	const sync_track *st_bondPimpFade;
+	const sync_track *st_bondBlobBig, *st_bondBlobBigFade, *st_bondBlobBigScale;
 
 public:
 	Bondtro()
@@ -34,6 +35,9 @@ public:
 		s_syncTracks.push_back(SyncTrack("bondBlobFade1", false, &st_bondBlobFade1));
 		s_syncTracks.push_back(SyncTrack("bondBlob2", false, &st_bondBlob2));
 		s_syncTracks.push_back(SyncTrack("bondBlobFade2", false, &st_bondBlobFade2));
+		s_syncTracks.push_back(SyncTrack("bondBigBlob", false, &st_bondBlobBig));
+		s_syncTracks.push_back(SyncTrack("bondBigBlobFade", false, &st_bondBlobBigFade));
+		s_syncTracks.push_back(SyncTrack("bondBigBlobScale", false, &st_bondBlobBigScale));
 		s_syncTracks.push_back(SyncTrack("bondAmpFade", false, &st_bondAmpFade));
 		s_syncTracks.push_back(SyncTrack("bondFadeTPB", false, &st_bondFadeTPB));
 		s_syncTracks.push_back(SyncTrack("bondFadeINQ", false, &st_bondFadeINQ));
@@ -58,6 +62,7 @@ public:
 		Assets::AddTexture2D("textures\\bondtro\\bond-hole-3.png", &blast[2]);
 		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp);
 		Assets::AddTexture2D("textures\\bondtro\\bond-title.png", &title);
+		Assets::AddTexture2D("textures\\bondtro\\bond-circle-2.png", &bigCircle);
 
 //		Assets::AddTexture2D("textures\\1\\bond-circle.png", false, &bigCircle);
 		bigCircle = nullptr;
@@ -84,6 +89,10 @@ public:
 		const float targetOpacity = (float) sync_get_val(st_bondTarget, row);
 		const int   shotFX = (int) sync_get_val(st_bondSoundFX, row);
 		const float pimpOpacity = (float) sync_get_val(st_bondPimpFade, row);
+
+		const float bigPos = (float) sync_get_val(st_bondBlobBig, row);
+		const float bigFade = (float) sync_get_val(st_bondBlobBigFade, row);
+		const float bigScale = (float) sync_get_val(st_bondBlobBigScale, row);
 
 		const float ballY = 1080.f*0.5f-(blob->GetHeight()*0.5f);
 
@@ -156,15 +165,28 @@ public:
 				kBackgroundZ,
 				0.f);
 
-#if 0
-		// big circle (FIXME: to scale up in transition)
-		s_sprites->AddSpriteCenter(
+		// die grote cirkel die naar het target moet morphen
+		if (bigFade != 0.f)
+		{		
+			float ratioX = (float)blob->GetWidth()/bigCircle->GetWidth();
+			float ratioY = (float)blob->GetWidth()/bigCircle->GetHeight();
+			float scaleX = bigScale*ratioX;
+			float scaleY = bigScale*ratioY;
+
+			float width = bigCircle->GetWidth()*scaleX;
+			float height = bigCircle->GetHeight()*scaleY;
+
+			const float bigBallY = 1080.f*0.5f-(height*0.5f);
+
+			s_sprites->AddSprite(
 				bigCircle,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				Vector2(1920.f*0.5f, 1080.f*0.5f),
-				kTargetZ,
+				Pimp::D3D::BlendMode::BM_Additive,
+				AlphaToVtxColor(bigFade),
+				Vector2(bigPos, bigBallY),
+				Vector2(width, height),
+				kTargetZ-0.1f,
 				0.f);
-#endif
+		}
 
 		// target sprite
 		s_sprites->AddSpriteCenter(

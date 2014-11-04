@@ -46,8 +46,8 @@
 		</track>
 		<track name="bondBlobFade1">
 			<key row="0" value="0" interpolation="0"/>
-			<key row="323" value="0" interpolation="3"/>
-			<key row="333" value="1" interpolation="0"/>
+			<key row="316" value="0" interpolation="1"/>
+			<key row="323" value="1" interpolation="0"/>
 		</track>
 		<track name="bondBlob2">
 			<key row="0" value="-106" interpolation="3"/>
@@ -110,8 +110,8 @@
 		</track>
 		<track name="bondWhite">
 			<key row="0" value="0" interpolation="0"/>
-			<key row="312" value="0" interpolation="2"/>
-			<key row="344" value="1" interpolation="0"/>
+			<key row="336" value="0" interpolation="2"/>
+			<key row="352" value="1" interpolation="0"/>
 			<key row="369" value="0" interpolation="1"/>
 			<key row="376" value="1" interpolation="0"/>
 			<key row="381" value="0" interpolation="1"/>
@@ -121,8 +121,8 @@
 		</track>
 		<track name="bondTarget">
 			<key row="0" value="0" interpolation="0"/>
-			<key row="336" value="0" interpolation="2"/>
-			<key row="352" value="1" interpolation="0"/>
+			<key row="352" value="0" interpolation="2"/>
+			<key row="368" value="1" interpolation="0"/>
 		</track>
 		<track name="bondSoundFX">
 			<key row="0" value="0" interpolation="0"/>
@@ -672,6 +672,21 @@
 		</track>
 		<track name="blobsOverbright">
 			<key row="0" value="2" interpolation="0"/>
+		</track>
+		<track name="bondBigBlob">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="323" value="1387" interpolation="3"/>
+			<key row="352" value="650" interpolation="0"/>
+		</track>
+		<track name="bondBigBlobFade">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="323" value="1" interpolation="1"/>
+			<key row="351" value="1" interpolation="0"/>
+			<key row="352" value="0" interpolation="0"/>
+		</track>
+		<track name="bondBigBlobScale">
+			<key row="323" value="1" interpolation="1"/>
+			<key row="352" value="6" interpolation="0"/>
 		</track>
 	</tracks>
 	<bookmarks/>
