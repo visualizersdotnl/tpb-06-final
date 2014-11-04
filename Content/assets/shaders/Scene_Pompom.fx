@@ -46,12 +46,7 @@ Texture2D texture_pompom_color;
 
 // --------------------------------------------------------------------------------------------
 
-// fur ball
-// (c) simon green 2013
-// @simesgreen
-// v1.1
-
-static const float uvScale = 1.0;
+static const float uvScale = 0.4;
 static const float colorUvScale = 0.1;
 static const float furDepth = 0.2;
 static const int furLayers = 64;

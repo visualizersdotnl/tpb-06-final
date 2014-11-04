@@ -498,10 +498,14 @@ bool Tick(Pimp::Camera *camOverride)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 	{
-		// Wait for esc.
-		return true;
+		// Wait for esc (or timer).
+		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic();
 
-//		return false; // Demo is finished.
+#if defined(_DEBUG) &&  defined(_DESIGN)
+		return true;
+#else
+		return true;
+#endif
 	}
 
 	// Tie in final flash and fade in the sprite batch at "improbable" Zs.

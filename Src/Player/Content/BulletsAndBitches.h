@@ -2,7 +2,8 @@
 class BulletsAndBitches : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *background, *target, *blast, *pimp, *blob, *background2;
+	Pimp::Texture2D *background, *target, *blast[3], *pimp, *blob, *background2;
+	Pimp::Texture2D *thunderball;
 		 
 	const sync_track *st_bitchBullets;
 
@@ -29,17 +30,28 @@ public:
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\bitches\\loading.png", &background);
+		Assets::AddTexture2D("textures\\bitches\\thunderball.png", &thunderball);
 
 		// shared w/Bondtro
 		Assets::AddTexture2D("textures\\bondtro\\bond-bullseye.png", &target);
-		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", &blast);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", &blast[0]);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole-2.png", &blast[1]);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole-3.png", &blast[2]);
 		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp);
 		Assets::AddTexture2D("textures\\bondtro\\bond-circle.png", &blob);
 		Assets::AddTexture2D("textures\\bondtro\\bg.png", &background2);
+
+
 	}
 
 	void BindToWorld()
 	{
+	}
+
+	void EndPic()
+	{
+		SetMainSceneAndDefaultCamera();
+		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 	}
 
 	void Tick(double row)
@@ -127,7 +139,7 @@ public:
 					{
 						if (iShot < 5) {
 							s_sprites->AddSprite(
-									blast,
+									blast[iShot%3],
 									Pimp::D3D::BlendMode::BM_AlphaBlend,
 									kShotPositions[iShot],
 									kShotZ,

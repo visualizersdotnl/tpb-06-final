@@ -3,7 +3,7 @@ class Bondtro : public Demo::Scene
 {
 public: // public since I'll borrow these in BulletsAndBitches.h
 	Pimp::Texture2D *background, *blob, *ampersand, *logoTPB, *logoInque, *present;
-	Pimp::Texture2D *bigCircle, *target, *blast, *pimp, *title;
+	Pimp::Texture2D *bigCircle, *target, *blast[3], *pimp, *title;
 
 private:
 	const sync_track *st_bondBlob1;
@@ -53,7 +53,9 @@ public:
 		Assets::AddTexture2D("textures\\bondtro\\bond-02.png", &logoInque);
 		Assets::AddTexture2D("textures\\bondtro\\bond-03.png", &present);
 		Assets::AddTexture2D("textures\\bondtro\\bond-bullseye.png", &target);
-		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", &blast);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", &blast[0]);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole-2.png", &blast[1]);
+		Assets::AddTexture2D("textures\\bondtro\\bond-hole-3.png", &blast[2]);
 		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp);
 		Assets::AddTexture2D("textures\\bondtro\\bond-title.png", &title);
 
@@ -190,7 +192,7 @@ public:
 				{
 					if (iShot < 3) {
 						s_sprites->AddSprite(
-								blast,
+								blast[iShot],
 								Pimp::D3D::BlendMode::BM_AlphaBlend,
 								kShotPositions[iShot],
 								kShotZ,
