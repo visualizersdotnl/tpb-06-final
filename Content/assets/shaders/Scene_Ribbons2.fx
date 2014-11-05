@@ -421,6 +421,12 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float3 lightAmount = 
 		diffuse + specular*specColor + ambient;
 
+	float viewFacing = dot(normalize(inEyeDir), normalize(inNormal));
+	float rim = saturate((viewFacing - 0.4)*12.0);
+	lightAmount *= rim;		
+
+	lightAmount *= float3(149.0,195.0,246.0)/255.0; //< Blue-ish lighting
+
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
 	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 6 ), 0.2);
@@ -453,7 +459,7 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
-		float depth = 1;//length(hitPos - origin);
+		float depth = max(0.0, 1.0 - dot(hitPos - origin, hitPos-origin)*0.005);
 //		float depth = length(hitPos - origin);
 
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );

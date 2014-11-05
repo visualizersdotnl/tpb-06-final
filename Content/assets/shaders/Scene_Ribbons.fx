@@ -412,7 +412,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float3 lightAmount = 
 		diffuse + specular*specColor + ambient;
 
-	lightAmount *= float3(149.0,195.0,246.0)/255.0;
+	lightAmount *= float3(149.0,195.0,246.0)/255.0; //< Blue-ish lighting
 
 
 	float viewFacing = dot(normalize(inEyeDir), normalize(inNormal));
