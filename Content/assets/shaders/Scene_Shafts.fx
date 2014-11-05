@@ -480,11 +480,12 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		specAmount = 0.2;
 		specColor = (1.0).xxx;
 
-		if (sin(inPos.z*12.0 - inPos.y*12.0)  > 0.95)
-		{
-			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
-			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
-		}		
+		// FIXME: orange stripes removed :(
+//		if (sin(inPos.z*12.0 - inPos.y*12.0)  > 0.95)
+//		{
+//			ambient = lerp(ambient, OrangeLineAmbient, 0.9);
+//			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
+//		}		
 	}
 	else
 	{
