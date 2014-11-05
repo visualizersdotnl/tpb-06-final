@@ -12,7 +12,7 @@ inline int IsPowerOfTwo(unsigned int x)
 }
 
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DESIGN) // _DESIGN is a Player build type.
 
 #define DEBUG_LOG(f,...) do { char s[256]; sprintf_s(s,256,f, __VA_ARGS__); OutputDebugString(s); OutputDebugString("\n"); } while(false);
 
