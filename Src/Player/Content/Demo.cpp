@@ -506,7 +506,7 @@ bool Tick(Pimp::Camera *camOverride)
 	else
 	{
 		static Stopwatch sw;
-		const float t = 12.f;
+		const float t = 9.f;
 		static bool waren_we_hier_eerder = false;
 		if (false == waren_we_hier_eerder)
 		{
