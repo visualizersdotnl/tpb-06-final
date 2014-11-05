@@ -66,7 +66,10 @@ public:
 		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
 		
 		// Set maps & lighting.
-		s_pMetaballs->SetMaps(envMap, projMap);
+		s_pMetaballs->SetMaps(
+			envMap, projMap,
+			(float) sync_get_val(st_blobsProjScrollU, row),
+			(float) sync_get_val(st_blobsProjScrollV, row));
 		s_pMetaballs->SetLighting(
 			(float) sync_get_val(st_blobsShininess, row),
 			(float) sync_get_val(st_blobsOverbright, row));

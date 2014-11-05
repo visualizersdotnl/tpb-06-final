@@ -28,7 +28,7 @@ namespace Pimp
 		void Draw(Camera* camera);
 		
 		void SetRotation(const Quaternion &rotation);
-		void SetMaps(Texture2D *envMap, Texture2D *projMap);
+		void SetMaps(Texture2D *envMap, Texture2D *projMap, float projScrollU, float projScrollV);
 		void SetLighting(float shininess, float overbright);
 
 	private:
@@ -42,11 +42,11 @@ namespace Pimp
 		int varIndexTextureMap;
 		int varIndexProjMap;
 		int varIndexViewProjMatrix;
-		int varIndexProjMat;
 		int varIndexWorldMatrix;
 		int varIndexWorldMatrixInv;
 		int varIndexShininess;
 		int varIndexOverbright;
+		int varIndexProjScroll;
 
 		bool isVisible;
 
@@ -55,6 +55,7 @@ namespace Pimp
 		float overbright;
 
 		Texture2D *envMap, *projMap;
+		float projScrollU, projScrollV;
 
 		__forceinline unsigned int GetEdgeTableIndex();
 		float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ);
