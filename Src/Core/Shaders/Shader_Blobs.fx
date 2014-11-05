@@ -20,11 +20,11 @@ cbuffer paramsOnlyOnce
 {
 	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 	float4x4 viewProjMatrix;
-	float4x4 projMat;
 	float4x4 mWorld;
 	float4x4 mWorldInv;
 	float shininess;
 	float overbright;
+	float2 projScroll;
 };
 
 float3 LightVertex(
@@ -65,7 +65,7 @@ VSOutput MainVS(VSInput input)
 	float3 worldNormal = mul(input.normal, (float3x3) mWorld);
 	output.texCoord = worldNormal.xy*0.5f + 0.5f;
 	
-	output.texCoordProj = worldPos.xy; // input.position.xy;
+	output.texCoordProj = worldPos.xy + projScroll;
 
 	output.normal = worldNormal;
 	output.view = normalize(viewProjMatrix._41_42_43 - worldPos);

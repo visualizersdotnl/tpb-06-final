@@ -95,6 +95,7 @@ Metaballs::Metaballs() :
 	effectPass(&effectTechnique, "Default"),
 	worldTrans(new Xform(nullptr)),
 	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex()),
+	projScrollU(0.f), projScrollV(0.f),
 	shininess(9.f), overbright(1.5f)
 {
 }
@@ -144,11 +145,11 @@ bool Metaballs::Initialize()
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 	varIndexProjMap = effect.RegisterVariable("projMap", true);
 	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
-	varIndexProjMat = effect.RegisterVariable("projMat", true);
 	varIndexWorldMatrix = effect.RegisterVariable("mWorld", true);
 	varIndexWorldMatrixInv = effect.RegisterVariable("mWorldInv", true);
 	varIndexShininess = effect.RegisterVariable("shininess", true);
 	varIndexOverbright = effect.RegisterVariable("overbright", true);
+	varIndexProjScroll = effect.RegisterVariable("projScroll", true);
 
 	return true;
 }
@@ -258,11 +259,11 @@ void Metaballs::Draw(Camera* camera)
 	effect.SetVariableValue(varIndexTextureMap, envMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexProjMap, projMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
-//	effect.SetVariableValue(varIndexProjMat, *camera->GetViewProjectionMatrixPtr()); // FIXME
 	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
 	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
 	effect.SetVariableValue(varIndexShininess, shininess);
 	effect.SetVariableValue(varIndexOverbright, overbright);
+	effect.SetVariableValue(varIndexProjScroll, Vector2(projScrollU, projScrollV));
 	effectPass.Apply();
 
 	// * A transpose serves just as well for an orthogonal matrix.
@@ -277,11 +278,13 @@ void Metaballs::SetRotation(const Quaternion &rotation)
 	worldTrans->SetRotation(rotation);
 }
 
-void Metaballs::SetMaps(Texture2D *envMap, Texture2D *projMap)
+void Metaballs::SetMaps(Texture2D *envMap, Texture2D *projMap, float projScrollU, float projScrollV)
 {
-//	ASSERT(nullptr != envMap &&& nullptr != projMap);
+//	ASSERT(nullptr != envMap && nullptr != projMap);
 	this->envMap = envMap;
 	this->projMap = projMap;
+	this->projScrollU = projScrollU;
+	this->projScrollV = projScrollV;
 }
 
 void Metaballs::SetLighting(float shininess, float overbright)
