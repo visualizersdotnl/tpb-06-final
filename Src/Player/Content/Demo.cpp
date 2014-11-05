@@ -505,9 +505,6 @@ bool Tick(Pimp::Camera *camOverride)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 	{
-		// Wait for esc (or timer).
-		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic();
-
 		static Stopwatch sw;
 		const float t = 12.f;
 		static bool waren_we_hier_eerder = false;
@@ -516,6 +513,9 @@ bool Tick(Pimp::Camera *camOverride)
 			sw.Reset();
 			waren_we_hier_eerder = true;
 		}
+
+		// Wait for esc (or timer).
+		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic();
 
 		return !(sw.GetSecondsElapsed() > t);
 	}

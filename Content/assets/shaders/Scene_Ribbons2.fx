@@ -43,10 +43,10 @@ cbuffer paramsOnlyOnce
 	// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 	float2 quadScaleFactor;
 	
-	float FOV = 0.7f;
+	float FOV = 0.5f;
 
 	float fisheyeStrength = 6; //6;
-	float fisheyeFOV = 2.0; //1.0;
+	float fisheyeFOV = 2.5; //1.0;
 	
 	float fadeAmount = 1; // 0 = black, 1 = visible, 10 = white-ish
 
@@ -347,12 +347,12 @@ static float3 ColOrange = float3(255.0,83.0,13.0)/255.0;
 
 static float3 RibbonDiffuseBack = 0.3 * float3(143,100,85)/255.0;
 
-static float3 RibbonDiffuseFront = 0.9 * float3(196,156,121)/255.0;
+static float3 RibbonDiffuseFront = 1.2 * float3(196,156,121)/255.0;
 static float3 RibbonAmbient = 0.1 * float3(86,44,68)/255.0;
 static float3 RibbonSpecular = float3(248,239,222)/255.0;
 
 static float3 OrangeLineAmbient = 0.4*float3(210,69,0)/255.0;
-static float3 OrangeLineDiffuse = 0.7*float3(254,173,0)/255.0;
+static float3 OrangeLineDiffuse = 0.9*float3(254,173,0)/255.0;
 
 float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, float inMatIndex, float2 inUV)
 {
@@ -386,7 +386,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		specColor = RibbonSpecular;
 		specAmount = 0.6;
 
-		if (sin(inPos.y * 4.0) > 0.995)
+		if (sin(inPos.y * 4.0) > 0.945)
 		{
 			ambient = lerp(ambient, OrangeLineAmbient, 0.8);
 			diffColor = lerp(diffColor, OrangeLineDiffuse, 0.8);
@@ -453,7 +453,9 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
+		// @plek: FIXME, lerp between these w/Rocket param
 		float depth = 1;//length(hitPos - origin);
+//		float depth = length(hitPos - origin);
 
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
 

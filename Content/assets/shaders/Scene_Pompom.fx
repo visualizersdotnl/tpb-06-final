@@ -48,8 +48,8 @@ Texture2D texture_pompom_color;
 
 // --------------------------------------------------------------------------------------------
 
-static const float uvScale = 1.0;
-static const float colorUvScale = 0.1;
+static const float uvScale = 1;
+static const float colorUvScale = 0.3;
 static const float furDepth = 0.3;
 static const int furLayers = 96;
 static const float rayStep = furDepth*2.0 / float(furLayers);
