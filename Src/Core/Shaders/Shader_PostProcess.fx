@@ -133,11 +133,11 @@ PSOutput MainPS_Combine(VSOutput input)
 	
 	result.color = color;	
 
-	if (loadProgress > 0)
-	{
-		float2 loadUV = uv;
-		result.color = loadingTexture.SampleLevel(samplerSceneColor, loadUV, 0);
-	}
+//	if (loadProgress > 0)
+//	{
+//		float2 loadUV = uv;
+//		result.color = loadingTexture.SampleLevel(samplerSceneColor, loadUV, 0);
+//	}
 	
 	if (loadProgress > 0 && 
 		uv.y >= 0.40 && uv.y <= 0.60 && 
@@ -157,9 +157,9 @@ PSOutput MainPS_Combine(VSOutput input)
 		else 
 			v = 0.0;
 
-		// @plek: blend into Bond background
+		// @plek: blend
 		float fade = (uv.x-0.08)/0.92;
-		v *= 1.f-fade;
+		v *= fade;
 
 		result.color += float4(v,v,v,1);	
 	}
