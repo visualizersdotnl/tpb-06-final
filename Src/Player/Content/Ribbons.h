@@ -2,8 +2,10 @@
 class Ribbons : public Scene
 {
 private:
-	Pimp::Texture2D *texWall, *texMesh;
+	Pimp::Texture2D *texWall, *texMesh, *texBack;
 	Pimp::Material *ribbonMat;
+
+	Pimp::Texture2D *envMap, *projMap;
 
 public:
 	Ribbons()
@@ -24,17 +26,19 @@ public:
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\ribbons1\\even_lachen.png", &texMesh);
+		Assets::AddTexture2D("textures\\ribbons1\\background.png", &texBack);
 		Assets::AddMaterial("shaders\\Scene_Ribbons.fx", &ribbonMat);
 	}
 
 	void BindToWorld()
 	{
 		BindSceneMaterial(ribbonMat);
+		ribbonMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
 	}
 
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(texBack, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 	}
 };

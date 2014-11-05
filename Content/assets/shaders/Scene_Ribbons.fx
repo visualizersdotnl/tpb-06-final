@@ -244,17 +244,8 @@ float DistanceEstimator(float3 Pos, out float HitMat, out float2 outUV)
 
 	float dWall = Pos.z + 3.0;
 
-	if (d < dWall)
-	{
-		HitMat = 0;
-		return d;
-	}
-	else
-	{
-		HitMat = 1;
-		outUV = Pos.xy * 0.1;		
-		return dWall;
-	}
+	HitMat = 0;
+	return d;
 }
 
 
@@ -385,7 +376,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 		ambient = RibbonAmbient;
 
 		specColor = RibbonSpecular;
-		specAmount = 0.2;
+		specAmount = 0.4;
 
 		if (sin(inPos.y) > 0.99)
 		{
@@ -421,6 +412,14 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 	float3 lightAmount = 
 		diffuse + specular*specColor + ambient;
 
+	lightAmount *= float3(149.0,195.0,246.0)/255.0;
+
+
+	float viewFacing = dot(normalize(inEyeDir), normalize(inNormal));
+	float rim = saturate((viewFacing - 0.4)*12.0);
+	lightAmount *= rim;
+
+
 	float lightAttenuation = 1.0;// / (1.0 + lightDist*lightDist*0.001 + lightDist*0.00002);	
 
 	float shadowFactor = max(SoftShadowIq( inPos + inNormal*0.2, lightDir, 0.005, lightDist * 0.2, 6 ), 0.2);
@@ -453,18 +452,21 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
-		float depth = 1;//length(hitPos - origin);
+		float depth = max(0.0, 1.0 - dot(hitPos - origin, hitPos-origin)*0.01);
 
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
 #else
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
-#endif			
+#endif		
+
+		// result.color.xyz = depth.xxx;	
+		// result.color.w = 1;
 	}
 	else
 	{
 		// Outside anything.
-		result.color = float4(0,0,0,0);
+		result.color = float4(1,0,0,0);
 	}
 
     return result;
