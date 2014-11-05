@@ -87,14 +87,15 @@ float2 cartesianToSpherical(float3 p)
 	float r = length(p);
 
 	float t = (r - (1.0 - furDepth)) / furDepth;	
-	p = rotateX(p.zyx, -cos(g_fxTime)*t*t*0.4).zyx;	// curl
+	p = rotateX(p.zyx, -cos(g_fxTime)*t*t*0.5).zyx;	// curl
 
 	p /= r;	
 	float2 uv = float2(atan2(p.y, p.x), acos(p.z));
 
 	//uv.x += cos(g_fxTime*1.5)*t*t*0.4;	// curl
 	//uv.y += sin(g_fxTime*1.7)*t*t*0.2;
-	uv.y -= t*t*0.1;	// curl down
+
+	uv.y -= t*t*0.25;	// curl down
 	return uv;
 }
 

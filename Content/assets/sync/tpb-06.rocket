@@ -30,7 +30,7 @@
 			<key row="4096" value="0" interpolation="1"/>
 			<key row="5119" value="100" interpolation="0"/>
 			<key row="5120" value="0" interpolation="1"/>
-			<key row="5631" value="60" interpolation="0"/>
+			<key row="5631" value="30" interpolation="0"/>
 			<key row="5632" value="0" interpolation="1"/>
 			<key row="6143" value="50" interpolation="0"/>
 			<key row="6144" value="0" interpolation="0"/>
@@ -637,6 +637,10 @@
 			<key row="4082" value="0" interpolation="1"/>
 			<key row="4088" value="1" interpolation="1"/>
 			<key row="4099" value="0" interpolation="0"/>
+			<key row="5072" value="0" interpolation="1"/>
+			<key row="5119" value="0.7" interpolation="0"/>
+			<key row="5120" value="1" interpolation="3"/>
+			<key row="5132" value="0" interpolation="0"/>
 			<key row="6128" value="0" interpolation="2"/>
 			<key row="6144" value="1" interpolation="1"/>
 			<key row="6160" value="0" interpolation="0"/>
@@ -675,7 +679,8 @@
 			<key row="6544" value="1" interpolation="0"/>
 			<key row="6585" value="0" interpolation="0"/>
 			<key row="6640" value="0" interpolation="1"/>
-			<key row="6655" value="1" interpolation="0"/>
+			<key row="6654" value="1" interpolation="1"/>
+			<key row="6655" value="0" interpolation="0"/>
 		</track>
 		<track name="toypusher">
 			<key row="3584" value="0" interpolation="1"/>
@@ -764,6 +769,8 @@
 		<track name="bondBigBlobScale">
 			<key row="0" value="0" interpolation="0"/>
 		</track>
+		<track name="blobsProjScrollU"/>
+		<track name="blobsProjScrollV"/>
 	</tracks>
 	<bookmarks/>
 </sync>

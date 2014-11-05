@@ -48,10 +48,10 @@ public:
 	{
 	}
 
-	void EndPic()
+	void EndPic(float alpha)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 	}
 
 	void Tick(double row)

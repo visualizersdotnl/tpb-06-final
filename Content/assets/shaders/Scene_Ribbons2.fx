@@ -453,7 +453,6 @@ PSOutput MainPS(VSOutput input)
 	{
 		float3 normal = Normal(hitPos.xyz);
 
-		// @plek: FIXME, lerp between these w/Rocket param
 		float depth = 1;//length(hitPos - origin);
 //		float depth = length(hitPos - origin);
 

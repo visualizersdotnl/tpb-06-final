@@ -514,10 +514,16 @@ bool Tick(Pimp::Camera *camOverride)
 			waren_we_hier_eerder = true;
 		}
 
-		// Wait for esc (or timer).
-		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic();
+		float sw_t = sw.GetSecondsElapsed();
 
-		return !(sw.GetSecondsElapsed() > t);
+		float alpha = 1.f;
+		if (sw_t < 2.f) alpha = sw_t/2.f;
+		else if (sw_t > t-4.f) alpha = 1.f - ( (sw_t-(t-4.f)) / 4.f );
+
+		// Wait for esc (or timer).
+		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic(alpha);
+
+		return !(sw_t >= t);
 	}
 
 	// Tie in final flash and fade in the sprite batch at "improbable" Zs.
