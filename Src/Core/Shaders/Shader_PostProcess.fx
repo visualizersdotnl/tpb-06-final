@@ -159,7 +159,7 @@ PSOutput MainPS_Combine(VSOutput input)
 
 		// @plek: blend
 		float fade = (uv.x-0.08)/0.92;
-		v *= fade;
+		v *= 0.25f+fade*0.75f;
 
 		result.color += float4(v,v,v,1);	
 	}
