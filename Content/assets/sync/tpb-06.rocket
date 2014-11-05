@@ -637,9 +637,9 @@
 			<key row="4082" value="0" interpolation="1"/>
 			<key row="4088" value="1" interpolation="1"/>
 			<key row="4099" value="0" interpolation="0"/>
-			<key row="5072" value="0" interpolation="1"/>
-			<key row="5119" value="0.7" interpolation="0"/>
-			<key row="5120" value="1" interpolation="3"/>
+			<key row="5080" value="0" interpolation="3"/>
+			<key row="5119" value="1" interpolation="0"/>
+			<key row="5120" value="1" interpolation="2"/>
 			<key row="5132" value="0" interpolation="0"/>
 			<key row="6128" value="0" interpolation="2"/>
 			<key row="6144" value="1" interpolation="1"/>
