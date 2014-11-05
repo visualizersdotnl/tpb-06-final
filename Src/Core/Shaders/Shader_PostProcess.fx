@@ -158,7 +158,8 @@ PSOutput MainPS_Combine(VSOutput input)
 			v = 0.0;
 
 		// @plek: blend into Bond background
-		v *= 1.f-uv.x;
+		float fade = (uv.x-0.08)/0.92;
+		v *= 1.f-fade;
 
 		result.color += float4(v,v,v,1);	
 	}

@@ -62,39 +62,41 @@ public:
 		const float kReelZ = 2.f;
 		const float kScrollZ = 3.f;
 
+		// the following code is pure manual fucking around to align sprites
+		// there is no real logic to it
+
 		// "projector"
 		s_sprites->AddSprite(
 				projector,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(100.f, (1080.f-439.f)*0.5f),
+				Vector2(100.f, (1080.f-projector->GetHeight())*0.5f),
 				kProjectorZ,
 				1.f,
 				0.f);
 
-		const float kReelX = 484.f;
-		const float kReelY = (1080.f-439.f)*0.5f;
-		const float kReelYOffs = 35.f;
+		const float kReelX = 385.f;
+		const float kReelY = (1080.f-projector->GetHeight())*0.5f;
 
 		const float reelRoto = (float) sync_get_val(st_fxTime, row);
 
 		// stationary position (opening forward, like in 80s bumper)
-		const float reelStat = 0.9f;
+		const float reelStat = -M_PI*0.5f;
 
-		// reels (rotate quickly in same direction in orig. bumper)
+		// reels (rotate quickly in opposite directions in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-kReelYOffs),
+				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-40.f),
 				kProjectorZ,
 				1.f,
-				reelStat + reelRoto*1.5f); // - (M_PI/2.f) + 0.26f);
+				reelStat + reelRoto*1.75f);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+kReelYOffs+7.f), // @plek: Lower this one a few pixels.
+				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+15.f),
 				kProjectorZ,
 				1.f,
-				reelStat + -reelRoto*1.5f);
+				reelStat + -reelRoto*1.75f);
 
 
 		// Update inv param
