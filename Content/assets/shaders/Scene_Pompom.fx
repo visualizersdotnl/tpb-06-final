@@ -22,6 +22,8 @@ cbuffer paramsOnlyOnce
 	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 
 	float g_fxTime;
+
+	float4x4 pompomRotMat;
 };
 
 VSOutput MainVS(VSInput input)
@@ -46,10 +48,10 @@ Texture2D texture_pompom_color;
 
 // --------------------------------------------------------------------------------------------
 
-static const float uvScale = 0.2;
+static const float uvScale = 1.0;
 static const float colorUvScale = 0.1;
-static const float furDepth = 0.2;
-static const int furLayers = 64;
+static const float furDepth = 0.3;
+static const int furLayers = 96;
 static const float rayStep = furDepth*2.0 / float(furLayers);
 static const float furThreshold = 0.4;
 static const float shininess = 50.0;
@@ -71,19 +73,21 @@ float3 rotateX(float3 p, float a)
     return float3(p.x, ca*p.y - sa*p.z, sa*p.y + ca*p.z);
 }
 
+/*
 float3 rotateY(float3 p, float a)
 {
     float sa = sin(a);
     float ca = cos(a);
     return float3(ca*p.x + sa*p.z, p.y, -sa*p.x + ca*p.z);
 }
+*/
 
 float2 cartesianToSpherical(float3 p)
 {		
 	float r = length(p);
 
 	float t = (r - (1.0 - furDepth)) / furDepth;	
-	p = rotateX(p.zyx, -cos(g_fxTime*1.5)*t*t*0.4).zyx;	// curl
+	p = rotateX(p.zyx, -cos(g_fxTime)*t*t*0.4).zyx;	// curl
 
 	p /= r;	
 	float2 uv = float2(atan2(p.y, p.x), acos(p.z));
@@ -188,15 +192,9 @@ float4 ripped_main(float4 rayDir)
 	float3 ro = float3(0.0, 0.0, 2.5);
 	float3 rd = normalize(float3(uv, -2.0));
 	
-	float roty = 0.0;
-	float rotx = 0.0;
-	roty = sin(g_fxTime*1.5);
-	
-    ro = rotateX(ro, rotx);	
-    ro = rotateY(ro, roty);	
-    rd = rotateX(rd, rotx);
-    rd = rotateY(rd, roty);
-	
+	ro = mul(ro, pompomRotMat);
+	rd = mul(rd, pompomRotMat);
+
 	return scene(ro, rd);
 }
 
