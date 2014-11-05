@@ -32,19 +32,33 @@ VSOutput MainVS(VSInput input)
 	
 Texture2D textureMap;
 
-SamplerState samplerTexture
+SamplerState samplerTextureWrap
 {
 	AddressU = WRAP;
 	AddressV = WRAP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
+SamplerState samplerTextureClamp
+{
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	Filter = MIN_MAG_MIP_LINEAR;
+};
 
 
-float4 MainPS(VSOutput input) : SV_Target0
+float4 MainPS_Wrap(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
-	float4 texColor = textureMap.Sample(samplerTexture, uv);	
+	float4 texColor = textureMap.Sample(samplerTextureWrap, uv);	
+	return texColor*input.color;
+}
+
+
+float4 MainPS_Clamp(VSOutput input) : SV_Target0
+{
+	float2 uv = input.texCoord;
+	float4 texColor = textureMap.Sample(samplerTextureClamp, uv);	
 	return texColor*input.color;
 }
 
@@ -54,6 +68,12 @@ technique10 Sprites
 	pass Default
 	{
 		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
-		SetPixelShader( CompileShader(ps_4_0, MainPS()) );		
+		SetPixelShader( CompileShader(ps_4_0, MainPS_Wrap()) );		
+	}
+
+	pass ForceClamp
+	{
+		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetPixelShader( CompileShader(ps_4_0, MainPS_Clamp()) );		
 	}
 }

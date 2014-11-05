@@ -79,7 +79,9 @@ static sync_cb s_rocketHooks =
 
 static sync_device *s_Rocket = nullptr;
 
-static Pimp::MaterialParameter *CreateShaderParamFromTrack(const std::string &name) // Element, so no need to release.
+static Pimp::MaterialParameter *CreateDynShaderParam(
+	const std::string &name, // Element, so no need to release.
+	Pimp::MaterialParameter::ValueType valueType = Pimp::MaterialParameter::VT_Value)
 {
 	Pimp::MaterialParameter *newParam = new Pimp::MaterialParameter(gWorld);
 	gWorld->GetElements().Add(newParam);
@@ -100,7 +102,7 @@ public:
 		ASSERT(nullptr != m_track);
 
 		if (true == uploadForShaders)
-			matParam = CreateShaderParamFromTrack(name);
+			matParam = CreateDynShaderParam(name);
 		else
 			matParam = nullptr;
 
@@ -244,6 +246,8 @@ protected:
 
 		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
 		Pimp::World::StaticAddChildToParent(param, xform);
+
+		// FIXME: I think we're leaking the Xform here
 
 		return param;
 	}

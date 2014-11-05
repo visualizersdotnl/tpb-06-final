@@ -36,6 +36,7 @@ namespace Pimp
 			D3D::BlendMode blendMode;
 			float sortZ;
 			size_t vertexOffs;
+			bool forceClamp;
 
 			// std::sort() predicate
 			bool operator <(const Sprite &RHS) const {
@@ -55,6 +56,7 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
+			bool forceClamp = false,
 			const Vector2 &uvTile = Vector2(1.f, 1.f),
 			const Vector2 &uvScroll = Vector2(0.f, 0.f));
 
@@ -68,7 +70,7 @@ namespace Pimp
 			const Vector2 &uvTile, 
 			const Vector2 &uvScroll = Vector2(0.f, 0.f))
 		{
-			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, uvTile, uvScroll);
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, false, uvTile, uvScroll);
 		}
 
 		// simplified AddSprite()
@@ -78,12 +80,13 @@ namespace Pimp
 			const Vector2 &topLeft,
 			float sortZ,
 			float alpha,
-			float rotateZ)
+			float rotateZ,
+			bool forceClamp = false)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
 		}
 
 		// AddSprite() simplified & centered
@@ -93,13 +96,14 @@ namespace Pimp
 			const Vector2 &center,
 			float sortZ,
 			float alpha,
-			float rotateZ)
+			float rotateZ,
+			bool forceClamp = false)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const Vector2 topLeft = center - size*0.5f;
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
 		}
 
 		void DrawBackgroundSprite();
@@ -131,7 +135,7 @@ namespace Pimp
 
 		Effect effect;
 		EffectTechnique effectTechnique;
-		EffectPass effectPass;
+		EffectPass effectPass, effectPass_ForceClamp;
 
 		int varIndexRenderScale;
 		int varIndexTextureMap;

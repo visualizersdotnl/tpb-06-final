@@ -2,7 +2,7 @@
 class GeneralCinema : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *projector, *reel, *reel2, *scroller, *background;
+	Pimp::Texture2D *projector, *reel, *scroller, *background;
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
 
@@ -36,7 +36,6 @@ public:
 	{
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector.png", &projector);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
-//		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel_2.png", &reel2);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
@@ -65,7 +64,7 @@ public:
 		// the following code is pure manual fucking around to align sprites
 		// there is no real logic to it
 
-		// "projector"
+		// "projector" 
 		s_sprites->AddSprite(
 				projector,
 				Pimp::D3D::BlendMode::BM_Additive,
@@ -74,7 +73,7 @@ public:
 				1.f,
 				0.f);
 
-		const float kReelX = 385.f;
+		const float kReelX = 345.f;
 		const float kReelY = (1080.f-projector->GetHeight())*0.5f;
 
 		const float reelRoto = (float) sync_get_val(st_fxTime, row);
@@ -85,18 +84,18 @@ public:
 		// reels (rotate quickly in opposite directions in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-40.f),
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-75.f),
 				kProjectorZ,
 				1.f,
-				reelStat + reelRoto*1.75f);
+				reelStat + reelRoto*1.75f, true);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+15.f),
+				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+45.f),
 				kProjectorZ,
 				1.f,
-				reelStat + -reelRoto*1.75f);
+				reelStat + -reelRoto*1.75f, true);
 
 
 		// Update inv param

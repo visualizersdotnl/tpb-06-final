@@ -16,7 +16,8 @@ namespace Pimp
 	Sprites::Sprites() :
 		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
 		effectTechnique(&effect, "Sprites"),
-		effectPass(&effectTechnique, "Default")
+		effectPass(&effectTechnique, "Default"), 
+		effectPass_ForceClamp(&effectTechnique, "ForceClamp")
 	{
 		// Get shader var. indices.
 		varIndexRenderScale = effect.RegisterVariable("renderScale", true);
@@ -31,6 +32,7 @@ namespace Pimp
 		unsigned char* signature;
 		int signatureLength;
 		effectPass.GetVSInputSignature(&signature, &signatureLength);
+		// ^ Identical for other effect pass.
 
 		/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[3];
 		elemDesc[0].SemanticName = "POSITION";
@@ -95,6 +97,7 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
+			bool forceClamp /* = false */,
 			const Vector2 &uvTile /* = Vector2(1.f, 1.f) */,
 			const Vector2 &uvScroll /* = Vector2(1.f, 1.f) */)
 	{
@@ -173,6 +176,7 @@ namespace Pimp
 			sprite.blendMode = blendMode;
 			sprite.sortZ = sortZ;
 			sprite.vertexOffs = sprites.size()*6;
+			sprite.forceClamp = forceClamp;
 			sprites.push_back(std::move(sprite));	
 		}
 		else
@@ -230,7 +234,7 @@ namespace Pimp
 			{
 				// Set state.
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
-				effectPass.Apply();
+				(false == sprite.forceClamp) ? effectPass.Apply() : effectPass_ForceClamp.Apply();
 				gD3D->SetBlendMode(sprite.blendMode);
 
 				// Draw.
