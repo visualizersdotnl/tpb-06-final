@@ -480,6 +480,15 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
+// HELLO TPBDS 2005
+// Floating point random.
+// To be deprecated because it has very poor distribution.
+inline float randf(float range)
+{
+	return range * ((float) rand() / (float) RAND_MAX);
+}
+// HELLO TPBDS 2005
+
 bool Tick(Pimp::Camera *camOverride)
 {
 	const double rocketRow = Rocket_GetRow();
@@ -545,10 +554,8 @@ bool Tick(Pimp::Camera *camOverride)
 	{
 		float noiseU = (float) sync_get_val(st_noiseU, rocketRow);
 		float noiseV = (float) sync_get_val(st_noiseV, rocketRow);
-		int seed = GetTickCount();
-		int seed2 = GetTickCount() + 534787534;
-		noiseU += sfrand(&seed);
-		noiseV += sfrand(&seed2);
+		noiseU += randf((float)texNoise->GetWidth());
+		noiseV += randf((float)texNoise->GetHeight());
 		s_sprites->AddSprite(
 			texNoise,
 			Pimp::D3D::BM_Additive,
@@ -557,7 +564,7 @@ bool Tick(Pimp::Camera *camOverride)
 			kPostNoiseZ,
 			0.f, // rotZ
 			false, // forceClamp
-			Vector2(2.3f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.3f),
+			Vector2(2.f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.f),
 			Vector2(noiseU, noiseV));
 	}
 
