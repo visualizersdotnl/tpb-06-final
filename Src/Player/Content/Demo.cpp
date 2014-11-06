@@ -541,10 +541,14 @@ bool Tick(Pimp::Camera *camOverride)
 
 	//static const sync_track *st_noiseU, *st_noiseV, *st_noiseAlpha;
 	const float noiseAlpha = (float) sync_get_val(st_noiseAlpha, rocketRow);
-	const float noiseU = (float) sync_get_val(st_noiseU, rocketRow);
-	const float noiseV = (float) sync_get_val(st_noiseV, rocketRow);
 	if (noiseAlpha != 0.f)
 	{
+		float noiseU = (float) sync_get_val(st_noiseU, rocketRow);
+		float noiseV = (float) sync_get_val(st_noiseV, rocketRow);
+		int seed = GetTickCount();
+		int seed2 = GetTickCount() + 534787534;
+		noiseU += sfrand(&seed);
+		noiseV += sfrand(&seed2);
 		s_sprites->AddSprite(
 			texNoise,
 			Pimp::D3D::BM_Additive,
@@ -553,7 +557,7 @@ bool Tick(Pimp::Camera *camOverride)
 			kPostNoiseZ,
 			0.f, // rotZ
 			false, // forceClamp
-			Vector2(2.f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.f),
+			Vector2(2.3f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.3f),
 			Vector2(noiseU, noiseV));
 	}
 
