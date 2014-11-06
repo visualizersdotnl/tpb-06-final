@@ -544,84 +544,49 @@
 			<key row="3041" value="1" interpolation="2"/>
 			<key row="3055" value="0" interpolation="1"/>
 			<key row="3057" value="0.5" interpolation="2"/>
-			<key row="3071" value="0" interpolation="1"/>
+			<key row="3071" value="0" interpolation="0"/>
 			<key row="3072" value="16" interpolation="1"/>
-			<key row="3080" value="8" interpolation="3"/>
-			<key row="3088" value="1" interpolation="0"/>
-			<key row="3090" value="0" interpolation="0"/>
+			<key row="3080" value="8" interpolation="2"/>
+			<key row="3092" value="0" interpolation="0"/>
+			<key row="3096" value="0" interpolation="3"/>
 			<key row="3100" value="16" interpolation="1"/>
-			<key row="3102" value="8" interpolation="0"/>
-			<key row="3103" value="1" interpolation="0"/>
 			<key row="3104" value="8" interpolation="1"/>
-			<key row="3107" value="1" interpolation="1"/>
 			<key row="3110" value="4" interpolation="1"/>
-			<key row="3116" value="1" interpolation="0"/>
 			<key row="3117" value="6" interpolation="1"/>
-			<key row="3122" value="1" interpolation="0"/>
-			<key row="3123" value="6" interpolation="1"/>
-			<key row="3131" value="2" interpolation="0"/>
-			<key row="3132" value="16" interpolation="1"/>
-			<key row="3155" value="1" interpolation="0"/>
-			<key row="3164" value="16" interpolation="1"/>
-			<key row="3166" value="8" interpolation="0"/>
-			<key row="3167" value="1" interpolation="0"/>
+			<key row="3132" value="14" interpolation="2"/>
+			<key row="3155" value="4" interpolation="3"/>
+			<key row="3164" value="14" interpolation="1"/>
 			<key row="3168" value="8" interpolation="1"/>
-			<key row="3171" value="1" interpolation="1"/>
 			<key row="3174" value="4" interpolation="1"/>
-			<key row="3180" value="1" interpolation="0"/>
 			<key row="3181" value="6" interpolation="1"/>
-			<key row="3186" value="1" interpolation="0"/>
-			<key row="3187" value="6" interpolation="1"/>
-			<key row="3195" value="2" interpolation="0"/>
-			<key row="3196" value="16" interpolation="1"/>
+			<key row="3192" value="2" interpolation="1"/>
+			<key row="3196" value="16" interpolation="2"/>
 			<key row="3219" value="1" interpolation="0"/>
-			<key row="3228" value="16" interpolation="1"/>
-			<key row="3230" value="8" interpolation="0"/>
-			<key row="3231" value="1" interpolation="0"/>
+			<key row="3228" value="14" interpolation="1"/>
 			<key row="3232" value="8" interpolation="1"/>
-			<key row="3235" value="1" interpolation="1"/>
 			<key row="3238" value="4" interpolation="1"/>
-			<key row="3244" value="1" interpolation="0"/>
-			<key row="3245" value="6" interpolation="1"/>
-			<key row="3250" value="1" interpolation="0"/>
-			<key row="3251" value="6" interpolation="1"/>
-			<key row="3259" value="2" interpolation="0"/>
+			<key row="3245" value="5" interpolation="1"/>
+			<key row="3251" value="4" interpolation="1"/>
 			<key row="3260" value="16" interpolation="1"/>
-			<key row="3283" value="1" interpolation="0"/>
+			<key row="3283" value="1" interpolation="3"/>
 			<key row="3292" value="7" interpolation="1"/>
 			<key row="3298" value="2" interpolation="3"/>
-			<key row="3302" value="1" interpolation="1"/>
 			<key row="3303" value="6" interpolation="1"/>
-			<key row="3304" value="1" interpolation="0"/>
 			<key row="3308" value="8" interpolation="1"/>
-			<key row="3316" value="1" interpolation="3"/>
-			<key row="3324" value="0" interpolation="0"/>
+			<key row="3320" value="1" interpolation="2"/>
 			<key row="3330" value="0.5" interpolation="1"/>
 			<key row="3336" value="1" interpolation="0"/>
-			<key row="3339" value="0" interpolation="0"/>
-			<key row="3352" value="1" interpolation="0"/>
-			<key row="3360" value="0" interpolation="0"/>
-			<key row="3368" value="1" interpolation="0"/>
-			<key row="3376" value="0" interpolation="0"/>
-			<key row="3388" value="1" interpolation="0"/>
-			<key row="3392" value="0" interpolation="0"/>
-			<key row="3396" value="0" interpolation="0"/>
-			<key row="3398" value="1" interpolation="1"/>
-			<key row="3408" value="0" interpolation="0"/>
-			<key row="3414" value="0" interpolation="1"/>
-			<key row="3416" value="1" interpolation="1"/>
-			<key row="3424" value="0" interpolation="0"/>
-			<key row="3430" value="0" interpolation="3"/>
-			<key row="3432" value="1" interpolation="1"/>
-			<key row="3440" value="0" interpolation="0"/>
-			<key row="3452" value="1" interpolation="0"/>
-			<key row="3456" value="0" interpolation="0"/>
-			<key row="3460" value="0" interpolation="0"/>
-			<key row="3462" value="1" interpolation="1"/>
-			<key row="3472" value="0" interpolation="0"/>
-			<key row="3476" value="0" interpolation="1"/>
-			<key row="3480" value="0.5" interpolation="1"/>
-			<key row="3496" value="0" interpolation="0"/>
+			<key row="3352" value="1" interpolation="1"/>
+			<key row="3388" value="14" interpolation="3"/>
+			<key row="3398" value="4" interpolation="1"/>
+			<key row="3414" value="2" interpolation="1"/>
+			<key row="3424" value="1" interpolation="2"/>
+			<key row="3431" value="4" interpolation="1"/>
+			<key row="3440" value="1" interpolation="2"/>
+			<key row="3452" value="2" interpolation="3"/>
+			<key row="3462" value="3" interpolation="1"/>
+			<key row="3472" value="1" interpolation="3"/>
+			<key row="3512" value="0.3" interpolation="0"/>
 		</track>
 		<track name="g_postFlash">
 			<key row="0" value="0" interpolation="0"/>
@@ -665,6 +630,8 @@
 			<key row="2832" value="0" interpolation="0"/>
 			<key row="3072" value="1" interpolation="2"/>
 			<key row="3085" value="0" interpolation="0"/>
+			<key row="3512" value="0" interpolation="2"/>
+			<key row="3583" value="1" interpolation="0"/>
 			<key row="3584" value="1" interpolation="2"/>
 			<key row="3616" value="0" interpolation="0"/>
 			<key row="4048" value="0" interpolation="2"/>
