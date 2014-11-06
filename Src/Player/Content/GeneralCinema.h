@@ -107,14 +107,16 @@ public:
 		const float flareSync = (float) sync_get_val(st_greetsFlare, row);
 
 		const float kFlareX = kReelX - 360.f;
-		float flareXOffs = 0.f;
 
-//		if (0.f != flare)
+		if (0.f != flareSync)
 		{
+			float flareXOffs = 0.f;
+			flareXOffs += flareSync*300.f;
+
 			s_sprites->AddSprite(
 				flare,
 				Pimp::D3D::BlendMode::BM_Additive,
-				Vector2(kFlareX, (1080.f-flare->GetHeight())*0.5f),
+				Vector2(kFlareX + flareXOffs, (1080.f-flare->GetHeight())*0.5f),
 				kFlareZ,
 				flareSync,
 				0.f, true);

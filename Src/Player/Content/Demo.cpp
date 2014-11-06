@@ -14,6 +14,8 @@ Pimp::World *gWorld = nullptr;
 // Misc. helper stuff.
 //
 
+inline float SmoothStep(float x) { return x*x*(3.f - 2.f*x); }
+
 inline DWORD AlphaToVtxColor(float alpha, unsigned int RGB = 0xffffff)
 {
 	const unsigned char iAlpha = int(alpha*255.f);
@@ -139,6 +141,7 @@ static const sync_track *st_sceneFadeInOut;
 static const sync_track *st_sceneNoise, *st_sceneNoiseT;
 static const sync_track *st_defRotX, *st_defRotY, *st_defRotZ, *st_defRotW;
 static const sync_track *st_defTransX, *st_defTransY, *st_defTransZ;
+static const sync_track *st_noiseU, *st_noiseV, *st_noiseAlpha;
 
 void CreateGlobalRocketTracks()
 {
@@ -158,6 +161,11 @@ void CreateGlobalRocketTracks()
 	s_syncTracks.push_back(SyncTrack("g_defTrans_X", false, &st_defTransX));
 	s_syncTracks.push_back(SyncTrack("g_defTrans_Y", false, &st_defTransY));
 	s_syncTracks.push_back(SyncTrack("g_defTrans_Z", false, &st_defTransZ));
+
+	//static const sync_track *st_noiseU, *st_noiseV, st_noiseAlpha;
+	s_syncTracks.push_back(SyncTrack("g_postNoiseU", false, &st_noiseU));
+	s_syncTracks.push_back(SyncTrack("g_postNoiseV", false, &st_noiseV));
+	s_syncTracks.push_back(SyncTrack("g_posNoiseAlpha", false, &st_noiseAlpha));
 }
 
  namespace Demo {
@@ -171,7 +179,8 @@ static Pimp::Camera *s_defaultCam;
 static Pimp::Xform *s_defaultXform;
 
 // White texture (for untextured sprites).
-static Pimp::Texture2D *texWhite;
+static Pimp::Texture2D *texWhite; // deze krijgen we van de renderer (Pimp::gD3D)
+static Pimp::Texture2D *texNoise;
 
 // 2D sprite batcher.
 static Pimp::Sprites *s_sprites = nullptr;
@@ -375,6 +384,7 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Req. global stuff.
 	Assets::AddMaterial("shaders\\UserPosteffect.fx", &matUserPostFX);
+	Assets::AddTexture2D("textures\\noise.png", &texNoise);
 
 	// Let the asset loader do it's thing up to where all disk I/O is verified.
 	if (false == Assets::StartLoading())
@@ -524,6 +534,27 @@ bool Tick(Pimp::Camera *camOverride)
 		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic(alpha);
 
 		return !(sw_t >= t);
+	}
+
+	// Tie in noise the old fucking school way by sprite and Z.
+	const float kPostNoiseZ = 4000.f;
+
+	//static const sync_track *st_noiseU, *st_noiseV, *st_noiseAlpha;
+	const float noiseAlpha = (float) sync_get_val(st_noiseAlpha, rocketRow);
+	const float noiseU = (float) sync_get_val(st_noiseU, rocketRow);
+	const float noiseV = (float) sync_get_val(st_noiseV, rocketRow);
+	if (noiseAlpha != 0.f)
+	{
+		s_sprites->AddSprite(
+			texNoise,
+			Pimp::D3D::BM_Additive,
+			AlphaToVtxColor(noiseAlpha, 0xffffff), 
+			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+			kPostNoiseZ,
+			0.f, // rotZ
+			false, // forceClamp
+			Vector2(2.f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.f),
+			Vector2(noiseU, noiseV));
 	}
 
 	// Tie in final flash and fade in the sprite batch at "improbable" Zs.
