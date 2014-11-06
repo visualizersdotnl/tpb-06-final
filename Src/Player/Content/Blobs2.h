@@ -6,6 +6,7 @@ class Blobs2 : public Scene
 private:
 	Pimp::Texture2D *bgTile;
 	Pimp::Texture2D *toy[8];
+	Pimp::Texture2D *tileshadow;
 	
 	const sync_track *st_toy;
 
@@ -37,6 +38,7 @@ public:
 		Assets::AddTexture2D("textures\\toypusher\\3b.png", &toy[5]);
 		Assets::AddTexture2D("textures\\toypusher\\4.png", &toy[6]);
 		Assets::AddTexture2D("textures\\toypusher\\4b.png", &toy[7]);
+		Assets::AddTexture2D("textures\\toypusher\\tileshadow.png", &tileshadow);		
 
 		Assets::AddTexture2D("textures\\toypusher\\envmap.png", &envMap);
 		Assets::AddTexture2D("textures\\toypusher\\projmap.png", &projMap);
@@ -67,6 +69,10 @@ public:
 		const float kToySpacing = 128.f;
 		const float kToyOffsY = (1080.f-(8.f*kToySpacing))/2.f;
 
+		const float kShadowX = -20.0f;
+		const float kShadowY =  20.0f;
+
+		// shadows
 		for (int iToy = 0; iToy < 8; ++ iToy)
 		{
 			if (toySync >= (float) iToy)
@@ -74,6 +80,26 @@ public:
 				const float iToy1 = 1.f + iToy;
 				float alpha = (toySync >= iToy1) ? 1.f : toySync-iToy;
 				float rotZ = 0.25f-(alpha*0.25f);
+
+				s_sprites->AddSprite(
+					tileshadow, 
+					Pimp::D3D::BlendMode::BM_AlphaBlend,
+					Vector2(125.f + kShadowX, kShadowY + kToyOffsY + kToySpacing*iToy), 
+					kToyZ,
+					alpha,
+					rotZ);
+			}
+		}
+
+		// tiles
+		for (int iToy = 0; iToy < 8; ++ iToy)
+		{
+			if (toySync >= (float) iToy)
+			{
+				const float iToy1 = 1.f + iToy;
+				float alpha = (toySync >= iToy1) ? 1.f : toySync-iToy;
+				float rotZ = 0.25f-(alpha*0.25f);
+
 				s_sprites->AddSprite(
 					toy[iToy], 
 					Pimp::D3D::BlendMode::BM_AlphaBlend,
