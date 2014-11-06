@@ -83,7 +83,10 @@ public:
 		{
 			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
-			float backAlpha = (bitchBullets<1.f) ? bitchBullets : 1.f;
+//			float backAlpha = (bitchBullets<1.f) ? bitchBullets : 1.f;
+			
+			// as it turns out it looks a bit better just cutting right in
+			float backAlpha = 1.f;
 
 			// background
 			s_sprites->AddSprite(
