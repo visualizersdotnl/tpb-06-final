@@ -5,6 +5,7 @@ private:
 	Pimp::Texture2D *projector, *reel, *scroller, *background;
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
+	Pimp::Texture2D *flare;
 
 	const sync_track *st_greetsRotX;
 	const sync_track *st_greetsRotY;
@@ -12,6 +13,8 @@ private:
 	const sync_track *st_greetsPosX;
 	const sync_track *st_greetsPosY;
 	const sync_track *st_greetsPosZ;
+
+	const sync_track *st_greetsFlare;
 
 public:
 	GeneralCinema()
@@ -30,6 +33,8 @@ public:
 		s_syncTracks.push_back(SyncTrack("greetsPosX", false, &st_greetsPosX));
 		s_syncTracks.push_back(SyncTrack("greetsPosY", false, &st_greetsPosY));
 		s_syncTracks.push_back(SyncTrack("greetsPosZ", false, &st_greetsPosZ));
+	
+		s_syncTracks.push_back(SyncTrack("greetsFlare", false, &st_greetsFlare));
 	}
 
 	void ReqAssets()
@@ -40,6 +45,7 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\background.png", &background);
+		Assets::AddTexture2D("textures\\generalcinema\\Flare.png", &flare);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
@@ -59,7 +65,8 @@ public:
 
 		const float kProjectorZ = 1.f;
 		const float kReelZ = 2.f;
-		const float kScrollZ = 3.f;
+		const float kFlareZ = 3.f;
+		const float kScrollZ = 2.f;
 
 		// the following code is pure manual fucking around to align sprites
 		// there is no real logic to it
@@ -86,17 +93,32 @@ public:
 				reel,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-75.f),
-				kProjectorZ,
+				kReelZ,
 				1.f,
 				reelStat + reelRoto*1.75f, true);
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,
 				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+45.f),
-				kProjectorZ,
+				kReelZ,
 				1.f,
 				reelStat + -reelRoto*1.75f, true);
 
+		const float flareSync = (float) sync_get_val(st_greetsFlare, row);
+
+		const float kFlareX = kReelX - 360.f;
+		float flareXOffs = 0.f;
+
+//		if (0.f != flare)
+		{
+			s_sprites->AddSprite(
+				flare,
+				Pimp::D3D::BlendMode::BM_Additive,
+				Vector2(kFlareX, (1080.f-flare->GetHeight())*0.5f),
+				kFlareZ,
+				flareSync,
+				0.f, true);
+		}
 
 		// Update inv param
 		const float rotationX = (float) sync_get_val(st_greetsRotX, row);

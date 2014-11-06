@@ -604,6 +604,9 @@
 			<key row="4082" value="0" interpolation="1"/>
 			<key row="4088" value="1" interpolation="1"/>
 			<key row="4099" value="0" interpolation="0"/>
+			<key row="4592" value="0" interpolation="2"/>
+			<key row="4600" value="1" interpolation="1"/>
+			<key row="4608" value="0" interpolation="0"/>
 			<key row="5080" value="0" interpolation="3"/>
 			<key row="5119" value="1" interpolation="0"/>
 			<key row="5120" value="1" interpolation="2"/>
@@ -650,6 +653,8 @@
 			<key row="4063" value="1" interpolation="0"/>
 			<key row="4064" value="1" interpolation="1"/>
 			<key row="4088" value="0" interpolation="0"/>
+			<key row="4864" value="1" interpolation="1"/>
+			<key row="4880" value="0" interpolation="0"/>
 			<key row="5616" value="0" interpolation="2"/>
 			<key row="5631" value="1" interpolation="0"/>
 			<key row="5632" value="1" interpolation="1"/>
@@ -738,6 +743,14 @@
 		</track>
 		<track name="blobsOverbright">
 			<key row="0" value="2" interpolation="0"/>
+			<key row="1536" value="5" interpolation="3"/>
+			<key row="1552" value="2" interpolation="0"/>
+			<key row="1624" value="2" interpolation="1"/>
+			<key row="1632" value="4" interpolation="1"/>
+			<key row="1640" value="2" interpolation="0"/>
+			<key row="1848" value="2" interpolation="1"/>
+			<key row="2039" value="12" interpolation="2"/>
+			<key row="2047" value="2" interpolation="0"/>
 		</track>
 		<track name="bondBigBlob">
 			<key row="0" value="0" interpolation="0"/>
@@ -750,6 +763,23 @@
 		</track>
 		<track name="blobsProjScrollU"/>
 		<track name="blobsProjScrollV"/>
+		<track name="greetsFlare">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="4096" value="1" interpolation="3"/>
+			<key row="4112" value="0" interpolation="0"/>
+			<key row="4224" value="1" interpolation="3"/>
+			<key row="4240" value="0" interpolation="0"/>
+			<key row="4352" value="1" interpolation="3"/>
+			<key row="4368" value="0" interpolation="0"/>
+			<key row="4608" value="1" interpolation="3"/>
+			<key row="4624" value="0" interpolation="0"/>
+			<key row="4736" value="1" interpolation="3"/>
+			<key row="4752" value="0" interpolation="0"/>
+			<key row="4864" value="1" interpolation="3"/>
+			<key row="4880" value="0" interpolation="0"/>
+			<key row="4992" value="1" interpolation="3"/>
+			<key row="5008" value="0" interpolation="0"/>
+		</track>
 	</tracks>
 	<bookmarks/>
 </sync>
