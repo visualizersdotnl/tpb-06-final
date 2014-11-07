@@ -17,7 +17,7 @@ private:
 	const sync_track *st_greetsFlare;
 	const sync_track *st_greetsBitmap;
 
-	Pimp::Texture2D *genbitmap[7];
+	Pimp::Texture2D *genbitmap[8];
 
 public:
 	GeneralCinema()
@@ -57,6 +57,7 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\04.png", &genbitmap[4]);
 		Assets::AddTexture2D("textures\\generalcinema\\05.png", &genbitmap[5]);
 		Assets::AddTexture2D("textures\\generalcinema\\06.png", &genbitmap[6]);
+		Assets::AddTexture2D("textures\\generalcinema\\07.png", &genbitmap[7]);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
@@ -133,7 +134,10 @@ public:
 				0.f, true);
 		}
 
-		const float kProjOffsX = 100.f + projector->GetWidth() + 10.f;
+		const float kProjOffsX = 100.f + projector->GetWidth();
+
+		// ruimte tussen projector en rand v/h scherm (om de greets te centreren)
+		float projector_beam_size = (1920.f-kProjOffsX);
 
 		// greet shit
 
@@ -151,10 +155,15 @@ public:
 
 			{
 				Pimp::Texture2D *bitmap = genbitmap[iBmp];
+
+				// centreren tov projector
+				float x_pos = (projector_beam_size-bitmap->GetWidth())/2.f;
+				x_pos += kProjOffsX;
+
 				s_sprites->AddSprite(
 					bitmap,
 					Pimp::D3D::BlendMode::BM_Additive,
-					Vector2(kProjOffsX, (1080.f-bitmap->GetHeight())*0.5f),
+					Vector2(x_pos, (1080.f-bitmap->GetHeight())*0.5f),
 					kScrollZ,
 					aBmp,
 					0.f,
