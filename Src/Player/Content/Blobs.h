@@ -120,15 +120,17 @@ public:
 			float yoffs2 = 0.f;
 
 			xoffs1 = first_offs*1920.f;
-			yoffs1 = -first_offs*1080.f;
+			yoffs1 = -first_offs*(1080.f);
 
 			xoffs2 = second_offs*1920.f;
-			yoffs2 = -second_offs*1080.f;
+			yoffs2 = -second_offs*(1080.f);
+
+			unsigned int fade = AlphaToVtxColor(1.f);
 
 			s_sprites->AddSprite(
 				first,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				-1,
+				fade,
 				Vector2(xoffs1, yoffs1),
 				Vector2(1920.f, 1080.f),
 				kCredZ,
@@ -138,7 +140,7 @@ public:
 			s_sprites->AddSprite(
 				second,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
-				-1,
+				fade,
 				Vector2(xoffs2, yoffs2),
 				Vector2(1920.f, 1080.f),
 				kCredZ+0.1f,

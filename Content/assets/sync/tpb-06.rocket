@@ -836,34 +836,63 @@
 		</track>
 		<track name="creditX">
 			<key row="0" interpolation="0" value="0"/>
-			<key row="1536" interpolation="2" value="0.5"/>
+			<key row="1536" interpolation="0" value="1"/>
+			<key row="1560" interpolation="2" value="0.3"/>
 			<key row="1576" interpolation="0" value="0"/>
-			<key row="1720" interpolation="2" value="0.5"/>
+			<key row="1664" interpolation="2" value="0"/>
+			<key row="1704" interpolation="0" value="0.5"/>
+			<key row="1720" interpolation="0" value="1"/>
+			<key row="1744" interpolation="2" value="0.3"/>
 			<key row="1760" interpolation="0" value="0"/>
+			<key row="1864" interpolation="2" value="0"/>
+			<key row="1904" interpolation="0" value="0.6"/>
 			<key row="1920" interpolation="0" value="1"/>
-			<key row="1928" interpolation="2" value="0.5"/>
+			<key row="1944" interpolation="2" value="0.3"/>
 			<key row="1960" interpolation="0" value="0"/>
-			<key row="2048" interpolation="2" value="0.5"/>
+			<key row="2000" interpolation="2" value="0"/>
+			<key row="2040" interpolation="0" value="0.6"/>
+			<key row="2048" interpolation="0" value="1"/>
+			<key row="2072" interpolation="2" value="0.3"/>
 			<key row="2088" interpolation="0" value="0"/>
-			<key row="2232" interpolation="2" value="0.5"/>
+			<key row="2176" interpolation="2" value="0"/>
+			<key row="2216" interpolation="0" value="0.6"/>
+			<key row="2232" interpolation="0" value="1"/>
+			<key row="2256" interpolation="2" value="0.3"/>
 			<key row="2272" interpolation="0" value="0"/>
-			<key row="2440" interpolation="2" value="0.5"/>
+			<key row="2384" interpolation="2" value="0"/>
+			<key row="2424" interpolation="0" value="0.6"/>
+			<key row="2440" interpolation="0" value="1"/>
+			<key row="2464" interpolation="2" value="0.3"/>
 			<key row="2480" interpolation="0" value="0"/>
+			<key row="2544" interpolation="2" value="0"/>
+			<key row="2584" interpolation="0" value="0.5"/>
 		</track>
 		<track name="creditY">
 			<key row="0" interpolation="0" value="0"/>
-			<key row="1536" interpolation="1" value="0.5"/>
+			<key row="1536" interpolation="2" value="0.5"/>
 			<key row="1560" interpolation="0" value="0"/>
-			<key row="1720" interpolation="1" value="0.5"/>
+			<key row="1664" interpolation="3" value="0"/>
+			<key row="1704" interpolation="0" value="0.5"/>
+			<key row="1720" interpolation="2" value="0.5"/>
 			<key row="1744" interpolation="0" value="0"/>
-			<key row="1920" interpolation="1" value="0.5"/>
+			<key row="1864" interpolation="3" value="0"/>
+			<key row="1904" interpolation="0" value="0.5"/>
+			<key row="1920" interpolation="2" value="0.5"/>
 			<key row="1944" interpolation="0" value="0"/>
-			<key row="2048" interpolation="1" value="0.5"/>
+			<key row="2000" interpolation="3" value="0"/>
+			<key row="2040" interpolation="0" value="0.6"/>
+			<key row="2048" interpolation="2" value="0.5"/>
 			<key row="2072" interpolation="0" value="0"/>
-			<key row="2232" interpolation="1" value="0.5"/>
+			<key row="2176" interpolation="3" value="0"/>
+			<key row="2216" interpolation="0" value="0.5"/>
+			<key row="2232" interpolation="2" value="0.5"/>
 			<key row="2256" interpolation="0" value="0"/>
-			<key row="2440" interpolation="1" value="0.5"/>
+			<key row="2384" interpolation="3" value="0"/>
+			<key row="2424" interpolation="0" value="0.5"/>
+			<key row="2440" interpolation="2" value="0.5"/>
 			<key row="2464" interpolation="0" value="0"/>
+			<key row="2544" interpolation="3" value="0"/>
+			<key row="2584" interpolation="0" value="0.5"/>
 		</track>
 	</tracks>
 	<bookmarks/>
