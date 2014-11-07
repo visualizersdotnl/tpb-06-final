@@ -50,13 +50,13 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\background.png", &background);
 		Assets::AddTexture2D("textures\\generalcinema\\Flare.png", &flare);
 
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller1.png", &genbitmap[0]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller2.png", &genbitmap[1]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller3.png", &genbitmap[2]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller4.png", &genbitmap[3]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller5.png", &genbitmap[4]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller6.png", &genbitmap[5]);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller7.png", &genbitmap[6]);
+		Assets::AddTexture2D("textures\\generalcinema\\00.png", &genbitmap[0]);
+		Assets::AddTexture2D("textures\\generalcinema\\01.png", &genbitmap[1]);
+		Assets::AddTexture2D("textures\\generalcinema\\02.png", &genbitmap[2]);
+		Assets::AddTexture2D("textures\\generalcinema\\03.png", &genbitmap[3]);
+		Assets::AddTexture2D("textures\\generalcinema\\04.png", &genbitmap[4]);
+		Assets::AddTexture2D("textures\\generalcinema\\05.png", &genbitmap[5]);
+		Assets::AddTexture2D("textures\\generalcinema\\06.png", &genbitmap[6]);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
