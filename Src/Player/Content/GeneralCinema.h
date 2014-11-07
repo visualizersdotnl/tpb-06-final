@@ -6,6 +6,7 @@ private:
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
 	Pimp::Texture2D *flare;
+	Pimp::Texture2D *sparkly;
 
 	const sync_track *st_greetsRotX;
 	const sync_track *st_greetsRotY;
@@ -49,6 +50,7 @@ public:
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\background.png", &background);
 		Assets::AddTexture2D("textures\\generalcinema\\Flare.png", &flare);
+		Assets::AddTexture2D("textures\\generalcinema\\sparkly.png", &sparkly);
 
 		Assets::AddTexture2D("textures\\generalcinema\\00.png", &genbitmap[0]);
 		Assets::AddTexture2D("textures\\generalcinema\\01.png", &genbitmap[1]);
@@ -79,6 +81,7 @@ public:
 		const float kReelZ = 2.f;
 		const float kFlareZ = 3.f;
 		const float kScrollZ = 4.f;
+		const float kSparkleZ = 5.f;
 
 		// the following code is pure manual fucking around to align sprites
 		// there is no real logic to it
@@ -118,9 +121,28 @@ public:
 
 		const float flareSync = (float) sync_get_val(st_greetsFlare, row);
 
+		// sparkle (alleen in t begin)
+
+		if (reelRoto == 0.f) // do sparkle when all stands still (reelRoto zero, ergo fxTimer zero)
+		{
+			float sync = flareSync*2.f;
+
+			s_sprites->AddSpriteCenter(
+				sparkly,
+				Pimp::D3D::BlendMode::BM_Additive,
+				Vector2(120.f, 415.f),
+				kSparkleZ,
+				(sync < 1.f) ? sync : 1.f-sync, // alpha
+				sync, // rotoZ
+				true);
+		}
+
+
+		// beam flare thingy
+
 		const float kFlareX = kReelX - 360.f;
 
-		if (0.f != flareSync)
+		if (0.f != flareSync && reelRoto > 0.f) // reelRoto is zero at first when all stands still
 		{
 			float flareXOffs = 0.f;
 			flareXOffs += (1.f-flareSync)*1700.f;

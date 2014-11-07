@@ -771,6 +771,8 @@
 		<track name="blobsProjScrollV"/>
 		<track name="greetsFlare">
 			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="1" row="4064" value="0"/>
+			<key interpolation="0" row="4095" value="1"/>
 			<key interpolation="3" row="4096" value="1"/>
 			<key interpolation="0" row="4128" value="0"/>
 			<key interpolation="3" row="4224" value="1"/>
