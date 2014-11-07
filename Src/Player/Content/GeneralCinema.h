@@ -102,7 +102,7 @@ public:
 		// reels (rotate quickly in opposite directions in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::BlendMode::BM_Additive,
 				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-75.f),
 				kReelZ,
 				1.f,
