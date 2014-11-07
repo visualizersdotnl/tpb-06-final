@@ -824,6 +824,20 @@
 			<key interpolation="1" row="4992" value="7"/>
 			<key interpolation="0" row="5024" value="7.25"/>
 		</track>
+		<track name="credit">
+			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="0" row="1536" value="1"/>
+		</track>
+		<track name="creditX">
+			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="2" row="1536" value="0.5"/>
+			<key interpolation="0" row="1576" value="0"/>
+		</track>
+		<track name="creditY">
+			<key interpolation="0" row="0" value="0"/>
+			<key interpolation="1" row="1536" value="0.5"/>
+			<key interpolation="0" row="1560" value="0"/>
+		</track>
 	</tracks>
 	<bookmarks/>
 </sync>

@@ -147,6 +147,7 @@ public:
 			float x = fmodf(fBmp, 1.f);
 			if (x < 0.25f) aBmp = x*4.f;
 			if (x > 0.75f) aBmp = 1.f-((x-0.75f)*4.f);
+			// linear fade, given the short time thats ok
 
 			{
 				Pimp::Texture2D *bitmap = genbitmap[iBmp];
