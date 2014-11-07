@@ -2,7 +2,7 @@
 class GeneralCinema : public Demo::Scene
 {
 private:
-	Pimp::Texture2D *projector, *reel, *scroller, *background;
+	Pimp::Texture2D *projector, *reel, *background;
 	Pimp::Material *backMat;
 	Pimp::MaterialParameter *foldXformParam;
 	Pimp::Texture2D *flare;
@@ -15,6 +15,9 @@ private:
 	const sync_track *st_greetsPosZ;
 
 	const sync_track *st_greetsFlare;
+	const sync_track *st_greetsBitmap;
+
+	Pimp::Texture2D *genbitmap[7];
 
 public:
 	GeneralCinema()
@@ -35,17 +38,25 @@ public:
 		s_syncTracks.push_back(SyncTrack("greetsPosZ", false, &st_greetsPosZ));
 	
 		s_syncTracks.push_back(SyncTrack("greetsFlare", false, &st_greetsFlare));
+		s_syncTracks.push_back(SyncTrack("greetsBitmap", false, &st_greetsBitmap));
 	}
 
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector.png", &projector);
 		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_reel.png", &reel);
-		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller.png", &scroller);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_pattern.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\tentacles_noise.png", NULL);
 		Assets::AddTexture2D("textures\\generalcinema\\background.png", &background);
 		Assets::AddTexture2D("textures\\generalcinema\\Flare.png", &flare);
+
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller1.png", &genbitmap[0]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller2.png", &genbitmap[1]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller3.png", &genbitmap[2]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller4.png", &genbitmap[3]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller5.png", &genbitmap[4]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller6.png", &genbitmap[5]);
+		Assets::AddTexture2D("textures\\generalcinema\\greetings_projector_scroller7.png", &genbitmap[6]);
 
 		Assets::AddMaterial("shaders\\Scene_Tentacle.fx", &backMat);	
 	}
@@ -66,7 +77,7 @@ public:
 		const float kProjectorZ = 1.f;
 		const float kReelZ = 2.f;
 		const float kFlareZ = 3.f;
-		const float kScrollZ = 2.f;
+		const float kScrollZ = 4.f;
 
 		// the following code is pure manual fucking around to align sprites
 		// there is no real logic to it
@@ -111,7 +122,7 @@ public:
 		if (0.f != flareSync)
 		{
 			float flareXOffs = 0.f;
-			flareXOffs += flareSync*300.f;
+			flareXOffs += flareSync*1700.f;
 
 			s_sprites->AddSprite(
 				flare,
@@ -120,6 +131,34 @@ public:
 				kFlareZ,
 				flareSync,
 				0.f, true);
+		}
+
+		const float kProjOffsX = 100.f + projector->GetWidth() + 10.f;
+
+		// greet shit
+
+		const float fBmp = (float) sync_get_val(st_greetsBitmap, row);
+		if (fBmp >= 1.f)
+		{
+			const int iBmp = (int) floorf(fBmp) - 1;
+			
+			float aBmp = 1.f;
+
+			float x = fmodf(fBmp, 1.f);
+			if (x < 0.25f) aBmp = x*4.f;
+			if (x > 0.75f) aBmp = 1.f-((x-0.75f)*4.f);
+
+			{
+				Pimp::Texture2D *bitmap = genbitmap[iBmp];
+				s_sprites->AddSprite(
+					bitmap,
+					Pimp::D3D::BlendMode::BM_Additive,
+					Vector2(kProjOffsX, (1080.f-bitmap->GetHeight())*0.5f),
+					kScrollZ,
+					aBmp,
+					0.f,
+					true);
+			}
 		}
 
 		// Update inv param

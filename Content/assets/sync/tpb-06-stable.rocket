@@ -653,7 +653,7 @@
 			<key row="4063" value="1" interpolation="0"/>
 			<key row="4064" value="1" interpolation="1"/>
 			<key row="4088" value="0" interpolation="0"/>
-			<key row="4864" value="1" interpolation="1"/>
+			<key row="4864" value="1" interpolation="2"/>
 			<key row="4880" value="0" interpolation="0"/>
 			<key row="5616" value="0" interpolation="2"/>
 			<key row="5631" value="1" interpolation="0"/>
@@ -762,19 +762,19 @@
 		<track name="greetsFlare">
 			<key row="0" value="0" interpolation="0"/>
 			<key row="4096" value="1" interpolation="3"/>
-			<key row="4112" value="0" interpolation="0"/>
+			<key row="4128" value="0" interpolation="0"/>
 			<key row="4224" value="1" interpolation="3"/>
-			<key row="4240" value="0" interpolation="0"/>
+			<key row="4256" value="0" interpolation="0"/>
 			<key row="4352" value="1" interpolation="3"/>
-			<key row="4368" value="0" interpolation="0"/>
-			<key row="4608" value="1" interpolation="3"/>
-			<key row="4624" value="0" interpolation="0"/>
+			<key row="4384" value="0" interpolation="0"/>
+			<key row="4608" value="1" interpolation="1"/>
+			<key row="4640" value="0" interpolation="0"/>
 			<key row="4736" value="1" interpolation="3"/>
-			<key row="4752" value="0" interpolation="0"/>
+			<key row="4768" value="0" interpolation="0"/>
 			<key row="4864" value="1" interpolation="3"/>
-			<key row="4880" value="0" interpolation="0"/>
-			<key row="4992" value="1" interpolation="3"/>
-			<key row="5008" value="0" interpolation="0"/>
+			<key row="4896" value="0" interpolation="0"/>
+			<key row="4992" value="1" interpolation="2"/>
+			<key row="5024" value="0" interpolation="0"/>
 		</track>
 		<track name="g_postNoiseU">
 			<key row="0" value="0" interpolation="0"/>
@@ -799,6 +799,18 @@
 			<key row="6648" value="0" interpolation="0"/>
 			<key row="6655" value="0" interpolation="0"/>
 			<key row="6656" value="0" interpolation="0"/>
+		</track>
+		<track name="greetsBitmap">
+			<key row="0" value="0" interpolation="0"/>
+			<key row="4064" value="0" interpolation="1"/>
+			<key row="4096" value="1" interpolation="1"/>
+			<key row="4224" value="2" interpolation="1"/>
+			<key row="4352" value="3" interpolation="1"/>
+			<key row="4608" value="4" interpolation="1"/>
+			<key row="4736" value="5" interpolation="1"/>
+			<key row="4864" value="6" interpolation="1"/>
+			<key row="4992" value="7" interpolation="1"/>
+			<key row="5024" value="7.25" interpolation="0"/>
 		</track>
 	</tracks>
 	<bookmarks/>
