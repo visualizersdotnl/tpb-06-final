@@ -123,7 +123,7 @@ public:
 		if (0.f != flareSync)
 		{
 			float flareXOffs = 0.f;
-			flareXOffs += flareSync*1700.f;
+			flareXOffs += (1.f-flareSync)*1700.f;
 
 			s_sprites->AddSprite(
 				flare,
