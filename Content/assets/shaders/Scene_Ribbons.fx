@@ -457,7 +457,7 @@ PSOutput MainPS(VSOutput input)
 #if SHOW_NORMALS		
 		result.color = float4(normal.xyz*0.5 + (0.5).xxx,1);
 #else
-		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
+		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), 0.1f+depth );
 #endif		
 
 		// result.color.xyz = depth.xxx;	
