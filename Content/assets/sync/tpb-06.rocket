@@ -915,6 +915,13 @@
 			<key interpolation="3" row="6008" value="0"/>
 			<key interpolation="0" row="6128" value="1"/>
 		</track>
+		<track name="ribbons2KG_Y">
+			<key interpolation="0" row="5632" value="-1000"/>
+			<key interpolation="3" row="5728" value="1080"/>
+			<key interpolation="0" row="5744" value="860"/>
+			<key interpolation="3" row="6000" value="850"/>
+			<key interpolation="0" row="6016" value="1080"/>
+		</track>
 	</tracks>
 	<bookmarks/>
 </sync>
