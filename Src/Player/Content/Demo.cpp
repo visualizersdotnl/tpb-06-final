@@ -536,7 +536,8 @@ bool Tick(Pimp::Camera *camOverride)
 		float sw_t = sw.GetSecondsElapsed();
 
 		float alpha = 1.f;
-		if (sw_t < 2.f) alpha = sw_t/2.f;
+		if (sw_t < 2.f) alpha = 0.f;
+		if (sw_t > 2.f && sw_t < 4.f) alpha = (sw_t-2.f)/2.f;
 		else if (sw_t > t-4.f) alpha = 1.f - ( (sw_t-(t-4.f)) / 4.f );
 
 		// Wait for esc (or timer).
