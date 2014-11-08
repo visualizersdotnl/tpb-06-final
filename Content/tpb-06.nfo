@@ -1,6 +1,6 @@
 
 ---------------------
-TPB-06: Excessination
+TPB-06: Excessination (PARTY VERSION)
 ---------------------
 
 On a beautiful spring day early 2014 in Cologne, Germany, a deal was made.
@@ -22,6 +22,8 @@ Something that spits out audio.
 Demo will automatically adapt to your current output slash desktop
 resolution and adjust accordingly (aspect ratio), but you'll be well
 advised to use something near 16:9.
+
+It is built for 1080p.
 
 The party version has a severe lack of D3D error checking and soforth
 because this was built upon a size-optimized 64KB system, but we'll fix

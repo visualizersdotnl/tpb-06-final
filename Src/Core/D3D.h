@@ -97,6 +97,7 @@ namespace Pimp
 			BM_Additive,
 			BM_Subtractive,
 			BM_AlphaMask,
+			BM_AlphaPreMul,
 			MAX_BlendMode
 		};
 

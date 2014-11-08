@@ -132,7 +132,7 @@ public:
 
 			s_sprites->AddSprite(
 				first,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::BlendMode::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs1, yoffs1),
 				Vector2(1920.f, 1080.f),
@@ -142,7 +142,7 @@ public:
 
 			s_sprites->AddSprite(
 				second,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::BlendMode::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs2, yoffs2),
 				Vector2(1920.f, 1080.f),
