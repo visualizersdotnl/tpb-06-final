@@ -17,13 +17,14 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
-	float4x4 viewInvMatrix;
+//	float4x4 viewInvMatrix;
 	float sceneRenderLOD = 1;	
 	float2 quadScaleFactor;			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 
 	float g_fxTime;
 
 	float4x4 pompomRotMat;
+	float4x4 pompomRotMatInv;
 };
 
 VSOutput MainVS(VSInput input)
@@ -49,11 +50,11 @@ Texture2D texture_pompom_color;
 // --------------------------------------------------------------------------------------------
 
 static const float uvScale = 1;
-static const float colorUvScale = 0.3;
+static const float colorUvScale = 1.0;
 static const float furDepth = 0.3;
 static const int furLayers = 128;//96;
 static const float rayStep = furDepth*2.0 / float(furLayers);
-static const float furThreshold = 0.4;
+static const float furThreshold = 0.3;
 static const float shininess = 50.0;
 
 bool intersectSphere(float3 ro, float3 rd, float r, out float t)
@@ -133,6 +134,7 @@ float3 furNormal(float3 pos, float density)
 float3 furShade(float3 pos, float2 uv, float3 ro, float density)
 {
 	// lighting
+//	const float3 L = mul(float3(0, 1, 0), (float3x3)pompomRotMatInv);
 	const float3 L = float3(0, 1, 0);
 	float3 V = normalize(ro - pos);
 	float3 H = normalize(V + L);

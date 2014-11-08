@@ -49,7 +49,8 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texBack, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(0, texBack, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->SkipBGSprite2(true);
 
 		float logoY = (float) sync_get_val(st_logoY, row);
 		float logoA = (float) sync_get_val(st_logoAlpha, row);

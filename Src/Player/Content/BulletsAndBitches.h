@@ -51,11 +51,14 @@ public:
 	void EndPic(float alpha)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(0, thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->SkipBGSprite2(true);
 	}
 
 	void Tick(double row)
 	{
+		s_sprites->SkipBGSprite2(true);
+
 		const float wetDry = (float) sync_get_val(st_endFlangerWet, row);
 		const float freqMod = (float) sync_get_val(st_endFlangerFreqMod, row);
 		Audio_FlangerMP3(wetDry, freqMod);
@@ -68,7 +71,7 @@ public:
 		if (bitchBullets == 0.f)
 		{
 			// this way it's part of the scene process and thus we can cover it with noise
-			s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+			s_sprites->AddBackgroundSprite(0, background, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 			// background (or what used to be our loading screen)
 //			s_sprites->AddSprite(
@@ -81,7 +84,7 @@ public:
 		}
 		else
 		{
-			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+			s_sprites->AddBackgroundSprite(0, texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 //			float backAlpha = (bitchBullets<1.f) ? bitchBullets : 1.f;
 			

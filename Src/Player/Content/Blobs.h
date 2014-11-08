@@ -59,6 +59,7 @@ public:
 		float time = (float) sync_get_val(st_fxTime, row);
 		
 		s_sprites->AddBackgroundSprite(
+			0, 
 			bgTile, 
 			Pimp::D3D::BlendMode::BM_None, 
 			-1, 
@@ -66,6 +67,8 @@ public:
 			Vector2(1920.f, 1080.f), 
 			Vector2(3.f*kTileMul, 3.f),
 			Vector2(-time*0.4f, -time));
+
+		s_sprites->SkipBGSprite2(true);
 
 		// Credits
 

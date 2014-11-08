@@ -17,7 +17,8 @@ namespace Pimp
 		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
 		effectTechnique(&effect, "Sprites"),
 		effectPass(&effectTechnique, "Default"), 
-		effectPass_ForceClamp(&effectTechnique, "ForceClamp")
+		effectPass_ForceClamp(&effectTechnique, "ForceClamp"),
+		skipBGSprite2(true)
 	{
 		// Get shader var. indices.
 		varIndexRenderScale = effect.RegisterVariable("renderScale", true);
@@ -25,7 +26,7 @@ namespace Pimp
 
 		// Initialize buffers.
 		VB.vertices = gD3D->CreateVertexBuffer(6*kMaxSprites*sizeof(SpriteVertex), nullptr, true);
-		bgVB.vertices = gD3D->CreateVertexBuffer(6*sizeof(SpriteVertex), nullptr, true);
+		bgVB.vertices = gD3D->CreateVertexBuffer(2*6*sizeof(SpriteVertex), nullptr, true);
 
 		sprites.clear();
 
@@ -60,8 +61,9 @@ namespace Pimp
 
 		delete [] signature;
 
-		// Invalidate background.
-		AddBackgroundSprite(gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		// Invalidate backgrounds.
+		AddBackgroundSprite(0, gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		AddBackgroundSprite(1, gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 	}
 
 	Sprites::~Sprites()
@@ -103,11 +105,15 @@ namespace Pimp
 	{
 		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
-		ASSERT(sortZ == kBGSpriteZ || sortZ >= 0.f);
+
+//		ASSERT(sortZ == kBGSpriteZ[0] || sortZ == kBGSpriteZ[1] || sortZ >= 0.f);
+		int iBG = -1;
+		if (sortZ == kBGSpriteZ[0]) iBG = 0;
+		if (sortZ == kBGSpriteZ[1]) iBG = 1;
 
 		SpriteVertex *pDest = nullptr;
 
-		if (sortZ != kBGSpriteZ)
+		if (iBG == -1)
 		{
 			// first sprite?
 			if (sprites.empty())
@@ -123,6 +129,7 @@ namespace Pimp
 		{
 			// lock tiny vertex buffer
 			VERIFY(SUCCEEDED(bgVB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pDest))));
+			pDest += iBG*6;
 		}
 
 		// hack: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space
@@ -168,7 +175,7 @@ namespace Pimp
 		++pDest;
 
 		ASSERT(nullptr != pTexture);
-		if (sortZ != kBGSpriteZ)
+		if (iBG == -1)
 		{
 			// add to list
 			Sprite sprite;
@@ -182,8 +189,8 @@ namespace Pimp
 		else
 		{
 			// set up background sprite
-			bgSprite.pTexture = pTexture;
-			bgSprite.blendMode = blendMode;
+			bgSprites[iBG].pTexture = pTexture;
+			bgSprites[iBG].blendMode = blendMode;
 
 			// and unmap it's buffer
 			bgVB.vertices->Unmap();
@@ -192,22 +199,25 @@ namespace Pimp
 
 	void Sprites::DrawBackgroundSprite()
 	{
-		// Bind buffers.
-		gD3D->BindVertexBuffer(0, bgVB.vertices, sizeof(SpriteVertex));
-		gD3D->BindInputLayout(VB.inputLayout); // FIXME: bgVB doesn't have one, as they're identical :)
+		for (int iBG = 0; iBG < ((true == skipBGSprite2) ? 1 : 2); ++iBG)
+		{
+			// Bind buffers.
+			gD3D->BindVertexBuffer(0, bgVB.vertices, sizeof(SpriteVertex));
+			gD3D->BindInputLayout(VB.inputLayout); // FIXME: bgVB doesn't have one, as they're identical :)
 		
-		// Set state.
-		effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
-		effect.SetVariableValue(varIndexTextureMap, bgSprite.pTexture->GetShaderResourceView());
-		effectPass.Apply();
-		gD3D->SetBlendMode(bgSprite.blendMode);
+			// Set state.
+			effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
+			effect.SetVariableValue(varIndexTextureMap, bgSprites[iBG].pTexture->GetShaderResourceView());
+			effectPass.Apply();
+			gD3D->SetBlendMode(bgSprites[iBG].blendMode);
 
-		// * - For some reason on the render targets the scale for the background sprites is too much as it is 
-		//     already compensated elsewhere. Can't be bothered to find out where now. 
-		//     @plek, 2014
+			// * - For some reason on the render targets the scale for the background sprites is too much as it is 
+			//     already compensated elsewhere. Can't be bothered to find out where now. 
+			//     @plek, 2014
 
-		// Draw.
-		gD3D->DrawTriQuad(0);
+			// Draw.
+			gD3D->DrawTriQuad(iBG*6);
+		}
 	}
 
 	void Sprites::FlushSprites()
