@@ -43,8 +43,8 @@ public:
 		float time = (float) sync_get_val(st_fxTime, row);
 
 		// rotatie
-		float yaw = time*0.1f;
-		float pitch = time*0.1f;
+		float yaw = time*0.2f;
+		float pitch = time*0.3f;
 		float roll = time*0.1f;
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(yaw, pitch, roll);
 		((Pimp::Xform*)rotParam->GetParents()[0])->SetRotation(rotation);

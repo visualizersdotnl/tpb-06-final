@@ -51,7 +51,7 @@ Texture2D texture_pompom_color;
 static const float uvScale = 1;
 static const float colorUvScale = 0.3;
 static const float furDepth = 0.3;
-static const int furLayers = 96;
+static const int furLayers = 128;//96;
 static const float rayStep = furDepth*2.0 / float(furLayers);
 static const float furThreshold = 0.4;
 static const float shininess = 50.0;
@@ -150,8 +150,16 @@ float3 furShade(float3 pos, float2 uv, float3 ro, float density)
 	float t = (r - (1.0 - furDepth)) / furDepth;
 	t = clamp(t, 0.0, 1.0);
 	float i = t*0.5+0.5;
+
+	float3 specCol = color*1.5;
+
+	// crappy rim
+	float viewFacing = dot(V, N);
+	float rim = saturate((viewFacing - 0.2)*12.0);
+	color *= rim;	
 		
-	return color*diff*i + float3(spec.xxx*i);
+
+	return color*diff*i + float3(spec*specCol*i);
 }		
 
 float4 scene(float3 ro,float3 rd)
@@ -161,6 +169,7 @@ float4 scene(float3 ro,float3 rd)
 	float t;				  
 	bool hit = intersectSphere(ro - p, rd, r, t);
 	
+	float w = 1;
 	float4 c = float4(0.0, 0.0, 0.0, 0.0);
 	if (hit) {
 		float3 pos = ro + rd*t;
@@ -174,15 +183,21 @@ float4 scene(float3 ro,float3 rd)
 				sampleCol.rgb = furShade(pos, uv, ro, sampleCol.a);
 
 				// pre-multiply alpha
-				sampleCol.rgb *= sampleCol.a;
+				sampleCol.rgb *= sampleCol.a * w;
 				c = c + sampleCol*(1.0 - c.a);
 				if (c.a > 0.95) break;
 			}
 			
 			pos += rd*rayStep;
+			w = max(0, w-0.007);
 		}
 	}
 	
+	float intensity = saturate((1-(pow(t, 6.45) * 0.02))*1.5);
+	//c.rgb -= saturate(c.a.xxx)*0.01;
+	//c.rgb = intensity.xxx;
+	c.a = intensity;
+
 	return c;
 }
 
