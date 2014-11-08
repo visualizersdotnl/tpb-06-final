@@ -34,6 +34,7 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->AddBackgroundSprite(0, texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+		s_sprites->SkipBGSprite2(true);
 	}
 };

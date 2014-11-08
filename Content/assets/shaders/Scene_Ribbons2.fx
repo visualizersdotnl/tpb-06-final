@@ -464,6 +464,7 @@ PSOutput MainPS(VSOutput input)
 
 		result.color = float4( Shade(hitPos.xyz, normal, -dir.xyz, origin, hitMat, hitUV), depth );
 
+#if 0 // disable reflections
 		// Add some reflections
 		float4 hitPos2;
 		float2 hitUV2;
@@ -475,6 +476,7 @@ PSOutput MainPS(VSOutput input)
 
 			result.color.xyz += 0.7*Shade(hitPos2.xyz, normal2, eyeDir, origin, hitMat, hitUV2);			
 		}		
+#endif
 	}
 	else
 	{

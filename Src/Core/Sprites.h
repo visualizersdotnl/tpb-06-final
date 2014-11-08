@@ -10,9 +10,9 @@ namespace Pimp
 {
 	class Texture2D;
 
-	// This sortZ is reserved.
+	// These sortZs are reserved.
 	// The idea is to keep your regular sortZ zero and upwards.
-	const float kBGSpriteZ = -1.f;
+	const float kBGSpriteZ[2] = { -1.f, -2.f };
 
 	class Sprites
 	{
@@ -44,6 +44,8 @@ namespace Pimp
 			}
 		};
 
+		bool skipBGSprite2;
+
 	public:
 		Sprites();
 		~Sprites();
@@ -62,6 +64,7 @@ namespace Pimp
 
 		// to add (single) background sprite (drawn first, behind the scene)
 		void AddBackgroundSprite(
+			size_t iBG,
 			/* const */ Texture2D *pTexture,
 			D3D::BlendMode blendMode,
 			const unsigned int vertexColor,
@@ -70,7 +73,7 @@ namespace Pimp
 			const Vector2 &uvTile, 
 			const Vector2 &uvScroll = Vector2(0.f, 0.f))
 		{
-			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ, 0.f, false, uvTile, uvScroll);
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ[iBG], 0.f, false, uvTile, uvScroll);
 		}
 
 		// simplified AddSprite()
@@ -106,6 +109,8 @@ namespace Pimp
 			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
 		}
 
+		void SkipBGSprite2(bool skip) { skipBGSprite2 = skip; }
+
 		void DrawBackgroundSprite();
 		void FlushSprites();	
 
@@ -130,7 +135,7 @@ namespace Pimp
 			}
 		} VB, bgVB;
 
-		BGSprite bgSprite;
+		BGSprite bgSprites[2];
 		std::list<Sprite> sprites;
 
 		Effect effect;
