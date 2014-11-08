@@ -96,7 +96,8 @@ Metaballs::Metaballs() :
 	worldTrans(new Xform(nullptr)),
 	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex()),
 	projScrollU(0.f), projScrollV(0.f),
-	shininess(9.f), overbright(1.5f)
+	shininess(9.f), overbright(1.5f),
+	rim(1.f)
 {
 }
 
@@ -150,6 +151,7 @@ bool Metaballs::Initialize()
 	varIndexShininess = effect.RegisterVariable("shininess", true);
 	varIndexOverbright = effect.RegisterVariable("overbright", true);
 	varIndexProjScroll = effect.RegisterVariable("projScroll", true);
+	varIndexRim = effect.RegisterVariable("rim", true);
 
 	return true;
 }
@@ -264,6 +266,7 @@ void Metaballs::Draw(Camera* camera)
 	effect.SetVariableValue(varIndexShininess, shininess);
 	effect.SetVariableValue(varIndexOverbright, overbright);
 	effect.SetVariableValue(varIndexProjScroll, Vector2(projScrollU, projScrollV));
+	effect.SetVariableValue(varIndexRim, rim);
 	effectPass.Apply();
 
 	// * A transpose serves just as well for an orthogonal matrix.
@@ -291,6 +294,11 @@ void Metaballs::SetLighting(float shininess, float overbright)
 {
 	this->shininess = shininess;
 	this->overbright = overbright;
+}
+
+void Metaballs::SetRim(float rim)
+{
+	this->rim = rim;
 }
 
 __forceinline unsigned int Metaballs::GetEdgeTableIndex()

@@ -30,6 +30,7 @@ namespace Pimp
 		void SetRotation(const Quaternion &rotation);
 		void SetMaps(Texture2D *envMap, Texture2D *projMap, float projScrollU, float projScrollV);
 		void SetLighting(float shininess, float overbright);
+		void SetRim(float rim);
 
 	private:
 		ID3D10Buffer *pVB, *pIB;
@@ -47,6 +48,7 @@ namespace Pimp
 		int varIndexShininess;
 		int varIndexOverbright;
 		int varIndexProjScroll;
+		int varIndexRim;
 
 		bool isVisible;
 
@@ -56,6 +58,7 @@ namespace Pimp
 
 		Texture2D *envMap, *projMap;
 		float projScrollU, projScrollV;
+		float rim;
 
 		__forceinline unsigned int GetEdgeTableIndex();
 		float CalculateIsoValue(unsigned int iGrid, float gridX, float gridY, float gridZ);
