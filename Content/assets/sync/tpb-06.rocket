@@ -912,7 +912,7 @@
 		</track>
 		<track name="ribbons2ToBG2">
 			<key interpolation="0" row="0" value="0"/>
-			<key interpolation="3" row="6008" value="0"/>
+			<key interpolation="1" row="6008" value="0"/>
 			<key interpolation="0" row="6128" value="1"/>
 		</track>
 		<track name="ribbons2KG_Y">
