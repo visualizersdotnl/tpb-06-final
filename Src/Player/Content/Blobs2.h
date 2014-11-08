@@ -140,5 +140,6 @@ public:
 		s_pMetaballs->SetLighting(
 			(float) sync_get_val(st_blobsShininess, row),
 			(float) sync_get_val(st_blobsOverbright, row));
+		s_pMetaballs->SetRim(1.f);
 	}
 };

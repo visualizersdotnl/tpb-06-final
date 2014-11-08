@@ -25,6 +25,7 @@ cbuffer paramsOnlyOnce
 	float shininess;
 	float overbright;
 	float2 projScroll;
+	float rim;
 };
 
 float3 LightVertex(
@@ -36,7 +37,7 @@ float3 LightVertex(
 	lightPos = mul(lightPos, (float3x3) mWorldInv);
 
 	float3 L = normalize(lightPos - position);
-	float diffuse = max(dot(normal, L), 0.f);
+	float diffuse = 0.1f+ 0.9f*max(dot(normal, L), 0.f);
 
 	float3 eyePos = lightPos; // Not ideal, but it'll do the trick.
 	float3 V = normalize(eyePos - position);
@@ -89,13 +90,14 @@ SamplerState samplerTexture
 float4 MainPS(VSOutput input) : SV_Target0
 {
 	float viewFacing = dot(normalize(input.view), normalize(input.normal));
-	float rim = saturate((viewFacing - 0.2)*8.0);
+	float _rim = saturate((viewFacing-0.2)*8.0);
+	_rim = lerp(1.f, _rim, rim);
 
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTexture, uv);
 	float4 projColor = projMap.Sample(samplerTexture, input.texCoordProj);
 
-	return texColor*projColor*input.color*float4(rim.xxx,1.0);
+	return texColor*projColor*input.color*float4(_rim.xxx,1.0);
 }
 
 
