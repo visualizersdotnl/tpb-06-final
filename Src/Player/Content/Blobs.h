@@ -132,7 +132,8 @@ public:
 
 			s_sprites->AddSprite(
 				first,
-				Pimp::D3D::BlendMode::BM_AlphaPreMul,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
+//				Pimp::D3D::BlendMode::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs1, yoffs1),
 				Vector2(1920.f, 1080.f),
@@ -142,7 +143,8 @@ public:
 
 			s_sprites->AddSprite(
 				second,
-				Pimp::D3D::BlendMode::BM_AlphaPreMul,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
+//				Pimp::D3D::BlendMode::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs2, yoffs2),
 				Vector2(1920.f, 1080.f),
@@ -180,6 +182,6 @@ public:
 		s_pMetaballs->SetLighting(
 			(float) sync_get_val(st_blobsShininess, row),
 			(float) sync_get_val(st_blobsOverbright, row));
-		s_pMetaballs->SetRim(0.4f);
+		s_pMetaballs->SetRim(0.0f);
 	}
 };

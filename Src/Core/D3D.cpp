@@ -136,7 +136,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	renderScale.x = 1.0f;
 	renderScale.y = renderableAmount;
 
-#if 0
+#if 1
 	m_adjVP.Width = xResAdj;
 	m_adjVP.Height = yResAdj;
 	m_adjVP.TopLeftX = (m_fullVP.Width-xResAdj)/2;
@@ -145,7 +145,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_adjVP.MaxDepth = 1.f;
 
 	// Readjust to aspect corrected VP	
-	device->RSSetViewports(1, &m_adjVP);
+//	device->RSSetViewports(1, &m_adjVP);
 #endif
 
 	// Blend states
@@ -278,6 +278,14 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 	// Bind adjusted (aspect) viewport
 	device->RSSetViewports(1, &m_adjVP);
 #endif
+}
+
+void D3D::SetVP(bool adjOrFull)
+{
+	if (adjOrFull)
+		device->RSSetViewports(1, &m_adjVP);
+	else
+		device->RSSetViewports(1, &m_fullVP);
 }
 
 

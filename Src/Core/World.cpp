@@ -187,13 +187,17 @@ namespace Pimp
 
 		// ** At this point, the back buffer will be bound **
 
+		gD3D->SetVP(true); // adjusted VP
+
 		// Flush (draw & clear queue) the sprites
 		pSprites->FlushSprites();
+
+		gD3D->SetVP(false); // full VP
 
 		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);
 
-		gD3D->Flip();
+//		gD3D->Flip();
 	}
 
 

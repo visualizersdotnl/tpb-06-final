@@ -112,7 +112,7 @@ public:
 				Vector2(ballPos_1, ballY),
 				kTextZ,
 				1.f-ballFade_1,
-				0.f);
+				0.f, true);
 
 		// ball #2
 		s_sprites->AddSprite(
@@ -121,7 +121,7 @@ public:
 				Vector2(ballPos_2, ballY),
 				kTextZ,
 				1.f-ballFade_2,
-				0.f);
+				0.f, true);
 
 		// ampersand
 		s_sprites->AddSprite(
@@ -130,7 +130,7 @@ public:
 				Vector2(ballPos_2, ballY),
 				kAmpersandZ,
 				1.f-ampFade,
-				0.f);
+				0.f, true);
 
 		// group names
 		s_sprites->AddSprite(
@@ -139,14 +139,14 @@ public:
 				Vector2(ballPos_2-690.f-25.f, ballY),
 				kTextZ,
 				fadeTPB,
-				0.f);
+				0.f, true);
 		s_sprites->AddSprite(
 				logoInque,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f-20.f, ballY+5.f), // @plek: De een is net wat hoger dan de ander?
 				kTextZ,
 				fadeINQ,
-				0.f);
+				0.f, true);
 
 		// "present.."
 		s_sprites->AddSprite(
@@ -155,7 +155,7 @@ public:
 				Vector2(ballPos_2+160.f+260.f, ballY+5.f), // @plek: And this one is off too :)
 				kTextZ,
 				1.f-presentFade,
-				0.f);
+				0.f, true);
 
 		// background
 		s_sprites->AddSprite(
@@ -164,7 +164,7 @@ public:
 				AlphaToVtxColor(whiteOpacity),
 				Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
 				kBackgroundZ,
-				0.f);
+				0.f, true);
 
 		// die grote cirkel die naar het target moet morphen
 		// FIXME: centreren is niet correct, maar hij is toch buiten gebruik
@@ -187,7 +187,7 @@ public:
 				Vector2(bigPos, bigBallY),
 				Vector2(width, height),
 				kTargetZ-0.1f,
-				0.f);
+				0.f, true);
 		}
 
 		// target sprite
@@ -197,7 +197,7 @@ public:
 				Vector2(1920.f*0.5f, 1080.f*0.5f),
 				kTargetZ+0.1f,
 				targetOpacity,
-				0.f);
+				0.f, true);
 
 		// gunshot holes
 		{
@@ -221,7 +221,7 @@ public:
 								kShotPositions[iShot],
 								kShotZ,
 								1.f,
-								0.f);
+								0.f, true);
 					}
 
 					// shotFX 4 means we play a sample only (shell drop)
@@ -245,7 +245,7 @@ public:
 			Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 			kPimpZ,
 			pimpOpacity,
-			0.f);
+			0.f, true);
 
 		// title
 #if 0
@@ -255,7 +255,7 @@ public:
 			Vector2(1920.f*0.5f, 1080.f*0.5f),
 			kTitleZ,
 			1.f,
-			0.f);
+			0.f, true);
 #endif
 	}
 };

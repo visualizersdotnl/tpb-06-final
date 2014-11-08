@@ -94,7 +94,7 @@ public:
 				Vector2(100.f, (1080.f-projector->GetHeight())*0.5f),
 				kProjectorZ,
 				1.f,
-				0.f);
+				0.f, true);
 
 		const float kReelX = 345.f;
 		const float kReelY = (1080.f-projector->GetHeight())*0.5f;

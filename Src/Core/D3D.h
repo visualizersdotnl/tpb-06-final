@@ -32,6 +32,8 @@ namespace Pimp
 		void ClearDepthStencil();
 		void Flip();
 
+		void SetVP(bool);
+
 		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
 		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
 

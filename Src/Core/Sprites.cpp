@@ -238,7 +238,8 @@ namespace Pimp
 
 			// Set correct visible area.
 			const Vector2& visible_area = gD3D->GetRenderScale();
-			effect.SetVariableValue(varIndexRenderScale, visible_area);
+//			effect.SetVariableValue(varIndexRenderScale, visible_area);
+			effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
 
 			for (Sprite sprite : sprites)
 			{

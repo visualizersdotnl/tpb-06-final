@@ -49,11 +49,6 @@ public:
 		s_sprites->AddBackgroundSprite(0, texWall, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 		float toBG2 = (float) sync_get_val(st_toBG2, row);
-		if (toBG2 == 0.f)
-		{
-			s_sprites->SkipBGSprite2(true);
-		}
-		else
 		{
 			s_sprites->SkipBGSprite2(false);
 

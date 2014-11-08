@@ -18,14 +18,14 @@
 // #include <Core/Core.h>
 
 // Exposed for loading bar purposes.
-Pimp::Texture2D *LoadPNG(const std::string &path, bool gammaCorrect);
+Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool gammaCorrect);
 
 namespace Assets
 {
 	void SetRoot(const std::string &root);
 
 	void AddMaterial(const std::string &path, Pimp::Material **ppMaterial);
-	void AddTexture2D(const std::string &path, Pimp::Texture2D **ppTexture2D);
+	void AddTexture2D(const std::string &path, Pimp::Texture2D **ppTexture2D, bool alphaPreMul = false);
 
 	// Completes all blocking (for now) I/O and kicks material compilation jobs.
 	bool StartLoading();

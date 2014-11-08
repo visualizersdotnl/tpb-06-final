@@ -98,7 +98,7 @@ public:
 					AlphaToVtxColor(backAlpha),
 					Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
 					1.f,
-					0.f);
+					0.f, true);
 
 			// target sprite
 			s_sprites->AddSpriteCenter(
@@ -107,7 +107,7 @@ public:
 					Vector2(1920.f*0.5f, 1080.f*0.5f),
 					2.f,
 					backAlpha,
-					0.f);
+					0.f, true);
 
 			// pimp
 			s_sprites->AddSpriteCenter(
@@ -116,7 +116,7 @@ public:
 				Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 				2.f,
 				backAlpha,
-				0.f);
+				0.f, true);
 
 			const float kShotZ = 2.5;
 			const float ballY = 1080.f*0.5f-(blob->GetHeight()*0.5f);
@@ -150,7 +150,7 @@ public:
 									kShotPositions[iShot],
 									kShotZ,
 									1.f,
-									0.f);
+									0.f, true);
 						}
 
 						// shotFX 5 means we play a sample only (shell drop)

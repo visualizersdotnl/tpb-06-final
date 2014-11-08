@@ -25,9 +25,9 @@ advised to use something near 16:9.
 
 It is built for 1080p.
 
-The party version has a severe lack of D3D error checking and soforth
-because this was built upon a size-optimized 64KB system, but we'll fix
-that in the final. 
+DISCLAIMER:
+Party version has some stressy fixes and a lack of D3D error checking
+(was builtl upon a size-optimized 64KB system), we'll fix that in the final.
 
 If you run into any trouble, e-mail me (ndewit@gmail.com) with your specifications. 
 If you can be bothered. 

@@ -16,7 +16,7 @@
 // PNG loader.
 //
 
-Pimp::Texture2D *LoadPNG(const std::string &path, bool gammaCorrect)
+Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool gammaCorrect)
 {
 	const std::string ID = LowerCase(GetFilenameWithoutExtFromPath(path));
 
@@ -68,12 +68,14 @@ public:
 class Texture2DRequest
 {
 public:
-	Texture2DRequest(const std::string &path, Pimp::Texture2D **ppDest) :
+	Texture2DRequest(const std::string &path, bool alphaPreMul, Pimp::Texture2D **ppDest) :
 		path(path),
+		alphaPreMul(alphaPreMul),
 		gammaCorrect(true),
 		ppDest(ppDest) {}
 
 	const std::string path;
+	const bool alphaPreMul;
 	const bool gammaCorrect;
 	Pimp::Texture2D **ppDest;
 };
@@ -133,16 +135,16 @@ namespace Assets
 		return true;
 	}
 
-	void AddTexture2D(const std::string &path, Pimp::Texture2D **ppTexture2D)
+	void AddTexture2D(const std::string &path, Pimp::Texture2D **ppTexture2D, bool alphaPreMul /* = false */ )
 	{
-		s_textureReqs.push_back(Texture2DRequest(s_root + path, ppTexture2D));
+		s_textureReqs.push_back(Texture2DRequest(s_root + path, alphaPreMul, ppTexture2D));
 	}
 
 	static bool LoadTextures()
 	{
 		for (Texture2DRequest &request : s_textureReqs)
 		{
-			Pimp::Texture2D *pTex = LoadPNG(request.path, request.gammaCorrect);
+			Pimp::Texture2D *pTex = LoadPNG(request.path, request.alphaPreMul, request.gammaCorrect);
 			if (nullptr == pTex)
 				return false;
 
