@@ -152,6 +152,7 @@ public:
 		}
 
 		// FIXME: parametrize w/Rocket?
+//		Quaternion rotation = CreateQuaternionFromYawPitchRoll(0.f, 0.f, 0.f);
 		Quaternion rotation = CreateQuaternionFromYawPitchRoll(time*0.6f, time*0.8f, time*0.4f);
 		s_pMetaballs->SetRotation(rotation);
 
@@ -168,7 +169,8 @@ public:
 		}
 
 		// Generate geometry (triggers visibility).
-		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
+		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 200.f);
+//		s_pMetaballs->Generate(kNumMetaball4s, s_metaball4s, 190.f);
 		
 		// Set maps & lighting.
 		s_pMetaballs->SetMaps(
