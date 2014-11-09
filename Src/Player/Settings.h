@@ -9,7 +9,7 @@
 #define PIMPPLAYER_RENDER_ASPECT_RATIO 16.f/9.f
 
 // Windowed (dev. only) settings.
-const bool PIMPPLAYER_WINDOWED_DEV = false;
+const bool PIMPPLAYER_WINDOWED_DEV = true;
 const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
 const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
 //const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640; // 1920/2;

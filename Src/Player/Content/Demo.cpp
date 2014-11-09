@@ -437,6 +437,10 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Ta-daa!
 	DrawLoadProgress(nullptr, 1.f);
+
+#if !defined(_DEBUG) && !defined(_DESIGN)
+	Sleep(1500); // show loading bar hack :)
+#endif
 	
 	// Finish up some World business.
 	gWorld->InitAllBalls();
