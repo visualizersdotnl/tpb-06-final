@@ -29,6 +29,9 @@ public:
 	void ReqAssets()
 	{
 		Assets::AddTexture2D("textures\\toypusher\\tile-00-yellow.png", &bgTile);
+		Assets::AddTexture2D("textures\\toypusher\\tileshadow.png", &tileshadow);		
+		Assets::AddTexture2D("textures\\toypusher\\envmap.png", &envMap);
+		Assets::AddTexture2D("textures\\toypusher\\projmap.png", &projMap);
 
 		Assets::AddTexture2D("textures\\toypusher\\1.png", &toy[0]);
 		Assets::AddTexture2D("textures\\toypusher\\1b.png", &toy[1]);
@@ -38,10 +41,6 @@ public:
 		Assets::AddTexture2D("textures\\toypusher\\3b.png", &toy[5]);
 		Assets::AddTexture2D("textures\\toypusher\\4.png", &toy[6]);
 		Assets::AddTexture2D("textures\\toypusher\\4b.png", &toy[7]);
-		Assets::AddTexture2D("textures\\toypusher\\tileshadow.png", &tileshadow);		
-
-		Assets::AddTexture2D("textures\\toypusher\\envmap.png", &envMap);
-		Assets::AddTexture2D("textures\\toypusher\\projmap.png", &projMap);
 	}
 
 	void BindToWorld()

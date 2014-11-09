@@ -18,7 +18,8 @@ namespace Pimp
 		effectTechnique(&effect, "Sprites"),
 		effectPass(&effectTechnique, "Default"), 
 		effectPass_ForceClamp(&effectTechnique, "ForceClamp"),
-		skipBGSprite2(true)
+		skipBGSprite2(true),
+		pBGVertices(nullptr)
 	{
 		// Get shader var. indices.
 		varIndexRenderScale = effect.RegisterVariable("renderScale", true);
@@ -107,6 +108,7 @@ namespace Pimp
 		ASSERT(sprites.size() < kMaxSprites);
 
 //		ASSERT(sortZ == kBGSpriteZ[0] || sortZ == kBGSpriteZ[1] || sortZ >= 0.f);
+		// FIXME: needless to say, this is ugly
 		int iBG = -1;
 		if (sortZ == kBGSpriteZ[0]) iBG = 0;
 		if (sortZ == kBGSpriteZ[1]) iBG = 1;
@@ -127,9 +129,13 @@ namespace Pimp
 		}
 		else
 		{
-			// lock tiny vertex buffer
-			VERIFY(SUCCEEDED(bgVB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pDest))));
-			pDest += iBG*6;
+			if (nullptr == pBGVertices)
+			{
+				// lock tiny vertex buffer
+				VERIFY(SUCCEEDED(bgVB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pBGVertices))));
+			}
+
+			pDest = pBGVertices  + (iBG*6);
 		}
 
 		// hack: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space
@@ -191,14 +197,18 @@ namespace Pimp
 			// set up background sprite
 			bgSprites[iBG].pTexture = pTexture;
 			bgSprites[iBG].blendMode = blendMode;
-
-			// and unmap it's buffer
-			bgVB.vertices->Unmap();
 		}
 	}
 
 	void Sprites::DrawBackgroundSprite()
 	{
+		if (nullptr != pBGVertices)
+		{
+			// unmap buffer
+			bgVB.vertices->Unmap();
+			pBGVertices = nullptr;
+		}
+
 		for (int iBG = 0; iBG < ((true == skipBGSprite2) ? 1 : 2); ++iBG)
 		{
 			// Bind buffers.

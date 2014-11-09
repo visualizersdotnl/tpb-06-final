@@ -482,6 +482,8 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 		// may not receive focus resulting in a "hangup". If complemented with a proper general exception
 		// handler it might be an ideal solution for that particular frustration.
 		SetErrorMode(SEM_NOGPFAULTERRORBOX);
+
+		// FIXME: it doesn't have that effect on the debugger, I'd like to see that fixed too (focus issue I think).
 	}
 
 	// initialize Matrix4 class
@@ -514,9 +516,6 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
 					if (1) // FIXME: Move further Core D3D initialization out of constructor.
 					{
-						if (LoadLoadingTexture())
-						{
-
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
 						if (true == Demo::GenerateWorld(rocketClient))
 						{
@@ -611,10 +610,6 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 						}
 
 						Demo::ReleaseWorld();
-
-						} // LoadingTexture
-
-						DumpLoadingTexture();
 					}
 
 					delete Pimp::gD3D;

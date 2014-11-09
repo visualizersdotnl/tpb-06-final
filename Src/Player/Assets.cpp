@@ -31,6 +31,28 @@ Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool gammaCo
 		return nullptr;
 	}
 
+	if (true == alphaPreMul)
+	{
+		unsigned int *pPixels = reinterpret_cast<unsigned int *>(&pixels[0]);
+		for (int iPixel = 0; iPixel < width*height; ++iPixel)
+		{
+			unsigned int pixel, alpha, red, green, blue;
+			pixel = pPixels[iPixel];
+			alpha = pixel >> 24;
+			red = (pixel >> 16) & 0xff;
+			green = (pixel >> 8) & 0xff;
+			blue = pixel & 0xff;
+			
+			// multiply
+			red = (red*alpha)>>8;
+			green = (green*alpha)>>8;
+			blue = (blue*alpha)>>8;
+			
+			pixel = (alpha<<24)|(red<<16)|(green<<8)|blue;
+			pPixels[iPixel] = pixel;
+		}
+	}
+
 	ASSERT(0 != pixels.size());
 	Pimp::Texture2D *pTexture = Pimp::gD3D->CreateTexture2D(ID, width, height, gammaCorrect);
 	pTexture->UploadTexels(&pixels[0]);

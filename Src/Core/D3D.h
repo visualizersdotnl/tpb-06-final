@@ -32,6 +32,7 @@ namespace Pimp
 		void ClearDepthStencil();
 		void Flip();
 
+		// FIXME: change function name
 		void SetVP(bool);
 
 		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);

@@ -166,7 +166,7 @@ namespace Pimp
 			scenes[currentSceneIndex]->Render(currentCamera);
 		}
 
-		// Draw metaballs?
+		// Draw metaballs? (FIXME?)
 		if (nullptr != pMetaballs)
 		{
 			// Clear & enable depth stencil
@@ -187,17 +187,16 @@ namespace Pimp
 
 		// ** At this point, the back buffer will be bound **
 
-		gD3D->SetVP(true); // adjusted VP
-
-		// Flush (draw & clear queue) the sprites
-		pSprites->FlushSprites();
-
-		gD3D->SetVP(false); // full VP
+		// draw sprites in with homogenous coordinates in ratio-adjusted viewport (FIXME?)
+		gD3D->SetVP(true);
+		{
+			// Flush (draw & clear queue) the sprites
+			pSprites->FlushSprites();
+		}
+		gD3D->SetVP(false);
 
 		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);
-
-//		gD3D->Flip();
 	}
 
 

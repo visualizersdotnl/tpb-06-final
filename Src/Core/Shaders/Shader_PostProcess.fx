@@ -135,8 +135,7 @@ PSOutput MainPS_Combine(VSOutput input)
 
 //	if (loadProgress > 0)
 //	{
-//		float2 loadUV = uv;
-//		result.color = loadingTexture.SampleLevel(samplerSceneColor, loadUV, 0);
+//		result.color = loadingTexture.SampleLevel(samplerSceneColor, uv, 0);
 //	}
 	
 	if (loadProgress > 0 && 
@@ -156,10 +155,6 @@ PSOutput MainPS_Combine(VSOutput input)
 		}
 		else 
 			v = 0.0;
-
-		// @plek: blend
-		//float fade = (uv.x-0.08)/0.92;
-		//v *= 0.25f+fade*0.75f;
 
 		result.color += float4(v,v,v,1);	
 	}

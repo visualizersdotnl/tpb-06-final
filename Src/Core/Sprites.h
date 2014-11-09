@@ -22,7 +22,7 @@ namespace Pimp
 			Vector3 position;
 			unsigned int ARGB;
 			Vector2 UV;
-		} *pVertices;
+		} *pVertices, *pBGVertices;
 
 		struct BGSprite
 		{
@@ -43,8 +43,6 @@ namespace Pimp
 				return sortZ < RHS.sortZ;
 			}
 		};
-
-		bool skipBGSprite2;
 
 	public:
 		Sprites();
@@ -109,6 +107,8 @@ namespace Pimp
 			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
 		}
 
+		// FIXME (ugly last-minute hack, add a proper list)
+		bool skipBGSprite2;
 		void SkipBGSprite2(bool skip) { skipBGSprite2 = skip; }
 
 		void DrawBackgroundSprite();

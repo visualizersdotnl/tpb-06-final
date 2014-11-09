@@ -34,18 +34,18 @@ public:
 		Assets::AddTexture2D("textures\\creds\\envmap.png", &envMap);
 		Assets::AddTexture2D("textures\\creds\\projmap.png", &projMap);
 
-		Assets::AddTexture2D("textures\\creds\\alien.png", &alien);
-		Assets::AddTexture2D("textures\\creds\\alien-a.png", &alien_a);
-		Assets::AddTexture2D("textures\\creds\\glow.png", &glow);
-		Assets::AddTexture2D("textures\\creds\\glow-a.png", &glow_a);
-		Assets::AddTexture2D("textures\\creds\\shifter.png", &shifter);
-		Assets::AddTexture2D("textures\\creds\\shifter-a.png", &shifter_a);
-		Assets::AddTexture2D("textures\\creds\\plek.png", &plek);
-		Assets::AddTexture2D("textures\\creds\\plek-a.png", &plek_a);
-		Assets::AddTexture2D("textures\\creds\\punqtured.png", &punqtured);
-		Assets::AddTexture2D("textures\\creds\\punctured-a.png", &punqtured_a);
-		Assets::AddTexture2D("textures\\creds\\guy.png", &guy);
-		Assets::AddTexture2D("textures\\creds\\guy-a.png", &guy_a);
+		Assets::AddTexture2D("textures\\creds\\alien.png", &alien, true);
+		Assets::AddTexture2D("textures\\creds\\alien-a.png", &alien_a, true);
+		Assets::AddTexture2D("textures\\creds\\glow.png", &glow, true);
+		Assets::AddTexture2D("textures\\creds\\glow-a.png", &glow_a, true);
+		Assets::AddTexture2D("textures\\creds\\shifter.png", &shifter, true);
+		Assets::AddTexture2D("textures\\creds\\shifter-a.png", &shifter_a, true);
+		Assets::AddTexture2D("textures\\creds\\plek.png", &plek, true);
+		Assets::AddTexture2D("textures\\creds\\plek-a.png", &plek_a, true);
+		Assets::AddTexture2D("textures\\creds\\punqtured.png", &punqtured, true);
+		Assets::AddTexture2D("textures\\creds\\punctured-a.png", &punqtured_a, true);
+		Assets::AddTexture2D("textures\\creds\\guy.png", &guy, true);
+		Assets::AddTexture2D("textures\\creds\\guy-a.png", &guy_a, true);
 	}
 
 	void BindToWorld()

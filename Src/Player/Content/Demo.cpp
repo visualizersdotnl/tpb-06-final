@@ -439,7 +439,8 @@ bool GenerateWorld(const char *rocketClient)
 	DrawLoadProgress(nullptr, 1.f);
 
 #if !defined(_DEBUG) && !defined(_DESIGN)
-	Sleep(1500); // show loading bar hack :)
+	if (true == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
+		Sleep(1500);
 #endif
 	
 	// Finish up some World business.
