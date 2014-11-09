@@ -530,7 +530,7 @@ bool Tick(Pimp::Camera *camOverride)
 	else
 	{
 		static Stopwatch sw;
-		const float t = 9.f;
+		const float t = 12.f;
 		static bool waren_we_hier_eerder = false;
 		if (false == waren_we_hier_eerder)
 		{
@@ -543,7 +543,7 @@ bool Tick(Pimp::Camera *camOverride)
 		float alpha = 1.f;
 		if (sw_t < 2.f) alpha = 0.f;
 		if (sw_t > 2.f && sw_t < 4.f) alpha = (sw_t-2.f)/2.f;
-		else if (sw_t > t-4.f) alpha = 1.f - ( (sw_t-(t-4.f)) / 4.f );
+		else if (sw_t > t-2.f) alpha = 1.f - ( (sw_t-(t-2.f)) / 2.f );
 
 		// Wait for esc (or timer).
 		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic(alpha);
