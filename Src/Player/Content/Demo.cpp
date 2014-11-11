@@ -11,6 +11,7 @@
 // World, our Core container for the entire demo.
 Pimp::World *gWorld = nullptr;
 
+//
 // Misc. helper stuff.
 //
 
@@ -20,6 +21,13 @@ inline DWORD AlphaToVtxColor(float alpha, unsigned int RGB = 0xffffff)
 {
 	const unsigned char iAlpha = int(alpha*255.f);
 	return iAlpha<<24|RGB;
+}
+
+// Floating point random.
+// To be deprecated because it has very poor distribution.
+inline float randf(float range)
+{
+	return range * ((float) rand() / (float) RAND_MAX);
 }
 
 const float kTileMul = (PIMPPLAYER_RENDER_ASPECT_RATIO);
@@ -485,15 +493,6 @@ void ReleaseWorld()
 // Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
 //
 
-// HELLO TPBDS 2005
-// Floating point random.
-// To be deprecated because it has very poor distribution.
-inline float randf(float range)
-{
-	return range * ((float) rand() / (float) RAND_MAX);
-}
-// HELLO TPBDS 2005
-
 bool Tick(Pimp::Camera *camOverride)
 {
 	const double rocketRow = Rocket_GetRow();
@@ -529,6 +528,8 @@ bool Tick(Pimp::Camera *camOverride)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 	{
+		Audio_Pause();
+
 		static Stopwatch sw;
 		const float t = 12.f;
 		static bool waren_we_hier_eerder = false;
@@ -553,8 +554,6 @@ bool Tick(Pimp::Camera *camOverride)
 
 	// Tie in noise the old fucking school way by sprite and Z.
 	const float kPostNoiseZ = 4000.f;
-
-	//static const sync_track *st_noiseU, *st_noiseV, *st_noiseAlpha;
 	const float noiseAlpha = (float) sync_get_val(st_noiseAlpha, rocketRow);
 	if (noiseAlpha != 0.f)
 	{

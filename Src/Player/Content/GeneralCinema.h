@@ -104,7 +104,7 @@ public:
 		// stationary position (opening forward, like in 80s bumper)
 		const float reelStat = -M_PI*0.5f;
 
-		// reels (rotate quickly in opposite directions in orig. bumper)
+		// reels (rotate quickly in opposite directions like in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
 				Pimp::D3D::BlendMode::BM_Additive,

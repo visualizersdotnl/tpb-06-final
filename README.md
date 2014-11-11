@@ -1,26 +1,23 @@
 
 TPB-06 - Excessination
 
-This is a demo(system) in the works based on Inque's 64kb system.
-We're both in production (TPB-06) and fixing some basic features for full-size demo use.
+This demo has been released and is based on Inque's core code.
+Currently will receive cleanup, new features (for reuse) and maybe a final.
 
-Some notes (for more information check the list of issues):
+
+Some notes:
 
 - The main idea is that a demo consists of a timeline that specifies the 
   scenes that should be rendered.    
   
   Each scene consists of a shader that is rendered on a full-screen quad. 
-  
-  There's also a timeline that specifies the camera that should be used
-  to render the active scene with.
-  
-  A Camera is an object that lives in the scene graph. It's parented to a
-  Xform node that moves it through space. Xform nodes also allow you to attach
-  an AnimCurve to each of their members.
 
-  @plek: This will change a bit in the timing department as Rocket is a little
-  different from old school timing. Will have to dive into it further to see how
-  it's going to fit exactly.
+  Stuff like sprites, backgrounds and metaballs have been added.
+  3D objects or scenes are still missing.
+
+  Currently  subset of the core (and scenegraph, specifically) features are used
+  by Player. This is because apart from Rocket sync. this is hardcoded, not
+  Maya-generated content.
 
 - There's typically a single 'world initialization' function that loads all assets
   and builds all timelines, creates all objects and constructs the scenegraph.

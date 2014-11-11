@@ -15,13 +15,13 @@
 	- Provide a stable main loop.
 	- Take care of proper shutdown and error message display.
 
-	To do (@plek, issues not already in Github, most of these are non-critical for TPB-06):
+	Issues (some of these are in Github as well):
 	- Set up error checking on most critical D3D calls.
 	- Fix (D3D)ASSERT_MSG.
+	- Remove unused (commented) code.
 	- Leaks.
 	- Phase out FixedSizeList use where unnecessary.
 	- Create a general platform include (system, STL, CRT, assertions, et cetera).
-	- Remove unused (commented) code.
 */
 
 #include <Windows.h>

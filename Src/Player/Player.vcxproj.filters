@@ -27,7 +27,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Stub.cpp" />
     <ClCompile Include="Content\Demo.cpp">
       <Filter>/Content</Filter>
     </ClCompile>
@@ -56,6 +55,9 @@
       <Filter>/Stub &amp; helper code</Filter>
     </ClCompile>
     <ClCompile Include="SceneTools.cpp">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClCompile>
+    <ClCompile Include="Stub.cpp">
       <Filter>/Stub &amp; helper code</Filter>
     </ClCompile>
   </ItemGroup>
