@@ -140,6 +140,9 @@
     <ClInclude Include="Content\BulletsAndBitches.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="CPUID.h">
+      <Filter>/Stub &amp; helper code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">

@@ -451,21 +451,21 @@ static void DestroyDirect3D()
 	SAFE_RELEASE(s_pD3D);
 }
 
+#include "CPUID.h"
+
 int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
 	// change path to target root
 	SetCurrentDirectory("..\\");
 
-#if 0 // Screw this, if you're running 64-bit Windows you'll have SSE4 at least.
-	// check for SSE2
+	// check for AVX
 	int cpuInfo[4];
 	__cpuid(cpuInfo, 1);
-	if (0 == (cpuInfo[3] & 1<<26))
+	if (0 == (cpuInfo[2] & CPUID_FEAT_ECX_AVX))
 	{
-		MessageBox(NULL, "Processor does not support SSE2 instructions.", "Error!", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, "Processor does not support AVX instructions.", "Error!", MB_OK | MB_ICONEXCLAMATION);
 		return 1;
 	}
-#endif
 
 	if (false == kWindowed)
 	{
