@@ -30,7 +30,7 @@ inline float randf(float range)
 	return range * ((float) rand() / (float) RAND_MAX);
 }
 
-const float kTileMul = (PIMPPLAYER_RENDER_ASPECT_RATIO);
+const float kTileMul = PIMPPLAYER_RENDER_ASPECT_RATIO;
 
 //
 // Rocket stuff.
@@ -68,7 +68,7 @@ void Rocket_Pause(void *, int bPause)
 
 void Rocket_SetRow(void *, int row)
 {
-	const double secPos = floor(row / kRocketRowRate);
+	const double secPos = row / kRocketRowRate;
 	Audio_SetPosition((float) secPos);
 }
 

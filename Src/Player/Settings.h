@@ -9,14 +9,14 @@
 #define PIMPPLAYER_RENDER_ASPECT_RATIO 16.f/9.f
 
 // Windowed (dev. only) settings.
-const bool PIMPPLAYER_WINDOWED_DEV = false;
+const bool PIMPPLAYER_WINDOWED_DEV = true;
 const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
 const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
 //const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640; // 1920/2;
 //const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 480; // 1080/2;
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.
-// By enabling this boolean you can use them at runtime for public release.
+// By enabling this boolean you can use them at runtime for public release
 const bool PIMPPLAYER_RUN_FROM_SHADER_BINARIES = true;
 
 // Audio settings.
