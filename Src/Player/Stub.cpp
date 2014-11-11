@@ -78,8 +78,8 @@ static IDXGISwapChain *s_pSwapChain = NULL;
 
 // Debug camera and it's state.
 #if defined(_DEBUG) || defined(_DESIGN)
-static AutoShaderReload* s_pAutoShaderReloader;
-static DebugCamera* s_pDebugCamera;
+static AutoShaderReload* s_pAutoShaderReloader = nullptr;
+static DebugCamera* s_pDebugCamera = nullptr;
 
 static bool		s_isPaused			= false;
 static bool		s_isMouseTracking	= false;
@@ -237,10 +237,6 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			{
 				// (re)assign WS_EX_TOPMOST style
 				SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-				// switch to full screen
-				if (NULL != s_pSwapChain)
-					s_pSwapChain->SetFullscreenState(TRUE, s_pDisplay);
 			}
 			
 			s_wndIsActive = true;
@@ -249,11 +245,8 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case WA_INACTIVE:
 			if (false == kWindowed) 
 			{
-				// exit full screen
 				if (NULL != s_pSwapChain)
 				{
-					s_pSwapChain->SetFullscreenState(FALSE, NULL);
-
 					// push window to bottom of the Z order
 					SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 				}
@@ -451,12 +444,10 @@ static bool CreateDirect3D()
 
 static void DestroyDirect3D()
 {
-	if (NULL != s_pSwapChain)
-	{
+	if (false == kWindowed && nullptr != s_pSwapChain)
 		s_pSwapChain->SetFullscreenState(FALSE, NULL);
-		s_pSwapChain->Release();
-	}
-
+	
+	SAFE_RELEASE(s_pSwapChain);
 	SAFE_RELEASE(s_pD3D);
 }
 

@@ -2,28 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons2.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Empty.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Pompom.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Tentacle.fx">
-      <Filter>/Content\/Shaders</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,9 +156,6 @@
     <Filter Include="../Libs/Rocket/lib">
       <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\/Shaders">
-      <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="/Content\Parts">
       <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
     </Filter>
@@ -170,6 +167,9 @@
     </Filter>
     <Filter Include="/Stub &amp; helper code">
       <UniqueIdentifier>{0b7b473f-2360-431d-afdd-c21a67bf549b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29">
+      <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +188,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="1b.ico" />
+    <Image Include="App.ico" />
   </ItemGroup>
 </Project>

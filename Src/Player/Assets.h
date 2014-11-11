@@ -17,9 +17,6 @@
 // #include <string>
 // #include <Core/Core.h>
 
-// Exposed for loading bar purposes.
-Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool gammaCorrect);
-
 namespace Assets
 {
 	void SetRoot(const std::string &root);
