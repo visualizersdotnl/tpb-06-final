@@ -605,7 +605,7 @@
 			<key interpolation="3" row="2048" value="1"/>
 			<key interpolation="0" row="2064" value="0"/>
 			<key interpolation="3" row="2504" value="0"/>
-			<key interpolation="1" row="2567" value="1"/>
+			<key interpolation="0" row="2567" value="1"/>
 			<key interpolation="0" row="2568" value="0"/>
 			<key interpolation="2" row="2792" value="0"/>
 			<key interpolation="0" row="2815" value="1"/>
@@ -669,8 +669,8 @@
 			<key interpolation="0" row="6544" value="1"/>
 			<key interpolation="0" row="6585" value="0"/>
 			<key interpolation="1" row="6640" value="0"/>
-			<key interpolation="1" row="6654" value="1"/>
-			<key interpolation="0" row="6655" value="0"/>
+			<key interpolation="0" row="6655" value="1"/>
+			<key interpolation="0" row="6656" value="1"/>
 		</track>
 		<track name="toypusher">
 			<key interpolation="1" row="3584" value="0"/>

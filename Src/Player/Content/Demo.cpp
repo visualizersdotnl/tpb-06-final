@@ -50,7 +50,7 @@ double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
 
 double Rocket_GetRow()
 {
-	return floor(Audio_GetPosition()*kRocketRowRate);
+	return Audio_GetPosition()*kRocketRowRate;
 }
 
 #if !defined (SYNC_PLAYER)
@@ -495,14 +495,19 @@ void ReleaseWorld()
 
 bool Tick(Pimp::Camera *camOverride)
 {
-	const double rocketRow = Rocket_GetRow();
+	double rocketRow = Rocket_GetRow();
 
 #if !defined(SYNC_PLAYER)
-	if (0 != sync_update(s_Rocket, int(floor(rocketRow)), &s_rocketHooks, nullptr))
+	if (0 != sync_update(s_Rocket, int(rocketRow), &s_rocketHooks, nullptr))
 	{
 		SetLastError("Connection to GNU Rocket lost!");
 		return false;
 	}
+#else
+	// Even though Kusma does this, I don't exactly trust it (though it's probably an audio lag bias).
+	// I'll ask why.
+
+//	rocketRow += 0.005f; // Taken from Kusma's engine.
 #endif
 
 	// Update tracks.

@@ -7,6 +7,7 @@
 #include "Shaders/Shader_Sprites.h"
 #include "Configuration.h"
 
+// FIXME: remove dependency and get info from D3D
 #include "../Player/Settings.h"
 
 namespace Pimp
