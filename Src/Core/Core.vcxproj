@@ -140,6 +140,7 @@
     <ClInclude Include="MarchingCubesTables.h" />
     <ClInclude Include="Metaballs.h" />
     <ClInclude Include="PIX.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ScreenQuadVertexBuffer.h" />

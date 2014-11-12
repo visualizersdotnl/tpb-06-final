@@ -1,7 +1,22 @@
+
+//
+// Sprite system 0.9.
+//
+// Sprites can be either put in the background or post-scene queue.
+//
+// Their coordinate system is 1920x1080, the backing code will take care of aspect ratio
+// and size correction.
+//
+// FIXME: the fixed coordinate system should be configurable for different aspect ratios.
+//        Or: get it from D3D instead of Player :)
+//
+
 #pragma once
 
+#include "Platform.h" // FIXME: move #include to proper location when header is finished
 #include <list>
 #include <math/math.h>
+
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"
@@ -10,25 +25,18 @@ namespace Pimp
 {
 	class Texture2D;
 
-	// These sortZs are reserved.
-	// The idea is to keep your regular sortZ zero and upwards.
-	const float kBGSpriteZ[2] = { -1.f, -2.f };
-
 	class Sprites
 	{
 	private:
-		struct SpriteVertex
+		struct Vertex
 		{
 			Vector3 position;
 			unsigned int ARGB;
 			Vector2 UV;
-		} *pVertices, *pBGVertices;
-
-		struct BGSprite
-		{
-			/* const */ Texture2D *pTexture;
-			D3D::BlendMode blendMode;
-		};
+		}; 
+		
+		Vertex* pMapped;
+		size_t curMappedVtx;
 
 		struct Sprite
 		{
@@ -46,32 +54,47 @@ namespace Pimp
 
 	public:
 		Sprites();
-		~Sprites();
+		~Sprites() {}
 
+		// add post-scene sprite
 		void AddSprite(
 			/* const */ Texture2D *pTexture,
 			D3D::BlendMode blendMode,
-			const unsigned int vertexColor,
+			unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
-			bool forceClamp = false,
+			bool forceClamp,
+			bool isBackground,
 			const Vector2 &uvTile = Vector2(1.f, 1.f),
 			const Vector2 &uvScroll = Vector2(0.f, 0.f));
 
-		// to add (single) background sprite (drawn first, behind the scene)
+		// add background sprite (drawn first, behind the scene shader & geometry)
 		void AddBackgroundSprite(
-			size_t iBG,
 			/* const */ Texture2D *pTexture,
 			D3D::BlendMode blendMode,
-			const unsigned int vertexColor,
+			unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
-			const Vector2 &uvTile, 
+			float sortZ,
+			float rotateZ,
+			bool forceClamp,
+			const Vector2 &uvTile = Vector2(1.f, 1.f),
 			const Vector2 &uvScroll = Vector2(0.f, 0.f))
 		{
-			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, kBGSpriteZ[iBG], 0.f, false, uvTile, uvScroll);
+			AddSprite(pTexture, blendMode, vertexColor, topLeft, size, sortZ, rotateZ, forceClamp, true, uvTile, uvScroll);
+		}
+
+		// simplified AddBackgroundSprite()
+		void AddBackgroundSprite(
+			/* const */ Texture2D *pTexture,
+			D3D::BlendMode blendMode,
+			unsigned int vertexColor,
+			float sortZ,
+			bool forceClamp)
+		{
+			AddSprite(pTexture, blendMode, vertexColor, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), sortZ, 0.f, forceClamp, true);
 		}
 
 		// simplified AddSprite()
@@ -82,12 +105,12 @@ namespace Pimp
 			float sortZ,
 			float alpha,
 			float rotateZ,
-			bool forceClamp = false)
+			bool forceClamp)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp, false);
 		}
 
 		// AddSprite() simplified & centered
@@ -98,51 +121,48 @@ namespace Pimp
 			float sortZ,
 			float alpha,
 			float rotateZ,
-			bool forceClamp = false)
+			bool forceClamp)
 		{
 			ASSERT(NULL != pTexture);
 			const Vector2 size((float) pTexture->GetWidth(), (float) pTexture->GetHeight());
 			const Vector2 topLeft = center - size*0.5f;
 			const unsigned char iAlpha = int(alpha*255.f);
-			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp);
+			AddSprite(pTexture, blendMode, iAlpha<<24 | 0xffffff, topLeft, size, sortZ, rotateZ, forceClamp, false);
 		}
 
-		// FIXME (ugly last-minute hack, add a proper list)
-		bool skipBGSprite2;
-		void SkipBGSprite2(bool skip) { skipBGSprite2 = skip; }
+		// Call before any of the Draw*() calls.
+		void PrepareToDraw();
 
-		void DrawBackgroundSprite();
-		void FlushSprites();	
+		void DrawBackgroundSprites() { Flush(bgSprites); }
+		void DrawSprites()           { Flush(sprites);   }
 
 	private:
-		class SpriteVertexBuffer
+		// FIXME: Simple combined VB & layout container, expose as a global object?
+		class VertexBuffer
 		{
 		public:
-			ID3D10Buffer* vertices;
-			ID3D10InputLayout* inputLayout;
+			ID3D10Buffer* buffer;
+			ID3D10InputLayout* layout;
 
-			SpriteVertexBuffer() :
-				vertices(nullptr),
-				inputLayout(nullptr) {}
+			VertexBuffer() :
+				buffer(nullptr),
+				layout(nullptr) {}
 
-			~SpriteVertexBuffer() 
+			~VertexBuffer() 
 			{ 
-				if (nullptr != vertices) 
-					vertices->Release(); 
-
-				if (nullptr != inputLayout) 
-					inputLayout->Release(); 
+				SAFE_RELEASE(buffer);
+				SAFE_RELEASE(layout);
 			}
-		} VB, bgVB;
+		} VB;
 
-		BGSprite bgSprites[2];
+		std::list<Sprite> bgSprites;
 		std::list<Sprite> sprites;
 
 		Effect effect;
 		EffectTechnique effectTechnique;
-		EffectPass effectPass, effectPass_ForceClamp;
-
-		int varIndexRenderScale;
+		EffectPass effectPassWrap, effectPassClamp;
 		int varIndexTextureMap;
+
+		void Flush(std::list<Sprite> &list);
 	};
 }

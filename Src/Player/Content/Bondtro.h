@@ -67,8 +67,15 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(0, texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-		s_sprites->SkipBGSprite2(true);
+		
+		s_sprites->AddBackgroundSprite(
+			texWhite, 
+			Pimp::D3D::BlendMode::BM_None, 
+			0, 
+			Vector2(0.f, 0.f), 
+			Vector2(1920.f, 1080.f),
+			1.f, 0.f,
+			true); 
 
 		const float ballPos_1 = (float) sync_get_val(st_bondBlob1, row);
 		const float ballFade_1 = (float) sync_get_val(st_bondBlobFade1, row);
@@ -149,10 +156,11 @@ public:
 		s_sprites->AddSprite(
 				background,
 				Pimp::D3D::BlendMode::BM_Additive,
-				AlphaToVtxColor(whiteOpacity),
-				Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+				Vector2(0.f, 0.f), 
 				kBackgroundZ,
-				0.f, true);
+				whiteOpacity,
+				0.f,
+				true);
 
 		// target sprite
 		s_sprites->AddSpriteCenter(
@@ -209,7 +217,8 @@ public:
 			Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 			kPimpZ,
 			pimpOpacity,
-			0.f, true);
+			0.f, 
+			true);
 
 	}
 };

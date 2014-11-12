@@ -59,16 +59,16 @@ public:
 		float time = (float) sync_get_val(st_fxTime, row);
 		
 		s_sprites->AddBackgroundSprite(
-			0, 
 			bgTile, 
 			Pimp::D3D::BlendMode::BM_None, 
 			-1, 
 			Vector2(0.f, 0.f), 
-			Vector2(1920.f, 1080.f), 
+			Vector2(1920.f, 1080.f),
+			1.f,
+			0.f,
+			false,
 			Vector2(3.f*kTileMul, 3.f),
 			Vector2(-time*0.4f, -time));
-
-		s_sprites->SkipBGSprite2(true);
 
 		// Credits
 
@@ -139,7 +139,8 @@ public:
 				Vector2(1920.f, 1080.f),
 				kCredZ,
 				0.f,
-				true);
+				true,
+				false);
 
 			s_sprites->AddSprite(
 				second,
@@ -150,7 +151,8 @@ public:
 				Vector2(1920.f, 1080.f),
 				kCredZ+0.1f,
 				0.f,
-				true);
+				true,
+				false);
 		}
 
 		// FIXME: parametrize w/Rocket?

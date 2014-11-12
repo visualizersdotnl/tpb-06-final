@@ -24,9 +24,9 @@
 	- Create a general platform include (system, STL, CRT, assertions, et cetera).
 */
 
+#include <Core/Platform.h>
 #include <Windows.h>
 #include <intrin.h> // for SSE2 check
-
 #include <stdint.h>
 #include <string>
 #include <sstream>
@@ -86,9 +86,6 @@ static bool		s_isMouseTracking	= false;
 static int		s_mouseTrackInitialX;
 static int		s_mouseTrackInitialY;
 #endif
-
-// COM release macro
-#define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()
 
 // serialize constant value to std::string
 // @plek: This is sort of ugly but I didn't port all to string streams in the original project.

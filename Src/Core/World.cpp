@@ -146,8 +146,11 @@ namespace Pimp
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
 
+		// Prepare all sprites to be drawn
+		pSprites->PrepareToDraw();
+
 		// Draw background sprite
-		pSprites->DrawBackgroundSprite();
+		pSprites->DrawBackgroundSprites();
 
 		// Disable depth stencil
 		gD3D->UseDepthStencil(false);
@@ -191,7 +194,7 @@ namespace Pimp
 		gD3D->SetVP(true);
 		{
 			// Flush (draw & clear queue) the sprites
-			pSprites->FlushSprites();
+			pSprites->DrawSprites();
 		}
 		gD3D->SetVP(false);
 

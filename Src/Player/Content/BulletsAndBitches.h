@@ -51,14 +51,11 @@ public:
 	void EndPic(float alpha)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(0, thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-		s_sprites->SkipBGSprite2(true);
+		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), 1.f, true);
 	}
 
 	void Tick(double row)
 	{
-		s_sprites->SkipBGSprite2(true);
-
 		const float wetDry = (float) sync_get_val(st_endFlangerWet, row);
 		const float freqMod = (float) sync_get_val(st_endFlangerFreqMod, row);
 		Audio_FlangerMP3(wetDry, freqMod);
@@ -71,23 +68,12 @@ public:
 		if (bitchBullets == 0.f)
 		{
 			// this way it's part of the scene process and thus we can cover it with noise
-			s_sprites->AddBackgroundSprite(0, background, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-
-			// background (or what used to be our loading screen)
-//			s_sprites->AddSprite(
-//					background,
-//					Pimp::D3D::BlendMode::BM_Additive,
-//					AlphaToVtxColor(1.f),
-//					Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
-//					1.f,
-//					0.f);
+			s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
 		}
 		else
 		{
-			s_sprites->AddBackgroundSprite(0, texWhite, Pimp::D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-
-//			float backAlpha = (bitchBullets<1.f) ? bitchBullets : 1.f;
-			
+			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, 1.f, true);
+	
 			// as it turns out it looks a bit better just cutting right in
 			float backAlpha = 1.f;
 
@@ -95,28 +81,30 @@ public:
 			s_sprites->AddSprite(
 					background2,
 					Pimp::D3D::BlendMode::BM_Additive,
-					AlphaToVtxColor(backAlpha),
-					Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
+					Vector2(0.f, 0.f),
 					1.f,
-					0.f, true);
+					backAlpha,
+					0.f,
+					true);
 
 			// target sprite
 			s_sprites->AddSpriteCenter(
-					target,
-					Pimp::D3D::BlendMode::BM_AlphaBlend,
-					Vector2(1920.f*0.5f, 1080.f*0.5f),
-					2.f,
-					backAlpha,
-					0.f, true);
+				target,
+				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Vector2(1920.f*0.5f, 1080.f*0.5f),
+				2.f,
+				backAlpha,
+				0.f, true);
 
 			// pimp
 			s_sprites->AddSpriteCenter(
 				pimp,
 				Pimp::D3D::BlendMode::BM_AlphaBlend,
 				Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
-				2.f,
+				2.1f,
 				backAlpha,
-				0.f, true);
+				0.f, 
+				true);
 
 			const float kShotZ = 2.5;
 			const float ballY = 1080.f*0.5f-(blob->GetHeight()*0.5f);

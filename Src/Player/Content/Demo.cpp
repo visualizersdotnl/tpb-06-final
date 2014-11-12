@@ -533,7 +533,11 @@ bool Tick(Pimp::Camera *camOverride)
 		s_scenes[sceneIdx]->Tick(rocketRow);
 	else
 	{
+		// FIXME: A regular demo would stop right here, TPB-06 has a little Bond hack on top.
+		// return false;
+
 		Audio_Pause();
+		Audio_Shelldrop();
 
 		static Stopwatch sw;
 		const float t = 12.f;
@@ -572,8 +576,9 @@ bool Tick(Pimp::Camera *camOverride)
 			AlphaToVtxColor(noiseAlpha, 0xffffff), 
 			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
 			kPostNoiseZ,
-			0.f, // rotZ
+			0.f,   // rotZ
 			false, // forceClamp
+			false, // isBackground
 			Vector2(2.f*(PIMPPLAYER_RENDER_ASPECT_RATIO), 2.f),
 			Vector2(noiseU, noiseV));
 	}
@@ -589,16 +594,14 @@ bool Tick(Pimp::Camera *camOverride)
 			Pimp::D3D::BM_AlphaBlend,
 			AlphaToVtxColor(postFlash, 0xffffff), 
 			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
-			kPostFlashZ,
-			0.f);
+			kPostFlashZ, 0.f, true, false);
 	if (postFade != 0.f)
 		s_sprites->AddSprite(
 			texWhite,
 			Pimp::D3D::BM_AlphaBlend,
 			AlphaToVtxColor(postFade, 0),
 			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
-			kPostFadeZ,
-			0.f);
+			kPostFadeZ, 0.f, true, false);
 
 	// This is primarily used to feed the debug camera if need be.
 	if (nullptr != camOverride)

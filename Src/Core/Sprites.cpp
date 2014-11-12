@@ -15,29 +15,24 @@ namespace Pimp
 	const unsigned int kMaxSprites = 4096;
 
 	Sprites::Sprites() :
-		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites)),
-		effectTechnique(&effect, "Sprites"),
-		effectPass(&effectTechnique, "Default"), 
-		effectPass_ForceClamp(&effectTechnique, "ForceClamp"),
-		skipBGSprite2(true),
-		pBGVertices(nullptr)
+		pMapped(nullptr)
+,		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites))
+,		effectTechnique(&effect, "Sprites")
+,		effectPassWrap(&effectTechnique, "Wrap")
+,		effectPassClamp(&effectTechnique, "Clamp")
 	{
 		// Get shader var. indices.
-		varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 		varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 
-		// Initialize buffers.
-		VB.vertices = gD3D->CreateVertexBuffer(6*kMaxSprites*sizeof(SpriteVertex), nullptr, true);
-		bgVB.vertices = gD3D->CreateVertexBuffer(2*6*sizeof(SpriteVertex), nullptr, true);
-
-		sprites.clear();
+		// Create VB & layout.
+		VB.buffer = gD3D->CreateVertexBuffer(6*kMaxSprites*sizeof(Vertex), nullptr, true);
 
 		unsigned char* signature;
 		int signatureLength;
-		effectPass.GetVSInputSignature(&signature, &signatureLength);
-		// ^ Identical for other effect pass.
+		effectPassWrap.GetVSInputSignature(&signature, &signatureLength);
+		// ^ Signatures are identical for both.
 
-		/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[3];
+		D3D10_INPUT_ELEMENT_DESC elemDesc[3];
 		elemDesc[0].SemanticName = "POSITION";
 		elemDesc[0].SemanticIndex = 0;
 		elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -59,18 +54,9 @@ namespace Pimp
 		elemDesc[2].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
 		elemDesc[2].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
 		elemDesc[2].InstanceDataStepRate = 0;
-		VB.inputLayout = gD3D->CreateInputLayout(elemDesc, 3, signature, signatureLength);
+		VB.layout = gD3D->CreateInputLayout(elemDesc, 3, signature, signatureLength);
 
 		delete [] signature;
-
-		// Invalidate backgrounds.
-		AddBackgroundSprite(0, gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-		AddBackgroundSprite(1, gD3D->GetWhiteTex(), D3D::BlendMode::BM_None, 0, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-	}
-
-	Sprites::~Sprites()
-	{
-		// Member VB/bgVB takes care of it's resources.
 	}
 
 	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle)
@@ -101,46 +87,27 @@ namespace Pimp
 			const Vector2 &size,
 			float sortZ,
 			float rotateZ,
-			bool forceClamp /* = false */,
-			const Vector2 &uvTile /* = Vector2(1.f, 1.f) */,
+			bool forceClamp,
+			bool isBackground,
+			const Vector2 &uvTile,  /* = Vector2(1.f, 1.f) */
 			const Vector2 &uvScroll /* = Vector2(1.f, 1.f) */)
 	{
 		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
 
-//		ASSERT(sortZ == kBGSpriteZ[0] || sortZ == kBGSpriteZ[1] || sortZ >= 0.f);
-		// FIXME: needless to say, this is ugly
-		int iBG = -1;
-		if (sortZ == kBGSpriteZ[0]) iBG = 0;
-		if (sortZ == kBGSpriteZ[1]) iBG = 1;
-
-		SpriteVertex *pDest = nullptr;
-
-		if (iBG == -1)
+		// allocate vertices
+		Vertex *pDest = nullptr;
+		if (nullptr == pMapped)
 		{
-			// first sprite?
-			if (sprites.empty())
-			{
-				// yes: lock vertex buffer
-				VERIFY(SUCCEEDED(VB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pVertices))));
-			}
-
-			pDest = pVertices;
-			pVertices += 6;
-		}
-		else
-		{
-			if (nullptr == pBGVertices)
-			{
-				// lock tiny vertex buffer
-				VERIFY(SUCCEEDED(bgVB.vertices->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pBGVertices))));
-			}
-
-			pDest = pBGVertices  + (iBG*6);
+			// lock vertex buffer
+			VERIFY(SUCCEEDED(VB.buffer->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pMapped))));
+			curMappedVtx = 0;
 		}
 
-		// hack: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space
-		// transformed to true homogenous by Rotate() above
+		pDest = pMapped + curMappedVtx;
+
+		// FIXME: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space,
+		//        transformed to true homogenous by Rotate() above
 		const float aspectRatio = PIMPPLAYER_RENDER_ASPECT_RATIO;
 		const float adjTopLeftX = -aspectRatio + (topLeft.x/1920.f)*aspectRatio*2.f;
 		const float adjTopLeftY = 1.f - (topLeft.y/1080.f)*2.f;
@@ -182,88 +149,59 @@ namespace Pimp
 		++pDest;
 
 		ASSERT(nullptr != pTexture);
-		if (iBG == -1)
-		{
-			// add to list
-			Sprite sprite;
-			sprite.pTexture = pTexture;
-			sprite.blendMode = blendMode;
-			sprite.sortZ = sortZ;
-			sprite.vertexOffs = sprites.size()*6;
-			sprite.forceClamp = forceClamp;
+
+		// add to list
+		Sprite sprite;
+		sprite.pTexture = pTexture;
+		sprite.blendMode = blendMode;
+		sprite.sortZ = sortZ;
+		sprite.vertexOffs = curMappedVtx;
+		sprite.forceClamp = forceClamp;
+
+		if (false == isBackground)
 			sprites.push_back(std::move(sprite));	
-		}
 		else
+			bgSprites.push_back(std::move(sprite));
+
+		// next quad
+		curMappedVtx += 6;
+	}
+
+	void Sprites::PrepareToDraw()
+	{
+		if (nullptr != pMapped)
 		{
-			// set up background sprite
-			bgSprites[iBG].pTexture = pTexture;
-			bgSprites[iBG].blendMode = blendMode;
+			VB.buffer->Unmap();
+			pMapped = nullptr;
 		}
 	}
 
-	void Sprites::DrawBackgroundSprite()
+	void Sprites::Flush(std::list<Sprite> &list)
 	{
-		if (nullptr != pBGVertices)
+		if (false == list.empty())
 		{
-			// unmap buffer
-			bgVB.vertices->Unmap();
-			pBGVertices = nullptr;
-		}
+			ASSERT(nullptr == pMapped);
 
-		for (int iBG = 0; iBG < ((true == skipBGSprite2) ? 1 : 2); ++iBG)
-		{
-			// Bind buffers.
-			gD3D->BindVertexBuffer(0, bgVB.vertices, sizeof(SpriteVertex));
-			gD3D->BindInputLayout(VB.inputLayout); // FIXME: bgVB doesn't have one, as they're identical :)
-		
-			// Set state.
-			effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
-			effect.SetVariableValue(varIndexTextureMap, bgSprites[iBG].pTexture->GetShaderResourceView());
-			effectPass.Apply();
-			gD3D->SetBlendMode(bgSprites[iBG].blendMode);
-
-			// * - For some reason on the render targets the scale for the background sprites is too much as it is 
-			//     already compensated elsewhere. Can't be bothered to find out where now. 
-			//     @plek, 2014
-
-			// Draw.
-			gD3D->DrawTriQuad(iBG*6);
-		}
-	}
-
-	void Sprites::FlushSprites()
-	{
-		if (0 != sprites.size())
-		{
-			// Unmap vertex buffer.
-			ASSERT(nullptr != VB.vertices);
-			VB.vertices->Unmap();
-			pVertices = nullptr;
-
-			// Bind buffers.
-			gD3D->BindVertexBuffer(0, VB.vertices, sizeof(SpriteVertex));
-			gD3D->BindInputLayout(VB.inputLayout);
+			// Bind VB.
+			gD3D->BindVertexBuffer(0, VB.buffer, sizeof(Vertex));
+			gD3D->BindInputLayout(VB.layout);
 
 			// Sort 'em.
-			sprites.sort();
+			list.sort();
 
-			// Set correct visible area.
-			const Vector2& visible_area = gD3D->GetRenderScale();
-//			effect.SetVariableValue(varIndexRenderScale, visible_area);
-			effect.SetVariableValue(varIndexRenderScale, Vector2(1.f, 1.f)); // FIXME: *
-
-			for (Sprite sprite : sprites)
+			// Draw.
+			for (Sprite sprite : list)
 			{
 				// Set state.
 				effect.SetVariableValue(varIndexTextureMap, sprite.pTexture->GetShaderResourceView());
-				(false == sprite.forceClamp) ? effectPass.Apply() : effectPass_ForceClamp.Apply();
+				(true == sprite.forceClamp) ? effectPassClamp.Apply() : effectPassWrap.Apply();
 				gD3D->SetBlendMode(sprite.blendMode);
 
 				// Draw.
 				gD3D->DrawTriQuad((DWORD) sprite.vertexOffs);
 			}
 
-			sprites.clear();
+			list.clear();
 		}
 	}
 }

@@ -1,8 +1,4 @@
 
-// 
-// Input & output.
-//
-
 struct VSInput
 {
 	float3 position : POSITION;
@@ -18,10 +14,6 @@ struct PSOutput
 {
 	float4 color : SV_Target0;
 };
-
-//
-// Constants.
-//
 
 cbuffer paramsOnlyOnce
 {
@@ -41,18 +33,6 @@ cbuffer paramsOnlyOnce
 	float g_sceneNoiseT;
 };
 
-//
-// VS/PS.
-//
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-
-	output.normalizedPos = input.position.xy;
-	output.screenPos = float4(input.position.xy * quadScaleFactor, 0, 1);
-	return output;
-}
 
 Texture2D sceneBuffer;
 
@@ -63,10 +43,21 @@ SamplerState samplerSceneBuffer
 	Filter = MIN_MAG_LINEAR_MIP_POINT;
 };
 
-// Noise function (stolen from Shadertoy, somewhere).
+
 float rand(float2 co){
     return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453);
 }
+
+
+VSOutput MainVS(VSInput input)
+{ 
+	VSOutput output;
+
+	output.normalizedPos = input.position.xy;
+	output.screenPos = float4(input.position.xy * quadScaleFactor, 0, 1);
+	return output;
+}
+
 
 PSOutput MainPS(VSOutput input)
 {

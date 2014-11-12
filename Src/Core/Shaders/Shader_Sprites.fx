@@ -13,23 +13,11 @@ struct VSOutput
 	float2 texCoord : TEXCOORD0;
 };
 
-
 cbuffer paramsOnlyOnce
 {
-	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 };
 
 
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-	output.screenPos = float4(input.position * float3(renderScale.xy, 1.f), 1.f);
-	output.color = input.color;
-	output.texCoord = input.texCoord;
-	return output;
-}
-
-	
 Texture2D textureMap;
 
 SamplerState samplerTextureWrap
@@ -45,6 +33,16 @@ SamplerState samplerTextureClamp
 	AddressV = CLAMP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
+
+
+VSOutput MainVS(VSInput input)
+{ 
+	VSOutput output;
+	output.screenPos = float4(input.position, 1.f);
+	output.color = input.color;
+	output.texCoord = input.texCoord;
+	return output;
+}
 
 
 float4 MainPS_Wrap(VSOutput input) : SV_Target0
@@ -65,13 +63,13 @@ float4 MainPS_Clamp(VSOutput input) : SV_Target0
 
 technique10 Sprites
 {
-	pass Default
+	pass Wrap
 	{
 		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Wrap()) );		
 	}
 
-	pass ForceClamp
+	pass Clamp
 	{
 		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Clamp()) );		

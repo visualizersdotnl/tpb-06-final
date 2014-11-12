@@ -46,17 +46,16 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(0, texWall, Pimp::D3D::BlendMode::BM_None, -1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
 
 		float toBG2 = (float) sync_get_val(st_toBG2, row);
+		if (0.f == toBG2)
+			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+		else
 		{
-			s_sprites->SkipBGSprite2(false);
-
 			unsigned int vtxCol1 = AlphaToVtxColor(1.f-toBG2);
 			unsigned int vtxCol2 = AlphaToVtxColor(toBG2);
-
-			s_sprites->AddBackgroundSprite(0, texWall, Pimp::D3D::BlendMode::BM_Additive, vtxCol1, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
-			s_sprites->AddBackgroundSprite(1, texWhite, Pimp::D3D::BlendMode::BM_Additive, vtxCol2, Vector2(0.f, 0.f), Vector2(1920.f, 1080.f), Vector2(1.f, 1.f));
+			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::BlendMode::BM_Additive, vtxCol1, 1.f, true);
+			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_Additive, vtxCol2, 2.f, true);
 		}
 
 		// play with stolen logo

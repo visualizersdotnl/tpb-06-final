@@ -2,28 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons2.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\Global</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Empty.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Pompom.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons.fx">
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Ribbons2.fx">
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Content\assets\shaders\Scene_Shafts.fx">
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Tentacle.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29</Filter>
+      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,22 +81,22 @@
       <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Bondtro.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\GeneralCinema.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Knot.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Ribbons.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Ribbons2.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Assets.h">
       <Filter>/Stub &amp; helper code</Filter>
@@ -129,16 +129,16 @@
       <Filter>/Stub &amp; helper code</Filter>
     </ClInclude>
     <ClInclude Include="Content\Shafts.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs2.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\Pompom.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="Content\BulletsAndBitches.h">
-      <Filter>/Content\Parts</Filter>
+      <Filter>/Content\Parts %28TPB-06%29</Filter>
     </ClInclude>
     <ClInclude Include="CPUID.h">
       <Filter>/Stub &amp; helper code</Filter>
@@ -159,9 +159,6 @@
     <Filter Include="../Libs/Rocket/lib">
       <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\Parts">
-      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="/../Libs/bass24">
       <UniqueIdentifier>{38c19be1-fee2-4a3f-b6b4-f7f2a1454244}</UniqueIdentifier>
     </Filter>
@@ -174,6 +171,15 @@
     <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29">
       <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29\Global">
+      <UniqueIdentifier>{6336a3fd-e01d-4f3c-bdb3-430a328cbd66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06">
+      <UniqueIdentifier>{73e575bf-5d7d-473a-8e46-a35765c48edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\Parts %28TPB-06%29">
+      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Libs\bass24\c\x64\bass.lib">
@@ -184,11 +190,6 @@
     <ResourceCompile Include="Player.rc">
       <Filter>/Stub &amp; helper code</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Content\Scratchpad.txt">
-      <Filter>/Stub &amp; helper code</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App.ico" />
