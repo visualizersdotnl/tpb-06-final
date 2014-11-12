@@ -456,7 +456,7 @@ bool GenerateWorld(const char *rocketClient)
 	gWorld->UpdateAllMaterialParameters();
 
 #if defined(SYNC_PLAYER)
-	// We're in replay mode so start the soundtrack, otherwise Rocket will tell use what to do.
+	// We're in replay mode so start the soundtrack, otherwise Rocket will tell us what to do.
 	Audio_Start();
 #endif
 
@@ -505,7 +505,7 @@ bool Tick(Pimp::Camera *camOverride)
 	}
 #else
 	// Even though Kusma does this, I don't exactly trust it (though it's probably an audio lag bias).
-	// I'll ask why.
+	// I'll ask why, and maybe for the next one.
 
 //	rocketRow += 0.005f; // Taken from Kusma's engine.
 #endif
@@ -537,7 +537,6 @@ bool Tick(Pimp::Camera *camOverride)
 		// return false;
 
 		Audio_Pause();
-		Audio_Shelldrop();
 
 		static Stopwatch sw;
 		const float t = 12.f;
@@ -554,6 +553,13 @@ bool Tick(Pimp::Camera *camOverride)
 		if (sw_t < 2.f) alpha = 0.f;
 		if (sw_t > 2.f && sw_t < 4.f) alpha = (sw_t-2.f)/2.f;
 		else if (sw_t > t-2.f) alpha = 1.f - ( (sw_t-(t-2.f)) / 2.f );
+
+		static bool shellDropped = false;
+		if (false == shellDropped && sw_t > 2.f)
+		{
+			Audio_Shelldrop();
+			shellDropped = true;
+		}
 
 		// Wait for esc (or timer).
 		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic(alpha);
