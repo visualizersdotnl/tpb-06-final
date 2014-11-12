@@ -29,9 +29,9 @@
 			<key row="4064" interpolation="0" value="0"/>
 			<key row="4096" interpolation="1" value="0"/>
 			<key row="5119" interpolation="0" value="100"/>
-			<key row="5120" interpolation="2" value="0"/>
+			<key row="5120" interpolation="1" value="0"/>
 			<key row="5367" interpolation="0" value="14"/>
-			<key row="5368" interpolation="1" value="60"/>
+			<key row="5368" interpolation="2" value="60"/>
 			<key row="5631" interpolation="0" value="45"/>
 			<key row="5632" interpolation="1" value="0"/>
 			<key row="6143" interpolation="0" value="50"/>
