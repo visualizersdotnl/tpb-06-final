@@ -136,7 +136,7 @@ namespace Pimp
 	}
 
 
-	void World::Render(Sprites *pSprites, Metaballs *pMetaballs)
+	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
 		ASSERT(nullptr != pSprites);
 
@@ -147,10 +147,10 @@ namespace Pimp
 		postProcess->BindForRenderScene();
 
 		// Prepare all sprites to be drawn
-		pSprites->PrepareToDraw();
+		sprites.PrepareToDraw();
 
 		// Draw background sprite
-		pSprites->DrawBackgroundSprites();
+		sprites.DrawBackgroundSprites();
 
 		// Disable depth stencil
 		gD3D->UseDepthStencil(false);
@@ -190,11 +190,11 @@ namespace Pimp
 
 		// ** At this point, the back buffer will be bound **
 
-		// draw sprites in with homogenous coordinates in ratio-adjusted viewport (FIXME?)
+		// Draw sprite in adjusted homogenous coordinates (FIXME)
 		gD3D->SetVP(true);
 		{
 			// Flush (draw & clear queue) the sprites
-			pSprites->DrawSprites();
+			sprites.DrawSprites();
 		}
 		gD3D->SetVP(false);
 

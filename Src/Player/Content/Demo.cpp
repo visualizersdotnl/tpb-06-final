@@ -623,7 +623,7 @@ void WorldRender()
 	// FIXME: hack, only pass metaballs object in scene's they're used to get drawn.
 	const double rocketRow = Rocket_GetRow();
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	gWorld->Render(s_sprites, ((SCENE_BLOBS == sceneIdx)||(SCENE_BLOBS2 == sceneIdx)) ? s_pMetaballs : nullptr); 
+	gWorld->Render(*s_sprites, ((SCENE_BLOBS == sceneIdx)||(SCENE_BLOBS2 == sceneIdx)) ? s_pMetaballs : nullptr); 
 }
 
 

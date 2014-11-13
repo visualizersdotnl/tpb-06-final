@@ -100,7 +100,7 @@ namespace Pimp
 		}
 
 		void Tick(float deltaTime);
-		void Render(Pimp::Sprites *, Pimp::Metaballs *);
+		void Render(Pimp::Sprites &, Pimp::Metaballs *);
 
 		void SetCurrentUserCamera(Camera* camera);
 		Camera* GetCurrentUserCamera() const 
