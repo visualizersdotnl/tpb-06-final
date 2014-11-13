@@ -1,8 +1,12 @@
 #pragma once
 
-// Demo ID & title.
-#define PIMPPLAYER_RELEASE_ID "TPB-06"
-#define PIMPPLAYER_RELEASE_TITLE "Excessination"
+// Demo ID & title (06).
+// #define PIMPPLAYER_RELEASE_ID "TPB-06"
+// #define PIMPPLAYER_RELEASE_TITLE "Excessination"
+
+// Demo ID & title (07).
+#define PIMPPLAYER_RELEASE_ID "TPB-07"
+#define PIMPPLAYER_RELEASE_TITLE "codename: Thunderball"
 
 // Aspect ratio the demo is to be presented in.
 // For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
@@ -10,12 +14,18 @@
 
 // Windowed (dev. only) settings.
 const bool PIMPPLAYER_WINDOWED_DEV = true;
-const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
-const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
 
+// Dev res for 16:9.
+// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
+// const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
+
+// 720p.
+const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
+const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
+
+// Use these to test letterboxing in windowed mode.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640;
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 480;
-// ^ Use these to test letterboxing in windowed mode.
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.
 // By enabling this boolean you can use them at runtime for public release

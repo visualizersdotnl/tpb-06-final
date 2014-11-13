@@ -180,6 +180,9 @@
     <Filter Include="/Content\Parts %28TPB-06%29">
       <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-07: Thunderball">
+      <UniqueIdentifier>{beca080f-ceed-4a3d-a6a9-455ecf11c810}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Libs\bass24\c\x64\bass.lib">
