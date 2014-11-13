@@ -6,7 +6,7 @@
 
 // Demo ID & title (07).
 #define PIMPPLAYER_RELEASE_ID "TPB-07"
-#define PIMPPLAYER_RELEASE_TITLE "codename: Thunderball"
+#define PIMPPLAYER_RELEASE_TITLE "codename: Veronica"
 
 // Aspect ratio the demo is to be presented in.
 // For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
@@ -15,11 +15,11 @@
 // Windowed (dev. only) settings.
 const bool PIMPPLAYER_WINDOWED_DEV = true;
 
-// Dev res for 16:9.
+// Development res. for 16:9.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1920/2;
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1080/2;
 
-// 720p.
+// Development 720p.
 const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
 const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
 
