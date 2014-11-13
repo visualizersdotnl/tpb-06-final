@@ -7,6 +7,8 @@ private:
 	Pimp::MaterialParameter *rotParam;
 	Pimp::MaterialParameter *rotParamInv;
 
+	const sync_track *st_furStretchY;
+
 public:
 	Pompom()
 	{
@@ -18,6 +20,7 @@ public:
 
 	void ReqRocketTracks()
 	{
+		s_syncTracks.push_back(SyncTrack("furBackStretchY", false, &st_furStretchY));
 	}
 
 	void ReqAssets()
@@ -39,7 +42,17 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+//		s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+		float stretchY = (float) sync_get_val(st_furStretchY, row);
+		s_sprites->AddBackgroundSprite(
+			background,
+			Pimp::D3D::BlendMode::BM_None,
+			-1,
+			Vector2(0.f, -stretchY),
+			Vector2(1920.f, 1080.f+stretchY),
+			1.f,
+			0.f,
+			true);
 
 		// fxtimer
 		float time = (float) sync_get_val(st_fxTime, row);
