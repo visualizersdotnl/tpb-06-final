@@ -31,13 +31,13 @@ __time64_t GetFileLastModifiedTime(const std::string& filename);
 // Get full filename of the current process' executable.
 const std::string GetCurrentProcessFileName();
 
-// Dirty check for whatever sort of reloading.
+// File change check.
 class FileChangeCheck
 {
 public:
 	FileChangeCheck(const std::string& filename);
 
-	bool IsFileDirty();
+	bool HasChanged();
 
 private:
 	bool CanAccessFile() const;

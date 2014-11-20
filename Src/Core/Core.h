@@ -1,8 +1,12 @@
+
+// Main include for host application.
+// Include Platform.h first.
+
 #pragma once
 
 #include "Settings.h"
-#include "D3D.h"
 #include "Configuration.h"
+#include "D3D.h"
 #include "World.h"
 #include "Node.h"
 #include "Xform.h"

@@ -1,12 +1,13 @@
+
 #pragma once
 
 // Demo ID & title (06).
-// #define PIMPPLAYER_RELEASE_ID "TPB-06"
-// #define PIMPPLAYER_RELEASE_TITLE "Excessination"
+#define PIMPPLAYER_RELEASE_ID "TPB-06"
+#define PIMPPLAYER_RELEASE_TITLE "Excessination"
 
 // Demo ID & title (07).
-#define PIMPPLAYER_RELEASE_ID "TPB-07"
-#define PIMPPLAYER_RELEASE_TITLE "codename: Veronica"
+// #define PIMPPLAYER_RELEASE_ID "TPB-07"
+// #define PIMPPLAYER_RELEASE_TITLE "A backhand for Sally"
 
 // Aspect ratio the demo is to be presented in.
 // For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
@@ -37,4 +38,4 @@ const bool PIMPPLAYER_MUTE_AUDIO = false;
 
 // Audio sync. settings.
 const double PIMPPLAYER_ROCKET_BPM = 127.0;
-const int PIMPPLAYER_ROCKET_RPB = 16;
+const int PIMPPLAYER_ROCKET_RPB = 16; // Rows per beat, or: Rocket tracker precision.

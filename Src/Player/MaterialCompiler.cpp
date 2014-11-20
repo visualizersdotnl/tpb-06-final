@@ -1,7 +1,7 @@
 
-#include <vector>
-#include <Windows.h>
+#include <Core/Platform.h>
 #include <Core/Core.h>
+#include <Shared/assert.h>
 #include "MaterialCompiler.h"
 
 MaterialCompiler::MaterialCompiler() :
@@ -33,13 +33,13 @@ void MaterialCompiler::StartJob(const unsigned char *source, int sourceLen, unsi
 	}
 	else
 	{
-		ASSERT_MSG(0, "MaterialCompiler::StartJob(): WaitForCompletion() already called!")
+		ASSERT_MSG(0, "MaterialCompiler::StartJob() -> WaitForCompletion() already called!")
 	}
 }
 
 void MaterialCompiler::WaitForCompletion()
 {
-	// @plek: For now this class is just for single-cycle use at startup.
+	// For now this class is just for single-cycle use at startup.
 	m_locked = true;
 
 	while (true && 0 != m_threads.size())

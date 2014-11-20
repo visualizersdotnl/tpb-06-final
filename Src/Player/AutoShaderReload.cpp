@@ -1,6 +1,8 @@
 
 #if defined(_DEBUG) || defined(_DESIGN)
 
+#include <Core/Platform.h>
+#include <Core/Core.h>
 #include "AutoShaderReload.h"
 #include "Assets.h"
 
@@ -12,26 +14,26 @@ AutoShaderReload::AutoShaderReload( Pimp::World* world, float checkInterval )
 	for (int i=0; i<scenes.Size(); ++i)
 	{
 		Pimp::Scene* scene = scenes[i];
+		Pimp::Material* material = scene->GetMaterial();
 
-		if (scene->GetMaterial() != NULL && scene->GetMaterial()->GetShaderFileName().size() > 0)
+		if (nullptr != material && false == material->GetShaderFileName().empty())
 		{
-			ASSERT(FileExists(scene->GetMaterial()->GetShaderFileName())); // File should exist!
+			// File should exist! (FIXME: OK, makes sense, but why exactly?)
+			ASSERT(FileExists(scene->GetMaterial()->GetShaderFileName())); 
 			
-			SceneShaderFileChangeCheck entry;
-			entry.scene = scene;
-			entry.changeTracker = new FileChangeCheck(scene->GetMaterial()->GetShaderFileName().c_str());
-			sceneShaderFiles.push_back(entry);
+			Shader shader;
+			shader.scene = scene;
+			shader.changeTracker = new FileChangeCheck(scene->GetMaterial()->GetShaderFileName().c_str());
+			shaders.push_back(shader);
 		}
 	}
 }
 
-
 AutoShaderReload::~AutoShaderReload()
 {
-	for (int i=0; i<(int)sceneShaderFiles.size(); ++i)
-		delete sceneShaderFiles[i].changeTracker;
+	for (auto &shader : shaders)
+		delete shader.changeTracker;
 }
-
 
 void AutoShaderReload::Update()
 {
@@ -39,28 +41,23 @@ void AutoShaderReload::Update()
 	{
 		checkTimer.Reset();
 
-		for (int i=0; i<(int)sceneShaderFiles.size(); ++i)
+		for (auto &shader : shaders)
 		{
-			const SceneShaderFileChangeCheck& entry = sceneShaderFiles[i];
-
-			if (entry.changeTracker->IsFileDirty())
-			{
-				ReloadSceneShader(entry.scene);
-			}
+			if (true == shader.changeTracker->HasChanged())
+				ReloadSceneShader(shader.scene);
 		}
 	}
 }
 
-
 void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 {
 	Pimp::Material* oldMaterial = scene->GetMaterial();
-	std::string shaderFileName = oldMaterial->GetShaderFileName();
+	std::string fileName = oldMaterial->GetShaderFileName();
 
 	// Load shader file (text)
-	unsigned char* shader_ascii;
+	unsigned char* shader_ascii = nullptr;
 	int shader_ascii_size;
-	ReadFileContent(shaderFileName, &shader_ascii, &shader_ascii_size);
+	ReadFileContent(fileName, &shader_ascii, &shader_ascii_size);
 
 	// Compile our shader (text -> bytecode)
 	unsigned char* compiled_shader;
@@ -72,10 +69,12 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 		&compiled_shader, 
 		&compiled_shader_size);
 
+	delete[] shader_ascii;
+
 	if (success)
 	{
 		// Create new material
-		Pimp::Material* newMaterial = new Pimp::Material(world, compiled_shader, compiled_shader_size, shaderFileName);
+		Pimp::Material* newMaterial = new Pimp::Material(world, compiled_shader, compiled_shader_size, fileName);
 		scene->SetMaterial(newMaterial);
 		world->GetMaterials().Add(newMaterial);
 

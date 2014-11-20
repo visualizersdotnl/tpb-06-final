@@ -1,12 +1,8 @@
 
 /*
-	Player stub without 64KB-cutbacks (e.g. proper error handling and resource destruction on exit).
-	Taken from a Visualizers project and more or less directly plugged in.
+	Player stub.
 
-	@plek: As I'm accustomed to placing some vital information in Main.cpp (or whatever the name is), here goes:
-
-	As in the rest of the codebase, I'll comment my own peculiarities with '@plek' (some red tape, some useful information).
-	Stuff that really needs fixing, here it comes, can be found by searching for 'FIXME'.
+	Look for 'FIXME' & '@plek' -> stuff to either, fix, remove or formalize.
 
 	The idea here is to:
 	- Create and manage a simple render window.
@@ -17,28 +13,19 @@
 
 	Issues (some of these are in Github as well):
 	- Set up error checking on most critical D3D calls.
-	- Fix (D3D)ASSERT_MSG.
+	- Fix D3D_ASSERT & ASSERT_MSG.
 	- Remove unused (commented) code.
 	- Leaks.
 	- Phase out FixedSizeList use where unnecessary.
-	- Create a general platform include (system, STL, CRT, assertions, et cetera).
 */
 
 #include <Core/Platform.h>
-#include <Windows.h>
-#include <intrin.h> // for SSE2 check
-#include <stdint.h>
-#include <string>
-#include <sstream>
-#include <vector>
-
+#include <intrin.h> // for SIMD check
 #include <Core/Core.h>
-
 #include "Settings.h"
 #include "SceneTools.h"
 #include "DebugCamera.h"
 #include "AutoShaderReload.h"
-#include "gWorld.h"
 #include "Audio.h"
 
 #include "Content/Demo.h"
@@ -88,7 +75,7 @@ static int		s_mouseTrackInitialY;
 #endif
 
 // serialize constant value to std::string
-// @plek: This is sort of ugly but I didn't port all to string streams in the original project.
+// Sort of ugly but I didn't convert the project I took this stub from to streams yet.
 template<typename T> inline std::string ToString(const T &X)
 {
 	std::stringstream strStream;
@@ -494,7 +481,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 		// create app. window
 		if (CreateAppWindow(hInstance, nCmdShow))
 		{
-			// initialize BASS audio library
+			// initialize audio
 			if (Audio_Create(-1, s_hWnd, Demo::GetAssetsPath() + kMP3Path, kMuteAudio))
 			{
 				// initialize Direct3D
@@ -507,17 +494,19 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
 						if (true == Demo::GenerateWorld(rocketClient))
 						{
-#if defined(_DEBUG) || defined(_DESIGN)
-							s_pAutoShaderReloader = new AutoShaderReload(gWorld, 0.5f/*checkInterval*/);
 
-							s_pDebugCamera = new DebugCamera(gWorld);
+#if defined(_DEBUG) || defined(_DESIGN)
+							Pimp::World *pWorld = Demo::GetWorld();
+
+							s_pAutoShaderReloader = new AutoShaderReload(pWorld, 0.5f /* checkInterval */);
+							s_pDebugCamera = new DebugCamera(pWorld);
 
 							DEBUG_LOG("============================================================================");
 							DEBUG_LOG("Pimp is up and running!");
 							DEBUG_LOG("");
-							DEBUG_LOG("> SPACE: Toggle pause");
+							DEBUG_LOG("> SPACE: Toggle debug camera.");
 							DEBUG_LOG("");
-							DEBUG_LOG("If paused:");
+							DEBUG_LOG("To control said camera:");
 							DEBUG_LOG("> W,S,A,D:	Translate current view forward, back, left or right.");
 							DEBUG_LOG("> Q,E:		Roll current view, in either positive or negative direction.");
 							DEBUG_LOG("> Drag LMB:	Adjust yaw and pitch of current view.");
@@ -525,13 +514,9 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 							DEBUG_LOG("============================================================================");
 #endif	
 
-							// Done loading: kill loading bar.
-							gWorld->GetPostProcess()->SetLoadProgress(0.f);
-							DrawLoadProgress(nullptr, 0.f);
-
 							Stopwatch stopwatch;
 
-							// in windowed mode FPS is refreshed every 15 frames
+							// in windowed mode FPS is refreshed every 60 frames
 							float timeElapsedFPS = 0.f;
 							unsigned int numFramesFPS = 0;
 							
@@ -546,22 +531,15 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 								s_pAutoShaderReloader->Update();
 
 								if (true == s_isPaused)
-								{
-									Demo::Tick(s_pDebugCamera->Get());
-									gWorld->Tick(0.f);
-								}
+									Demo::Tick(timeElapsed, s_pDebugCamera->Get());
 								else
 								{
-									if (false == Demo::Tick(nullptr))
+									if (false == Demo::Tick(timeElapsed))
 										break;
-
-									gWorld->Tick(timeElapsed);
 								}
 #else
-								if (false == Demo::Tick(nullptr))
+								if (false == Demo::Tick(timeElapsed))
 									break;
-
-								gWorld->Tick(timeElapsed);
 #endif
 								
 								Demo::WorldRender();

@@ -1,31 +1,33 @@
+
 #pragma once
 
-#include <Core/Core.h>
+// #include <Core/Core.h>
 
 class DebugCamera
 {
 public:
 	DebugCamera(Pimp::World* world);
+	~DebugCamera() {}
 
 	void SetEnabled(bool enabled);
 
-	void Move(const Vector3& directionViewSpace);	
-	
+	// Mouse control.	
 	void StartLookAt();
 	void EndLookAt();
 	void LookAt(int deltaMouseX, int deltaMouseY);
 
+	// Keyb. control.
+	void Move(const Vector3& directionViewSpace);	
 	void Roll(bool positive);
 
 	void DumpCurrentTransformToOutputWindow();
 
-	// @plek: Let the client allow where and how to apply it.
 	Pimp::Camera *Get() const { return camera; }
 
 private:
-	bool isEnabled;
-
 	Pimp::World* world;
+
+	bool isEnabled;
 	Pimp::Camera* camera;
 	Pimp::Xform* xform;
 

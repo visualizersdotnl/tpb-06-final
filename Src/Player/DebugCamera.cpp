@@ -1,9 +1,16 @@
+
+#include <Core/Platform.h>
+#include <Core/Core.h>
 #include "DebugCamera.h"
 #include "SceneTools.h"
 
 DebugCamera::DebugCamera(Pimp::World* world) :
-	isEnabled(false), world(world), isLookingAt(false)
+	world(world)
+,	isEnabled(false)
+,	isLookingAt(false)
 {
+	ASSERT(nullptr != world);
+
 	camera = new Pimp::Camera(world);
 	world->GetElements().Add(camera);
 	camera->SetFOVy(0.563197f);
@@ -15,27 +22,28 @@ DebugCamera::DebugCamera(Pimp::World* world) :
 	AddChildToParent(camera,xform);
 }
 
-
 void DebugCamera::SetEnabled( bool enabled )
 {
 	if (enabled == isEnabled)
 		return;
-
-	isEnabled = enabled;
-
-	if (isEnabled)
+	else
 	{
-		// Put debug cam. into action
-		Pimp::Camera* prevDirectedCam = world->GetCurrentCamera();
-		ASSERT(prevDirectedCam->GetParents().Size() == 1);
-		Pimp::Node* prevDirectedCamParent = prevDirectedCam->GetParents()[0];
-		ASSERT(prevDirectedCamParent->GetType() == Pimp::ET_Xform);
-		Pimp::Xform* prevDirectedCamXform = (Pimp::Xform*)prevDirectedCamParent;
+		isEnabled = enabled;
 
-		xform->SetTranslation(prevDirectedCamXform->GetTranslation());
-		xform->SetRotation(prevDirectedCamXform->GetRotation());
+		if (true == isEnabled)
+		{
+			// Adopt current camera.
+			Pimp::Camera* prevDirectedCam = world->GetCurrentCamera();
+			ASSERT(prevDirectedCam->GetParents().Size() == 1);
+			Pimp::Node* prevDirectedCamParent = prevDirectedCam->GetParents()[0];
+			ASSERT(prevDirectedCamParent->GetType() == Pimp::ET_Xform);
+			Pimp::Xform* prevDirectedCamXform = (Pimp::Xform*)prevDirectedCamParent;
 
-		world->SetCurrentUserCamera(camera);
+			// And then set it as ours.
+			xform->SetTranslation(prevDirectedCamXform->GetTranslation());
+			xform->SetRotation(prevDirectedCamXform->GetRotation());
+			world->SetCurrentUserCamera(camera);
+		}
 	}
 }
 
@@ -50,6 +58,15 @@ void DebugCamera::Move( const Vector3& directionViewSpace )
 	xform->SetTranslation(pos);
 }
 
+void DebugCamera::Roll(bool positive)
+{
+	Quaternion rot = xform->GetRotation();
+
+	const float rollAmount = 0.10f; //< Totally framerate-dependent roll amount
+	rot = CreateQuaternionFromYawPitchRoll(0, 0, positive ? rollAmount : -rollAmount) * rot;
+
+	xform->SetRotation(rot);
+}
 
 void DebugCamera::StartLookAt()
 {
@@ -80,16 +97,6 @@ void DebugCamera::LookAt(int deltaMouseX, int deltaMouseY)
 	Quaternion newRot = camOrientationDelta * lookAtInitialRotation;
 
 	xform->SetRotation(newRot);
-}
-
-void DebugCamera::Roll(bool positive)
-{
-	Quaternion rot = xform->GetRotation();
-
-	const float rollAmount = 0.10f; //< Totally framerate-dependent roll amount
-	rot = CreateQuaternionFromYawPitchRoll(0, 0, positive ? rollAmount : -rollAmount) * rot;
-
-	xform->SetRotation(rot);
 }
 
 void DebugCamera::DumpCurrentTransformToOutputWindow()

@@ -39,26 +39,26 @@
     <ClCompile Include="..\Libs\rocket\lib\track.c">
       <Filter>../Libs/Rocket/lib</Filter>
     </ClCompile>
+    <ClCompile Include="Stub.cpp">
+      <Filter>Stub</Filter>
+    </ClCompile>
     <ClCompile Include="Assets.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="Audio.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClCompile>
-    <ClCompile Include="AutoShaderReload.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugCamera.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="MaterialCompiler.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="SceneTools.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Stub.cpp">
-      <Filter>/Stub &amp; helper code</Filter>
+    <ClCompile Include="AutoShaderReload.cpp">
+      <Filter>Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,75 +81,66 @@
       <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Bondtro.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\GeneralCinema.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Knot.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Ribbons.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Ribbons2.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoShaderReload.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugCamera.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="gWorld.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialCompiler.h">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneTools.h">
-      <Filter>/Stub &amp; helper code</Filter>
-    </ClInclude>
-    <ClInclude Include="SetLastError.h">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Stub</Filter>
     </ClInclude>
     <ClInclude Include="Settings.h">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Stub</Filter>
     </ClInclude>
     <ClInclude Include="Content\Shafts.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs2.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\Pompom.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="Content\BulletsAndBitches.h">
-      <Filter>/Content\Parts %28TPB-06%29</Filter>
+      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="CPUID.h">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Stub</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialCompiler.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTools.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoShaderReload.h">
+      <Filter>Helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">
       <Filter>/../Libs/bass24</Filter>
-    </None>
-    <None Include="..\..\Content\assets\sync\tpb-06.rocket">
-      <Filter>../../Content/assets/sync</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -162,12 +153,6 @@
     <Filter Include="/../Libs/bass24">
       <UniqueIdentifier>{38c19be1-fee2-4a3f-b6b4-f7f2a1454244}</UniqueIdentifier>
     </Filter>
-    <Filter Include="../../Content/assets/sync">
-      <UniqueIdentifier>{478dcaf9-1f80-4aca-84ee-0d5451f20923}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/Stub &amp; helper code">
-      <UniqueIdentifier>{0b7b473f-2360-431d-afdd-c21a67bf549b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29">
       <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
     </Filter>
@@ -177,11 +162,14 @@
     <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06">
       <UniqueIdentifier>{73e575bf-5d7d-473a-8e46-a35765c48edc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\Parts %28TPB-06%29">
-      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
+    <Filter Include="Stub">
+      <UniqueIdentifier>{0b7b473f-2360-431d-afdd-c21a67bf549b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-07: Thunderball">
-      <UniqueIdentifier>{beca080f-ceed-4a3d-a6a9-455ecf11c810}</UniqueIdentifier>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{99482fef-3b40-4572-a2ec-702de3b4f969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\Parts">
+      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
-      <Filter>/Stub &amp; helper code</Filter>
+      <Filter>Stub</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>

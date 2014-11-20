@@ -1,9 +1,6 @@
 
 #pragma once
 
-// #include <vector>
-// #include <Windows.h>
-
 class MaterialCompiler // : public NoCopy
 {
 public:

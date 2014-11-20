@@ -2,8 +2,8 @@
 
 #if defined(_DEBUG) || defined(_DESIGN)
 
-#include <Core/Core.h>
-#include <Shared/shared.h>
+// #include <Core/Core.h>
+#include <Shared/fileutils.h>
 
 // Helper class that can monitor file changes to shader files and automatically trigger recompilation when changes
 // were detected.
@@ -14,12 +14,12 @@ private:
 	Stopwatch checkTimer;
 	float checkInterval;
 	
-	struct SceneShaderFileChangeCheck
+	struct Shader
 	{
 		Pimp::Scene* scene;
 		FileChangeCheck* changeTracker;
 	};
-	std::vector<SceneShaderFileChangeCheck> sceneShaderFiles;
+	std::vector<Shader> shaders;
 
 	void ReloadSceneShader(Pimp::Scene* scene);
 

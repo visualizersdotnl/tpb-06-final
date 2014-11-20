@@ -109,7 +109,7 @@ FileChangeCheck::FileChangeCheck(const std::string& filename)
 	lastModified = GetFileLastModifiedTime(filename);
 }
 
-bool FileChangeCheck::IsFileDirty()
+bool FileChangeCheck::HasChanged()
 {
 	__time64_t stamp = GetFileLastModifiedTime(filename);
 

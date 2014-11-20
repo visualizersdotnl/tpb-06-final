@@ -1,8 +1,7 @@
 
-#include <vector>
-#include "SceneTools.h"
-#include "gWorld.h"
-#include "Content/Demo.h"
+#include <Core/Platform.h>
+#include <Core/Core.h>
+// #include "SceneTools.h"
 
 // 
 // Misc. scene graph helpers.
@@ -71,35 +70,7 @@ void DuplicateTransformTransformedHierarchy(
 	}
 }
 
-//
-// Loading bar.
-//
-
-void DrawLoadProgress(Pimp::Texture2D *pTex, float progress)
-{
-	if (gWorld == NULL)
-	{	
-		Pimp::gD3D->ClearBackBuffer();
-		Pimp::gD3D->Flip();
-		return;
-	}
-
-	if (progress > 1.f)
-		progress = 1.f;
-
-	Pimp::PostProcess* postProcess = gWorld->GetPostProcess();
-	postProcess->SetLoadProgress(progress);
-	postProcess->Clear();
-	postProcess->BindForRenderScene();
-	Pimp::gD3D->ClearBackBuffer();
-	postProcess->RenderPostProcess();
-	Pimp::gD3D->Flip();
-}
-
-//
-// Animation curve helper(s).
-//
-
+// FIXME: do we still need this one?
 Pimp::AnimCurve* DuplicateAnimCurve( Pimp::World* world, Pimp::AnimCurve* curve, float delay )
 {
 	Pimp::AnimCurve* dupeCurve = new Pimp::AnimCurve(world);
@@ -118,4 +89,18 @@ Pimp::AnimCurve* DuplicateAnimCurve( Pimp::World* world, Pimp::AnimCurve* curve,
 	dupeCurve->SetKeysPtr(pairs);
 
 	return dupeCurve;
+}
+
+// Easy loading bar update & draw.
+void DrawLoadProgress(Pimp::World &world, float progress)
+{
+	if (progress > 1.f)
+		progress = 1.f;
+
+	Pimp::PostProcess* postProcess = world.GetPostProcess();
+	postProcess->SetLoadProgress(progress);
+	postProcess->Clear();
+	postProcess->BindForRenderScene();
+	postProcess->RenderPostProcess();
+	Pimp::gD3D->Flip();
 }

@@ -214,11 +214,9 @@
     <ClInclude Include="Content\Shafts.h" />
     <ClInclude Include="CPUID.h" />
     <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="gWorld.h" />
     <ClInclude Include="MaterialCompiler.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
-    <ClInclude Include="SetLastError.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
@@ -297,7 +295,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Content\assets\sync\tpb-06.rocket" />
     <None Include="..\Libs\bass24\bass.chm" />
   </ItemGroup>
   <ItemGroup>

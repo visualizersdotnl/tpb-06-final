@@ -5,9 +5,6 @@
 #include <string>
 #include <math/math.h>
 
-// @plek: As of now Core reports it's errors to it's only host: Player.
-#include "../Player/SetLastError.h" 
-
 #include "D3DAssert.h"
 #include "Settings.h"
 #include "RenderTarget.h"

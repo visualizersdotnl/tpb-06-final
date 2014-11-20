@@ -138,22 +138,20 @@ namespace Pimp
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
-		ASSERT(nullptr != pSprites);
-
 		// Clear
 		postProcess->Clear(); 
 
 		// Bind render target(s)
 		postProcess->BindForRenderScene();
 
+		// Disable depth stencil
+		gD3D->UseDepthStencil(false);
+
 		// Prepare all sprites to be drawn
 		sprites.PrepareToDraw();
 
 		// Draw background sprite
 		sprites.DrawBackgroundSprites();
-
-		// Disable depth stencil
-		gD3D->UseDepthStencil(false);
 
 		// Bind screen quad VB for first pass
 		screenQuadVertexBuffer->Bind();
@@ -162,7 +160,7 @@ namespace Pimp
 		if (currentCamera != NULL)
 			currentCamera->Bind();
 
-		// Render our scene to a single sceneColor FP16 RT
+		// Render our scene to a single sceneColor (? -> FIXME) FP16 RT
 		if (scenes.IsValidIndex(currentSceneIndex) && 
 			scenes[currentSceneIndex] != NULL)
 		{
@@ -200,6 +198,8 @@ namespace Pimp
 
 		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);
+
+		// FIXME: where is the magic flip hidden?
 	}
 
 

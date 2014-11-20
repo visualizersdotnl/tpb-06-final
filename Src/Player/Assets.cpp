@@ -1,16 +1,13 @@
 
-// #include <string>
-#include <vector>
-#include <algorithm>
+#include <Core/Platform.h>
 #include <Core/Core.h>
 #include <Shared/shared.h>
 #include <LodePNG/lodepng.h>
+// #include "SceneTools.h"
 #include "Assets.h"
-#include "SceneTools.h"
-#include "SetLastError.h"
-#include "gWorld.h"
 #include "Settings.h"
 #include "MaterialCompiler.h"
+#include "Content/Demo.h"
 
 //
 // PNG loader.
@@ -26,10 +23,11 @@ static Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool 
 	const unsigned int error = lodepng::decode(pixels, width, height, path);
 	if (0 != error)
 	{
-		ASSERT(0);
 		SetLastError("Can't load PNG file from: " + path + "\n" + "Reason: " + lodepng_error_text(error));
 		return nullptr;
 	}
+
+	ASSERT(false == pixels.empty());
 
 	if (true == alphaPreMul)
 	{
@@ -50,7 +48,6 @@ static Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool 
 		}
 	}
 
-	ASSERT(0 != pixels.size());
 	Pimp::Texture2D *pTexture = Pimp::gD3D->CreateTexture2D(ID, width, height, gammaCorrect);
 	pTexture->UploadTexels(&pixels[0]);
 	return pTexture;
@@ -161,7 +158,7 @@ namespace Assets
 
 	static bool LoadTextures()
 	{
-		for (Texture2DRequest &request : s_textureReqs)
+		for (auto &request : s_textureReqs)
 		{
 			Pimp::Texture2D *pTex = LoadPNG(request.path, request.alphaPreMul, request.gammaCorrect);
 			if (nullptr == pTex)
@@ -171,7 +168,7 @@ namespace Assets
 				*request.ppDest = pTex;
 			s_textures.push_back(pTex);
 
-			gWorld->GetTextures().Add(pTex);
+			Demo::GetWorld()->GetTextures().Add(pTex);
 		}
 
 		return true;
@@ -195,7 +192,7 @@ namespace Assets
 		s_fxCompiler.WaitForCompletion();
 		
 		// Finish up materials, bytecode is now ready!
-		for (MaterialRequest &request : s_materialReqs)
+		for (auto &request : s_materialReqs)
 		{
 			if (false == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
 			{
@@ -209,11 +206,11 @@ namespace Assets
 				VERIFY(true == WriteFileContent(request.path + "b", request.bytecode, request.bytecodeSize));
 			}
 
-			Pimp::Material *pMat = new Pimp::Material(gWorld, request.bytecode, request.bytecodeSize, request.path);
+			Pimp::Material *pMat = new Pimp::Material(Demo::GetWorld(), request.bytecode, request.bytecodeSize, request.path);
 
 			*request.ppDest = pMat;
 			s_materials.push_back(pMat);
-			gWorld->GetMaterials().Add(pMat);
+			Demo::GetWorld()->GetMaterials().Add(pMat);
 		}
 
 		// Ditch requests.
@@ -225,10 +222,10 @@ namespace Assets
 
 	void Release()
 	{
-		for (Pimp::Material *pMat : s_materials)
+		for (auto *pMat : s_materials)
 			delete pMat;
 		
-		for (Pimp::Texture2D *pTex2D : s_textures)
+		for (auto *pTex2D : s_textures)
 			delete pTex2D;
 
 		s_materials.clear();

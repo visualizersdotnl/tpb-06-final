@@ -113,10 +113,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	// Bind our backbuffer and depth stencil by default
 	BindBackbuffer(depthStencil);
 
-	// Aspect ratio adjust.
-	//
-
-	// define full & adjusted (16:9) viewport
+	// Full viewport
 	m_fullVP.TopLeftX = 0;
 	m_fullVP.TopLeftY = 0;
 	m_fullVP.Width = viewWidth;
@@ -136,7 +133,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	renderScale.x = 1.0f;
 	renderScale.y = renderableAmount;
 
-#if 1
 	m_adjVP.Width = xResAdj;
 	m_adjVP.Height = yResAdj;
 	m_adjVP.TopLeftX = (m_fullVP.Width-xResAdj)/2;
@@ -144,11 +140,11 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	m_adjVP.MinDepth = 0.f;
 	m_adjVP.MaxDepth = 1.f;
 
-	// Readjust to aspect corrected VP	
-//	device->RSSetViewports(1, &m_adjVP);
-#endif
+	device->RSSetViewports(1, &m_fullVP);
 
-	// Blend states
+	// Create blend states
+	//
+
 	blendStates[BM_None] = NULL;
 
 	D3D10_BLEND_DESC alphaDesc;
@@ -215,7 +211,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	alphaPreMulDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
 	memset(alphaPreMulDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
     device->CreateBlendState(&alphaPreMulDesc, &blendStates[BM_AlphaPreMul]);
-	// ^^ dest.a = 1 - (1 - src.a) * (1 - dest.a) [the math works out]
 
 	// create default (white) texture
 	{
@@ -269,15 +264,8 @@ D3D::~D3D()
 
 void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 {
-	// Clear entire buffer
-	device->RSSetViewports(1, &m_fullVP);
 	const float RGBA[4] = { 0.f };
 	device->ClearRenderTargetView(renderTarget, RGBA);
-
-#if 0
-	// Bind adjusted (aspect) viewport
-	device->RSSetViewports(1, &m_adjVP);
-#endif
 }
 
 void D3D::SetVP(bool adjOrFull)

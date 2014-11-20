@@ -1,15 +1,13 @@
 
-#include <vector>
+#include <Core/Platform.h>
 #include <Core/Core.h>
-#include <Shared/shared.h>
-#include <LodePNG/lodepng.h>
 #include "SceneTools.h"
 #include "Assets.h"
 #include "Audio.h"
 #include "Settings.h"
 
-// World, our Core container for the entire demo.
-Pimp::World *gWorld = nullptr;
+// There is a single Core::World, which is a basic scenegraph.
+static Pimp::World *s_pWorld = nullptr;
 
 //
 // Misc. helper stuff.
@@ -93,8 +91,8 @@ static Pimp::MaterialParameter *CreateDynShaderParam(
 	const std::string &name, // Element, so no need to release.
 	Pimp::MaterialParameter::ValueType valueType = Pimp::MaterialParameter::VT_Value)
 {
-	Pimp::MaterialParameter *newParam = new Pimp::MaterialParameter(gWorld);
-	gWorld->GetElements().Add(newParam);
+	Pimp::MaterialParameter *newParam = new Pimp::MaterialParameter(s_pWorld);
+	s_pWorld->GetElements().Add(newParam);
 	newParam->SetValueType(Pimp::MaterialParameter::VT_Value);
 	newParam->SetName(name.c_str());
 	return newParam;
@@ -237,10 +235,10 @@ protected:
 	{
 		if (nullptr == m_pScene)
 		{
-			m_pScene = new Pimp::Scene(gWorld);
-			gWorld->GetScenes().Add(m_pScene);
-			gWorld->GetElements().Add(m_pScene);
-			m_sceneIdx = gWorld->GetScenes().Size()-1;	
+			m_pScene = new Pimp::Scene(s_pWorld);
+			s_pWorld->GetScenes().Add(m_pScene);
+			s_pWorld->GetElements().Add(m_pScene);
+			m_sceneIdx = s_pWorld->GetScenes().Size()-1;	
 
 			m_pScene->SetMaterial(pMat);
 		}
@@ -249,10 +247,10 @@ protected:
 	// Helper to bind a material parameter to Xform (regular or inverse) and add it to the world.
 	static Pimp::MaterialParameter* AddMaterialParamWithXform(const char* name, bool inverse)
 	{
-		Pimp::Xform* xform = new Pimp::Xform(gWorld);
+		Pimp::Xform* xform = new Pimp::Xform(s_pWorld);
 		
-		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(gWorld);
-		gWorld->GetElements().Add(param);
+		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(s_pWorld);
+		s_pWorld->GetElements().Add(param);
 		
 		if (true ==  inverse)
 			param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
@@ -261,7 +259,7 @@ protected:
 
 		param->SetName(name);
 
-		Pimp::World::StaticAddChildToParent(xform, gWorld->GetRootNode());
+		Pimp::World::StaticAddChildToParent(xform, s_pWorld->GetRootNode());
 		Pimp::World::StaticAddChildToParent(param, xform);
 
 		// FIXME: I think we're leaking the Xform here
@@ -272,8 +270,8 @@ protected:
 	// And this one on top of Tick() to activate said scene.
 	void SetMainSceneAndDefaultCamera() 
 	{ 
-		gWorld->SetCurrentUserCamera(s_defaultCam);
-		gWorld->SetCurrentSceneIndex(m_sceneIdx); 
+		s_pWorld->SetCurrentUserCamera(s_defaultCam);
+		s_pWorld->SetCurrentSceneIndex(m_sceneIdx); 
 	}
 };
 
@@ -326,7 +324,7 @@ static std::vector<Demo::Scene *> s_scenes;
 
 bool GenerateWorld(const char *rocketClient)
 {
-	gWorld = new Pimp::World();
+	s_pWorld = new Pimp::World();
 
 	const std::string assetsPath = GetAssetsPath();
 	const std::string syncPath = assetsPath + "sync\\";
@@ -352,7 +350,7 @@ bool GenerateWorld(const char *rocketClient)
 #endif
 
 	// We're now loading, but no disk I/O or anything else has taken place yet so it's an empty bar.
-	DrawLoadProgress(nullptr, 0.f);
+	DrawLoadProgress(*s_pWorld, 0.f);
 
 	// Set asset loader root path.
 	Assets::SetRoot(assetsPath);
@@ -388,7 +386,7 @@ bool GenerateWorld(const char *rocketClient)
 		pScene->ReqAssets();
 
 	// Loaded some more! :)
-	DrawLoadProgress(nullptr, 0.25f);
+	DrawLoadProgress(*s_pWorld, 0.25f);
 
 	// Req. global stuff.
 	Assets::AddMaterial("shaders\\UserPosteffect.fx", &matUserPostFX);
@@ -399,17 +397,17 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 
 	// Loaded some more! :)
-	DrawLoadProgress(nullptr, 0.5f);
+	DrawLoadProgress(*s_pWorld, 0.5f);
 
 	// Bind animation related nodes (and do other CPU-based preparation work).
 	//
 	
 	// Add default camera transformation.
-	s_defaultCam = new Pimp::Camera(gWorld);
-	gWorld->GetElements().Add(s_defaultCam);
-	s_defaultXform = new Pimp::Xform(gWorld);
-	gWorld->GetElements().Add(s_defaultXform);
-	AddChildToParent(s_defaultXform, gWorld->GetRootNode());
+	s_defaultCam = new Pimp::Camera(s_pWorld);
+	s_pWorld->GetElements().Add(s_defaultCam);
+	s_defaultXform = new Pimp::Xform(s_pWorld);
+	s_pWorld->GetElements().Add(s_defaultXform);
+	AddChildToParent(s_defaultXform, s_pWorld->GetRootNode());
 	AddChildToParent(s_defaultCam, s_defaultXform);
 	s_defaultCam->SetFOVy(0.563197f);
 	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
@@ -423,11 +421,11 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 
 	// We're using Rocket- or debug-driven cameras only!
-	gWorld->SetCurrentUserCamera(s_defaultCam);
-	gWorld->SetUseCameraDirection(false);
+	s_pWorld->SetCurrentUserCamera(s_defaultCam);
+	s_pWorld->SetUseCameraDirection(false);
 
 	// Loaded some more! :)
-	DrawLoadProgress(nullptr, 0.75f);
+	DrawLoadProgress(*s_pWorld, 0.75f);
 
 	// Wait for the asset loading to be all finished.
 	if (false == Assets::FinishLoading())
@@ -440,25 +438,30 @@ bool GenerateWorld(const char *rocketClient)
 		pScene->BindToWorld();
 
 	// Add user postFX.
-	gWorld->GetMaterials().Add(matUserPostFX);
-	gWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
+	s_pWorld->GetMaterials().Add(matUserPostFX);
+	s_pWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
 
-	// Ta-daa!
-	DrawLoadProgress(nullptr, 1.f);
+	// Ta-daa, ready.
+	DrawLoadProgress(*s_pWorld, 1.f);
 
 #if !defined(_DEBUG) && !defined(_DESIGN)
+	// Delibrate delay. Make it appear as if we're doing important things.
 	if (true == PIMPPLAYER_RUN_FROM_SHADER_BINARIES)
 		Sleep(1500);
 #endif
 	
 	// Finish up some World business.
-	gWorld->InitAllBalls();
-	gWorld->UpdateAllMaterialParameters();
+	s_pWorld->InitAllBalls();
+	s_pWorld->UpdateAllMaterialParameters();
 
 #if defined(SYNC_PLAYER)
 	// We're in replay mode so start the soundtrack, otherwise Rocket will tell us what to do.
 	Audio_Start();
 #endif
+
+	// Switch off loading bar in shader.
+	// No frames will (or should) be rendered before the actual demo starts.
+	s_pWorld->GetPostProcess()->SetLoadProgress(0.f);
 
 	// Done!
 	return true;
@@ -477,6 +480,7 @@ void ReleaseWorld()
 	if (nullptr != s_Rocket)
 	{
 		// Dump tracks to disk.
+		// This way they're pretty much always ready to use.
 #ifndef SYNC_PLAYER
 		sync_save_tracks(s_Rocket);
 #endif
@@ -484,17 +488,18 @@ void ReleaseWorld()
 		sync_destroy_device(s_Rocket);
 	}
 
-	delete gWorld;
-	gWorld = nullptr;
+	delete s_pWorld;
+	s_pWorld = nullptr;
 }
 
 //
 // Tick function. 
-// Here: manipulate the world and it's objects according to sync., *prior* to "ticking" & rendering it).
+// Manipulate the world and it's objects according to sync. prior to rendering it.
 //
 
-bool Tick(Pimp::Camera *camOverride)
+bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 {
+	// Get sync. row.
 	double rocketRow = Rocket_GetRow();
 
 #if !defined(SYNC_PLAYER)
@@ -504,28 +509,26 @@ bool Tick(Pimp::Camera *camOverride)
 		return false;
 	}
 #else
-	// Even though Kusma does this, I don't exactly trust it (though it's probably an audio lag bias).
-	// I'll ask why, and maybe for the next one.
-
-//	rocketRow += 0.005f; // Taken from Kusma's engine.
+	// Taken from Kusma's engine. Seems like an arbitrary delay bias, he couldn't really explain.
+//	rocketRow += 0.005f; 
 #endif
 
-	// Update tracks.
+	// Update sync. tracks.
 	for (SyncTrack &syncTrack : s_syncTracks)
 		syncTrack.Update(rocketRow);
 
-	// update default camera
-	const float defCamTrans_X = (float) sync_get_val(st_defTransX, rocketRow);
-	const float defCamTrans_Y = (float) sync_get_val(st_defTransY, rocketRow);
-	const float defCamTrans_Z = (float) sync_get_val(st_defTransZ, rocketRow);
-	const float defCamRotQuat_X = (float) sync_get_val(st_defRotX, rocketRow);
-	const float defCamRotQuat_Y = (float) sync_get_val(st_defRotY, rocketRow);
-	const float defCamRotQuat_Z = (float) sync_get_val(st_defRotZ, rocketRow);
-	const float defCamRotQuat_W = (float) sync_get_val(st_defRotW, rocketRow);
+	// Update default camera.
+	const float defCamTrans_X   = (float) sync_get_val(st_defTransX, rocketRow);
+	const float defCamTrans_Y   = (float) sync_get_val(st_defTransY, rocketRow);
+	const float defCamTrans_Z   = (float) sync_get_val(st_defTransZ, rocketRow);
+	const float defCamRotQuat_X = (float) sync_get_val(st_defRotX,   rocketRow);
+	const float defCamRotQuat_Y = (float) sync_get_val(st_defRotY,   rocketRow);
+	const float defCamRotQuat_Z = (float) sync_get_val(st_defRotZ,   rocketRow);
+	const float defCamRotQuat_W = (float) sync_get_val(st_defRotW,   rocketRow);
 	s_defaultXform->SetTranslation(Vector3(defCamTrans_X, defCamTrans_Y, defCamTrans_Z));
 	s_defaultXform->SetRotation(Quaternion(defCamRotQuat_X, defCamRotQuat_Y, defCamRotQuat_Z, defCamRotQuat_W));
 
-	// play MP3 normally by default
+	// No flanger by default.
 	Audio_FlangerMP3(0.f, 0.25f);
 
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
@@ -535,6 +538,8 @@ bool Tick(Pimp::Camera *camOverride)
 	{
 		// FIXME: A regular demo would stop right here, TPB-06 has a little Bond hack on top.
 		// return false;
+
+		// -- TPB-06 ENDING HACK --
 
 		Audio_Pause();
 
@@ -565,6 +570,8 @@ bool Tick(Pimp::Camera *camOverride)
 		((BulletsAndBitches*)s_scenes[SCENE_BULLESANDBITCHES])->EndPic(alpha);
 
 		return !(sw_t >= t);
+
+		// -- TPB-06 ENDING HACK --
 	}
 
 	// Tie in noise the old fucking school way by sprite and Z.
@@ -609,21 +616,30 @@ bool Tick(Pimp::Camera *camOverride)
 			Vector2(0.f, 0.f), Vector2(1920.f, 1080.f),
 			kPostFadeZ, 0.f, true, false);
 
-	// This is primarily used to feed the debug camera if need be.
-	if (nullptr != camOverride)
+	// Debug camera?
+	if (nullptr != pDebugCam)
 	{
-		gWorld->SetCurrentUserCamera(camOverride);
+		s_pWorld->SetCurrentUserCamera(pDebugCam);
+		timeElapsed = 0.f; // Freeze world (apart from Rocket timing, obviously).
 	}
+
+	s_pWorld->Tick(timeElapsed);
 
 	return true;
 }
 
 void WorldRender() 
 {
-	// FIXME: hack, only pass metaballs object in scene's they're used to get drawn.
 	const double rocketRow = Rocket_GetRow();
 	const int sceneIdx = (int) sync_get_val(st_SceneIdx, rocketRow);
-	gWorld->Render(*s_sprites, ((SCENE_BLOBS == sceneIdx)||(SCENE_BLOBS2 == sceneIdx)) ? s_pMetaballs : nullptr); 
+
+	// FIXME: hack, only pass metaballs object in scenes they're used.
+	s_pWorld->Render(*s_sprites, ((SCENE_BLOBS == sceneIdx)||(SCENE_BLOBS2 == sceneIdx)) ? s_pMetaballs : nullptr); 
+}
+
+Pimp::World *GetWorld() 
+{ 
+	return s_pWorld; 
 }
 
 

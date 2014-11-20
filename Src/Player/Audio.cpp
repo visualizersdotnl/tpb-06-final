@@ -1,12 +1,9 @@
 
-// #include <Windows.h>
-#include <vector>
-#include <string>
+#include <Core/Platform.h>
 #include <Shared/assert.h>
-#include "../Libs/bass24/c/bass.h"
+#include <bass24/c/bass.h>
 #include "Audio.h"
-#include "SetLastError.h"
-#include "Demo.h" // for asset path
+#include "Content/Demo.h" // FIXME: for TPB-06 sample loads only
 
 static HSTREAM s_hMP3[3] = { 0 };
 static HFX s_hFX = 0;
@@ -87,25 +84,11 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 	s_hFX = BASS_ChannelSetFX(s_hMP3[0], BASS_FX_DX8_FLANGER, 1);
 	if (0 == s_hFX)
 	{
-		SetLastError("Can't enable DirectX 8.x sound effect on our MP3 through BASS.");
+		SetLastError("Can't enable DirectX 8 sound effect on our MP3 through BASS.");
 		return false;
 	}
 
-	BASS_DX8_FLANGER fxParams;
-	fxParams.fWetDryMix = 0.f; // 0 = silent, 100 = wet
-	fxParams.fDepth = 100.f;
-	fxParams.fFeedback = -50.f;
-	fxParams.fFrequency = 0.25f; // upwards of 6 is cool
-	fxParams.lWaveform = 1; // Sine
-	fxParams.fDelay = 2.f;
-	fxParams.lPhase = BASS_DX8_PHASE_ZERO;
-
-	if (FALSE == BASS_FXSetParameters(s_hFX, &fxParams))
-	{
-		int errCode = BASS_ErrorGetCode();
-		ASSERT(0);
-	}
-
+	Audio_FlangerMP3(0.25f, 6.f);
 
 	// soundtrack must loop for Rocket (well not really, but it's convenient in editing)
 //	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
