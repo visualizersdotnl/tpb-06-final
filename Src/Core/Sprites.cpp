@@ -7,15 +7,13 @@
 #include "Shaders/Shader_Sprites.h"
 #include "Configuration.h"
 
-// FIXME: remove dependency and get info from D3D
-#include "../Player/Settings.h"
-
 namespace Pimp
 {
 	const unsigned int kMaxSprites = 4096;
 
-	Sprites::Sprites() :
-		pMapped(nullptr)
+	Sprites::Sprites(float vResX, float vResY) :
+		vResX(vResX), vResY(vResY)
+,		pMapped(nullptr)
 ,		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites))
 ,		effectTechnique(&effect, "Sprites")
 ,		effectPassWrap(&effectTechnique, "Wrap")
@@ -59,13 +57,11 @@ namespace Pimp
 		delete [] signature;
 	}
 
-	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle)
+	inline const Vector3 Rotate(const Vector2 &position, const Vector2 &pivot, float angle, float aspectRatio)
 	{
-		// to convert back, as we get coordinates on X in [-aspectRatio, aspectRatio]
-		const float aspectRatio = PIMPPLAYER_RENDER_ASPECT_RATIO;
-
 		if (0.f == angle)
 		{
+			// use aspectRatio to convert back, as we get coordinates on X in [-aspectRatio, aspectRatio]
 			return Vector3(position.x/aspectRatio, position.y, 1.f);
 		}
 		else
@@ -105,44 +101,44 @@ namespace Pimp
 
 		pDest = pMapped + curMappedVtx;
 
-		// FIXME: transform from top-left aligned 1920*1080 to semi-homogenous (X is aspect ratio adjusted) space,
-		//        transformed to true homogenous by Rotate() above
-		const float aspectRatio = PIMPPLAYER_RENDER_ASPECT_RATIO;
-		const float adjTopLeftX = -aspectRatio + (topLeft.x/1920.f)*aspectRatio*2.f;
-		const float adjTopLeftY = 1.f - (topLeft.y/1080.f)*2.f;
+		// transform from top-left aligned vResX*vResY to semi-homogenous (X is aspect ratio adjusted) space,
+		// transformed to true homogenous by Rotate() above
+		const float aspectRatio = vResX/vResY;
+		const float adjTopLeftX = -aspectRatio + (topLeft.x/vResX)*aspectRatio*2.f;
+		const float adjTopLeftY = 1.f - (topLeft.y/vResY)*2.f;
 		const Vector2 adjTopLeft(adjTopLeftX, adjTopLeftY);
-		const Vector2 adjSize((size.x/1920.f)*aspectRatio*2.f, -size.y/1080.f*2.f);
+		const Vector2 adjSize((size.x/vResX)*aspectRatio*2.f, -size.y/vResY*2.f);
 		const Vector2 bottomRight = adjTopLeft + adjSize;
 		const Vector2 quadPivot(adjTopLeft.x + adjSize.x*0.5f, adjTopLeft.y + adjSize.y*0.5f);
 		const unsigned int ARGB = vertexColor;
 
 		// triangle 1: bottom right
-		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 1: bottom left
-		pDest->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(adjTopLeft.x, bottomRight.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(0.f, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 1: top left
-		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(0.f, 0.f)+uvScroll;
 		++pDest;
 		// triangle 2: bottom right
-		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(bottomRight.x, bottomRight.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(1.f*uvTile.x, 1.f*uvTile.y)+uvScroll;
 		++pDest;
 		// triangle 2: top left
-		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(adjTopLeft.x, adjTopLeft.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(0.f, 0.f)+uvScroll;
 		++pDest;
 		// triangle 2: top right
-		pDest->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ);
+		pDest->position = Rotate(Vector2(bottomRight.x, adjTopLeft.y), quadPivot, rotateZ, aspectRatio);
 		pDest->ARGB = ARGB;
 		pDest->UV = Vector2(1.f*uvTile.x, 0.f)+uvScroll;
 		++pDest;

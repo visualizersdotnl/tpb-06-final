@@ -53,7 +53,7 @@ namespace Pimp
 		};
 
 	public:
-		Sprites();
+		Sprites(float vResX, float vResY);
 		~Sprites() {}
 
 		// add post-scene sprite
@@ -137,6 +137,8 @@ namespace Pimp
 		void DrawSprites()           { Flush(sprites);   }
 
 	private:
+		const float vResX, vResY;
+
 		// FIXME: Simple combined VB & layout container, expose as a global object?
 		class VertexBuffer
 		{

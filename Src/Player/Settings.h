@@ -13,6 +13,10 @@
 // For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
 #define PIMPPLAYER_RENDER_ASPECT_RATIO 16.f/9.f
 
+// Virtual resolution for sprite rendering (should match PIMPPLAYER_ASPECT_RATIO).
+const float PIMPPLAYER_SPRITE_RES_X = 1920.f;
+const float PIMPPLAYER_SPRITE_RES_Y = 1080.f;
+
 // Windowed (dev. only) settings.
 const bool PIMPPLAYER_WINDOWED_DEV = true;
 

@@ -412,7 +412,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_defaultXform->SetTranslation(Vector3(0.f, 0.f, 4.f));
 
 	// Sprite batcher.
-	s_sprites = new Pimp::Sprites();
+	s_sprites = new Pimp::Sprites(PIMPPLAYER_SPRITE_RES_X, PIMPPLAYER_SPRITE_RES_Y);
 
 	// Metaballs.
 	s_pMetaballs = new Pimp::Metaballs();
