@@ -138,63 +138,71 @@ namespace Pimp
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
-		// Clear
+		// FIXME: clear entire back buffer here?
+
+		// Scene render target is in adjusted size
+		gD3D->SetAdjViewport();
+
+		// Clear scene target
 		postProcess->Clear(); 
 
-		// Bind render target(s)
+		// Bind scene target
 		postProcess->BindForRenderScene();
-
-		// Disable depth stencil
-		gD3D->UseDepthStencil(false);
-
-		// Prepare all sprites to be drawn
-		sprites.PrepareToDraw();
-
-		// Draw background sprite
-		sprites.DrawBackgroundSprites();
-
-		// Bind screen quad VB for first pass
-		screenQuadVertexBuffer->Bind();
-
-		// Bind camera
-		if (currentCamera != NULL)
-			currentCamera->Bind();
-
-		// Render our scene to a single sceneColor (? -> FIXME) FP16 RT
-		if (scenes.IsValidIndex(currentSceneIndex) && 
-			scenes[currentSceneIndex] != NULL)
 		{
-			scenes[currentSceneIndex]->Render(currentCamera);
-		}
-
-		// Draw metaballs? (FIXME?)
-		if (nullptr != pMetaballs)
-		{
-			// Clear & enable depth stencil
-			gD3D->UseDepthStencil(true);
-			gD3D->ClearDepthStencil();
-
-			pMetaballs->Draw(currentCamera);
-
 			// Disable depth stencil
 			gD3D->UseDepthStencil(false);
+
+			// Prepare all sprites to be drawn
+			sprites.PrepareToDraw();
+
+			// Draw background sprites
+			sprites.DrawBackgroundSprites();
+
+			// Bind screen quad VB for first pass
+			screenQuadVertexBuffer->Bind();
+
+			// Bind camera
+			if (currentCamera != NULL)
+				currentCamera->Bind();
+
+			// Render our scene to a single sceneColor (? -> FIXMEM, ask Glow) FP16 RT
+			if (scenes.IsValidIndex(currentSceneIndex) && 
+				scenes[currentSceneIndex] != NULL)
+			{
+				scenes[currentSceneIndex]->Render(currentCamera);
+			}
+
+			// Draw metaballs? (FIXME?)
+			if (nullptr != pMetaballs)
+			{
+				// Clear & enable depth stencil
+				gD3D->UseDepthStencil(true);
+				gD3D->ClearDepthStencil();
+
+				pMetaballs->Draw(currentCamera);
+
+				// Disable depth stencil
+				gD3D->UseDepthStencil(false);
+			}
 		}
 
 		// Bind screen quad VB for RenderPostProcess()
 		screenQuadVertexBuffer->Bind();
 
-		// Draw posteffects
+		// Combine all posteffects to back buffer
 		postProcess->RenderPostProcess();
 
-		// ** At this point, the back buffer will be bound **
+		// ** At this point, the back buffer will be bound  **
 
-		// Draw sprite in adjusted homogenous coordinates (FIXME)
-		gD3D->SetVP(true);
-		{
-			// Flush (draw & clear queue) the sprites
-			sprites.DrawSprites();
-		}
-		gD3D->SetVP(false);
+		// Set adjusted back buffer viewport for spritess
+//		gD3D->SetBackAdjViewport();
+		// ^^ Already done by PostProcess::RenderPostProcess()
+
+		// Flush (draw & clear queue) the sprites
+		sprites.DrawSprites();
+
+		// Set full back buffer viewport
+		gD3D->SetBackViewport();
 
 		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);

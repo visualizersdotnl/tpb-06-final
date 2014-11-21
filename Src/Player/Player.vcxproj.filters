@@ -4,9 +4,6 @@
     <FxCompile Include="..\..\Content\assets\shaders\UserPosteffect.fx">
       <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\Global</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Content\assets\shaders\Scene_Empty.fx">
-      <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Content\assets\shaders\Scene_Knot.fx">
       <Filter>/Content\Shaders %28&lt;root&gt;/Content/assets%29\TPB-06</Filter>
     </FxCompile>
@@ -101,9 +98,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Stub</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Stub</Filter>
-    </ClInclude>
     <ClInclude Include="Content\Shafts.h">
       <Filter>/Content\Parts</Filter>
     </ClInclude>
@@ -137,6 +131,7 @@
     <ClInclude Include="AutoShaderReload.h">
       <Filter>Helper</Filter>
     </ClInclude>
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">

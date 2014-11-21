@@ -140,9 +140,6 @@ bool Metaballs::Initialize()
 	delete [] signature;
 
 	// Get shader constant indices.
-	int varIndexRenderScale = effect.RegisterVariable("renderScale", true);
-	const Vector2& visible_area = gD3D->GetRenderScale(); // Fixed
-	effect.SetVariableValue(varIndexRenderScale, visible_area);
 	varIndexTextureMap = effect.RegisterVariable("textureMap", true);
 	varIndexProjMap = effect.RegisterVariable("projMap", true);
 	varIndexViewProjMatrix = effect.RegisterVariable("viewProjMatrix", true);
@@ -262,14 +259,12 @@ void Metaballs::Draw(Camera* camera)
 	effect.SetVariableValue(varIndexProjMap, projMap->GetShaderResourceView());
 	effect.SetVariableValue(varIndexViewProjMatrix, *camera->GetViewProjectionMatrixPtr());	
 	effect.SetVariableValue(varIndexWorldMatrix, worldTrans->GetLocalTransform());
-	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed()); // *
+	effect.SetVariableValue(varIndexWorldMatrixInv, worldTrans->GetLocalTransform().Transposed());
 	effect.SetVariableValue(varIndexShininess, shininess);
 	effect.SetVariableValue(varIndexOverbright, overbright);
 	effect.SetVariableValue(varIndexProjScroll, Vector2(projScrollU, projScrollV));
 	effect.SetVariableValue(varIndexRim, rim);
 	effectPass.Apply();
-
-	// * A transpose serves just as well for an orthogonal matrix.
 
 	// Kick off.
 	gD3D->SetBlendMode(D3D::BlendMode::BM_None);

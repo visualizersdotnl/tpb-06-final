@@ -29,16 +29,17 @@ namespace Pimp
 		void ClearDepthStencil();
 		void Flip();
 
-		// FIXME: change function name
-		void SetVP(bool);
+		void SetBackViewport();    // Full back buffer viewport (screen resolution).
+		void SetBackAdjViewport(); // Ratio adjusted viewport centered on back buffer.
+		void SetAdjViewport();     // Clean adjusted viewport.
 
 		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
 		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
 
+		// Buffer binds
 		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
 		void BindIndexBuffer(ID3D10Buffer* buffer);
 		void BindInputLayout(ID3D10InputLayout* layout);
-
 		void BindBackbuffer(DepthStencil* depth);
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
@@ -75,15 +76,10 @@ namespace Pimp
 			ID3D10Texture2D* source,
 			DXGI_FORMAT format);
 
-		void GetFullViewportSize(int* width, int* height);
+		void GetAdjViewportSize(int* width, int* height);
 		
 		void UseDepthStencil(bool enabled);
 		DepthStencil* GetDefaultDepthStencil() const;
-
-		const Vector2& GetRenderScale() const 
-		{ 
-			return renderScale;
-		}
 
 		RenderTarget* GetRenderTargetBackBuffer() const
 		{
@@ -108,8 +104,6 @@ namespace Pimp
 		Texture2D *GetWhiteTex() { return pWhiteTex; }
 
 	private:
-		int viewWidth, viewHeight;
-
 		// These are supplied by host on construction, so don't release them!
 		ID3D10Device1* device;
 		IDXGISwapChain* swapchain;
@@ -121,12 +115,14 @@ namespace Pimp
 		ID3D10DepthStencilState* depthStencilState[2]; // See D3D.cpp
 		ID3D10BlendState* blendStates[MAX_BlendMode];
 		Texture2D *pWhiteTex;
-
-		// Scale (XY) to render with. Includes aspect ratio correction (letterboxing).
-		Vector2 renderScale; 
 		
-		// Full and aspect ratio adjusted view port.
-		D3D10_VIEWPORT m_fullVP, m_adjVP;
+		// For aspect ratio correction (FIXME: should be obsolete at some point).
+		Vector2 renderScale; 
+
+		// Viewports.		
+		D3D10_VIEWPORT backVP;    // Full-size back buffer viewport.
+		D3D10_VIEWPORT backAdjVP; // Aspect-ratio adjusted back buffer viewport (with offsets).
+		D3D10_VIEWPORT adjVP;     // Aspect-ratio adjusted full viewport.
 	};
 
 	extern D3D* gD3D;

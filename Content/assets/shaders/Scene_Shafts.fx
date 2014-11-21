@@ -39,7 +39,6 @@ cbuffer paramsOnlyOnce
 {
 	float4x4 viewInvMatrix;
 	float sceneRenderLOD = 1;	
-	float2 quadScaleFactor = float2(1,1);			// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1)
 	
 	float FOV = 0.7f;
 
@@ -65,12 +64,7 @@ VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
 
-
-	output.screenPos = float4(input.position.xy * quadScaleFactor  * float2(1,1.8) * sceneRenderLOD, 0, 1);
-//	output.rayDir = 
- //   	mul(float4(input.position.xy, 0.0, 0.0), viewInvMatrix) * FOV +
-//		-viewInvMatrix._31_32_33_34; // -forward vector
-	
+	output.screenPos = float4(input.position.xy * float2(1,1.8) * sceneRenderLOD, 0, 1);
 	output.rayDir = float4(input.position.xy, 0.0, 0.0);
 	
 	return output;

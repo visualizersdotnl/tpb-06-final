@@ -3,9 +3,8 @@
 // to some "allowed" range.
 #define MAX_FILTER_COLOR 4.0f
 
-
+// Default is/was 15.
 #define NUM_BLOOMBLUR_SAMPLES 15
-
 
 struct VSInput
 {
@@ -15,6 +14,7 @@ struct VSInput
 struct VSOutput
 {
 	float4 screenPos : SV_Position;
+	float2 uv : TEXCOORD0;
 };
 
 struct PSOutput
@@ -24,35 +24,31 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
+	// Bloom parameters.
 	float4 bloomGatherSamples[2];
 	float4 bloomBlurSamples[NUM_BLOOMBLUR_SAMPLES];
 	float bloomBlurWeights[NUM_BLOOMBLUR_SAMPLES];
 	float2 bloomBlurPixelDir;
 
-	float4 screenSizeInv; // conversion scale (XY) and offset (ZW) to convert from screen buffer's pixels to "rendered" screen buffer texels (takes sceneRenderLOD into account)
-	float2 filterSizeInv; // conversion scale (XY) to convert from filter buffer's pixels to filter buffer's texels. (just the inv of the size)
-	float4 filterPixelsToScreenUV; 
-	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
-	
-	float motionBlurFrameWeight; // weight of current frame
+	// Inverse render target size (XY) plus homogenous LOD UV adjustment (ZW).
+	float4 screenSizeInv;
 
+	// Inverse filter buffer size.
+	float2 filterSizeInv; 
+	
+	// Weight of current frame.
+	float motionBlurFrameWeight; 
+
+	// Loading bar progress (drawn if > 0).
 	float loadProgress = 0;	
 };
 
-Texture2D loadingTexture; // 1920*1080 16:9
 
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
-	output.screenPos = float4(input.position.xy * renderScale, 0, 1);
-	return output;
-}
-
-VSOutput MainVS_Combine(VSInput input)
-{ 
-	VSOutput output;
-
-	output.screenPos = float4(input.position.xy * renderScale, 0, 1);
+	output.screenPos = float4(input.position.xy, 0, 1);
+	output.uv = input.position.xy * float2(0.5f, -0.5f) + 0.5f;
 	return output;
 }
 
@@ -79,7 +75,7 @@ SamplerState samplerFilter
 PSOutput MainPS_Gather(VSOutput input)
 {
 	PSOutput result;
-	
+
 	float2 uv = input.screenPos.xy * filterSizeInv;
 
 	float3 averageBloom = 0; 
@@ -104,7 +100,7 @@ PSOutput MainPS_Gather(VSOutput input)
 PSOutput MainPS_Blur(VSOutput input)
 {
 	PSOutput result;
-	
+
 	float2 uv = input.screenPos.xy * filterSizeInv;
 
 	float4 totalSum = 0;
@@ -123,40 +119,34 @@ PSOutput MainPS_Blur(VSOutput input)
 PSOutput MainPS_Combine(VSOutput input)
 {
 	PSOutput result;
-	
-	float2 uv = input.screenPos.xy * screenSizeInv.xy + screenSizeInv.zw;
+
+	float2 uv = input.uv;
 
 	float4 color = bufferSceneColor.Sample(samplerSceneColor, uv);
 	color += bufferFilter.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;	
+	result.color = color;
 	
-
-	
-	result.color = color;	
-
-//	if (loadProgress > 0)
-//	{
-//		result.color = loadingTexture.SampleLevel(samplerSceneColor, uv, 0);
-//	}
-	
-	if (loadProgress > 0 && 
-		uv.y >= 0.40 && uv.y <= 0.60 && 
-		uv.x >= 0.08 && uv.x <= 0.92)
+	if (loadProgress > 0)
 	{
-		float v;
-
-		if (uv.x <= 0.09 || uv.x >= 0.91 || uv.y <= 0.418 || uv.y >= 0.582)
-			v = 1.0;
-		else if (uv.y >= 0.436 && uv.y <= 0.564 && 
-			uv.x >= 0.10 && uv.x < 0.10+0.8*loadProgress)
+		// The Inque loading bar :)
+		if (uv.y >= 0.40 && uv.y <= 0.60 && uv.x >= 0.08 && uv.x <= 0.92)
 		{
-			float k = (1.0-uv.x);
-			float r = sin(k * 120.0);
-			v = (r > (0.8-loadProgress)) ? 1.0 : 0.0;
-		}
-		else 
-			v = 0.0;
+			float v;
 
-		result.color += float4(v,v,v,1);	
+			if (uv.x <= 0.09 || uv.x >= 0.91 || uv.y <= 0.418 || uv.y >= 0.582)
+				v = 1.0;
+			else if (uv.y >= 0.436 && uv.y <= 0.564 && 
+				uv.x >= 0.10 && uv.x < 0.10+0.8*loadProgress)
+			{
+				float k = (1.0-uv.x);
+				float r = sin(k * 120.0);
+				v = (r > (0.8-loadProgress)) ? 1.0 : 0.0;
+			}
+			else 
+				v = 0.0;
+
+			result.color += float4(v,v,v,1);	
+		}
 	}
 	
 	return result;
@@ -167,13 +157,10 @@ PSOutput MainPS_MotionBlur(VSOutput input)
 {
 	PSOutput result;
 	
-	// Remove our sceneRenderLod factor from the screensize; don't take that into account here
-	float sceneRenderLod = 1-(screenSizeInv.z*2);
-	float2 uv = input.screenPos.xy * (screenSizeInv.xy/sceneRenderLod);
-
+	float2 uv = input.uv; // No LOD.
 	float4 sceneColor = bufferSceneColor.Sample(samplerSceneColor, uv);
-
 	result.color = float4(sceneColor.rgb, motionBlurFrameWeight);	
+
 	return result;
 }
 
@@ -194,7 +181,7 @@ technique10 PostFX
 	
 	pass Combine
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS_Combine()) );
+		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Combine()) );
 	}	
 

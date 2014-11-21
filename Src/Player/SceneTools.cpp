@@ -97,10 +97,16 @@ void DrawLoadProgress(Pimp::World &world, float progress)
 	if (progress > 1.f)
 		progress = 1.f;
 
+	Pimp::gD3D->SetBackViewport();
+	Pimp::gD3D->ClearBackBuffer();
+
+	Pimp::gD3D->SetAdjViewport();
 	Pimp::PostProcess* postProcess = world.GetPostProcess();
 	postProcess->SetLoadProgress(progress);
 	postProcess->Clear();
 	postProcess->BindForRenderScene();
 	postProcess->RenderPostProcess();
+
+	Pimp::gD3D->SetBackViewport();
 	Pimp::gD3D->Flip();
 }

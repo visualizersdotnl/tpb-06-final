@@ -38,9 +38,6 @@ namespace Pimp
 		// Sets the weight of the current frame.
 		void SetMotionBlurFrameWeight(float w);
 
-		// Set background loading texture
-		void SetLoadingTexture(Texture2D *texture);
-
 	private:
 
 		void SetParameters();
@@ -62,7 +59,6 @@ namespace Pimp
 
 		int varIndexScreenSizeInv;
 		int varIndexFilterSizeInv;
-		int varIndexRenderScale;
 		int varIndexBufferSceneColor;
 		int varIndexBufferFilter;
 		int varIndexBloomGatherSamples;
@@ -70,15 +66,10 @@ namespace Pimp
 		int varIndexBloomBlurWeights;
 		int varIndexBloomBlurPixelDir;
 		int varIndexMotionBlurWeight;
-
-		int varIndexLoadProgress; // loadProgress
-		int varIndexLoadTexture; // 1920*1080 background texture
-		Texture2D *loadingTexture;
+		int varIndexLoadProgress; 
 
 		Vector2 bloomBlurDirH;
 		Vector2 bloomBlurDirV;
-
-		ScreenQuadVertexBuffer *quadVB;
 
 		Material* userPostEffect;
 		float w;

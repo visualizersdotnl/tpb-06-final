@@ -70,7 +70,6 @@ namespace Pimp
 		}
 		else
 		{
-			const Vector2 renderScale = gD3D->GetRenderScale();
 			const Matrix4 rotZ = CreateMatrixRotationZ(angle);
 			const Vector2 adjPos = position - pivot;
 			Vector3 rotPos = rotZ.TransformCoord(Vector3(adjPos.x, adjPos.y, 1.f));

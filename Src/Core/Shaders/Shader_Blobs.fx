@@ -18,7 +18,6 @@ struct VSOutput
 
 cbuffer paramsOnlyOnce
 {
-	float2 renderScale; // How much of our screen we render. Used for limiting the vertical render range when using a different aspect ratio. (1,1 = whole screen)
 	float4x4 viewProjMatrix;
 	float4x4 mWorld;
 	float4x4 mWorldInv;
@@ -69,7 +68,7 @@ VSOutput MainVS(VSInput input)
 	output.texCoordProj = worldPos.xy + projScroll;
 
 	output.normal = worldNormal;
-	output.view = normalize(viewProjMatrix._41_42_43 - worldPos);
+	output.view = normalize(viewProjMatrix._41_42_43 - worldPos.xyz);
 
 	return output;
 }

@@ -35,7 +35,6 @@ namespace Pimp
 		Balls::BoundBalls boundBalls;
 #endif
 
-		int varIndexScaleFactor;			// scale factor to render with (XY). used for aspect ratio correction.
 		int varIndexViewInvMatrix;			// inv-view matrix
 		int varIndexOverlayOpacity;			// overlay opacity
 		int varIndexOverlayProgress;		// progress of the overlay (0..1)

@@ -24,8 +24,8 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	HRESULT hr;
 
 	const Configuration::DisplayMode& mode = Configuration::Instance()->GetDisplayMode();
-	viewWidth = mode.width;
-	viewHeight = mode.height;
+	const DWORD viewWidth = mode.width;
+	const DWORD viewHeight = mode.height;
 
 #ifdef D3D_DISABLE_SPECIFIC_WARNINGS
 	ID3D10InfoQueue* infoQueue;
@@ -45,13 +45,13 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	infoQueue->AddStorageFilterEntries(&filter);  
 #endif
 
-	// Retrieve backbuffer.
+	// Retrieve backbuffer
 	ID3D10Texture2D* backbuffer;
 	hr = swapchain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
 	D3D_ASSERT(hr);
 	ASSERT(backbuffer != NULL);
 
-	// Create render target view for backbuffer.
+	// Create render target view for backbuffer
 	ID3D10RenderTargetView* renderTargetViewBackbuffer;
 	hr = device->CreateRenderTargetView(backbuffer, NULL, &renderTargetViewBackbuffer);
 	D3D_ASSERT(hr);
@@ -59,7 +59,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 
 	renderTargetBackBuffer = new RenderTarget(PIMP_BACKBUFFER_FORMAT_GAMMA, backbuffer, renderTargetViewBackbuffer, NULL);
 
-	// Resort to triangle lists.
+	// Resort to triangle lists
 	device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Rasterizer state.
@@ -67,20 +67,74 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	memset(&rasterDesc, 0, sizeof(rasterDesc));
 	rasterDesc.FillMode = D3D10_FILL_SOLID;
 	rasterDesc.CullMode = D3D10_CULL_BACK;
-	//rasterDesc.FrontCounterClockwise = FALSE;
-	//rasterDesc.DepthBias = 0;
-	//rasterDesc.DepthBiasClamp = 0;
-	//rasterDesc.SlopeScaledDepthBias = 0;
+//	rasterDesc.FrontCounterClockwise = FALSE;
+//	rasterDesc.DepthBias = 0;
+//	rasterDesc.DepthBiasClamp = 0;
+//	rasterDesc.SlopeScaledDepthBias = 0;
 	rasterDesc.DepthClipEnable = TRUE;
-	//rasterDesc.ScissorEnable = FALSE;
+//	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.MultisampleEnable = TRUE;
-	//rasterDesc.AntialiasedLineEnable = FALSE;
+//	rasterDesc.AntialiasedLineEnable = FALSE;
 	
 	rasterizerState = NULL;
 	hr = device->CreateRasterizerState(&rasterDesc, &rasterizerState);
 	D3D_ASSERT(hr);
 
 	device->RSSetState(rasterizerState);
+
+	// Define back buffer viewport
+	backVP.TopLeftX = 0;
+	backVP.TopLeftY = 0;
+	backVP.Width = viewWidth;
+	backVP.Height = viewHeight;
+	backVP.MinDepth = 0.f;
+	backVP.MaxDepth = 1.f;
+
+	// Calculate aspect ratio adjusted viewports & render scale
+	const float fullAspectRatio = (float) backVP.Width / backVP.Height;
+	const float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
+
+	unsigned int xResAdj, yResAdj;
+	if (fullAspectRatio < renderAspectRatio)
+	{
+		const float scale = fullAspectRatio / renderAspectRatio;
+		renderScale.x = 1.f;
+		renderScale.y = scale;
+		xResAdj = backVP.Width;
+		yResAdj = (unsigned int) (backVP.Height*scale);
+	}
+	else if (fullAspectRatio > renderAspectRatio)
+	{
+		const float scale = renderAspectRatio / fullAspectRatio;
+		renderScale.x = scale;
+		renderScale.y = 1.f;
+		xResAdj = (unsigned int) (backVP.Width*scale);
+		yResAdj = backVP.Height;
+	}
+	else // ==
+	{
+		xResAdj = backVP.Width;
+		yResAdj = backVP.Height;
+		renderScale = Vector2(1.f, 1.f);
+	}
+
+	// Adjusted viewport centered on back buffer (letterboxing)
+	backAdjVP.Width = xResAdj;
+	backAdjVP.Height = yResAdj;
+	backAdjVP.TopLeftX = (backVP.Width-xResAdj)/2;
+	backAdjVP.TopLeftY = (backVP.Height-yResAdj)/2;
+	backAdjVP.MinDepth = 0.f;
+	backAdjVP.MaxDepth = 1.f;
+
+	// Plain adjusted viewport
+	adjVP.Width = xResAdj;
+	adjVP.Height = yResAdj;
+	adjVP.TopLeftX = 0;
+	adjVP.TopLeftY = 0;
+	adjVP.MinDepth = 0.f;
+	adjVP.MaxDepth = 1.f;
+
+	device->RSSetViewports(1, &backVP);
 
 	// Create depth-stencil
 	depthStencil = CreateDepthStencil(true);
@@ -89,13 +143,9 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	D3D10_DEPTH_STENCIL_DESC descDepthS[2];
 	memset(&descDepthS[0], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
 	memset(&descDepthS[1], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
-
-	// on
 	descDepthS[0].DepthEnable = true;
 	descDepthS[0].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
 	descDepthS[0].DepthFunc = D3D10_COMPARISON_LESS;
-
-	// off
 	descDepthS[1].DepthEnable = false;
 	descDepthS[1].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
 	descDepthS[1].DepthFunc = D3D10_COMPARISON_ALWAYS;
@@ -107,40 +157,11 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 		D3D_ASSERT(hr);
 	}
 
-	// DS off by default.
+	// Depthstencil off by default
 	UseDepthStencil(false);
 
-	// Bind our backbuffer and depth stencil by default
+	// Bind backbuffer and depth stencil as primary RT
 	BindBackbuffer(depthStencil);
-
-	// Full viewport
-	m_fullVP.TopLeftX = 0;
-	m_fullVP.TopLeftY = 0;
-	m_fullVP.Width = viewWidth;
-	m_fullVP.Height = viewHeight;
-	m_fullVP.MinDepth = 0.f;
-	m_fullVP.MaxDepth = 1.f;
-
-	const float fullAspectRatio = (float) m_fullVP.Width / m_fullVP.Height;
-	const float desired_aspect_ratio_on_screen = Configuration::Instance()->GetRenderAspectRatio();
-	const float renderableAmount = fullAspectRatio / desired_aspect_ratio_on_screen;
-
-	unsigned int xResAdj, yResAdj;
-
-	xResAdj = m_fullVP.Width;
-	yResAdj = (unsigned int) (m_fullVP.Height*renderableAmount);
-
-	renderScale.x = 1.0f;
-	renderScale.y = renderableAmount;
-
-	m_adjVP.Width = xResAdj;
-	m_adjVP.Height = yResAdj;
-	m_adjVP.TopLeftX = (m_fullVP.Width-xResAdj)/2;
-	m_adjVP.TopLeftY = (m_fullVP.Height-yResAdj)/2;
-	m_adjVP.MinDepth = 0.f;
-	m_adjVP.MaxDepth = 1.f;
-
-	device->RSSetViewports(1, &m_fullVP);
 
 	// Create blend states
 	//
@@ -212,7 +233,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	memset(alphaPreMulDesc.RenderTargetWriteMask, D3D10_COLOR_WRITE_ENABLE_ALL, 8*sizeof(UINT8));
     device->CreateBlendState(&alphaPreMulDesc, &blendStates[BM_AlphaPreMul]);
 
-	// create default (white) texture
+	// Create default (white) texture
 	{
 		D3D10_TEXTURE2D_DESC texDesc;
 		texDesc.Width = 4;
@@ -268,14 +289,15 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 	device->ClearRenderTargetView(renderTarget, RGBA);
 }
 
-void D3D::SetVP(bool adjOrFull)
+void D3D::ClearBackBuffer()
 {
-	if (adjOrFull)
-		device->RSSetViewports(1, &m_adjVP);
-	else
-		device->RSSetViewports(1, &m_fullVP);
+	Clear(renderTargetBackBuffer->GetRenderTargetView());
 }
 
+void D3D::ClearDepthStencil()
+{
+	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0, 0 );
+}
 
 void D3D::Flip()
 {
@@ -283,6 +305,20 @@ void D3D::Flip()
 	D3D_ASSERT(hr);
 }
 
+void D3D::SetBackViewport()    
+{ 
+	device->RSSetViewports(1, &backVP); 
+}
+
+void D3D::SetBackAdjViewport() 
+{ 
+	device->RSSetViewports(1, &backAdjVP); 
+}
+
+void D3D::SetAdjViewport() 
+{ 
+	device->RSSetViewports(1, &adjVP); 
+}
 
 ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
@@ -416,8 +452,8 @@ RenderTarget* D3D::CreateRenderTarget( int viewportShrinkFactor, DXGI_FORMAT for
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 
-	desc.Width = viewWidth/viewportShrinkFactor;
-	desc.Height = viewHeight/viewportShrinkFactor;
+	desc.Width = adjVP.Width/viewportShrinkFactor;
+	desc.Height = adjVP.Height/viewportShrinkFactor;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -463,8 +499,8 @@ ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 
-	desc.Width = viewWidth;
-	desc.Height = viewHeight;
+	desc.Width = adjVP.Width;
+	desc.Height = adjVP.Height;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -493,15 +529,10 @@ void D3D::BindBackbuffer(DepthStencil* depth)
 	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : NULL);
 }
 
-void D3D::GetFullViewportSize(int* width, int* height)
+void D3D::GetAdjViewportSize(int* width, int* height)
 {
-	*width = viewWidth;
-	*height = viewHeight;
-}
-
-void D3D::ClearBackBuffer()
-{
-	Clear(renderTargetBackBuffer->GetRenderTargetView());
+	*width = adjVP.Width;
+	*height = adjVP.Height;
 }
 
 void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )
@@ -513,8 +544,8 @@ DepthStencil* D3D::CreateDepthStencil(bool multiSample)
 {
 	// Depth-stencil
 	D3D10_TEXTURE2D_DESC descDepth;
-	descDepth.Width = viewWidth;
-	descDepth.Height = viewHeight;
+	descDepth.Width = backVP.Width;
+	descDepth.Height = backVP.Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
 	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -559,12 +590,6 @@ void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
 	ID3D10RenderTargetView* view = pixels->GetRenderTargetView(sliceIndex);
 
 	device->OMSetRenderTargets(1, &view, NULL);
-}
-
-
-void D3D::ClearDepthStencil()
-{
-	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0, 0 );
 }
 
 
@@ -663,11 +688,10 @@ void D3D::SetBlendMode(BlendMode blendMode)
 
 bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* outCompiledEffectLength)
 {	
-	ID3DBlob* shader = NULL;
-	ID3DBlob* errors = NULL;
+	ID3DBlob* shader = nullptr;
+	ID3DBlob* errors = nullptr;
 
-	// from http://msdn.microsoft.com/en-us/library/windows/desktop/dd607324%28v=vs.85%29.aspx
-	HRESULT hr = D3DCompile(
+	const HRESULT hResult = D3DCompile(
 		effectAscii,
 		effectAsciiSize,
 		NULL, // name
@@ -675,15 +699,21 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 		NULL, // includes
 		NULL, // entrypoint
 		"fx_4_0", // target
-		D3DCOMPILE_OPTIMIZATION_LEVEL3|D3DCOMPILE_SKIP_VALIDATION, // flags
+		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, // flags
 		0, // effect compiler flags
 		&shader,
 		&errors);
 
-	char* _errors = (errors != NULL) ? (char*)errors->GetBufferPointer() : NULL;
-	D3D_ASSERT_MSG(hr, _errors);
-	if (hr != S_OK)
+	if (S_OK != hResult)
+	{
+		if (nullptr != errors)
+		{
+			char* errorMsg = reinterpret_cast<char*>(errors->GetBufferPointer());
+			D3D_ASSERT_MSG(hResult, errorMsg);
+		}
+
 		return false;
+	}
 
 	ASSERT(shader->GetBufferSize() > 0);
 	*outCompiledEffectBuffer = new unsigned char[shader->GetBufferSize()];
@@ -691,6 +721,7 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 	memcpy(*outCompiledEffectBuffer, (unsigned char*)shader->GetBufferPointer(), (unsigned int)shader->GetBufferSize());
 	*outCompiledEffectLength = (int)shader->GetBufferSize();
 
+	shader->Release();
 	return true;
 }
 

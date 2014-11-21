@@ -16,7 +16,6 @@ namespace Pimp
 		effectTechnique(&effect, "Default"),
 		effectPass(&effectTechnique, "Default"),
 		world(world),
-		varIndexScaleFactor(-1), 
 		varIndexViewInvMatrix(-1),
 		varIndexOverlayOpacity(0),
 		varIndexOverlayProgress(0),
@@ -38,16 +37,11 @@ namespace Pimp
 
 	void Material::InitParameters()
 	{
-		varIndexScaleFactor = effect.RegisterVariable("quadScaleFactor", false/*true*/);
 		varIndexViewInvMatrix = effect.RegisterVariable("viewInvMatrix", false/*true*/);
 		varIndexOverlayOpacity = effect.RegisterVariable("opacity", false);
 		varIndexSceneRenderLOD = effect.RegisterVariable("sceneRenderLOD", false);
 		varIndexSceneBuffer = effect.RegisterVariable("sceneBuffer", false);
 		varIndexOverlayProgress = effect.RegisterVariable("overlayProgress", false);
-
-		// Only set these once
-		if (varIndexScaleFactor >= 0)
-			effect.SetVariableValue(varIndexScaleFactor, gD3D->GetRenderScale());
 
 		if (varIndexSceneRenderLOD >= 0)
 			effect.SetVariableValue(varIndexSceneRenderLOD, Scene::GetSceneRenderLOD());

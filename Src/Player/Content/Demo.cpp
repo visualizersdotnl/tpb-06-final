@@ -22,7 +22,7 @@ inline DWORD AlphaToVtxColor(float alpha, unsigned int RGB = 0xffffff)
 }
 
 // Floating point random.
-// To be deprecated because it has very poor distribution.
+// FIXME: to be deprecated because it has very poor distribution.
 inline float randf(float range)
 {
 	return range * ((float) rand() / (float) RAND_MAX);
@@ -53,7 +53,7 @@ double Rocket_GetRow()
 
 #if !defined (SYNC_PLAYER)
 
-// Library required for Rocket.
+// Rocket uses sockets.
 #pragma comment(lib, "ws2_32.lib")
 
 void Rocket_Pause(void *, int bPause)
@@ -98,8 +98,7 @@ static Pimp::MaterialParameter *CreateDynShaderParam(
 	return newParam;
 }
 
-// @plek: Note, Rocket tracks do not have to be released individually, neither does my container.
-// Also as there's nothing to delete, using the copy constructor (w/ std::vector::push_back) is safe.
+// Important to know: this container owns none of it's pointers.
 class SyncTrack
 {
 public:

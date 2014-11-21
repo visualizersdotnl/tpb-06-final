@@ -5,7 +5,7 @@
 #include "Material.h"
 
 
-// Should match the number of samples from the postprocess.fx file
+// Should match the number of samples in the Shader_PostProcess.fx file
 #define POSTPROCESS_BLOOMBLUR_NUMSAMPLES 15
 
 // Scaledown factor for the filter buffer relative to the fullscreen buffer's size
@@ -21,9 +21,7 @@ PostProcess::PostProcess() :
 	passBloomBlur(&techniquePostFX, "Blur"),
 	passBloomCombine(&techniquePostFX, "Combine"),
 	passMotionBlurBlend(&techniquePostFX, "MotionBlur"),
-	userPostEffect(NULL),
-	loadingTexture(nullptr),
-	quadVB(nullptr)
+	userPostEffect(NULL)
 {
 	renderTargetSceneMS = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 	renderTargetSceneSingle = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
@@ -36,7 +34,6 @@ PostProcess::PostProcess() :
 	// Register variables
 	varIndexScreenSizeInv = effect.RegisterVariable("screenSizeInv", true);
 	varIndexFilterSizeInv = effect.RegisterVariable("filterSizeInv", true);
-	varIndexRenderScale = effect.RegisterVariable("renderScale", true);
 	varIndexBufferSceneColor = effect.RegisterVariable("bufferSceneColor", true);
 	varIndexBufferFilter = effect.RegisterVariable("bufferFilter", true);
 	varIndexBloomGatherSamples = effect.RegisterVariable("bloomGatherSamples", true);
@@ -45,19 +42,15 @@ PostProcess::PostProcess() :
 	varIndexBloomBlurPixelDir = effect.RegisterVariable("bloomBlurPixelDir", true);
 	varIndexLoadProgress = effect.RegisterVariable("loadProgress", true);
 	varIndexMotionBlurWeight = effect.RegisterVariable("motionBlurFrameWeight", true);
-	varIndexLoadTexture = effect.RegisterVariable("loadingTexture", true);
 
 	SetMotionBlurFrameWeight(1.0f);
 
 	SetParameters();
-
-//	quadVB = new ScreenQuadVertexBuffer(GetEffectPassBloomGather());
 }
 
 
 PostProcess::~PostProcess()
 {
-	delete quadVB;
 	delete renderTargetSceneMS;
 	delete renderTargetSceneSingle;
 	delete renderTargetSceneMotionBlurred;
@@ -78,20 +71,20 @@ void PostProcess::SetParameters()
 	float sceneRenderLod = Scene::GetSceneRenderLOD();
 
 	int w, h;
-	gD3D->GetFullViewportSize(&w, &h);
+	gD3D->GetAdjViewportSize(&w, &h);
 
-	// Also take our scene render lod into account.
-	// This maps the renderable part of our screen buffer to the whole screen quad.
-	Vector4 invScreenSize(
-		sceneRenderLod / (float)w, 
-		sceneRenderLod / (float)h,
+	// Inverse render target size (XY) plus homogenous LOD UV adjustment (ZW).
+	const Vector4 screenSizeInv(
+		sceneRenderLod / w, 
+		sceneRenderLod / h,
 		0.5f*(1.0f - sceneRenderLod),
 		0.5f*(1.0f - sceneRenderLod));
-	effect.SetVariableValue(varIndexScreenSizeInv, invScreenSize);
+	effect.SetVariableValue(varIndexScreenSizeInv, screenSizeInv);
 
-	Vector2 invFilterSize(
-		(float)POSTPROCESS_FILTER_SCALEDOWN / (float) w,
-		(float)POSTPROCESS_FILTER_SCALEDOWN / (float) h);
+	// Inverse filter buffer size.
+	const Vector2 invFilterSize(
+		POSTPROCESS_FILTER_SCALEDOWN / (float) w,
+		POSTPROCESS_FILTER_SCALEDOWN / (float) h);
 	effect.SetVariableValue(varIndexFilterSizeInv, invFilterSize);
 
 	effect.SetVariableValue(varIndexLoadProgress, 0.0f);
@@ -110,9 +103,6 @@ void PostProcess::RenderPostProcess()
 	// Resolve MS target to single sample
 	renderTargetSceneMS->ResolveTo(renderTargetSceneSingle);
 
-	const static Vector2 whole_screen_range(1,1);
-	effect.SetVariableValue(varIndexRenderScale, whole_screen_range);
-
 	// Apply motion blurring (just blend renderTargetSceneSingle on renderTargetSceneMotionBlurred)
 	gD3D->SetBlendMode(D3D::BM_AlphaBlend);
 	gD3D->BindRenderTarget(renderTargetSceneMotionBlurred, NULL);
@@ -121,54 +111,50 @@ void PostProcess::RenderPostProcess()
 	gD3D->DrawScreenQuad();
 	gD3D->SetBlendMode(D3D::BM_None);
 
+	RenderTarget* gatherSource;
 
-	RenderTarget* bloomGatherSource;
-
-	// Apply user post effect
 	if (userPostEffect != NULL)
 	{
+		// Apply user post effect
 		gD3D->BindRenderTarget(renderTargetSceneUserPostEffect, NULL);
 		userPostEffect->SetSceneBuffer(renderTargetSceneMotionBlurred->GetShaderResourceView());
-
 		userPostEffect->Bind(NULL);
 		gD3D->DrawScreenQuad();
 
-
-		bloomGatherSource = renderTargetSceneUserPostEffect;
+		gatherSource = renderTargetSceneUserPostEffect;
 	}
 	else
-	{
-		bloomGatherSource = renderTargetSceneMotionBlurred;
-	}
-
+		gatherSource = renderTargetSceneMotionBlurred;
 
 	// Gather bloom
 	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
-	effect.SetVariableValue(varIndexBufferSceneColor, bloomGatherSource->GetShaderResourceView());
+	effect.SetVariableValue(varIndexBufferSceneColor, gatherSource->GetShaderResourceView());
 	passBloomGather.Apply();	
 	gD3D->DrawScreenQuad();
 
-	// Blur pass 1
+	// Blur pass 1 (H)
 	gD3D->BindRenderTarget(renderTargetFilter[1], NULL);
 	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirH);
 	passBloomBlur.Apply();
 	gD3D->DrawScreenQuad();
 
-	// Blur pass 2
+	// Blur pass 2 (V)
 	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
 	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[1]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirV);
 	passBloomBlur.Apply();	
 	gD3D->DrawScreenQuad();
 
-	// Combine bloom results to back buffer
-	const Vector2& visible_area = gD3D->GetRenderScale();
-	effect.SetVariableValue(varIndexRenderScale, visible_area);
+	// Combine bloom results to back buffer:
 
+	// 1. Bind and clear entire back buffer
 	gD3D->BindBackbuffer(NULL);
+	gD3D->SetBackViewport();
 	gD3D->ClearBackBuffer();
 
+	// 2: Combine into adjusted viewport (letterboxed) back buffer
+	gD3D->SetBackAdjViewport();
 	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	passBloomCombine.Apply();	
 	gD3D->DrawScreenQuad();
@@ -182,7 +168,7 @@ void PostProcess::RenderPostProcess()
 void PostProcess::InitBloomGatherSamples()
 {
 	int w, h;
-	gD3D->GetFullViewportSize(&w, &h);
+	gD3D->GetAdjViewportSize(&w, &h);
 
 	Vector3 offsets[4];
 
@@ -275,10 +261,5 @@ void PostProcess::SetMotionBlurFrameWeight(float w)
 	effect.SetVariableValue(varIndexMotionBlurWeight, w);	
 }
 
-void PostProcess::SetLoadingTexture(Texture2D *texture) 
-{ 
-	loadingTexture = texture;
-	effect.SetVariableValue(varIndexLoadTexture, texture->GetShaderResourceView());
-}
 
 } // namespace

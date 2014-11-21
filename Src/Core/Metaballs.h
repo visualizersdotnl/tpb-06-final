@@ -53,11 +53,10 @@ namespace Pimp
 		bool isVisible;
 
 		Xform *worldTrans;
-		float shininess;
-		float overbright;
-
 		Texture2D *envMap, *projMap;
 		float projScrollU, projScrollV;
+		float shininess;
+		float overbright;
 		float rim;
 
 		__forceinline unsigned int GetEdgeTableIndex();

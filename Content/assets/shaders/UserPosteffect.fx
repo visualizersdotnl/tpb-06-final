@@ -6,8 +6,8 @@ struct VSInput
 
 struct VSOutput
 {
-	float2 normalizedPos : TEXCOORD0;
 	float4 screenPos : SV_Position;
+	float2 uv : TEXCOORD0;
 };
 
 struct PSOutput
@@ -19,13 +19,6 @@ cbuffer paramsOnlyOnce
 {
 	// Required by code.
 	float4x4 viewInvMatrix; 
-
-	float sceneRenderLOD = 1;		
-
-	// Scaling factor to render our full screen quad with a different aspect ratio (X=1, Y<=1).
-	float2 quadScaleFactor;
-
-	float opacity = 1;
 
 	// These are bound to a Rocket tracks.
 	float g_preSpriteFade; // 0 = 100%, 1 = white, -100 = completely black.
@@ -44,32 +37,33 @@ SamplerState samplerSceneBuffer
 };
 
 
-float rand(float2 co){
-    return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453);
-}
-
-
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
 
-	output.normalizedPos = input.position.xy;
-	output.screenPos = float4(input.position.xy * quadScaleFactor, 0, 1);
+	output.screenPos = float4(input.position.xy, 0, 1);
+	output.uv = input.position.xy * float2(0.5f, -0.5f) + 0.5f;
+
 	return output;
+
 }
 
+// Taken from a Shadertoy shader. Not that nice.
+float rand(float2 co){
+    return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453);
+}
 
 PSOutput MainPS(VSOutput input)
 {
 	PSOutput result;
 
-	// Screen UV in homogenous 2D [0,1].
-	float2 screenUV = input.normalizedPos*float2(0.5, -0.5) + (0.5).xx;
-	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, screenUV, 0);
+	// Sample scene buffer.
+	result.color = sceneBuffer.SampleLevel(samplerSceneBuffer, input.uv, 0);
 
 	// FIXME: this isn't exactly fantastic noise.	
-	result.color.xyz = lerp(result.color.xyz, rand(screenUV+g_sceneNoiseT.xx).xxx, g_sceneNoise);
-	
+	result.color.xyz = lerp(result.color.xyz, rand(input.uv+g_sceneNoiseT.xx).xxx, g_sceneNoise);
+
+	// Scene fade (before the top-layer sprites are flushed).	
 	result.color.xyz += g_preSpriteFade.xxx;
 
 	return result;
