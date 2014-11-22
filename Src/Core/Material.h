@@ -36,8 +36,6 @@ namespace Pimp
 #endif
 
 		int varIndexViewInvMatrix;			// inv-view matrix
-		int varIndexOverlayOpacity;			// overlay opacity
-		int varIndexOverlayProgress;		// progress of the overlay (0..1)
 		int varIndexSceneRenderLOD;			// scene render LOD. 1 = full screen, 0.5 = half size, 0.25 = quarter of screen, etc...
 		int varIndexSceneBuffer;			// scene buffer texture (only allowed in post effect material)
 
@@ -65,7 +63,6 @@ protected:
 
 		void RefreshParameters();
 
-		void SetOverlayOpacityAndProgress(float opacity, float progress, float timeSoFar);
 		void SetSceneBuffer(ID3D10ShaderResourceView* resourceView);
 
 		void SetBlendMode(D3D::Blend mode) { blendMode = mode; }

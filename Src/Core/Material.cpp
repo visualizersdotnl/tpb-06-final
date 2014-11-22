@@ -17,8 +17,6 @@ namespace Pimp
 		effectPass(&effectTechnique, "Default"),
 		world(world),
 		varIndexViewInvMatrix(-1),
-		varIndexOverlayOpacity(0),
-		varIndexOverlayProgress(0),
 		varIndexSceneRenderLOD(0),
 		varIndexSceneBuffer(0),
 		blendMode(D3D::BM_None),
@@ -37,11 +35,9 @@ namespace Pimp
 
 	void Material::InitParameters()
 	{
-		varIndexViewInvMatrix = effect.RegisterVariable("viewInvMatrix", false/*true*/);
-		varIndexOverlayOpacity = effect.RegisterVariable("opacity", false);
+		varIndexViewInvMatrix = effect.RegisterVariable("viewInvMatrix", false);
 		varIndexSceneRenderLOD = effect.RegisterVariable("sceneRenderLOD", false);
 		varIndexSceneBuffer = effect.RegisterVariable("sceneBuffer", false);
-		varIndexOverlayProgress = effect.RegisterVariable("overlayProgress", false);
 
 		if (varIndexSceneRenderLOD >= 0)
 			effect.SetVariableValue(varIndexSceneRenderLOD, Scene::GetSceneRenderLOD());
@@ -140,14 +136,6 @@ namespace Pimp
 		}
 	}
 
-	void Material::SetOverlayOpacityAndProgress(float opacity, float progress, float timeSoFar)
-	{
-		if (varIndexOverlayOpacity >= 0)
-			effect.SetVariableValue(varIndexOverlayOpacity, opacity);
-
-		if (varIndexOverlayProgress >= 0)
-			effect.SetVariableValue(varIndexOverlayProgress, Vector4(progress, timeSoFar, 0.0f, 0.0f));
-	}
 
 	void Material::SetSceneBuffer(ID3D10ShaderResourceView* resourceView)
 	{
