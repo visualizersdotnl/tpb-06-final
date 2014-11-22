@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "Settings.h"
@@ -31,4 +32,4 @@ public:
 
 #endif
 
-} // namespace
+}

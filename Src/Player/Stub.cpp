@@ -487,10 +487,12 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 				// initialize Direct3D
 				if (CreateDirect3D())
 				{
-					// Initialize Core D3D.
-					Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
-					if (1) // FIXME: Move further Core D3D initialization out of constructor.
+					try
 					{
+						// Initialize Core D3D.
+						Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
+
+						// Prepare demo resources.
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
 						if (true == Demo::GenerateWorld(rocketClient))
 						{
@@ -574,9 +576,16 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 						}
 
 						Demo::ReleaseWorld();
+						delete Pimp::gD3D;
 					}
 
-					delete Pimp::gD3D;
+					// Catch anything Core/D3D throws.
+					catch(const CoreD3DException &exception)
+					{
+						SetLastError(exception.what());
+
+						// Disregard any "secondary" resources and just proceed killing D3D, DXGI, BASS & the window.
+					}
 				}
 
 				DestroyDirect3D();

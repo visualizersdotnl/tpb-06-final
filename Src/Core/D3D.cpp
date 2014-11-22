@@ -1,4 +1,9 @@
 
+// FIXME: this is deprecated.
+// Header included in D3DAssert.h
+#pragma comment(lib, "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x64\\DxErr.lib")
+
+
 #include "Platform.h"
 #include <shared/shared.h>
 #include "D3D.h"
@@ -23,7 +28,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 	depthStencilState[0] = depthStencilState[1] = nullptr;
 	memset(blendStates, 0, MAX_BlendMode*sizeof(Blend));
 
-	HRESULT hr;
+	HRESULT hRes = S_OK;
 
 	const Configuration::DisplayMode& mode = Configuration::Instance()->GetDisplayMode();
 	const DWORD viewWidth = mode.width;
@@ -49,15 +54,13 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 
 	// Retrieve backbuffer
 	ID3D10Texture2D* backbuffer;
-	hr = swapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
-	D3D_ASSERT(hr);
-	ASSERT(backbuffer != NULL);
+	hRes = swapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
+	D3D_ASSERT(hRes);
 
 	// Create render target view for backbuffer
 	ID3D10RenderTargetView* renderTargetViewBackbuffer;
-	hr = device->CreateRenderTargetView(backbuffer, NULL, &renderTargetViewBackbuffer);
-	D3D_ASSERT(hr);
-	ASSERT(renderTargetViewBackbuffer != NULL);
+	hRes = device->CreateRenderTargetView(backbuffer, NULL, &renderTargetViewBackbuffer);
+	D3D_ASSERT(hRes);	ASSERT(renderTargetViewBackbuffer != NULL);
 
 	renderTargetBackBuffer = new RenderTarget(PIMP_BACKBUFFER_FORMAT_GAMMA, backbuffer, renderTargetViewBackbuffer, NULL);
 
@@ -379,15 +382,15 @@ ID3D10Effect* D3D::CreateEffect(const unsigned char* compiledEffect, int compile
 	return effect;
 }
 
-RenderTarget* D3D::CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool multiSample)
+RenderTarget* D3D::CreateRenderTarget(int shResinkFactor, DXGI_FORMAT format, bool multiSample)
 {
-	ASSERT(shrinkFactor >= 1);
+	ASSERT(shResinkFactor >= 1);
 
 	// Create texture
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
-	desc.Width = sceneVP.Width/shrinkFactor;
-	desc.Height = sceneVP.Height/shrinkFactor;
+	desc.Width = sceneVP.Width/shResinkFactor;
+	desc.Height = sceneVP.Height/shResinkFactor;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -428,7 +431,7 @@ RenderTarget* D3D::CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool
 
 	return new RenderTarget(format, texture, renderTargetView, shaderResourceView);
 
-	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
 }
 
 ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
@@ -486,7 +489,7 @@ DepthStencil* D3D::CreateDepthStencil(bool multiSample)
 
 	return new DepthStencil(texture, view);
 
-	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
 }
 
 Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection)
@@ -513,7 +516,7 @@ Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, 
 
 	return new Texture2D(name, width, height, texture, view);
 
-	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
 }
 
 Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, int depth)
@@ -559,7 +562,7 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 
 	return new Texture3D(name, width, height, depth, texture, view, rtViews);
 
-	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
 }
 
 bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* outCompiledEffectLength)
@@ -567,7 +570,7 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 	ID3DBlob* shader = nullptr;
 	ID3DBlob* errors = nullptr;
 
-	const HRESULT hResult = D3DCompile(
+	const HRESULT hRes = D3DCompile(
 		effectAscii,
 		effectAsciiSize,
 		NULL, // name
@@ -580,12 +583,12 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 		&shader,
 		&errors);
 
-	if (S_OK != hResult)
+	if (S_OK != hRes)
 	{
 		if (nullptr != errors)
 		{
 			char* errorMsg = reinterpret_cast<char*>(errors->GetBufferPointer());
-			D3D_ASSERT_MSG(hResult, errorMsg);
+			D3D_ASSERT_MSG(hRes, errorMsg);
 		}
 
 		return false;

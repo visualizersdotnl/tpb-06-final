@@ -17,7 +17,7 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
-	// Required by code (FIXME: why?)
+	// Required by code.
 	float4x4 viewInvMatrix; 
 
 	// These are bound to a Rocket tracks.
@@ -45,7 +45,6 @@ VSOutput MainVS(VSInput input)
 	output.uv = input.position.xy * float2(0.5f, -0.5f) + 0.5f;
 
 	return output;
-
 }
 
 // Taken from a Shadertoy shader. Not that nice.
