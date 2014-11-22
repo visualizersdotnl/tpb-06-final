@@ -13,6 +13,9 @@
 // For a fine selection of modes to choose from: https://github.com/visualizersdotnl/misc./blob/master/aspectratios.h
 #define PIMPPLAYER_RENDER_ASPECT_RATIO 16.f/9.f
 
+// Super Panavision 70
+// #define PIMPPLAYER_RENDER_ASPECT_RATIO 2.2f
+
 // Virtual resolution for sprite rendering (should match PIMPPLAYER_ASPECT_RATIO).
 const float PIMPPLAYER_SPRITE_RES_X = 1920.f;
 const float PIMPPLAYER_SPRITE_RES_Y = 1080.f;
@@ -25,9 +28,9 @@ const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
 const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
 
 // Use these to test letterboxing in windowed mode.
-// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640;
+// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640; // Letter.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 480;
-// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 800;
+// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 800; // Pillar.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 400;
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.

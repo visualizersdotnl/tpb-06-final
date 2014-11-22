@@ -9,17 +9,19 @@
 namespace Pimp
 {
 
-D3D* gD3D = NULL;
+// Convenience hack.
+D3D* gD3D = nullptr;
 
 
-D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) : 
-	device(device), swapchain(swapchain)
+D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) : 
+	device(device), swapChain(swapChain)
 ,	rasterizerState(nullptr)
 ,	renderTargetBackBuffer(nullptr)
 ,	depthStencil(nullptr)
 ,	pWhiteTex(nullptr)
 {
-	memset(blendStates, 0, MAX_BlendMode*sizeof(BlendMode));
+	depthStencilState[0] = depthStencilState[1] = nullptr;
+	memset(blendStates, 0, MAX_BlendMode*sizeof(Blend));
 
 	HRESULT hr;
 
@@ -47,7 +49,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 
 	// Retrieve backbuffer
 	ID3D10Texture2D* backbuffer;
-	hr = swapchain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
+	hr = swapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&backbuffer);
 	D3D_ASSERT(hr);
 	ASSERT(backbuffer != NULL);
 
@@ -82,7 +84,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 
 	device->RSSetState(rasterizerState);
 
-	// Define back buffer viewport
+	// Define full back buffer viewport
 	backVP.TopLeftX = 0;
 	backVP.TopLeftY = 0;
 	backVP.Width = viewWidth;
@@ -90,7 +92,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	backVP.MinDepth = 0.f;
 	backVP.MaxDepth = 1.f;
 
-	// Calculate aspect ratio adjusted viewports & render scale
+	// Calculate viewports (full & aspect ratio adjusted)
 	const float fullAspectRatio = (float) backVP.Width / backVP.Height;
 	const float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
 
@@ -98,16 +100,12 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	if (fullAspectRatio < renderAspectRatio)
 	{
 		const float scale = fullAspectRatio / renderAspectRatio;
-		renderScale.x = 1.f;
-		renderScale.y = scale;
 		xResAdj = backVP.Width;
 		yResAdj = (unsigned int) (backVP.Height*scale);
 	}
 	else if (fullAspectRatio > renderAspectRatio)
 	{
 		const float scale = renderAspectRatio / fullAspectRatio;
-		renderScale.x = scale;
-		renderScale.y = 1.f;
 		xResAdj = (unsigned int) (backVP.Width*scale);
 		yResAdj = backVP.Height;
 	}
@@ -115,10 +113,9 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	{
 		xResAdj = backVP.Width;
 		yResAdj = backVP.Height;
-		renderScale = Vector2(1.f, 1.f);
 	}
 
-	// Adjusted viewport centered on back buffer (letterboxing)
+	// Backbuffer viewport adjusted to fit (centered) scene
 	backAdjVP.Width = xResAdj;
 	backAdjVP.Height = yResAdj;
 	backAdjVP.TopLeftX = (backVP.Width-xResAdj)/2;
@@ -126,39 +123,36 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain) :
 	backAdjVP.MinDepth = 0.f;
 	backAdjVP.MaxDepth = 1.f;
 
-	// Plain adjusted viewport
-	adjVP.Width = xResAdj;
-	adjVP.Height = yResAdj;
-	adjVP.TopLeftX = 0;
-	adjVP.TopLeftY = 0;
-	adjVP.MinDepth = 0.f;
-	adjVP.MaxDepth = 1.f;
+	// Scene viewport
+	sceneVP.Width = xResAdj;
+	sceneVP.Height = yResAdj;
+	sceneVP.TopLeftX = 0;
+	sceneVP.TopLeftY = 0;
+	sceneVP.MinDepth = 0.f;
+	sceneVP.MaxDepth = 1.f;
 
+	// Set full viewport by default
 	device->RSSetViewports(1, &backVP);
 
 	// Create depth-stencil
 	depthStencil = CreateDepthStencil(true);
 
 	// Depth-stencil states (on and off)
-	D3D10_DEPTH_STENCIL_DESC descDepthS[2];
-	memset(&descDepthS[0], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
-	memset(&descDepthS[1], 0, sizeof(D3D10_DEPTH_STENCIL_DESC));
-	descDepthS[0].DepthEnable = true;
-	descDepthS[0].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
-	descDepthS[0].DepthFunc = D3D10_COMPARISON_LESS;
-	descDepthS[1].DepthEnable = false;
-	descDepthS[1].DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
-	descDepthS[1].DepthFunc = D3D10_COMPARISON_ALWAYS;
+	D3D10_DEPTH_STENCIL_DESC dsStateDesc;
+	memset(&dsStateDesc, 0, sizeof(dsStateDesc));
 
-	for (int iState = 0; iState < 2; ++iState)
-	{
-		depthStencilState[iState] = nullptr; // FIXME: move out of loop.
-		hr = device->CreateDepthStencilState(&descDepthS[iState], &depthStencilState[iState]);
-		D3D_ASSERT(hr);
-	}
+	dsStateDesc.DepthEnable = true;
+	dsStateDesc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
+	dsStateDesc.DepthFunc = D3D10_COMPARISON_LESS;
+	D3D_VERIFY(S_OK == device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[0]));
+	
+	dsStateDesc.DepthEnable = false;
+	dsStateDesc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
+	dsStateDesc.DepthFunc = D3D10_COMPARISON_ALWAYS;
+	D3D_VERIFY(S_OK == device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[1]));
 
-	// Depthstencil off by default
-	UseDepthStencil(false);
+	// Depth-stencil disabled by default
+	DisableDepthStencil();
 
 	// Bind backbuffer and depth stencil as primary RT
 	BindBackbuffer(depthStencil);
@@ -299,26 +293,14 @@ void D3D::ClearDepthStencil()
 	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0, 0 );
 }
 
-void D3D::Flip()
+void D3D::Flip(UINT syncInterval)
 {
-	HRESULT hr = swapchain->Present(0,0);
-	D3D_ASSERT(hr);
+	D3D_VERIFY(S_OK == swapChain->Present(syncInterval, 0));
 }
 
-void D3D::SetBackViewport()    
-{ 
-	device->RSSetViewports(1, &backVP); 
-}
-
-void D3D::SetBackAdjViewport() 
-{ 
-	device->RSSetViewports(1, &backAdjVP); 
-}
-
-void D3D::SetAdjViewport() 
-{ 
-	device->RSSetViewports(1, &adjVP); 
-}
+void D3D::SetBackViewport()    { device->RSSetViewports(1, &backVP);    }
+void D3D::SetBackAdjViewport() { device->RSSetViewports(1, &backAdjVP); }
+void D3D::SetSceneViewport()   { device->RSSetViewports(1, &sceneVP);   }
 
 ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
@@ -452,8 +434,8 @@ RenderTarget* D3D::CreateRenderTarget( int viewportShrinkFactor, DXGI_FORMAT for
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 
-	desc.Width = adjVP.Width/viewportShrinkFactor;
-	desc.Height = adjVP.Height/viewportShrinkFactor;
+	desc.Width = sceneVP.Width/viewportShrinkFactor;
+	desc.Height = sceneVP.Height/viewportShrinkFactor;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -499,8 +481,8 @@ ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 
-	desc.Width = adjVP.Width;
-	desc.Height = adjVP.Height;
+	desc.Width = sceneVP.Width;
+	desc.Height = sceneVP.Height;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -527,12 +509,6 @@ void D3D::BindBackbuffer(DepthStencil* depth)
 {
 	ID3D10RenderTargetView* view = renderTargetBackBuffer->GetRenderTargetView();
 	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : NULL);
-}
-
-void D3D::GetAdjViewportSize(int* width, int* height)
-{
-	*width = adjVP.Width;
-	*height = adjVP.Height;
 }
 
 void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )
@@ -593,15 +569,6 @@ void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
 }
 
 
-void D3D::UseDepthStencil(bool enabled)
-{
-	device->OMSetDepthStencilState(depthStencilState[!enabled], 0);
-}
-
-DepthStencil* D3D::GetDefaultDepthStencil() const
-{
-	return depthStencil;
-}
 
 
 Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection)
@@ -678,11 +645,9 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 }
 
 
-void D3D::SetBlendMode(BlendMode blendMode)
+void D3D::SetBlendMode(Blend mode)
 {
-	ASSERT((int)blendMode < MAX_BlendMode);
-
-	device->OMSetBlendState(blendStates[(int)blendMode], NULL, 0xFFFFFFFF);
+	device->OMSetBlendState(blendStates[mode], nullptr, 0xffffffff);
 }
 
 

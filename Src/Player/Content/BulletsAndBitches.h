@@ -51,7 +51,7 @@ public:
 	void EndPic(float alpha)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::BlendMode::BM_Additive, AlphaToVtxColor(alpha), 1.f, true);
+		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::Blend::BM_Additive, AlphaToVtxColor(alpha), 1.f, true);
 	}
 
 	void Tick(double row)
@@ -68,11 +68,11 @@ public:
 		if (bitchBullets == 0.f)
 		{
 			// this way it's part of the scene process and thus we can cover it with noise
-			s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+			s_sprites->AddBackgroundSprite(background, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 		}
 		else
 		{
-			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, 1.f, true);
+			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::Blend::BM_None, 0, 1.f, true);
 	
 			// as it turns out it looks a bit better just cutting right in
 			float backAlpha = 1.f;
@@ -80,7 +80,7 @@ public:
 			// background
 			s_sprites->AddSprite(
 					background2,
-					Pimp::D3D::BlendMode::BM_Additive,
+					Pimp::D3D::Blend::BM_Additive,
 					Vector2(0.f, 0.f),
 					1.f,
 					backAlpha,
@@ -90,7 +90,7 @@ public:
 			// target sprite
 			s_sprites->AddSpriteCenter(
 				target,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(1920.f*0.5f, 1080.f*0.5f),
 				2.f,
 				backAlpha,
@@ -99,7 +99,7 @@ public:
 			// pimp
 			s_sprites->AddSpriteCenter(
 				pimp,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 				2.1f,
 				backAlpha,
@@ -134,7 +134,7 @@ public:
 						if (iShot < 5) {
 							s_sprites->AddSprite(
 									blast[iShot%3],
-									Pimp::D3D::BlendMode::BM_AlphaBlend,
+									Pimp::D3D::Blend::BM_AlphaBlend,
 									kShotPositions[iShot],
 									kShotZ,
 									1.f,

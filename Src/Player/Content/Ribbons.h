@@ -43,16 +43,16 @@ public:
 	void BindToWorld()
 	{
 		BindSceneMaterial(ribbonMat);
-		ribbonMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
+		ribbonMat->SetBlendMode(Pimp::D3D::Blend::BM_AlphaBlend);
 	}
 
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texBack, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+		s_sprites->AddBackgroundSprite(texBack, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 
 		float logoY = (float) sync_get_val(st_logoY, row);
 		float logoA = (float) sync_get_val(st_logoAlpha, row);
-		s_sprites->AddSprite(logo, Pimp::D3D::BlendMode::BM_AlphaBlend, Vector2(0.f, logoY), 1.f, logoA, 0.f, true); 
+		s_sprites->AddSprite(logo, Pimp::D3D::Blend::BM_AlphaBlend, Vector2(0.f, logoY), 1.f, logoA, 0.f, true); 
 	}
 };

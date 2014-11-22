@@ -44,7 +44,6 @@ PostProcess::PostProcess() :
 	varIndexMotionBlurWeight = effect.RegisterVariable("motionBlurFrameWeight", true);
 
 	SetMotionBlurFrameWeight(1.0f);
-
 	SetParameters();
 }
 
@@ -70,21 +69,21 @@ void PostProcess::SetParameters()
 {
 	float sceneRenderLod = Scene::GetSceneRenderLOD();
 
-	int w, h;
-	gD3D->GetAdjViewportSize(&w, &h);
+	DWORD width, height;
+	gD3D->GetRenderSize(width, height);
 
 	// Inverse render target size (XY) plus homogenous LOD UV adjustment (ZW).
 	const Vector4 screenSizeInv(
-		sceneRenderLod / w, 
-		sceneRenderLod / h,
+		sceneRenderLod / width, 
+		sceneRenderLod / height,
 		0.5f*(1.0f - sceneRenderLod),
 		0.5f*(1.0f - sceneRenderLod));
 	effect.SetVariableValue(varIndexScreenSizeInv, screenSizeInv);
 
 	// Inverse filter buffer size.
 	const Vector2 invFilterSize(
-		POSTPROCESS_FILTER_SCALEDOWN / (float) w,
-		POSTPROCESS_FILTER_SCALEDOWN / (float) h);
+		POSTPROCESS_FILTER_SCALEDOWN / (float) width,
+		POSTPROCESS_FILTER_SCALEDOWN / (float) height);
 	effect.SetVariableValue(varIndexFilterSizeInv, invFilterSize);
 
 	effect.SetVariableValue(varIndexLoadProgress, 0.0f);
@@ -167,24 +166,21 @@ void PostProcess::RenderPostProcess()
 
 void PostProcess::InitBloomGatherSamples()
 {
-	int w, h;
-	gD3D->GetAdjViewportSize(&w, &h);
+	DWORD width, height;
+	gD3D->GetRenderSize(width, height);
 
-	Vector3 offsets[4];
-
-	float x = 1.0f / (float)w;
-	float y = 1.0f / (float)h;
+	const float xStep = 1.f / width;
+	const float yStep = 1.f / height;
 
 	Vector4 packedOffsets[2];
-
-	packedOffsets[0].x = -x;
-	packedOffsets[0].y = -y;
-	packedOffsets[0].w = -x;
-	packedOffsets[0].z =  y;
-	packedOffsets[1].x =  x;
-	packedOffsets[1].y = -y;
-	packedOffsets[1].w =  x;
-	packedOffsets[1].z =  y;
+	packedOffsets[0].x = -xStep;
+	packedOffsets[0].y = -yStep;
+	packedOffsets[0].w = -xStep;
+	packedOffsets[0].z =  yStep;
+	packedOffsets[1].x =  xStep;
+	packedOffsets[1].y = -yStep;
+	packedOffsets[1].w =  xStep;
+	packedOffsets[1].z =  yStep;
 
 	effect.SetVariableValue(varIndexBloomGatherSamples, packedOffsets, 2);
 }

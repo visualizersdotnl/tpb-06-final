@@ -40,7 +40,7 @@ public:
 	void BindToWorld()
 	{
 		BindSceneMaterial(ribbonMat);
-		ribbonMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
+		ribbonMat->SetBlendMode(Pimp::D3D::Blend::BM_AlphaBlend);
 	}
 
 	void Tick(double row)
@@ -49,13 +49,13 @@ public:
 
 		float toBG2 = (float) sync_get_val(st_toBG2, row);
 		if (0.f == toBG2)
-			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 		else
 		{
 			unsigned int vtxCol1 = AlphaToVtxColor(1.f-toBG2);
 			unsigned int vtxCol2 = AlphaToVtxColor(toBG2);
-			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::BlendMode::BM_Additive, vtxCol1, 1.f, true);
-			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_Additive, vtxCol2, 2.f, true);
+			s_sprites->AddBackgroundSprite(texWall, Pimp::D3D::Blend::BM_Additive, vtxCol1, 1.f, true);
+			s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::Blend::BM_Additive, vtxCol2, 2.f, true);
 		}
 
 		// play with stolen logo
@@ -63,7 +63,7 @@ public:
 		float kgY = (float) sync_get_val(st_kgY, row);
 		s_sprites->AddSprite(
 			texKG,
-			Pimp::D3D::BlendMode::BM_AlphaBlend,
+			Pimp::D3D::Blend::BM_AlphaBlend,
 			Vector2(20.f, kgY),
 			1.f, 
 			1.f, 

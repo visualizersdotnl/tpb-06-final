@@ -34,7 +34,7 @@ public:
 	void BindToWorld()
 	{
 		BindSceneMaterial(sceneMat);
-		sceneMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
+		sceneMat->SetBlendMode(Pimp::D3D::Blend::BM_AlphaBlend);
 		rotParam = AddMaterialParamWithXform("pompomRotMat", false);
 //		rotParamInv = AddMaterialParamWithXform("pompomRotMatInv", true);
 	}
@@ -42,11 +42,11 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-//		s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+//		s_sprites->AddBackgroundSprite(background, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 		float stretchY = (float) sync_get_val(st_furStretchY, row);
 		s_sprites->AddBackgroundSprite(
 			background,
-			Pimp::D3D::BlendMode::BM_None,
+			Pimp::D3D::Blend::BM_None,
 			-1,
 			Vector2(0.f, -stretchY),
 			Vector2(1920.f, 1080.f+stretchY),

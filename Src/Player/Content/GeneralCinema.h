@@ -67,7 +67,7 @@ public:
 	void BindToWorld()
 	{
 		BindSceneMaterial(backMat);
-		backMat->SetBlendMode(Pimp::D3D::BlendMode::BM_AlphaBlend);
+		backMat->SetBlendMode(Pimp::D3D::Blend::BM_AlphaBlend);
 
 		foldXformParam = AddMaterialParamWithXform("foldXformInv", true);
 	}
@@ -75,7 +75,7 @@ public:
 	void Tick(double row)
 	{
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(background, Pimp::D3D::BlendMode::BM_None, -1, 1.f, true);
+		s_sprites->AddBackgroundSprite(background, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 	
 		const float kProjectorZ = 1.f;
 		const float kReelZ = 2.f;
@@ -89,7 +89,7 @@ public:
 		// "projector" 
 		s_sprites->AddSprite(
 				projector,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(100.f, (1080.f-projector->GetHeight())*0.5f),
 				kProjectorZ,
 				1.f,
@@ -106,14 +106,14 @@ public:
 		// reels (rotate quickly in opposite directions like in orig. bumper)
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(kReelX, kReelY-(reel->GetHeight()/2)-75.f),
 				kReelZ,
 				1.f,
 				reelStat + reelRoto*1.75f, true);
 		s_sprites->AddSprite(
 				reel,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(kReelX, kReelY+(reel->GetHeight()/2)+45.f),
 				kReelZ,
 				1.f,
@@ -129,7 +129,7 @@ public:
 
 			s_sprites->AddSpriteCenter(
 				sparkly,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(120.f, 415.f),
 				kSparkleZ,
 				(sync < 1.f) ? sync : 1.f-sync, // alpha
@@ -149,7 +149,7 @@ public:
 
 			s_sprites->AddSprite(
 				flare,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(kFlareX + flareXOffs, (1080.f-flare->GetHeight())*0.5f),
 				kFlareZ,
 				flareSync,
@@ -184,7 +184,7 @@ public:
 
 				s_sprites->AddSprite(
 					bitmap,
-					Pimp::D3D::BlendMode::BM_Additive,
+					Pimp::D3D::Blend::BM_Additive,
 					Vector2(x_pos, (1080.f-bitmap->GetHeight())*0.5f),
 					kScrollZ,
 					aBmp,

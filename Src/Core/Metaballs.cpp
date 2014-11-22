@@ -267,7 +267,7 @@ void Metaballs::Draw(Camera* camera)
 	effectPass.Apply();
 
 	// Kick off.
-	gD3D->SetBlendMode(D3D::BlendMode::BM_None);
+	gD3D->SetBlendMode(D3D::Blend::BM_None);
 	gD3D->DrawIndexedTriList(s_genNumFaces);
 }
 

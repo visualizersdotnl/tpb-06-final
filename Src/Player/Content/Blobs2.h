@@ -55,7 +55,7 @@ public:
 			
 		s_sprites->AddBackgroundSprite(
 			bgTile, 
-			Pimp::D3D::BlendMode::BM_AlphaBlend, 
+			Pimp::D3D::Blend::BM_AlphaBlend, 
 			-1, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f), 
@@ -85,7 +85,7 @@ public:
 
 				s_sprites->AddSprite(
 					tileshadow, 
-					Pimp::D3D::BlendMode::BM_AlphaBlend,
+					Pimp::D3D::Blend::BM_AlphaBlend,
 					Vector2(125.f + kShadowX, kShadowY + kToyOffsY + kToySpacing*iToy), 
 					kToyZ,
 					alpha,
@@ -105,7 +105,7 @@ public:
 
 				s_sprites->AddSprite(
 					toy[iToy], 
-					Pimp::D3D::BlendMode::BM_AlphaBlend,
+					Pimp::D3D::Blend::BM_AlphaBlend,
 					Vector2(125.f, kToyOffsY + kToySpacing*iToy), 
 					kToyZ,
 					alpha,

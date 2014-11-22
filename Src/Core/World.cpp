@@ -138,10 +138,10 @@ namespace Pimp
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
-		// FIXME: clear entire back buffer here?
+		// FIXME: maybe clear entire back buffer here?
 
-		// Scene render target is in adjusted size
-		gD3D->SetAdjViewport();
+		// Set scene viewport
+		gD3D->SetSceneViewport();
 
 		// Clear scene target
 		postProcess->Clear(); 
@@ -150,7 +150,7 @@ namespace Pimp
 		postProcess->BindForRenderScene();
 		{
 			// Disable depth stencil
-			gD3D->UseDepthStencil(false);
+			gD3D->DisableDepthStencil();
 
 			// Prepare all sprites to be drawn
 			sprites.PrepareToDraw();
@@ -176,13 +176,13 @@ namespace Pimp
 			if (nullptr != pMetaballs)
 			{
 				// Clear & enable depth stencil
-				gD3D->UseDepthStencil(true);
 				gD3D->ClearDepthStencil();
+				gD3D->EnableDepthStencil();
 
 				pMetaballs->Draw(currentCamera);
 
 				// Disable depth stencil
-				gD3D->UseDepthStencil(false);
+				gD3D->DisableDepthStencil();
 			}
 		}
 
@@ -207,7 +207,8 @@ namespace Pimp
 		// Ensure blend mode is none for next frame
 		gD3D->SetBlendMode(D3D::BM_None);
 
-		// FIXME: where is the magic flip hidden?
+		// When the demo is running, Player takes care of presenting the backbuffer,
+		// so no need to call gD3D->Flip().
 	}
 
 

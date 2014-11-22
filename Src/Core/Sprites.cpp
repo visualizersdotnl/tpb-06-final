@@ -76,7 +76,7 @@ namespace Pimp
 
 	void Sprites::AddSprite(
 			Texture2D *pTexture,
-			D3D::BlendMode blendMode,
+			D3D::Blend blendMode,
 			const unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
@@ -87,7 +87,7 @@ namespace Pimp
 			const Vector2 &uvTile,  /* = Vector2(1.f, 1.f) */
 			const Vector2 &uvScroll /* = Vector2(1.f, 1.f) */)
 	{
-		ASSERT(blendMode < D3D::BlendMode::MAX_BlendMode);
+		ASSERT(blendMode < D3D::Blend::MAX_BlendMode);
 		ASSERT(sprites.size() < kMaxSprites);
 
 		// allocate vertices

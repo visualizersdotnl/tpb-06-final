@@ -82,9 +82,9 @@ public:
 		((Pimp::Xform*)rotation2Param->GetParents()[0])->SetRotation(rotation2);
 
 		SetMainSceneAndDefaultCamera();
-		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::BlendMode::BM_None, 0, 1.f, true);
+		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::Blend::BM_None, 0, 1.f, true);
 
 		// vignette (hides artifacts on the corners of the background box)
-		s_sprites->AddSpriteCenter(vignette, Pimp::D3D::BlendMode::BM_AlphaMask, Vector2(1920.f*0.5f, 1080.f*0.5f), 1.f, 1.f, 0.f, true);
+		s_sprites->AddSpriteCenter(vignette, Pimp::D3D::Blend::BM_AlphaMask, Vector2(1920.f*0.5f, 1080.f*0.5f), 1.f, 1.f, 0.f, true);
 	}
 };

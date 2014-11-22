@@ -15,8 +15,8 @@
 	- Set up error checking on most critical D3D calls.
 	- Fix D3D_ASSERT & ASSERT_MSG.
 	- Remove unused (commented) code.
-	- Leaks.
-	- Phase out FixedSizeList use where unnecessary.
+	- Leaks (perhaps use an external tool to test that).
+	- Phase out FixedSizeList use.
 */
 
 #include <Core/Platform.h>
@@ -179,7 +179,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case VK_SPACE:
 			{
 				s_isPaused = !s_isPaused;
-				DEBUG_LOG(s_isPaused ? "Updating has been paused." : "Updating has been resumed!")
+				DEBUG_LOG(s_isPaused ? "Entering debug camera mode." : "Leaving debug camera mode.")
 
 				s_pDebugCamera->SetEnabled(s_isPaused);
 
@@ -543,9 +543,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 #endif
 								
 								Demo::WorldRender();
-
-								const HRESULT hRes = s_pSwapChain->Present((kWindowed) ? 0 : 1, 0);
-								// FIXME: ignoring serious errors
+								Pimp::gD3D->Flip((true == kWindowed) ? 0 : 1);
 
 								if (true == kWindowed)
 								{

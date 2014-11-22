@@ -41,7 +41,7 @@ namespace Pimp
 		struct Sprite
 		{
 			/* const */ Texture2D *pTexture;
-			D3D::BlendMode blendMode;
+			D3D::Blend blendMode;
 			float sortZ;
 			size_t vertexOffs;
 			bool forceClamp;
@@ -59,7 +59,7 @@ namespace Pimp
 		// add post-scene sprite
 		void AddSprite(
 			/* const */ Texture2D *pTexture,
-			D3D::BlendMode blendMode,
+			D3D::Blend blendMode,
 			unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
@@ -73,7 +73,7 @@ namespace Pimp
 		// add background sprite (drawn first, behind the scene shader & geometry)
 		void AddBackgroundSprite(
 			/* const */ Texture2D *pTexture,
-			D3D::BlendMode blendMode,
+			D3D::Blend blendMode,
 			unsigned int vertexColor,
 			const Vector2 &topLeft,
 			const Vector2 &size,
@@ -89,7 +89,7 @@ namespace Pimp
 		// simplified AddBackgroundSprite()
 		void AddBackgroundSprite(
 			/* const */ Texture2D *pTexture,
-			D3D::BlendMode blendMode,
+			D3D::Blend blendMode,
 			unsigned int vertexColor,
 			float sortZ,
 			bool forceClamp)
@@ -100,7 +100,7 @@ namespace Pimp
 		// simplified AddSprite()
 		void AddSprite(
 			/* const */ Texture2D *pTexture,
-			D3D::BlendMode blendMode,
+			D3D::Blend blendMode,
 			const Vector2 &topLeft,
 			float sortZ,
 			float alpha,
@@ -116,7 +116,7 @@ namespace Pimp
 		// AddSprite() simplified & centered
 		void AddSpriteCenter(
 			/* const */ Texture2D *pTexture,
-			Pimp::D3D::BlendMode blendMode,
+			Pimp::D3D::Blend blendMode,
 			const Vector2 &center,
 			float sortZ,
 			float alpha,

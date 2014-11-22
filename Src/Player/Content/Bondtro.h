@@ -70,7 +70,7 @@ public:
 		
 		s_sprites->AddBackgroundSprite(
 			texWhite, 
-			Pimp::D3D::BlendMode::BM_None, 
+			Pimp::D3D::Blend::BM_None, 
 			0, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f),
@@ -103,7 +103,7 @@ public:
 		// ball #1
 		s_sprites->AddSprite(
 				blob,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_1, ballY),
 				kTextZ,
 				1.f-ballFade_1,
@@ -112,7 +112,7 @@ public:
 		// ball #2
 		s_sprites->AddSprite(
 				blob,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
 				kTextZ,
 				1.f-ballFade_2,
@@ -121,7 +121,7 @@ public:
 		// ampersand
 		s_sprites->AddSprite(
 				ampersand,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_2, ballY),
 				kAmpersandZ,
 				1.f-ampFade,
@@ -130,14 +130,14 @@ public:
 		// group names
 		s_sprites->AddSprite(
 				logoTPB,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_2-690.f-25.f, ballY),
 				kTextZ,
 				fadeTPB,
 				0.f, true);
 		s_sprites->AddSprite(
 				logoInque,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f-20.f, ballY+5.f), // @plek: De een is net wat hoger dan de ander?
 				kTextZ,
 				fadeINQ,
@@ -146,7 +146,7 @@ public:
 		// "present.."
 		s_sprites->AddSprite(
 				present,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(ballPos_2+160.f+260.f, ballY+5.f), // @plek: And this one is off too :)
 				kTextZ,
 				1.f-presentFade,
@@ -155,7 +155,7 @@ public:
 		// background
 		s_sprites->AddSprite(
 				background,
-				Pimp::D3D::BlendMode::BM_Additive,
+				Pimp::D3D::Blend::BM_Additive,
 				Vector2(0.f, 0.f), 
 				kBackgroundZ,
 				whiteOpacity,
@@ -165,7 +165,7 @@ public:
 		// target sprite
 		s_sprites->AddSpriteCenter(
 				target,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
+				Pimp::D3D::Blend::BM_AlphaBlend,
 				Vector2(1920.f*0.5f, 1080.f*0.5f),
 				kTargetZ+0.1f,
 				targetOpacity,
@@ -189,7 +189,7 @@ public:
 					if (iShot < 3) {
 						s_sprites->AddSprite(
 								blast[iShot],
-								Pimp::D3D::BlendMode::BM_AlphaBlend,
+								Pimp::D3D::Blend::BM_AlphaBlend,
 								kShotPositions[iShot],
 								kShotZ,
 								1.f,
@@ -213,7 +213,7 @@ public:
 		// pimp
 		s_sprites->AddSpriteCenter(
 			pimp,
-			Pimp::D3D::BlendMode::BM_AlphaBlend,
+			Pimp::D3D::Blend::BM_AlphaBlend,
 			Vector2(1920.f*0.5f, 1080.f*0.5f + 50.f), // little lower so his crotch covers the crosshair :)
 			kPimpZ,
 			pimpOpacity,

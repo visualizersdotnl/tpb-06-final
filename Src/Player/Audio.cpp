@@ -90,8 +90,10 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 
 	Audio_FlangerMP3(0.25f, 6.f);
 
-	// soundtrack must loop for Rocket (well not really, but it's convenient in editing)
-//	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+#if defined(_DEBUG) || defined(_DESIGN)
+	// Looping soundtrack is convenient when editing.
+	BASS_ChannelFlags(s_hMP3[0], BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+#endif
 
 	if (true == mute)
 	{

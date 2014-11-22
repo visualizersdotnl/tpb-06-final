@@ -21,36 +21,21 @@ namespace Pimp
 	class D3D
 	{
 	public:
-		D3D(ID3D10Device1 *device, IDXGISwapChain* swapchain);
+		D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain);
 		~D3D();
 
 		void Clear(ID3D10RenderTargetView* renderTarget);
 		void ClearBackBuffer();
 		void ClearDepthStencil();
-		void Flip();
+		void Flip(UINT syncInterval);
 
-		void SetBackViewport();    // Full back buffer viewport (screen resolution).
-		void SetBackAdjViewport(); // Ratio adjusted viewport centered on back buffer.
-		void SetAdjViewport();     // Clean adjusted viewport.
+		void SetBackViewport();    // Full back buffer viewport (swapchain resolution).
+		void SetBackAdjViewport(); // Aspect ratio adjusted back buffer viewport (centered).
+		void SetSceneViewport();   // Scene viewport (aspect ratio adjusted).
 
+		// Resource creation
 		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
 		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
-
-		// Buffer binds
-		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
-		void BindIndexBuffer(ID3D10Buffer* buffer);
-		void BindInputLayout(ID3D10InputLayout* layout);
-		void BindBackbuffer(DepthStencil* depth);
-		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
-		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
-
-		// Non-indexed draw methods
-		void DrawTriList(DWORD numTris);
-		void DrawTriQuad(DWORD offset);
-		void DrawScreenQuad() { DrawTriQuad(0); } 
-
-		// Indexed draw methods
-		void DrawIndexedTriList(DWORD numTris);
 
 		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
 
@@ -71,22 +56,46 @@ namespace Pimp
 		Texture2D* CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection);
 		Texture3D* CreateTexture3D(const std::string& name, int width, int height, int depth);
 
-		void ResolveMultiSampledRenderTarget(
-			ID3D10Texture2D* dest,
-			ID3D10Texture2D* source,
-			DXGI_FORMAT format);
+		// Buffer binds
+		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
+		void BindIndexBuffer(ID3D10Buffer* buffer);
+		void BindInputLayout(ID3D10InputLayout* layout);
+		void BindBackbuffer(DepthStencil* depth);
+		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
+		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
-		void GetAdjViewportSize(int* width, int* height);
-		
-		void UseDepthStencil(bool enabled);
-		DepthStencil* GetDefaultDepthStencil() const;
+		void ResolveMultiSampledRenderTarget(ID3D10Texture2D* pDest, ID3D10Texture2D* pSource, DXGI_FORMAT format);
 
-		RenderTarget* GetRenderTargetBackBuffer() const
+		// Non-indexed draw methods
+		void DrawTriList(DWORD numTris);
+		void DrawTriQuad(DWORD offset);
+		void DrawScreenQuad() { DrawTriQuad(0); } 
+
+		// Indexed draw methods
+		void DrawIndexedTriList(DWORD numTris);
+
+		// Full aspect ratio adjusted buffer size for rendering,
+		// matches render target dimensions (not taking LOD into account).
+		void GetRenderSize(DWORD& width, DWORD& height)
 		{
-			return renderTargetBackBuffer;
+			width = sceneVP.Width;
+			height = sceneVP.Height;
 		}
 
-		enum BlendMode
+		void D3D::EnableDepthStencil()
+		{
+			device->OMSetDepthStencilState(depthStencilState[0], 0);
+		}
+
+		void D3D::DisableDepthStencil()
+		{
+			device->OMSetDepthStencilState(depthStencilState[1], 0);
+		}
+
+		DepthStencil* GetDefaultDepthStencil()    { return depthStencil; }
+		RenderTarget* GetRenderTargetBackBuffer() { return renderTargetBackBuffer; }
+
+		enum Blend
 		{
 			BM_None,
 			BM_AlphaBlend,
@@ -97,32 +106,28 @@ namespace Pimp
 			MAX_BlendMode
 		};
 
-		void SetBlendMode(BlendMode blendMode);
+		void SetBlendMode(Blend mode);
 
-		// This texture is quite useful for stuff like untextured sprites.
-		// It's just 4*4 0xffffffff.
-		Texture2D *GetWhiteTex() { return pWhiteTex; }
+		// Small 4*4 full white texture
+		Texture2D *GetWhiteTex() const { return pWhiteTex; }
 
 	private:
-		// These are supplied by host on construction, so don't release them!
+		// These are supplied by on construction (not owned)
 		ID3D10Device1* device;
-		IDXGISwapChain* swapchain;
+		IDXGISwapChain* swapChain;
 
-		// Actual resources.
+		// Actual resources
 		ID3D10RasterizerState* rasterizerState;
 		RenderTarget* renderTargetBackBuffer;
 		DepthStencil* depthStencil;
 		ID3D10DepthStencilState* depthStencilState[2]; // See D3D.cpp
 		ID3D10BlendState* blendStates[MAX_BlendMode];
-		Texture2D *pWhiteTex;
-		
-		// For aspect ratio correction (FIXME: should be obsolete at some point).
-		Vector2 renderScale; 
+		Texture2D* pWhiteTex;
 
-		// Viewports.		
+		// Viewports
 		D3D10_VIEWPORT backVP;    // Full-size back buffer viewport.
-		D3D10_VIEWPORT backAdjVP; // Aspect-ratio adjusted back buffer viewport (with offsets).
-		D3D10_VIEWPORT adjVP;     // Aspect-ratio adjusted full viewport.
+		D3D10_VIEWPORT backAdjVP; // Viewport that centers scene on back buffer.
+		D3D10_VIEWPORT sceneVP;   // Aspect-ratio adjusted full viewport.
 	};
 
 	extern D3D* gD3D;

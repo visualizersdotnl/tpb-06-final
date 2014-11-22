@@ -60,7 +60,7 @@ public:
 		
 		s_sprites->AddBackgroundSprite(
 			bgTile, 
-			Pimp::D3D::BlendMode::BM_None, 
+			Pimp::D3D::Blend::BM_None, 
 			-1, 
 			Vector2(0.f, 0.f), 
 			Vector2(1920.f, 1080.f),
@@ -132,8 +132,8 @@ public:
 
 			s_sprites->AddSprite(
 				first,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
-//				Pimp::D3D::BlendMode::BM_AlphaPreMul,
+				Pimp::D3D::Blend::BM_AlphaBlend,
+//				Pimp::D3D::Blend::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs1, yoffs1),
 				Vector2(1920.f, 1080.f),
@@ -144,8 +144,8 @@ public:
 
 			s_sprites->AddSprite(
 				second,
-				Pimp::D3D::BlendMode::BM_AlphaBlend,
-//				Pimp::D3D::BlendMode::BM_AlphaPreMul,
+				Pimp::D3D::Blend::BM_AlphaBlend,
+//				Pimp::D3D::Blend::BM_AlphaPreMul,
 				fade,
 				Vector2(xoffs2, yoffs2),
 				Vector2(1920.f, 1080.f),

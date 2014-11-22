@@ -28,6 +28,7 @@ inline float randf(float range)
 	return range * ((float) rand() / (float) RAND_MAX);
 }
 
+// UV multiplier for when you're tiling square textures.
 const float kTileMul = PIMPPLAYER_RENDER_ASPECT_RATIO;
 
 //
@@ -573,8 +574,12 @@ bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 		// -- TPB-06 ENDING HACK --
 	}
 
-	// Tie in noise the old fucking school way by sprite and Z.
-	const float kPostNoiseZ = 4000.f;
+	// Sprite post FX Zs.
+	const float kPostNoiseZ = 10000.f;
+	const float kPostFlashZ = 20000.f;
+	const float kPostFadeZ  = 30000.f;
+
+	// Tie in noise the old school way by random displacing a texture.
 	const float noiseAlpha = (float) sync_get_val(st_noiseAlpha, rocketRow);
 	if (noiseAlpha != 0.f)
 	{
@@ -595,11 +600,9 @@ bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 			Vector2(noiseU, noiseV));
 	}
 
-	// Tie in final flash and fade in the sprite batch at "improbable" Zs.
+	// Tie in final flash and fade in.
 	const float postFlash = (float) sync_get_val(st_postFlash, rocketRow);
 	const float postFade = (float) sync_get_val(st_postFade, rocketRow);
-	const float kPostFlashZ = 5000.f;
-	const float kPostFadeZ = 6000.f;
 	if (postFlash != 0.f)
 		s_sprites->AddSprite(
 			texWhite,
