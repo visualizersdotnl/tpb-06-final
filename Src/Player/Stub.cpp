@@ -12,8 +12,6 @@
 	- Take care of proper shutdown and error message display.
 
 	Issues (some of these are in Github as well):
-	- Set up error checking on most critical D3D calls.
-	- Fix D3D_ASSERT & ASSERT_MSG.
 	- Remove unused (commented) code.
 	- Leaks (perhaps use an external tool to test that).
 	- Phase out FixedSizeList use.
