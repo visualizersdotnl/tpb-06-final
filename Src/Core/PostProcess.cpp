@@ -1,8 +1,10 @@
-#include "PostProcess.h"
+
+#include "Platform.h"
 #include "D3D.h"
-#include "Shaders/Shader_PostProcess.h"
+#include "PostProcess.h"
 #include "Scene.h"
 #include "Material.h"
+#include "Shaders/Shader_PostProcess.h"
 
 
 // Should match the number of samples in the Shader_PostProcess.fx file
@@ -10,6 +12,7 @@
 
 // Scaledown factor for the filter buffer relative to the fullscreen buffer's size
 #define POSTPROCESS_FILTER_SCALEDOWN 4
+
 
 namespace Pimp
 {
@@ -21,18 +24,17 @@ PostProcess::PostProcess() :
 	passBloomBlur(&techniquePostFX, "Blur"),
 	passBloomCombine(&techniquePostFX, "Combine"),
 	passMotionBlurBlend(&techniquePostFX, "MotionBlur"),
-	userPostEffect(NULL)
+	userPostEffect(nullptr)
 {
+	// Create render targets
 	renderTargetSceneMS = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 	renderTargetSceneSingle = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 	renderTargetSceneMotionBlurred = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 	renderTargetSceneUserPostEffect = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
-	
-	for (int i=0; i<2; ++i)
-		renderTargetFilter[i] = gD3D->CreateRenderTarget(POSTPROCESS_FILTER_SCALEDOWN, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
+	renderTargetFilter[0] = gD3D->CreateRenderTarget(POSTPROCESS_FILTER_SCALEDOWN, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
+	renderTargetFilter[1] = gD3D->CreateRenderTarget(POSTPROCESS_FILTER_SCALEDOWN, DXGI_FORMAT_R16G16B16A16_FLOAT, false);
 
 	// Register variables
-	varIndexScreenSizeInv = effect.RegisterVariable("screenSizeInv", true);
 	varIndexFilterSizeInv = effect.RegisterVariable("filterSizeInv", true);
 	varIndexBufferSceneColor = effect.RegisterVariable("bufferSceneColor", true);
 	varIndexBufferFilter = effect.RegisterVariable("bufferFilter", true);
@@ -43,10 +45,9 @@ PostProcess::PostProcess() :
 	varIndexLoadProgress = effect.RegisterVariable("loadProgress", true);
 	varIndexMotionBlurWeight = effect.RegisterVariable("motionBlurFrameWeight", true);
 
-	SetMotionBlurFrameWeight(1.0f);
+	SetMotionBlurFrameWeight(1.f);
 	SetParameters();
 }
-
 
 PostProcess::~PostProcess()
 {
@@ -64,21 +65,16 @@ void PostProcess::OnSceneRenderLODChanged()
 	SetParameters();
 }
 
-
 void PostProcess::SetParameters()
 {
-	float sceneRenderLod = Scene::GetSceneRenderLOD();
+	const float sceneRenderLod = Scene::GetSceneRenderLOD();
 
 	DWORD width, height;
 	gD3D->GetRenderSize(width, height);
 
-	// Inverse render target size (XY) plus homogenous LOD UV adjustment (ZW).
-	const Vector4 screenSizeInv(
-		sceneRenderLod / width, 
-		sceneRenderLod / height,
-		0.5f*(1.0f - sceneRenderLod),
-		0.5f*(1.0f - sceneRenderLod));
-	effect.SetVariableValue(varIndexScreenSizeInv, screenSizeInv);
+	// FIXME: this was in .ZW of screenSizeInv, do we still need it?
+//	0.5f*(1.0f - sceneRenderLod)
+//	0.5f*(1.0f - sceneRenderLod)
 
 	// Inverse filter buffer size.
 	const Vector2 invFilterSize(
@@ -185,7 +181,6 @@ void PostProcess::InitBloomGatherSamples()
 	effect.SetVariableValue(varIndexBloomGatherSamples, packedOffsets, 2);
 }
 
-
 void PostProcess::InitBloomBlurSamples(Vector2 filterSizeInv)
 {
 	ASSERT(POSTPROCESS_BLOOMBLUR_NUMSAMPLES%2 == 1);
@@ -234,28 +229,20 @@ void PostProcess::InitBloomBlurSamples(Vector2 filterSizeInv)
 	bloomBlurDirV.y = filterSizeInv.y;
 }
 
-
 void PostProcess::Clear()
 {
 	gD3D->Clear(renderTargetSceneMS->GetRenderTargetView());
 }
 
-
-void PostProcess::SetUserPostEffect(Material* newPostEffect)
+void PostProcess::SetLoadProgress(float progress)
 {
-	userPostEffect = newPostEffect;
+	effect.SetVariableValue(varIndexLoadProgress, progress);
 }
 
-void PostProcess::SetLoadProgress( float v )
+void PostProcess::SetMotionBlurFrameWeight(float weight)
 {
-	effect.SetVariableValue(varIndexLoadProgress, v);
+	this->motionBlurWeight = weight;
+	effect.SetVariableValue(varIndexMotionBlurWeight, weight);	
 }
 
-void PostProcess::SetMotionBlurFrameWeight(float w)
-{
-	this->w = w;
-	effect.SetVariableValue(varIndexMotionBlurWeight, w);	
 }
-
-
-} // namespace

@@ -1,23 +1,14 @@
+
 #pragma once
 
-#include <DXGI.h>
-#include <d3d10_1.h>
-#include <string>
-#include <math/math.h>
-
 #include "D3DAssert.h"
-#include "Settings.h"
 #include "RenderTarget.h"
-#include "PIX.h"
 #include "DepthStencil.h"
 #include "Texture2D.h"
 #include "Texture3D.h"
 
 namespace Pimp
 {
-	class RenderTarget;
-	class DepthStencil;
-
 	class D3D
 	{
 	public:
@@ -25,55 +16,72 @@ namespace Pimp
 		~D3D();
 
 		void Clear(ID3D10RenderTargetView* renderTarget);
-		void ClearBackBuffer();
-		void ClearDepthStencil();
-		void Flip(UINT syncInterval);
 
-		void SetBackViewport();    // Full back buffer viewport (swapchain resolution).
-		void SetBackAdjViewport(); // Aspect ratio adjusted back buffer viewport (centered).
-		void SetSceneViewport();   // Scene viewport (aspect ratio adjusted).
+		void ClearBackBuffer()
+		{ 
+			Clear(renderTargetBackBuffer->GetRenderTargetView()); 
+		}
 
-		// Resource creation
-		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
-		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
+		void ClearDepthStencil()
+		{
+			device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.f, 0);
+		}
 
-		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
+		void Flip(UINT syncInterval)
+		{
+			D3D_VERIFY(swapChain->Present(syncInterval, 0));
+		}
 
-		bool CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
-
-		ID3D10InputLayout* CreateInputLayout(	
-			const D3D10_INPUT_ELEMENT_DESC* description,
-			int numDescriptionItems,
-			unsigned char* signatureIA, int signatureIALength);
-
-		RenderTarget* CreateRenderTarget(int viewportShrinkFactor, DXGI_FORMAT format, bool multiSample);
-		DepthStencil* CreateDepthStencil(bool multiSample);
-
-		ID3D10Texture2D* CreateIntermediateCPUTarget(DXGI_FORMAT format);
-		
-		void CopyTextures(ID3D10Texture2D* dest, ID3D10Texture2D* src);
-
-		Texture2D* CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection);
-		Texture3D* CreateTexture3D(const std::string& name, int width, int height, int depth);
+		// Check viewport definitions below for comments on their specifics.
+		void SetBackViewport()    { device->RSSetViewports(1, &backVP);    }
+		void SetBackAdjViewport() { device->RSSetViewports(1, &backAdjVP); }
+		void SetSceneViewport()   { device->RSSetViewports(1, &sceneVP);   }
 
 		// Buffer binds
-		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride);
-		void BindIndexBuffer(ID3D10Buffer* buffer);
-		void BindInputLayout(ID3D10InputLayout* layout);
+		void BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride, unsigned int offset = 0)
+		{
+			device->IASetVertexBuffers(slot, 1, &buffer, &stride, &offset);
+		}
+
+		void BindIndexBuffer(ID3D10Buffer* buffer) // Fixed 32-bit. Get with the times.
+		{
+			device->IASetIndexBuffer(buffer, DXGI_FORMAT_R32_UINT, 0);
+		}
+
+		void BindInputLayout(ID3D10InputLayout* layout)
+		{
+			device->IASetInputLayout(layout);
+		}
+
 		void BindBackbuffer(DepthStencil* depth);
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
-		void ResolveMultiSampledRenderTarget(ID3D10Texture2D* pDest, ID3D10Texture2D* pSource, DXGI_FORMAT format);
+		// Texture copy (2D)
+		void CopyTextures(ID3D10Texture2D* pDest, ID3D10Texture2D* pSrc)
+		{
+			ASSERT(nullptr != pDest && nullptr != pSrc);
+			device->CopyResource(pDest, pSrc);
+		}
+
+		// Multisample resolve
+		void ResolveMultiSampledRenderTarget(ID3D10Texture2D* pDest, ID3D10Texture2D* pSrc, DXGI_FORMAT format)
+		{
+			ASSERT(nullptr != pDest && nullptr != pSrc);
+			device->ResolveSubresource(pDest, 0, pSrc, 0, format);
+		}
 
 		// Non-indexed draw methods
-		void DrawTriList(DWORD numTris);
-		void DrawTriQuad(DWORD offset);
-		void DrawScreenQuad() { DrawTriQuad(0); } 
+		void DrawTriList(DWORD numTris) { device->Draw(numTris*3, 0); }
+		void DrawTriQuad(DWORD offset)  { device->Draw(6, offset);    }
+		void DrawScreenQuad()           { DrawTriQuad(0);             } 
 
-		// Indexed draw methods
-		void DrawIndexedTriList(DWORD numTris);
-
+		// Indexed draw method(s)
+		void DrawIndexedTriList(DWORD numTris)
+		{
+			device->DrawIndexed(numTris*3, 0, 0);
+		}
+		
 		// Full aspect ratio adjusted buffer size for rendering,
 		// matches render target dimensions (not taking LOD into account).
 		void GetRenderSize(DWORD& width, DWORD& height)
@@ -106,10 +114,38 @@ namespace Pimp
 			MAX_BlendMode
 		};
 
-		void SetBlendMode(Blend mode);
+		void SetBlendMode(Blend mode)
+		{
+			device->OMSetBlendState(blendStates[mode], nullptr, 0xffffffff);
+		}
 
 		// Small 4*4 full white texture
 		Texture2D *GetWhiteTex() const { return pWhiteTex; }
+
+		// Resource creation
+		ID3D10Buffer* CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic);
+		ID3D10Buffer* CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic);
+
+		ID3D10InputLayout* CreateInputLayout(	
+			const D3D10_INPUT_ELEMENT_DESC* description,
+			int numDescriptionItems,
+			unsigned char* signatureIA, int signatureIALength);
+
+		ID3D10Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
+
+		// Create aspect ratio adjusted size (sceneVP), shrunk by LOD factor
+		RenderTarget* CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool multiSample);
+
+		// Create aspect ratio adjusted size (sceneVP) CPU target
+		ID3D10Texture2D* CreateIntermediateCPUTarget(DXGI_FORMAT format);
+		
+		DepthStencil* CreateDepthStencil(bool multiSample); // Full swap chain size.
+		
+		Texture2D* CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection);
+		Texture3D* CreateTexture3D(const std::string& name, int width, int height, int depth);
+
+		// .FX compile (only for dev. usage, ship with precompiled shaders)
+		bool CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
 
 	private:
 		// These are supplied by on construction (not owned)
@@ -120,7 +156,7 @@ namespace Pimp
 		ID3D10RasterizerState* rasterizerState;
 		RenderTarget* renderTargetBackBuffer;
 		DepthStencil* depthStencil;
-		ID3D10DepthStencilState* depthStencilState[2]; // See D3D.cpp
+		ID3D10DepthStencilState* depthStencilState[2]; // On (0) and off (1), plain and simple.
 		ID3D10BlendState* blendStates[MAX_BlendMode];
 		Texture2D* pWhiteTex;
 

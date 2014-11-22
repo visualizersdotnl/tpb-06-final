@@ -7,16 +7,13 @@
 #include "Settings.h"
 #include "Configuration.h"
 #include "D3D.h"
+
 #include "World.h"
-#include "Node.h"
+
+// Nodes (not implicitly included above)
 #include "Xform.h"
-#include "Geometry.h"
-#include "Camera.h"
-#include "AnimCurve.h"
-#include "PolyMesh.h"
 #include "MaterialParameter.h"
-#include "ParticleSpline.h"
-#include "Material.h"
-#include "Balls.h"
+
+// Non-node drawables
 #include "Metaballs.h"
 #include "Sprites.h"

@@ -1,9 +1,8 @@
+
 #pragma once
 
 #include "EffectPass.h"
 #include "RenderTarget.h"
-#include "Settings.h"
-#include "ScreenQuadVertexBuffer.h"
 
 namespace Pimp
 {
@@ -26,17 +25,15 @@ namespace Pimp
 
 		void OnSceneRenderLODChanged();
 
-		void SetUserPostEffect(Material* newPostEffect);
+		// User post effect shader is tied after motion blur and before bloom
+		void SetUserPostEffect(Material* postEffect) { userPostEffect = postEffect; }
+		Material* GetUserPostEffect() const          { return userPostEffect;       }
 
-		void SetLoadProgress(float v);
+		// Loading bar progress (be sure it's zero once demo has started, FIXME)
+		void SetLoadProgress(float progress);
 
-		Material* GetUserPostEffect() const
-		{
-			return userPostEffect;
-		}
-
-		// Sets the weight of the current frame.
-		void SetMotionBlurFrameWeight(float w);
+		// Sets the weight of the current frame
+		void SetMotionBlurFrameWeight(float weight);
 
 	private:
 
@@ -57,7 +54,6 @@ namespace Pimp
 		EffectPass passBloomCombine;
 		EffectPass passMotionBlurBlend;
 
-		int varIndexScreenSizeInv;
 		int varIndexFilterSizeInv;
 		int varIndexBufferSceneColor;
 		int varIndexBufferFilter;
@@ -72,6 +68,6 @@ namespace Pimp
 		Vector2 bloomBlurDirV;
 
 		Material* userPostEffect;
-		float w;
+		float motionBlurWeight;
 	};
 }

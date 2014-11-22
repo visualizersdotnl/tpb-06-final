@@ -1,7 +1,7 @@
+
 #pragma once
 
-#include "D3D.h"
-#include <Shared/shared.h>
+#include <Math/math.h>
 
 namespace Pimp
 {
@@ -30,12 +30,11 @@ namespace Pimp
 		void ResetRegisteredVariables();
 
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC GetTypeDesc(int index) const;
+		const D3D10_EFFECT_TYPE_DESC GetTypeDesc(int index) const;
 #endif
 
 	private:
 		ID3D10Effect* effect;
-		FixedSizeList<ID3D10EffectVariable*> variables;
+		std::vector<ID3D10EffectVariable*> variables;
 	};
 }
-

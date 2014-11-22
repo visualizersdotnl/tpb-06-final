@@ -1,6 +1,9 @@
+
+#include "Platform.h"
 #include "D3D.h"
 #include "ScreenQuadVertexBuffer.h"
 #include "Effect.h"
+#include "EffectPass.h"
 
 namespace Pimp
 {
@@ -35,10 +38,9 @@ namespace Pimp
 
 	ScreenQuadVertexBuffer::~ScreenQuadVertexBuffer()
 	{
-		inputLayout->Release();
-		vertices->Release();
+		SAFE_RELEASE(inputLayout);
+		SAFE_RELEASE(vertices);
 	}
-
 
 	void ScreenQuadVertexBuffer::Bind()
 	{
@@ -46,4 +48,3 @@ namespace Pimp
 		gD3D->BindInputLayout(inputLayout);
 	}
 }
-

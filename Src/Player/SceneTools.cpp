@@ -12,17 +12,6 @@ void AddChildToParent(Pimp::Node* nodeChild, Pimp::Node* nodeParent)
 	Pimp::World::StaticAddChildToParent(nodeChild, nodeParent);
 }
 
-static void AddAnimCurveKey(FixedSizeList<Pimp::AnimCurve::Pair>& keys, float time, float value)
-{
-	Pimp::AnimCurve::Pair key;
-
-	key.time = time;
-	key.value = value;
-	key.inTangentY = key.outTangentY = 0;
-
-	keys.Add(key);
-}
-
 static void RecursiveRemoveNode(Pimp::Node* node)
 {
 	FixedSizeList<Pimp::Element*>& elems = node->GetOwnerWorld()->GetElements();
@@ -68,27 +57,6 @@ void DuplicateTransformTransformedHierarchy(
 			AddChildToParent(n, dest);
 		}
 	}
-}
-
-// FIXME: do we still need this one?
-Pimp::AnimCurve* DuplicateAnimCurve( Pimp::World* world, Pimp::AnimCurve* curve, float delay )
-{
-	Pimp::AnimCurve* dupeCurve = new Pimp::AnimCurve(world);
-	world->GetElements().Add(dupeCurve);
-
-	FixedSizeList<Pimp::AnimCurve::Pair>* pairs = new FixedSizeList<Pimp::AnimCurve::Pair>(curve->GetKeysPtr()->Size());
-
-	*pairs = *curve->GetKeysPtr();
-
-	for (int i=0; i<pairs->Size(); ++i)
-	{
-		Pimp::AnimCurve::Pair& pair = (*pairs)[i];
-		pair.time += delay;
-	}
-
-	dupeCurve->SetKeysPtr(pairs);
-
-	return dupeCurve;
 }
 
 // Easy loading bar update & draw.

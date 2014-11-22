@@ -1,19 +1,21 @@
+
+#include "Platform.h"
+#include "D3D.h"
 #include "Scene.h"
 
 namespace Pimp
 {
-	// Adjust sceneRenderLOD to render all scenes at a lower res.
-	// 1.0 = At exact screen resolution
-	// 0.5 = Half res
-	// 0.25 = Quarter res
-	// etc...
-	// Note that performance of our scene shaders typically scales linearly with 
-	// the amount of rendered pixels.
+	// Adjust sceneRenderLOD to render all scenes at a lower resolution.
+	// - 1.0  = At exact screen resolution.
+	// - 0.5  = Half.
+	// - 0.25 = Quarter.
+	//
+	// Note that performance of our scene shaders typically scales linearly with the amount of rendered pixels.
 
 #ifndef _DEBUG
-	float Scene::sceneRenderLOD = 1.000f;
+	float Scene::sceneRenderLOD = 1.f;
 #else
-	float Scene::sceneRenderLOD = 1.000f;
+	float Scene::sceneRenderLOD = 1.f;
 #endif
 
 	Scene::Scene(World* ownerWorld) :
@@ -24,7 +26,7 @@ namespace Pimp
 
 	void Scene::Render(Camera* camera)
 	{
-		if (material != NULL)
+		if (nullptr != material)
 		{
 			material->Bind(camera);
 			gD3D->SetBlendMode(material->GetBlendMode());

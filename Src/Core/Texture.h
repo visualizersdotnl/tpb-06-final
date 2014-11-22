@@ -1,7 +1,5 @@
-#pragma once
 
-#include <d3d10_1.h>
-#include <string>
+#pragma once
 
 namespace Pimp
 {
@@ -28,14 +26,7 @@ namespace Pimp
 			return view; 
 		}
 
-		int GetWidth() const
-		{
-			return width;
-		}
-
-		int GetHeight() const
-		{
-			return height;
-		}
+		int GetWidth() const  { return width;  }
+		int GetHeight() const { return height; }
 	};
 }

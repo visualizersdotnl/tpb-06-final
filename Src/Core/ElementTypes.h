@@ -1,5 +1,5 @@
-#pragma once
 
+#pragma once
 
 namespace Pimp 
 {
@@ -15,11 +15,9 @@ namespace Pimp
 		ET_AnimCurve,
 		ET_PolyMesh,
 		ET_MaterialParameter,
-		ET_Overlay,
 		ET_ParticleSpline,
 		ET_ParticleAttractor,
 		ET_Scene,
-		ET_Balls,
 		ET_Metaballs,
 
 		MAX_ElementType

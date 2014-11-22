@@ -1,5 +1,7 @@
-#include "RenderTarget.h"
 
+#include "Platform.h"
+#include "D3D.h"
+// #include "RenderTarget.h"
 
 namespace Pimp 
 {
@@ -13,19 +15,16 @@ namespace Pimp
 	{
 	}
 
-
 	RenderTarget::~RenderTarget()
 	{
-		if (shaderResourceView != NULL)
-			shaderResourceView->Release();
-
-		renderTargetView->Release();
-		texture->Release();
+		SAFE_RELEASE(shaderResourceView);
+		SAFE_RELEASE(renderTargetView);
+		SAFE_RELEASE(texture);
 	}
-
 
 	void RenderTarget::ResolveTo(RenderTarget* other)
 	{
+		ASSERT(nullptr != other);
 		gD3D->ResolveMultiSampledRenderTarget(other->texture, texture, format);
 	}
 }

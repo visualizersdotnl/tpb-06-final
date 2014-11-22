@@ -1,183 +1,181 @@
-#include "Effect.h"
-#include "D3D.h"
-#include <Shared/shared.h>
 
-#define EFFECT_MAX_NUM_VARIABLES 256
+#include "Platform.h"
+#include <Shared/assert.h>
+#include "D3D.h"
+#include "Effect.h"
 
 namespace Pimp
 {
 	Effect::Effect(const unsigned char* compiledEffect, int compiledEffectLength)
-		: variables(EFFECT_MAX_NUM_VARIABLES)
 	{
+		variables.reserve(16); // Reasonable pre-alloc.
 		effect = gD3D->CreateEffect(compiledEffect, compiledEffectLength);
 	}
 
-
 	Effect::~Effect()
 	{
-		effect->Release();
+		SAFE_RELEASE(effect);
 	}
 
 	ID3D10EffectTechnique* Effect::GetTechnique(const char* name)
 	{
-		ID3D10EffectTechnique* tech = effect->GetTechniqueByName(name);
-
-		return tech->IsValid() ? tech : NULL;
+		ID3D10EffectTechnique* technique = effect->GetTechniqueByName(name);
+		ASSERT(nullptr != technique);
+		return technique->IsValid() ? technique : nullptr;
 	}
 
 	int Effect::RegisterVariable(const char* name, bool required)
 	{
 		ID3D10EffectVariable* variable = effect->GetVariableByName(name);
+		ASSERT(!required || (nullptr != variable && variable->IsValid()));
 
-		ASSERT(!required || (variable != NULL && variable->IsValid()));
-
-		if (variable != NULL && variable->IsValid())
+		if (nullptr != variable && variable->IsValid())
 		{
-			variables.Add(variable);
-
-			return variables.Size()-1;
+			variables.push_back(variable);
+			return int(variables.size()-1);
 		}
 		else
+		{
 			return -1;
+		}
 	}
 
 	bool Effect::HasVariable(const char* name) const
 	{
 		ID3D10EffectVariable* variable = effect->GetVariableByName(name);
-
-		return variable != NULL && variable->IsValid();
+		return nullptr != variable && variable->IsValid();
 	}
 
 	void Effect::ResetRegisteredVariables()
 	{
-		variables.Clear();
+		variables.clear();
 	}
 
 #ifdef _DEBUG
 
-	D3D10_EFFECT_TYPE_DESC Effect::GetTypeDesc(int index) const
+	const D3D10_EFFECT_TYPE_DESC Effect::GetTypeDesc(int index) const
 	{
 		ID3D10EffectType* type = variables[index]->GetType();
 		ASSERT(type != NULL);
 
 		D3D10_EFFECT_TYPE_DESC desc;
-		D3D_VERIFY( type->GetDesc(&desc) );
+		D3D_VERIFY(type->GetDesc(&desc));
 
 		return desc;
 	}
 
 #endif
 
-	void Effect::SetVariableValue( int index, float value )
+	void Effect::SetVariableValue(int index, float value)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
 
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_SCALAR && desc.Elements == 0,
-			"Cannot set effect variable. It's not a single scalar float var." )
+			"Effect variable type mismatch: expected scalar float." )
 #endif
 
 		ID3D10EffectScalarVariable* scalar = variables[index]->AsScalar();
 		ASSERT(scalar->IsValid());
 
-		HRESULT hr = scalar->SetFloat(value);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = scalar->SetFloat(value);
+		D3D_ASSERT(hRes);
 	}
 
-	void Effect::SetVariableValue( int index, const Matrix4& value )
+	void Effect::SetVariableValue(int index, const Matrix4& value)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
 
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_MATRIX_COLUMNS && desc.Columns == 4 && desc.Rows == 4 && desc.Elements == 0, 
-			"Cannot set effect variable. It's not a matrix var." )
+			"Effect variable type mismatch: expected matrix." )
 #endif
 
 		ID3D10EffectMatrixVariable* matrix = variables[index]->AsMatrix();
 		ASSERT(matrix->IsValid());
 
-		HRESULT hr = matrix->SetMatrix((float*)&value);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = matrix->SetMatrix((float*) &value);
+		D3D_ASSERT(hRes);
 	}
 
-	void Effect::SetVariableValue( int index, const Vector2& value )
+	void Effect::SetVariableValue(int index, const Vector2& value)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
 
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_VECTOR && desc.Elements == 0 && desc.Rows == 1 && desc.Columns == 2, 
-			"Cannot set effect variable. It's not a float2 var." )
+			"Effect variable type mismatch: expected Vector2." )
 #endif
 
-		ID3D10EffectVectorVariable* var = variables[index]->AsVector();
-		ASSERT(var->IsValid());
+		ID3D10EffectVectorVariable* vector = variables[index]->AsVector();
+		ASSERT(vector->IsValid());
 
-		HRESULT hr = var->SetFloatVector((float*)&value);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = vector->SetFloatVector((float*) &value);
+		D3D_ASSERT(hRes);
 	}
 
-	void Effect::SetVariableValue( int index, const Vector4& value )
+	void Effect::SetVariableValue(int index, const Vector4& value)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
 
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_VECTOR && desc.Elements == 0 && desc.Rows == 1 && desc.Columns == 4, 
-			"Cannot set effect variable. It's not a float4 var." )
+			"Effect variable type mismatch: expected Vector4." )
 #endif
 
-		ID3D10EffectVectorVariable* var = variables[index]->AsVector();
-		ASSERT(var->IsValid());
+		ID3D10EffectVectorVariable* vector = variables[index]->AsVector();
+		ASSERT(vector->IsValid());
 
-		HRESULT hr = var->SetFloatVector((float*)&value);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = vector->SetFloatVector((float*) &value);
+		D3D_ASSERT(hRes);
 	}
 
 	void Effect::SetVariableValue(int index, ID3D10ShaderResourceView* shaderResource)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
 
 		ASSERT_MSG( (desc.Type == D3D10_SVT_TEXTURE2D || desc.Type == D3D10_SVT_TEXTURE3D) && desc.Elements == 0, 
-			"Cannot set effect variable. It's not a texture2D or texture3D var." )
+			"Effect variable type mismatch: expected Texture2D or Texture2D SRV." )
 #endif
 
-		ID3D10EffectShaderResourceVariable* var = variables[index]->AsShaderResource();
-		ASSERT(var->IsValid());
+		ID3D10EffectShaderResourceVariable* resource = variables[index]->AsShaderResource();
+		ASSERT(resource->IsValid());
 
-		HRESULT hr = var->SetResource(shaderResource);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = resource->SetResource(shaderResource);
+		D3D_ASSERT(hRes);
 	}
 
 	void Effect::SetVariableValue(int index, Vector4* value, int numValues)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_VECTOR && desc.Elements == numValues && desc.Rows == 1 && desc.Columns == 4, 
-			"Cannot set effect variable. It's not a float4 array of the right size." )
+			"Effect variable type mismatch: expected properly sized array of float4." )
 #endif
 
-		ID3D10EffectVectorVariable* var = variables[index]->AsVector();
-		ASSERT(var->IsValid());
+		ID3D10EffectVectorVariable* array = variables[index]->AsVector();
+		ASSERT(array->IsValid());
 
-		HRESULT hr = var->SetFloatVectorArray((float*)value, 0, numValues);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = array->SetFloatVectorArray((float*) value, 0, numValues);
+		D3D_ASSERT(hRes);
 	}
 
 
 	void Effect::SetVariableValue(int index, float* value, int numValues)
 	{
 #ifdef _DEBUG
-		D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+		const D3D10_EFFECT_TYPE_DESC desc = GetTypeDesc(index);
+
 		ASSERT_MSG( desc.Type == D3D10_SVT_FLOAT && desc.Class == D3D10_SVC_SCALAR && desc.Elements == numValues, 
-			"Cannot set effect variable. It's not a float array of the right size." )
+			"Effect variable type mismatch: expected properly sized array of float4." )
 #endif
 
-		ID3D10EffectScalarVariable* var = variables[index]->AsScalar();
-		ASSERT(var->IsValid());
+		ID3D10EffectScalarVariable* array = variables[index]->AsScalar();
+		ASSERT(array->IsValid());
 
-		HRESULT hr = var->SetFloatArray(value, 0, numValues);
-		D3D_ASSERT(hr);
+		const HRESULT hRes = array->SetFloatArray(value, 0, numValues);
+		D3D_ASSERT(hRes);
 	}
-
 }
-

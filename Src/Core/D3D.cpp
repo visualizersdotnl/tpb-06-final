@@ -1,9 +1,9 @@
-#include "D3D.h"
-#include <shared/shared.h>
-#include "RenderTarget.h"
-#include "DepthStencil.h"
-#include "Configuration.h"
 
+#include "Platform.h"
+#include <shared/shared.h>
+#include "D3D.h"
+#include "Settings.h"
+#include "Configuration.h"
 #include "D3DCompiler.h"
 
 namespace Pimp
@@ -64,23 +64,20 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 	// Resort to triangle lists
 	device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Rasterizer state.
+	// Create and set fixed rasterizer state
 	D3D10_RASTERIZER_DESC rasterDesc;
 	memset(&rasterDesc, 0, sizeof(rasterDesc));
 	rasterDesc.FillMode = D3D10_FILL_SOLID;
 	rasterDesc.CullMode = D3D10_CULL_BACK;
-//	rasterDesc.FrontCounterClockwise = FALSE;
-//	rasterDesc.DepthBias = 0;
-//	rasterDesc.DepthBiasClamp = 0;
-//	rasterDesc.SlopeScaledDepthBias = 0;
+	rasterDesc.FrontCounterClockwise = FALSE;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0;
+	rasterDesc.SlopeScaledDepthBias = 0;
 	rasterDesc.DepthClipEnable = TRUE;
-//	rasterDesc.ScissorEnable = FALSE;
+	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.MultisampleEnable = TRUE;
-//	rasterDesc.AntialiasedLineEnable = FALSE;
-	
-	rasterizerState = NULL;
-	hr = device->CreateRasterizerState(&rasterDesc, &rasterizerState);
-	D3D_ASSERT(hr);
+	rasterDesc.AntialiasedLineEnable = FALSE;
+	D3D_VERIFY(device->CreateRasterizerState(&rasterDesc, &rasterizerState));
 
 	device->RSSetState(rasterizerState);
 
@@ -144,12 +141,12 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 	dsStateDesc.DepthEnable = true;
 	dsStateDesc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
 	dsStateDesc.DepthFunc = D3D10_COMPARISON_LESS;
-	D3D_VERIFY(S_OK == device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[0]));
+	D3D_VERIFY(device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[0]));
 	
 	dsStateDesc.DepthEnable = false;
 	dsStateDesc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
 	dsStateDesc.DepthFunc = D3D10_COMPARISON_ALWAYS;
-	D3D_VERIFY(S_OK == device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[1]));
+	D3D_VERIFY(device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[1]));
 
 	// Depth-stencil disabled by default
 	DisableDepthStencil();
@@ -251,31 +248,29 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 		whiteStuff.SysMemSlicePitch = 0;
 
 		ID3D10Texture2D *pResource;
-		VERIFY(S_OK == device->CreateTexture2D(&texDesc, &whiteStuff, &pResource));
+		D3D_VERIFY(device->CreateTexture2D(&texDesc, &whiteStuff, &pResource));
 
 		ID3D10ShaderResourceView *pView;
-		VERIFY(S_OK == device->CreateShaderResourceView(pResource, NULL, &pView));
+		D3D_VERIFY(device->CreateShaderResourceView(pResource, NULL, &pView));
 
 		pWhiteTex = new Texture2D("texWhite", 4, 4, pResource, pView);
 	}
 }
-
 
 D3D::~D3D()
 {
 	delete pWhiteTex;
 
 	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
-		if (nullptr != blendStates[iBS]) blendStates[iBS]->Release();
+		SAFE_RELEASE(blendStates[iBS]);
 	
-	for (int iState = 0; iState < 2; ++iState)
-		if (nullptr != depthStencilState[iState]) depthStencilState[iState]->Release();
+	SAFE_RELEASE(depthStencilState[0]);
+	SAFE_RELEASE(depthStencilState[1]);
 
 	delete depthStencil;
-	if (nullptr != rasterizerState) rasterizerState->Release();
+	SAFE_RELEASE(rasterizerState);
 	delete renderTargetBackBuffer;
 }
-
 
 void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 {
@@ -283,24 +278,25 @@ void D3D::Clear(ID3D10RenderTargetView* renderTarget)
 	device->ClearRenderTargetView(renderTarget, RGBA);
 }
 
-void D3D::ClearBackBuffer()
+void D3D::BindBackbuffer(DepthStencil* depth)
 {
-	Clear(renderTargetBackBuffer->GetRenderTargetView());
+	ID3D10RenderTargetView* view = renderTargetBackBuffer->GetRenderTargetView();
+	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : nullptr);
 }
 
-void D3D::ClearDepthStencil()
+void D3D::BindRenderTarget( RenderTarget* pixels, DepthStencil* depth)
 {
-	device->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0, 0 );
+	ASSERT(nullptr != pixels);
+	ID3D10RenderTargetView* view = pixels->GetRenderTargetView();
+	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : nullptr);
 }
 
-void D3D::Flip(UINT syncInterval)
+void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
 {
-	D3D_VERIFY(S_OK == swapChain->Present(syncInterval, 0));
+	ASSERT(nullptr != pixels && sliceIndex >= 0);
+	ID3D10RenderTargetView* view = pixels->GetRenderTargetView(sliceIndex);
+	device->OMSetRenderTargets(1, &view, nullptr); // No depth-stencil.
 }
-
-void D3D::SetBackViewport()    { device->RSSetViewports(1, &backVP);    }
-void D3D::SetBackAdjViewport() { device->RSSetViewports(1, &backAdjVP); }
-void D3D::SetSceneViewport()   { device->RSSetViewports(1, &sceneVP);   }
 
 ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, bool isDynamic)
 {
@@ -318,15 +314,12 @@ ID3D10Buffer* D3D::CreateVertexBuffer(int numBytes, const void* initialData, boo
 	data.SysMemPitch = 0;
 	data.SysMemSlicePitch = 0;
 
-
-	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, (initialData == NULL) ? nullptr : &data, &buffer);
-	D3D_ASSERT(hr);
-	ASSERT(buffer != NULL);
-
+	ID3D10Buffer* buffer = nullptr;
+	const HRESULT hRes = device->CreateBuffer(&bufferDesc, (initialData == nullptr) ? nullptr : &data, &buffer);
+	D3D_ASSERT(hRes);
+	
 	return buffer;
 }
-
 
 ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bool isDynamic)
 {
@@ -347,95 +340,54 @@ ID3D10Buffer* D3D::CreateIndexBuffer(int numIndices, const void* initialData, bo
 		data.SysMemSlicePitch = 0;
 	}
 
-	ID3D10Buffer* buffer = NULL;
-	HRESULT hr = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
-	D3D_ASSERT(hr);
-	ASSERT(buffer != NULL);
+	ID3D10Buffer* buffer = nullptr;
+	const HRESULT hRes = device->CreateBuffer(&bufferDesc, (true == isDynamic) ? nullptr : &data, &buffer);
+	D3D_ASSERT(hRes);
 
 	return buffer;
 }
-
-
-void D3D::BindVertexBuffer(int slot, ID3D10Buffer* buffer, unsigned int stride)
-{
-	unsigned int offset = 0;
-	device->IASetVertexBuffers(slot, 1, &buffer, &stride, &offset);
-}
-
-
-void D3D::BindIndexBuffer(ID3D10Buffer* buffer)
-{
-	device->IASetIndexBuffer(buffer, DXGI_FORMAT_R32_UINT, 0);
-}
-
-
-void D3D::BindInputLayout(ID3D10InputLayout* layout)
-{
-	device->IASetInputLayout(layout);
-}
-
-
-void D3D::DrawTriList(DWORD numTris)
-{
-	device->Draw(numTris*3, 0);
-}
-
-
-void D3D::DrawTriQuad(DWORD offset)
-{
-	device->Draw(6, offset);
-}
-
-
-void D3D::DrawIndexedTriList(DWORD numTris)
-{
-	device->DrawIndexed(numTris*3, 0, 0);
-}
-
-
-ID3D10Effect* D3D::CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength)
-{
-	ID3D10Effect* effect = NULL;
-
-	HRESULT hr = D3D10CreateEffectFromMemory(
-		(void*)compiledEffect, compiledEffectLength,
-		0, device, NULL, &effect);
-
-	D3D_ASSERT(hr);
-	ASSERT(effect != NULL);
-
-	return effect;
-}
-
 
 ID3D10InputLayout* D3D::CreateInputLayout(
 	const D3D10_INPUT_ELEMENT_DESC* description,
 	int numDescriptionItems,
 	unsigned char* signatureIA, int signatureIALength)
 {
-	ID3D10InputLayout* layout = NULL;
+	ASSERT(nullptr != description);
 
-	HRESULT hr = device->CreateInputLayout(
-		description, numDescriptionItems, signatureIA, signatureIALength,
+	ID3D10InputLayout* layout = nullptr;
+	const HRESULT hRes = device->CreateInputLayout(
+		description, 
+		numDescriptionItems, 
+		signatureIA, 
+		signatureIALength,
 		&layout);
-	
-	D3D_ASSERT(hr);
-	ASSERT(layout != NULL);
+	D3D_ASSERT(hRes);
 
 	return layout;
 }
 
-
-RenderTarget* D3D::CreateRenderTarget( int viewportShrinkFactor, DXGI_FORMAT format, bool multiSample )
+ID3D10Effect* D3D::CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength)
 {
-	ASSERT(viewportShrinkFactor >= 1);
+	ASSERT(nullptr != compiledEffect && compiledEffectLength > 0);
+
+	ID3D10Effect* effect = nullptr;
+	const HRESULT hRes = D3D10CreateEffectFromMemory(
+		(void*) compiledEffect, compiledEffectLength,
+		0, device, nullptr, &effect);
+	D3D_ASSERT(hRes);
+
+	return effect;
+}
+
+RenderTarget* D3D::CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool multiSample)
+{
+	ASSERT(shrinkFactor >= 1);
 
 	// Create texture
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
-
-	desc.Width = sceneVP.Width/viewportShrinkFactor;
-	desc.Height = sceneVP.Height/viewportShrinkFactor;
+	desc.Width = sceneVP.Width/shrinkFactor;
+	desc.Height = sceneVP.Height/shrinkFactor;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = format;
@@ -444,43 +396,45 @@ RenderTarget* D3D::CreateRenderTarget( int viewportShrinkFactor, DXGI_FORMAT for
 	desc.Usage = D3D10_USAGE_DEFAULT;
 	desc.BindFlags = D3D10_BIND_RENDER_TARGET | D3D10_BIND_SHADER_RESOURCE;
 
-	ID3D10Texture2D* texture = NULL;
-	HRESULT hr = device->CreateTexture2D(&desc, NULL, &texture);
-	D3D_ASSERT(hr);
-	ASSERT(texture != NULL);
+	ID3D10Texture2D* texture = nullptr;
+	HRESULT hRes = device->CreateTexture2D(&desc, NULL, &texture);
+	D3D_ASSERT(hRes);
 
-	// Create rendertarget-view
-	//D3D10_RENDER_TARGET_VIEW_DESC rtDesc;
-	//FillSomeMemory(&rtDesc, sizeof(rtDesc), 0);
-	//rtDesc.Format = format;
-	//rtDesc.ViewDimension = D3D10_RTV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
+	// Create view
+	D3D10_RENDER_TARGET_VIEW_DESC rtDesc;
+	memset(&rtDesc, 0, sizeof(rtDesc));
+	rtDesc.Format = format;
+	rtDesc.ViewDimension = D3D10_RTV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
 
-	ID3D10RenderTargetView* renderTargetView = NULL;
-	hr = device->CreateRenderTargetView(texture, NULL/*&rtDesc*/, &renderTargetView);
-	D3D_ASSERT(hr);
-	ASSERT(renderTargetView != NULL);	
+	ID3D10RenderTargetView* renderTargetView = nullptr;
 
-	// Create shaderresource view
-	//D3D10_SHADER_RESOURCE_VIEW_DESC shDesc;
-	//FillSomeMemory(&shDesc, sizeof(shDesc), 0);
-	//shDesc.Format = format;
-	//shDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
+	// FIXME
+//	hRes = device->CreateRenderTargetView(texture, (false == multiSample) ? nullptr : &rtDesc, &renderTargetView);
+	hRes = device->CreateRenderTargetView(texture, nullptr, &renderTargetView);
+	D3D_ASSERT(hRes);
 
-	ID3D10ShaderResourceView* shaderResourceView = NULL;
-	hr = device->CreateShaderResourceView(texture, NULL/*&shDesc*/, &shaderResourceView);
-	D3D_ASSERT(hr);
-	ASSERT(shaderResourceView != NULL);
+	// Create shader view
+	D3D10_SHADER_RESOURCE_VIEW_DESC shDesc;
+	memset(&shDesc, 0, sizeof(shDesc));
+	shDesc.Format = format;
+	shDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
+
+	ID3D10ShaderResourceView* shaderResourceView = nullptr;
+
+	// FIXME
+//	hRes = device->CreateShaderResourceView(texture, (false == multiSample) ? nullptr : &shDesc, &shaderResourceView);
+	hRes = device->CreateShaderResourceView(texture, nullptr, &shaderResourceView);
+	D3D_ASSERT(hRes);
 
 	return new RenderTarget(format, texture, renderTargetView, shaderResourceView);
-}
 
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+}
 
 ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 {
-	// Create texture
 	D3D10_TEXTURE2D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
-
 	desc.Width = sceneVP.Width;
 	desc.Height = sceneVP.Height;
 	desc.MipLevels = 1;
@@ -492,33 +446,15 @@ ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	desc.CPUAccessFlags = D3D10_CPU_ACCESS_READ;
 	desc.BindFlags = 0;
 
-	ID3D10Texture2D* texture = NULL;
-	HRESULT hr = device->CreateTexture2D(&desc, NULL, &texture);
-	D3D_ASSERT(hr);
-	ASSERT(texture != NULL);
+	ID3D10Texture2D* texture = nullptr;
+	const HRESULT hRes = device->CreateTexture2D(&desc, nullptr, &texture);
+	D3D_ASSERT(hRes);
 
 	return texture;
 }
 
-void D3D::CopyTextures(ID3D10Texture2D* dest, ID3D10Texture2D* src)
-{
-	device->CopyResource(dest, src);
-}
-
-void D3D::BindBackbuffer(DepthStencil* depth)
-{
-	ID3D10RenderTargetView* view = renderTargetBackBuffer->GetRenderTargetView();
-	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : NULL);
-}
-
-void D3D::ResolveMultiSampledRenderTarget( ID3D10Texture2D* dest, ID3D10Texture2D* source, DXGI_FORMAT format )
-{
-	device->ResolveSubresource(dest, 0, source, 0, format);
-}
-
 DepthStencil* D3D::CreateDepthStencil(bool multiSample)
 {
-	// Depth-stencil
 	D3D10_TEXTURE2D_DESC descDepth;
 	descDepth.Width = backVP.Width;
 	descDepth.Height = backVP.Height;
@@ -532,44 +468,26 @@ DepthStencil* D3D::CreateDepthStencil(bool multiSample)
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	ID3D10Texture2D* texture = NULL;
-	HRESULT hr = device->CreateTexture2D( &descDepth, NULL, &texture);
-	D3D_ASSERT(hr);
-	ASSERT(texture != NULL);
+	// Create depth stencil
+	ID3D10Texture2D* texture = nullptr;
+	HRESULT hRes = device->CreateTexture2D(&descDepth, nullptr, &texture);
+	D3D_ASSERT(hRes);
 
-	// Depth-stencil view
-	ID3D10DepthStencilView* view = NULL;
+	// And it's view
+	ID3D10DepthStencilView* view = nullptr;
 
 	D3D10_DEPTH_STENCIL_VIEW_DESC descDSV;
 	descDSV.Format = descDepth.Format;
 	descDSV.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0;
 	
-	hr = device->CreateDepthStencilView(texture, NULL, &view);
-	D3D_ASSERT(hr);
-	ASSERT(view != NULL);
+	hRes = device->CreateDepthStencilView(texture, nullptr /* FIXME: why not &descDSV? */, &view);
+	D3D_ASSERT(hRes);
 
 	return new DepthStencil(texture, view);
+
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
-
-
-void D3D::BindRenderTarget( RenderTarget* pixels, DepthStencil* depth )
-{
-	ID3D10RenderTargetView* view = pixels->GetRenderTargetView();
-
-	device->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : NULL);
-}
-
-
-void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
-{
-	ID3D10RenderTargetView* view = pixels->GetRenderTargetView(sliceIndex);
-
-	device->OMSetRenderTargets(1, &view, NULL);
-}
-
-
-
 
 Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection)
 {
@@ -585,71 +503,64 @@ Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, 
 	desc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
 	desc.MiscFlags = 0;
 
-	ID3D10Texture2D* texture = NULL;
-	HRESULT hr = device->CreateTexture2D(&desc, NULL, &texture);
-	D3D_ASSERT(hr);
+	ID3D10Texture2D* texture = nullptr;
+	HRESULT hRes = device->CreateTexture2D(&desc, nullptr, &texture);
+	D3D_ASSERT(hRes);
 
-	ID3D10ShaderResourceView* view = NULL;
-	hr = device->CreateShaderResourceView(texture, NULL/*&shDesc*/, &view);
-	D3D_ASSERT(hr);
-	ASSERT(view != NULL);
+	ID3D10ShaderResourceView* view = nullptr;
+	hRes = device->CreateShaderResourceView(texture, nullptr, &view);
+	D3D_ASSERT(hRes);
 
 	return new Texture2D(name, width, height, texture, view);
-}
 
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+}
 
 Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, int depth)
 {
 	D3D10_TEXTURE3D_DESC desc;
 	memset(&desc, 0, sizeof(desc));
-
 	desc.Width = width;
 	desc.Height = height;
 	desc.Depth = depth;
 	desc.MipLevels = 1; // Only a single mip
-	desc.Format = DXGI_FORMAT_R16G16_FLOAT; //DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.Format = DXGI_FORMAT_R16G16_FLOAT;
 	desc.Usage = D3D10_USAGE_DEFAULT;
-	desc.BindFlags = D3D10_BIND_RENDER_TARGET | D3D10_BIND_SHADER_RESOURCE; // <-- all our 3d textures are render targets too!
+	desc.BindFlags = D3D10_BIND_RENDER_TARGET | D3D10_BIND_SHADER_RESOURCE; 
+	// ^^ All our 3d textures are render targets too!
 
-	ID3D10Texture3D* texture = NULL;
-	HRESULT hr = device->CreateTexture3D(&desc, NULL, &texture);
-	D3D_ASSERT(hr);
+	ID3D10Texture3D* texture = nullptr;
+	HRESULT hRes = device->CreateTexture3D(&desc, nullptr, &texture);
+	D3D_ASSERT(hRes);
 
 	// Create view for sampling
-	ID3D10ShaderResourceView* view = NULL;
-	hr = device->CreateShaderResourceView(texture, NULL/*&shDesc*/, &view);
-	D3D_ASSERT(hr);
-	ASSERT(view != NULL);
+	ID3D10ShaderResourceView* view = nullptr;
+	hRes = device->CreateShaderResourceView(texture, nullptr, &view);
+	D3D_ASSERT(hRes);
 
 	// Create N views for rendering to
-	ID3D10RenderTargetView** rtviews = new ID3D10RenderTargetView*[depth];
+	ID3D10RenderTargetView** rtViews = new ID3D10RenderTargetView*[depth];
 
-	for (int i=0; i<depth; ++i)
+	for (int iSlice = 0; iSlice < depth; ++iSlice)
 	{
 		D3D10_RENDER_TARGET_VIEW_DESC rtv;
 		rtv.Format = desc.Format;
 		rtv.ViewDimension = D3D10_RTV_DIMENSION_TEXTURE3D;
 		rtv.Texture3D.MipSlice = 0;
 		rtv.Texture3D.WSize = 1;
-		rtv.Texture3D.FirstWSlice = i;
+		rtv.Texture3D.FirstWSlice = iSlice;
 
-		ID3D10RenderTargetView* renderTargetView = NULL;
-		hr = device->CreateRenderTargetView(texture, &rtv, &renderTargetView);
-		D3D_ASSERT(hr);
-		ASSERT(renderTargetView != NULL);
+		ID3D10RenderTargetView* renderTargetView = nullptr;
+		hRes = device->CreateRenderTargetView(texture, &rtv, &renderTargetView);
+		D3D_ASSERT(hRes);
 
-		rtviews[i] = renderTargetView;
+		rtViews[iSlice] = renderTargetView;
 	}
 
-	return new Texture3D(name, width, height, depth, texture, view, rtviews);
+	return new Texture3D(name, width, height, depth, texture, view, rtViews);
+
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
-
-
-void D3D::SetBlendMode(Blend mode)
-{
-	device->OMSetBlendState(blendStates[mode], nullptr, 0xffffffff);
-}
-
 
 bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* outCompiledEffectLength)
 {	

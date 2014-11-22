@@ -1,8 +1,9 @@
-#include "D3D.h"
-#include "Texture3D.h"
+
+#include "Platform.h"
 #include <xmmintrin.h>
 #include <emmintrin.h>
-
+#include "D3D.h"
+// #include "Texture3D.h"
 
 namespace Pimp
 {
@@ -13,45 +14,27 @@ namespace Pimp
 
 	Texture3D::~Texture3D()
 	{
-		if (texture != NULL)
-		{
-			texture->Release();
-			texture = NULL;
-		}
+		SAFE_RELEASE(texture);
 
-		for (int i=0; i<depth; ++i)
-		{
-			if (sliceRenderTargetViews[i] != NULL)
-			{
-				sliceRenderTargetViews[i]->Release();
-				sliceRenderTargetViews[i] = NULL;
-			}
-		}
+		for (int iSlice = 0; iSlice < depth; ++iSlice)
+			SAFE_RELEASE(sliceRenderTargetViews[iSlice]);
 
-		delete [] sliceRenderTargetViews;
+		delete[] sliceRenderTargetViews;
 	}
 
 	void Texture3D::UploadTexels(float* sourceTexels)
 	{
 		D3D10_MAPPED_TEXTURE3D mappedTex;
-		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
-
-		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch == GetWidth()*4); // We're assuming this...
-		ASSERT(mappedTex.DepthPitch == GetWidth()*GetHeight()*4); // We're assuming this...
-
-		memcpy(destTexels, sourceTexels, GetWidth()*GetHeight()*GetDepth()*4);
-
-		//#ifdef _DEBUG
-		//		char s[256];
-		//		sprintf_s(s, 256, "c:\\temp\\tex\\tex%d.tga",id);
-		//
-		//		StoreTGAImageToFile(s, sizePixels, sizePixels, destTexels);
-		//#endif
-
+		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		{
+			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
+		
+			// Assumption: no padding.
+			ASSERT(mappedTex.RowPitch == GetWidth()*4);
+			ASSERT(mappedTex.DepthPitch == GetWidth()*GetHeight()*4);
+	
+			memcpy(destTexels, sourceTexels, GetWidth()*GetHeight()*GetDepth()*4);
+		}
 		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
 	}
-
 }
-
-

@@ -1,9 +1,8 @@
+
 #pragma once
 
-#include "Node.h"
-
-#include "AnimCurve.h"
 #include <shared/shared.h>
+#include "Node.h"
 #include "Effect.h"
 
 namespace Pimp 
@@ -19,7 +18,6 @@ namespace Pimp
 			VT_NodeXformInv
 		};
 	private:
-		AnimCurve* animCurveValue;
 		float value;
 		char name[512];
 		ValueType valueType;
@@ -30,17 +28,12 @@ namespace Pimp
 
 		float GetCurrentValue() const 
 		{
-			return animCurveValue ? animCurveValue->GetCurrentValue() : value;
+			return value;
 		}
 
 		void SetValue(float value)
 		{
 			this->value = value;
-		}
-
-		void SetAnimCurveValue(AnimCurve* curve)
-		{
-			animCurveValue = curve;
 		}
 
 		void SetName(const char* name)

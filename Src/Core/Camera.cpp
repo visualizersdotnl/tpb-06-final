@@ -1,5 +1,6 @@
+
+#include "Platform.h"
 #include "Camera.h"
-#include "D3D.h"
 #include "Configuration.h"
 
 namespace Pimp 
@@ -8,34 +9,26 @@ namespace Pimp
 		: Node(ownerWorld)
 	{
 		SetType(ET_Camera);
-
-		SetFOVy(1.5f);
+		SetFOVy(1.5f); // FIXME: this ain't 60 degrees. Why not?
 	}
 
 	void Camera::Tick(float timeDelta)
 	{
-
 		Node::Tick(timeDelta);
 	}
 
-
 	void Camera::Bind()
 	{
-		const Matrix4* wurld = GetWorldTransform();
+		const Matrix4* mWorld = GetWorldTransform();
+		worldPosition.x = mWorld->_41;
+		worldPosition.y = mWorld->_42;
+		worldPosition.z = mWorld->_43;
 
 		CreateLookAt(&viewMatrix);
 
-		worldPosition.x = wurld->_41;
-		worldPosition.y = wurld->_42;
-		worldPosition.z = wurld->_43;
-
-		// calc viewproj
 		viewProjMatrix = viewMatrix * projectionMatrix;
-
-		// calc viewinv
 		viewMatrixInverse = viewMatrix.Inversed();
 
-		// calc our planes... used for frustum culling
 		ExtractFrustumPlanes();
 	}
 
@@ -43,11 +36,10 @@ namespace Pimp
 	{
 		Matrix4& m = viewProjMatrix;
 
-		// calculate clipping planes in worldspace
-		// lots of kudos to the paper 
-		// "Fast Extraction of Viewing Frustum Planes from the World-View-Projection Matrix"
+		// Calculate clipping planes in world space
+		// Taken from: "Fast Extraction of Viewing Frustum Planes from the World-View-Projection Matrix"
 		// by Gil Gribb and Klaus Hartmann (15/06/2001)
-
+		
 		frustumPlane[FRUSTUM_LEFT].a = m._14 + m._11;
 		frustumPlane[FRUSTUM_LEFT].b = m._24 + m._21;
 		frustumPlane[FRUSTUM_LEFT].c = m._34 + m._31;
@@ -78,19 +70,17 @@ namespace Pimp
 		frustumPlane[FRUSTUM_FAR].c = m._34 - m._33;
 		frustumPlane[FRUSTUM_FAR].d = m._44 - m._43;
 
-		// normalize planes
-		// (only needed if we care about correct distances to the frustum planes)
-		for (int i=0; i<6; ++i)
-			frustumPlane[i].Normalize();
-
+		// Normalize planes (only needed if we care about correct distances to the frustum planes)
+		for (int iPlane = 0; iPlane < 6; ++iPlane)
+			frustumPlane[iPlane].Normalize();
 	}
 
 	void Camera::SetFOVy(float FOVy)
 	{
 		this->FOVy = FOVy;
 
-		// recalc projection matrix
-		float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
+		// Recalculate projection matrix
+		const float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
 		projectionMatrix = CreateMatrixPerspectiveFov(FOVy, renderAspect, 0.15f, 2000.0f);
 	}
 }

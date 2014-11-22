@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "D3D.h"
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"

@@ -1,7 +1,9 @@
+
+#include "Platform.h"
 #include "Node.h"
 
 #define PIMP_MAX_NUM_NODE_CHILDREN 1024
-#define PIMP_MAX_NUM_NODE_PARENTS 4096
+#define PIMP_MAX_NUM_NODE_PARENTS  4096
 
 namespace Pimp 
 {

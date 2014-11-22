@@ -1,7 +1,7 @@
+
 #pragma once
 
 #include "Node.h"
-
 #include "Material.h"
 #include "Camera.h"
 
@@ -10,9 +10,10 @@ namespace Pimp
 	class Scene : public Element
 	{
 	private:
-		Material* material; // can be NULL
+		// Check impl.
+		static float sceneRenderLOD;
 
-		static float sceneRenderLOD; // 1 = full screen, 0.5 = half size, 0.25 = quarter of screen, etc...
+		Material* material;
 
 	public:
 		Scene(World* ownerWorld);
@@ -20,17 +21,10 @@ namespace Pimp
 
 		void Render(Camera* camera);
 
-		void SetMaterial(Material* mat)
-		{
-			material = mat;
-		}
+		void SetMaterial(Material* mat) { material = mat;  }
+		Material* GetMaterial() const   { return material; }
 
-		Material* GetMaterial() const 
-		{
-			return material;
-		}
-
-		static float GetSceneRenderLOD()
+		static float GetSceneRenderLOD() 
 		{
 			return sceneRenderLOD;
 		}

@@ -1,13 +1,15 @@
+
 #pragma once
 
-#include <Shared/shared.h>
+#include <Shared/assert.h> // Used by <Shared/singleton.h>
+#include <Shared/singleton.h>
 
 namespace Pimp 
 {
-	// @plek: This class used to contain objects to aid a flexible configuration dialog.
-	//        The new Player stub has a rather different (and static) philosophy to setting up a display mode,
-	//        so all of this has been taken out. If in the future a dialog will be added, the code to maintain
-	//        a list of properties and selections will likely be maintained by the host or live alongside it.
+	// This class used to contain objects to aid a flexible configuration dialog.
+	// The new Player stub has a rather different (and static) philosophy to setting up a display mode,
+	// so all of this has been taken out. If in the future a dialog will be added, the code to maintain
+	// a list of properties and selections will likely be maintained by the host or live alongside it.
 
 	class Configuration : 
 		public Singleton<Configuration>

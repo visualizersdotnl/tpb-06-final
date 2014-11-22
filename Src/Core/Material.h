@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "Effect.h"
@@ -5,9 +6,6 @@
 #include "EffectPass.h"
 #include "Camera.h"
 #include "MaterialParameter.h"
-#include "Balls.h"
-
-#include <string>
 
 namespace Pimp 
 {
@@ -28,20 +26,16 @@ namespace Pimp
 			MaterialParameter* parameter;
 		};
 
-		FixedSizeList<int> boundTextureVariableIndices;
-		FixedSizeList<BoundMaterialParameter> boundMaterialParameters;
+		std::vector<int> boundTextureVariableIndices;
+		std::vector<BoundMaterialParameter> boundMaterialParameters;
 
-#ifdef _DEBUG
-		Balls::BoundBalls boundBalls;
-#endif
-
-		int varIndexViewInvMatrix;			// inv-view matrix
-		int varIndexSceneRenderLOD;			// scene render LOD. 1 = full screen, 0.5 = half size, 0.25 = quarter of screen, etc...
-		int varIndexSceneBuffer;			// scene buffer texture (only allowed in post effect material)
+		int varIndexViewInvMatrix;  // Inverse view matrix.
+		int varIndexSceneRenderLOD;	// Scene render LOD: 1 = full, 0.5 = half size, 0.25 = quarter, et cetera.
+		int varIndexSceneBuffer;    // Scene buffer texture/RT (only allowed in post effect material).
 
 		D3D::Blend blendMode;
 
-		// complete path to shader source file
+		// Complete path to shader source file
 		std::string shaderFileName; 
 protected:
 		virtual void InitParameters();

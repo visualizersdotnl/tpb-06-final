@@ -270,7 +270,7 @@ protected:
 	// And this one on top of Tick() to activate said scene.
 	void SetMainSceneAndDefaultCamera() 
 	{ 
-		s_pWorld->SetCurrentUserCamera(s_defaultCam);
+		s_pWorld->SetCamera(s_defaultCam);
 		s_pWorld->SetCurrentSceneIndex(m_sceneIdx); 
 	}
 };
@@ -421,8 +421,7 @@ bool GenerateWorld(const char *rocketClient)
 		return false;
 
 	// We're using Rocket- or debug-driven cameras only!
-	s_pWorld->SetCurrentUserCamera(s_defaultCam);
-	s_pWorld->SetUseCameraDirection(false);
+	s_pWorld->SetCamera(s_defaultCam);
 
 	// Loaded some more! :)
 	DrawLoadProgress(*s_pWorld, 0.75f);
@@ -451,7 +450,6 @@ bool GenerateWorld(const char *rocketClient)
 #endif
 	
 	// Finish up some World business.
-	s_pWorld->InitAllBalls();
 	s_pWorld->UpdateAllMaterialParameters();
 
 #if defined(SYNC_PLAYER)
@@ -621,7 +619,7 @@ bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 	// Debug camera?
 	if (nullptr != pDebugCam)
 	{
-		s_pWorld->SetCurrentUserCamera(pDebugCam);
+		s_pWorld->SetCamera(pDebugCam);
 		timeElapsed = 0.f; // Freeze world (apart from Rocket timing, obviously).
 	}
 

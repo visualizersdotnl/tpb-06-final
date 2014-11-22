@@ -1,67 +1,45 @@
 
+#include "Platform.h"
 #include "D3D.h"
 #include "World.h"
 #include "Xform.h"
-#include "Geometry.h"
-#include "ParticleSpline.h"
 
+// Non-node drawables.
 #include "Metaballs.h"
 #include "Sprites.h"
 
 // FIXME: Introduce regular STL vectors instead?
 #define PIMP_MAX_NUM_WORLD_ELEMENTS 8192
-#define PIMP_MAX_NUM_PARTICLEATTRACTORS 256
 #define PIMP_MAX_NUM_TEXTURES 256
 #define PIMP_MAX_NUM_SCENES 256
-#define PIMP_MAX_NUM_CAMERADIRECTIONSHOTS 256
 #define PIMP_MAX_NUM_MATERIALS 256
 
 namespace Pimp 
 {
 	World::World()
-		: elements(PIMP_MAX_NUM_WORLD_ELEMENTS),
-		useCameraDirector(false),
-		directionCameras(PIMP_MAX_NUM_CAMERADIRECTIONSHOTS),
-		scenes(PIMP_MAX_NUM_SCENES),
-		materials(PIMP_MAX_NUM_MATERIALS),
-		currentUserCamera(NULL),
-		currentTime(0),
-		prevMotionBlurTime(9999999.0),
-		particleAttractors(PIMP_MAX_NUM_PARTICLEATTRACTORS),
-		textures(PIMP_MAX_NUM_TEXTURES),
-		motionBlurAmount(0.0f),
-		motionBlurAmountCurve(NULL)
+		: elements(PIMP_MAX_NUM_WORLD_ELEMENTS)
+,		currentCamera(nullptr)
+,		currentSceneIndex(-1)
+,		textures(PIMP_MAX_NUM_TEXTURES)
+,		materials(PIMP_MAX_NUM_MATERIALS)
+,		scenes(PIMP_MAX_NUM_SCENES)
+,		postProcess(new PostProcess())
+,		screenQuadVertexBuffer(new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather()))
+,		currentTime(0.f)
+,		motionBlurAmount(0.f)
+,		prevMotionBlurTime(9999999.0)
 	{
 		rootNode = new Xform(this);
 		elements.Add(rootNode);
 
-
-		cameraDirection = new AnimCurve(this);
-		cameraDirection->SetInterpolationType(AnimCurve::InterpolationType_Hold);
-		cameraDirection->SetKeysPtr(new FixedSizeList<AnimCurve::Pair>(PIMP_MAX_NUM_CAMERADIRECTIONSHOTS));
-		elements.Add(cameraDirection);
-
-		sceneDirection = new AnimCurve(this);
-		sceneDirection->SetInterpolationType(AnimCurve::InterpolationType_Hold);
-		sceneDirection->SetKeysPtr(new FixedSizeList<AnimCurve::Pair>(PIMP_MAX_NUM_SCENES));
-		elements.Add(sceneDirection);
-
-		currentSceneIndex = -1;
-		currentCamera = NULL;
-
-		postProcess = new PostProcess();
-
-		screenQuadVertexBuffer = new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather());
+		// Bind for loading bar (embedded in core post processing shader).
 		screenQuadVertexBuffer->Bind();
 	}
 
 	World::~World()
 	{
 		for (int i=0; i<elements.Size(); ++i)
-		{
 			delete elements[i];
-		}
-		elements.Clear();
 
 		delete screenQuadVertexBuffer;
 		delete postProcess;
@@ -83,58 +61,25 @@ namespace Pimp
 		// Then tick our DAG with nodes
 		rootNode->Tick(deltaTime);
 
-		// Update camera direction
-		//View previousView = currentView;
-		 
-
-		if (useCameraDirector)
+		// Handle motion blur
+		const float timeSincePrevMotionBlur = currentTime - prevMotionBlurTime;
+		if (timeSincePrevMotionBlur <= 0.f)
 		{
-			int currentShotIndex = (int)floorf(cameraDirection->GetCurrentValue());
-
-			if (currentShotIndex >= 0 && currentShotIndex < directionCameras.Size())
-			{
-				currentCamera = directionCameras[currentShotIndex];
-			}
-			else
-			{
-				currentCamera = NULL;
-			}
+			// Reset motion blurring since we're not moving forward on the timeline *or* we just switched cameras
+			postProcess->SetMotionBlurFrameWeight(1.f);
 		}
 		else
 		{
-			currentCamera = currentUserCamera;
-		}
-
-		//currentSceneIndex = (int)floorf(sceneDirection->GetCurrentValue());
-
-		//if (!scenes.IsValidIndex(currentSceneIndex))
-		//	currentSceneIndex = -1;
-
-
-		float timeSincePrevMotionBlur = currentTime - prevMotionBlurTime;
-
-		if (/*previousView != currentView || */timeSincePrevMotionBlur <= 0.0f)
-		{
-			// Reset motion blurring since we're not moving forward on the timeline -or-
-			// we just switched cameras
-			postProcess->SetMotionBlurFrameWeight(1.0f);
-		}
-		else
-		{
-			// Calculate weight of current frame. Previous frame will have a weight of 1 - currentframeweight. Note
-			// that we have to use pow() since it's an exponential function. The motionBlurAmount that is specified 
-			// is an amount when our framerate is exactly 60hz.
-
-			float blurAmount = (motionBlurAmountCurve ? motionBlurAmountCurve->GetCurrentValue() : motionBlurAmount);
-
-			float currentFrameWeight = (blurAmount > 0) ? (1.0f - powf(blurAmount, timeSincePrevMotionBlur*60.0f)) : 1.0f;
-
+			// Calculate weight of current frame. 
+			// Previous frame will have a weight of 1 - currentframeweight. 
+			// Note that we have to use pow() since it's an exponential function. 
+			// The motionBlurAmount that is specified is an amount when our framerate is exactly 60Hz.
+			const float currentFrameWeight = (motionBlurAmount > 0) ? (1.f - powf(motionBlurAmount, timeSincePrevMotionBlur*60.f)) : 1.f;
 			postProcess->SetMotionBlurFrameWeight(currentFrameWeight);
 		}
 
 		prevMotionBlurTime = currentTime;
 	}
-
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
@@ -211,17 +156,6 @@ namespace Pimp
 		// so no need to call gD3D->Flip().
 	}
 
-
-	void World::SetCurrentUserCamera(Camera* camera)
-	{
-		currentUserCamera = camera;
-	}
-
-	void World::SetCurrentSceneIndex(int index)
-	{
-		currentSceneIndex = index;
-	}
-
 	void World::ForceSetTime(float time)
 	{
 		currentTime = time;
@@ -258,7 +192,6 @@ namespace Pimp
 		nodeChild->GetParents().Remove(nodeParent);
 	}
 
-
 	void World::UpdateAllMaterialParameters()
 	{
 		for (int i=0; i<materials.Size(); ++i)
@@ -266,20 +199,8 @@ namespace Pimp
 				materials[i]->RefreshParameters();
 	}
 
-	void World::InitAllBalls()
-	{
-#ifdef _DEBUG
-		for (int i=0; i<elements.Size(); ++i)
-			if (elements[i]->GetType() == ET_Balls)
-				((Balls*)elements[i])->CalculateCachedBallAnims();
-#endif
-	}
-
 	void World::SetMotionBlurAmount( float amount )
 	{
 		motionBlurAmount = amount;
 	}
-
-
-
 }

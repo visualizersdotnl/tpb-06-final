@@ -1,6 +1,6 @@
+
 #pragma once
 
-#include <d3d10_1.h>
 #include "Texture.h"
 
 namespace Pimp
@@ -29,11 +29,11 @@ namespace Pimp
 		Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view);
 		virtual ~Texture2D();
 
-		// Upload texel data from a 32bit-fp-per-component RGBA image of exactly the same dimensions.
-		// this will downsample it to 8bit-per-component.
+		// Upload texels from 32-bit float RGBA image of exactly the same dimensions.
+		// Quantizes to 8-bit RGBA.
 		void UploadTexels(Texel* sourceTexels);
 
-		// Upload texel data from a 8bit-per-component RGBA image of exactly the same dimensions.
+		// Upload texel data from 8-bit RGBA image of exactly the same dimensions.
 		void UploadTexels(unsigned char* sourceTexels);
 	};
 }

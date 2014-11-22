@@ -1,11 +1,10 @@
-#pragma once
 
-#include <d3d10_1.h>
-#include <math/math.h>
-#include "EffectPass.h"
+#pragma once
 
 namespace Pimp
 {
+	class EffectPass;
+
 	struct ScreenQuadVertex
 	{
 		Vector3 position;
@@ -23,5 +22,4 @@ namespace Pimp
 
 		void Bind();
 	};
-
 }

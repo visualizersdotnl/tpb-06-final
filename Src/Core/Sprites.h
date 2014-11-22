@@ -1,22 +1,15 @@
 
 //
-// Sprite system 0.9.
+// Sprite system 1.0.
 //
 // Sprites can be either put in the background or post-scene queue.
-//
-// Their coordinate system is 1920x1080, the backing code will take care of aspect ratio
-// and size correction.
-//
-// FIXME: the fixed coordinate system should be configurable for different aspect ratios.
-//        Or: get it from D3D instead of Player :)
+// They use a virtual coordinate system supplied by Player.
+// In a logical world it's aspect ratio matches the render aspect ratio.
 //
 
 #pragma once
 
-#include "Platform.h" // FIXME: move #include to proper location when header is finished
-#include <list>
-#include <math/math.h>
-
+#include "D3D.h"
 #include "Effect.h"
 #include "EffectPass.h"
 #include "EffectTechnique.h"

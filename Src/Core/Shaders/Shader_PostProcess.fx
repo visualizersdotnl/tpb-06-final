@@ -30,9 +30,6 @@ cbuffer paramsOnlyOnce
 	float bloomBlurWeights[NUM_BLOOMBLUR_SAMPLES];
 	float2 bloomBlurPixelDir;
 
-	// Inverse render target size (XY) plus homogenous LOD UV adjustment (ZW).
-	float4 screenSizeInv;
-
 	// Inverse filter buffer size.
 	float2 filterSizeInv; 
 	
@@ -126,9 +123,11 @@ PSOutput MainPS_Combine(VSOutput input)
 	color += bufferFilter.Sample(samplerFilter, uv) * MAX_FILTER_COLOR;	
 	result.color = color;
 	
-	if (loadProgress > 0)
+	// The Inque loading bar.
+	// FIXME: move to user post-proc. shader.
+	const float _loadProgress = loadProgress;
+	if (_loadProgress > 0)
 	{
-		// The Inque loading bar :)
 		if (uv.y >= 0.40 && uv.y <= 0.60 && uv.x >= 0.08 && uv.x <= 0.92)
 		{
 			float v;
@@ -136,11 +135,11 @@ PSOutput MainPS_Combine(VSOutput input)
 			if (uv.x <= 0.09 || uv.x >= 0.91 || uv.y <= 0.418 || uv.y >= 0.582)
 				v = 1.0;
 			else if (uv.y >= 0.436 && uv.y <= 0.564 && 
-				uv.x >= 0.10 && uv.x < 0.10+0.8*loadProgress)
+				uv.x >= 0.10 && uv.x < 0.10+0.8*_loadProgress)
 			{
 				float k = (1.0-uv.x);
 				float r = sin(k * 120.0);
-				v = (r > (0.8-loadProgress)) ? 1.0 : 0.0;
+				v = (r > (0.8-_loadProgress)) ? 1.0 : 0.0;
 			}
 			else 
 				v = 0.0;

@@ -1,16 +1,18 @@
+
 #pragma once
 
-#include <Shared/shared.h>
+#include <Shared/assert.h>
+#include <Shared/fixedsizelist.h>
 #include <Math/math.h>
 #include "Element.h"
 
 namespace Pimp 
 {
-
 	class Node 
 		: public Element
 	{
 	protected:
+		// FIXME: replace for STL.
 		FixedSizeList<Node*> children;
 		FixedSizeList<Node*> parents;
 

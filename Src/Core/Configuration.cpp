@@ -1,6 +1,6 @@
+
+#include "Platform.h"
 #include "Configuration.h"
-#include "D3D.h"
-#include "Settings.h"
 
 namespace Pimp
 {

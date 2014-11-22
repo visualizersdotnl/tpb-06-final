@@ -1,11 +1,7 @@
 
-#include <algorithm>
-#include <vector>
-
+#include "Platform.h"
 #include "Sprites.h"
-#include "D3D.h"
 #include "Shaders/Shader_Sprites.h"
-#include "Configuration.h"
 
 namespace Pimp
 {

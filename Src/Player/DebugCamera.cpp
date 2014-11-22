@@ -33,16 +33,16 @@ void DebugCamera::SetEnabled( bool enabled )
 		if (true == isEnabled)
 		{
 			// Adopt current camera.
-			Pimp::Camera* prevDirectedCam = world->GetCurrentCamera();
-			ASSERT(prevDirectedCam->GetParents().Size() == 1);
-			Pimp::Node* prevDirectedCamParent = prevDirectedCam->GetParents()[0];
-			ASSERT(prevDirectedCamParent->GetType() == Pimp::ET_Xform);
-			Pimp::Xform* prevDirectedCamXform = (Pimp::Xform*)prevDirectedCamParent;
+			Pimp::Camera* prevCam = world->GetCamera();
+			ASSERT(prevCam->GetParents().Size() == 1);
+			Pimp::Node* prevCamParent = prevCam->GetParents()[0];
+			ASSERT(prevCamParent->GetType() == Pimp::ET_Xform);
+			Pimp::Xform* prevDirectedCamXform = static_cast<Pimp::Xform*>(prevCamParent);
 
 			// And then set it as ours.
 			xform->SetTranslation(prevDirectedCamXform->GetTranslation());
 			xform->SetRotation(prevDirectedCamXform->GetRotation());
-			world->SetCurrentUserCamera(camera);
+			world->SetCamera(camera);
 		}
 	}
 }

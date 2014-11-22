@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Node.h"
-
 #include "World.h"
-#include "AnimCurve.h"
 
 namespace Pimp
 {
@@ -28,20 +26,7 @@ namespace Pimp
 		Matrix4 scalePivotInv;
 		Matrix4 scalePivotTranslation; 
 
-		AnimCurve* animCurveTranslation[3];
-		AnimCurve* animCurveRotation[3];
-		AnimCurve* animCurveScale[3];
-
-		bool hasAnimsAtAll;
-
 		void CalculateTransforms();
-		void HandledAnimation();
-
-		void UpdateHasAnims();
-
-#ifdef _DEBUG
-		static bool allowReCalculateTransformsOnTick;
-#endif
 
 	public:
 		Xform(World* ownerWorld);
@@ -50,41 +35,26 @@ namespace Pimp
 
 		virtual void Tick(float deltaTime);
 
-		virtual const Matrix4* GetWorldTransform() const
-		{
-			return &transformWorld;
-		}
-
-		virtual const Matrix4* GetWorldTransformInv() const
-		{
-			return &transformWorldInv;
-		}
+		virtual const Matrix4* GetWorldTransform() const    { return &transformWorld;    }
+		virtual const Matrix4* GetWorldTransformInv() const { return &transformWorldInv; }
 
 		Matrix4& GetLocalTransform()
 		{
 			return transformLocal;
 		}
 
-		AnimCurve* GetAnimCurveRotationX() const { return animCurveRotation[0]; }
-		AnimCurve* GetAnimCurveRotationY() const { return animCurveRotation[1]; }
-		AnimCurve* GetAnimCurveRotationZ() const { return animCurveRotation[2]; }
-		AnimCurve* GetAnimCurveTranslationX() const { return animCurveTranslation[0]; }
-		AnimCurve* GetAnimCurveTranslationY() const { return animCurveTranslation[1]; }
-		AnimCurve* GetAnimCurveTranslationZ() const { return animCurveTranslation[2]; }
-
-		const Vector3& GetTranslation() const { return translation; }
-		const Quaternion& GetRotation() const { return rotation; }
+		const Vector3& GetTranslation() const            { return translation; }
+		const Quaternion& GetRotation() const            { return rotation; }
 		const Quaternion& GetRotationOrientation() const { return rotationOrientation; }
-		const Vector3& GetScale() const { return scale; }
+		const Vector3& GetScale() const                  { return scale; }
 
-		const Matrix4& GetRotationPivot() const { return rotationPivot; }
-		const Matrix4& GetRotationPivotInv() const { return rotationPivotInv; }
+		const Matrix4& GetRotationPivot() const            { return rotationPivot; }
+		const Matrix4& GetRotationPivotInv() const         { return rotationPivotInv; }
 		const Matrix4& GetRotationPivotTranslation() const { return rotationPivotTranslation; }
 
-		const Matrix4& GetScalePivot() const { return scalePivot; }
-		const Matrix4& GetScalePivotInv() const { return scalePivotInv; }
+		const Matrix4& GetScalePivot() const            { return scalePivot; }
+		const Matrix4& GetScalePivotInv() const         { return scalePivotInv; }
 		const Matrix4& GetScalePivotTranslation() const { return scalePivotTranslation; }
-
 
 		void SetTranslation(const Vector3& translation);
 		void SetRotation(const Quaternion& rotation);
@@ -95,23 +65,5 @@ namespace Pimp
 		void SetRotationPivot(const Vector3& vecRotationPivot);
 		void SetScalePivotTranslation(const Vector3& vecScalePivotTrans);
 		void SetScalePivot(const Vector3& vecScalePivot);
-
-		void SetAnimCurveTranslationX(AnimCurve* curve);
-		void SetAnimCurveTranslationY(AnimCurve* curve);
-		void SetAnimCurveTranslationZ(AnimCurve* curve);
-
-		void SetAnimCurveRotationX(AnimCurve* curve);
-		void SetAnimCurveRotationY(AnimCurve* curve);
-		void SetAnimCurveRotationZ(AnimCurve* curve);
-
-		void SetAnimCurveScaleX(AnimCurve* curve);
-		void SetAnimCurveScaleY(AnimCurve* curve);
-		void SetAnimCurveScaleZ(AnimCurve* curve);
-
-		
-
-#ifdef _DEBUG
-		static void SetAllowReCalculateTransformsOnTick(bool v) { allowReCalculateTransformsOnTick = v; }
-#endif
 	};
 }

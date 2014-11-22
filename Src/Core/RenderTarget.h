@@ -1,6 +1,5 @@
-#pragma once
 
-#include "D3D.h"
+#pragma once
 
 namespace Pimp
 {
@@ -27,4 +26,3 @@ namespace Pimp
 		ID3D10ShaderResourceView* shaderResourceView;
 	};
 }
-

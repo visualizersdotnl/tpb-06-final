@@ -1,37 +1,31 @@
+
+#include "Platform.h"
 #include "D3D.h"
 #include "Material.h"
 #include "World.h"
 
-
-#define PIMP_MAX_NUM_BOUNDTEXTUREVARINDICES 256
-#define PIMP_MAX_NUM_BOUNDMATERIALPARAMETERS 256
-
 namespace Pimp 
 {
 	Material::Material(
-		World* world, 
-		const unsigned char* shaderCompiledText, int shaderCompiledTextLength,
-		const std::string& shaderFileName)
-		: effect(shaderCompiledText, shaderCompiledTextLength),
-		effectTechnique(&effect, "Default"),
-		effectPass(&effectTechnique, "Default"),
-		world(world),
-		varIndexViewInvMatrix(-1),
-		varIndexSceneRenderLOD(0),
-		varIndexSceneBuffer(0),
-		blendMode(D3D::BM_None),
+		World* world
+,		const unsigned char* shaderCompiledText, int shaderCompiledTextLength
+,		const std::string& shaderFileName)
+		: effect(shaderCompiledText, shaderCompiledTextLength)
+,		effectTechnique(&effect, "Default")
+,		effectPass(&effectTechnique, "Default")
+,		world(world)
+,		varIndexViewInvMatrix(-1)
+,		varIndexSceneRenderLOD(0)
+,		varIndexSceneBuffer(0)
+,		blendMode(D3D::BM_None)
 #ifdef _DEBUG
-		shaderFileName(shaderFileName),
+,		shaderFileName(shaderFileName)
 #endif
-		boundTextureVariableIndices(PIMP_MAX_NUM_BOUNDTEXTUREVARINDICES),
-		boundMaterialParameters(PIMP_MAX_NUM_BOUNDMATERIALPARAMETERS)
 	{
 		RefreshParameters();
 	}
 
-	Material::~Material()
-	{
-	}
+	Material::~Material() {}
 
 	void Material::InitParameters()
 	{
@@ -43,10 +37,9 @@ namespace Pimp
 			effect.SetVariableValue(varIndexSceneRenderLOD, Scene::GetSceneRenderLOD());
 	}
 
-
 	void Material::Bind(Camera* camera)
 	{
-		if (camera != NULL)
+		if (nullptr != camera)
 		{
 			const Matrix4* viewInvMatrix = camera->GetViewInvMatrixPtr();
 
@@ -54,38 +47,26 @@ namespace Pimp
 				effect.SetVariableValue(varIndexViewInvMatrix, *viewInvMatrix);
 		}
 
-
-		for (int i=0; i<boundMaterialParameters.Size(); ++i)
-			boundMaterialParameters[i].parameter->AssignValueToEffectVariable(&effect, boundMaterialParameters[i].varIndex);
-
-#ifdef _DEBUG
-		if (boundBalls.balls != NULL)
-			boundBalls.balls->AssignValueToEffectVariables(&effect, boundBalls);
-#endif
+		for (auto &iParam : boundMaterialParameters)
+			iParam.parameter->AssignValueToEffectVariable(&effect, iParam.varIndex);
 
 		effectPass.Apply();
 	}
 
-
 	void Material::RefreshParameters()
 	{
-		for (int i=0; i<boundTextureVariableIndices.Size(); ++i)
-			effect.SetVariableValue(boundTextureVariableIndices[i], (ID3D10ShaderResourceView*)NULL);
+		for (auto varIndex : boundTextureVariableIndices)
+			effect.SetVariableValue(varIndex, nullptr);
 
 		effect.ResetRegisteredVariables();
-		boundTextureVariableIndices.Clear();
-		boundMaterialParameters.Clear();
-
-#ifdef _DEBUG
-		boundBalls.balls = NULL;
-#endif
+		boundTextureVariableIndices.clear();
+		boundMaterialParameters.clear();
 
 		// Our own static parameters for this material
 		InitParameters();
 
-		const FixedSizeList<Texture*>& allTextures = world->GetTextures();
 
-		// All of our world's material parameters and balls
+		// All of our world's material parameters
 		FixedSizeList<Element*>& elements = world->GetElements();
 
 		for (int i=0; i<elements.Size(); ++i)
@@ -94,48 +75,32 @@ namespace Pimp
 			{
 				MaterialParameter* matParam = (MaterialParameter*)elements[i];
 
-				if (effect.HasVariable(matParam->GetName()))
+				if (true == effect.HasVariable(matParam->GetName()))
 				{
-					BoundMaterialParameter bp;
-					bp.varIndex = effect.RegisterVariable(matParam->GetName(), true);
-					bp.parameter = matParam;
-					boundMaterialParameters.Add(bp);
+					BoundMaterialParameter boundMatParam;
+					boundMatParam.varIndex = effect.RegisterVariable(matParam->GetName(), true);
+					boundMatParam.parameter = matParam;
+					boundMaterialParameters.push_back(std::move(boundMatParam));
 				}
 			}
-#ifdef _DEBUG
-			else if (elements[i]->GetType() == ET_Balls)
-			{
-				Balls* balls = (Balls*)elements[i];
-
-				char s[256];
-				strcpy(s, balls->GetName());
-				strcat(s, "OffsetsAndRadii");
-
-				if (effect.HasVariable(s))
-				{
-					boundBalls.balls = balls;
-					boundBalls.varIndexBallOffsetsAndRadii = effect.RegisterVariable(s, true);
-				}
-			}
-#endif
 		}
 
 		// All of our world's textures
+		const FixedSizeList<Texture*>& allTextures = world->GetTextures();
+
 		for (int i=0; i<allTextures.Size(); ++i)
 		{
 			Texture* tex = allTextures[i];
 			std::string texBindingName = std::string("texture_") + tex->GetName();
 
-			if (effect.HasVariable(texBindingName.c_str()))
+			if (true == effect.HasVariable(texBindingName.c_str()))
 			{
-				int varIndex = effect.RegisterVariable(texBindingName.c_str(), true);
-				
+				const int varIndex = effect.RegisterVariable(texBindingName.c_str(), true);
 				effect.SetVariableValue(varIndex, tex->GetShaderResourceView());
-				boundTextureVariableIndices.Add(varIndex);
+				boundTextureVariableIndices.push_back(varIndex);
 			}
 		}
 	}
-
 
 	void Material::SetSceneBuffer(ID3D10ShaderResourceView* resourceView)
 	{

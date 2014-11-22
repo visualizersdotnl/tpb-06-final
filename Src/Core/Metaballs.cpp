@@ -1,20 +1,21 @@
 
 // The world famous TPB blobs.
-
 // It was quickly ported from an Xbox 1 project (added some SSE3 though).
 
 // FIXME:
 // 1. Move all static junk into class (right now only a single instance works properly).
 //    Do keep an eye on constant parameters that may have to remain that way for speed.
-// 2. Consider making this a proper Element?
+// 2. Consider making this a proper world node?
 // 3. Remove any remaining hacks.
 
-// Until then most parameters (except ball position) can be modified in this file, a little below.
+// Until then basic parameters can be modified in this file, a little below.
+// Shading-related stuff can be set on runtime.
 
-#include <stdint.h>
+#include "Platform.h"
+#include "D3D.h"
 #include "Metaballs.h"
-#include "MarchingCubesTables.h"
 
+#include "MarchingCubesTables.h"
 #include "Shaders/Shader_Blobs.h"
 
 namespace Pimp {

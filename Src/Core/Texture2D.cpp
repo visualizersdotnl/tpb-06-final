@@ -1,8 +1,9 @@
-#include "D3D.h"
-#include "Texture2D.h"
+
+#include "Platform.h"
 #include <xmmintrin.h>
 #include <emmintrin.h>
-
+#include "D3D.h"
+// #include "Texture2D.h"
 
 namespace Pimp
 {
@@ -11,19 +12,14 @@ namespace Pimp
 	Texture2D::Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view)
 		: Texture(name, width, height, view), texture(texture)
 	{
-
 	}
 
 	Texture2D::~Texture2D()
 	{
-		if (texture != NULL)
-		{
-			texture->Release();
-			texture = NULL;
-		}
+		SAFE_RELEASE(texture);
 	}
 
-	void Texture2D::DownSampleTo8Bit(void* dest, Texel* source, int numPixels)
+	void Texture2D::DownSampleTo8Bit(void* pDest, Texel* pSrc, int numPixels)
 	{
 		const _MM_ALIGN16 float thresholdLow[4] = { 0, 0, 0, 0 };  
 		const _MM_ALIGN16 float thresholdHigh[4] = { 255.0f, 255.0f, 255.0f, 255.0f };
@@ -34,11 +30,11 @@ namespace Pimp
 		int initialRoundMode = _MM_GET_ROUNDING_MODE();
 		_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 
-		unsigned int* dest32 = (unsigned int*)dest;
+		unsigned int* pDest32 = reinterpret_cast<unsigned int*>(pDest);
 
 		while (numPixels-- > 0)
 		{
-			__m128 srcPixel = _mm_load_ps((float*)source);
+			__m128 srcPixel = _mm_load_ps(reinterpret_cast<float*>(pSrc));
 
 			// scale from [0,1] to [0,255]
 			srcPixel = _mm_mul_ps(srcPixel, thresholdHigh128);
@@ -64,46 +60,36 @@ namespace Pimp
 			// r2 [bits 16..23]: first pixel, G
 			// r3 [bits 24..31]: first pixel, B
 
-			*(dest32++) = (quad[0] >> 8) | ((quad[0] & 0xff) << 24);	
-			++source;
+			*(pDest32++) = (quad[0] >> 8) | ((quad[0] & 0xff) << 24);	
+			++pSrc;
 		}
 
-		_MM_SET_ROUNDING_MODE( initialRoundMode );
+		_MM_SET_ROUNDING_MODE(initialRoundMode);
 	}
 
 
 	void Texture2D::UploadTexels(Texel* sourceTexels)
 	{
 		D3D10_MAPPED_TEXTURE2D mappedTex;
-		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
+		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		{
+			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
+			ASSERT(mappedTex.RowPitch == GetWidth()*4); // Assumption: no padding.
 
-		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		ASSERT(mappedTex.RowPitch == GetWidth()*4); // We're assuming this...
-
-		DownSampleTo8Bit(destTexels, sourceTexels,  GetWidth()*GetHeight());
-
-		//#ifdef _DEBUG
-		//		char s[256];
-		//		sprintf_s(s, 256, "c:\\temp\\tex\\tex%d.tga",id);
-		//
-		//		StoreTGAImageToFile(s, sizePixels, sizePixels, destTexels);
-		//#endif
-
-		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
+			DownSampleTo8Bit(destTexels, sourceTexels,  GetWidth()*GetHeight());
+		}
+		texture->Unmap(D3D10CalcSubresource(0, 0, 1));
 	}
-
 
 	void Texture2D::UploadTexels(unsigned char* sourceTexels)
 	{
 		D3D10_MAPPED_TEXTURE2D mappedTex;
-		texture->Map( D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex );
-
-		unsigned char* destTexels = (unsigned char*)mappedTex.pData;
-		for (int iY = 0; iY < GetHeight(); ++iY)
-			memcpy(destTexels + iY*mappedTex.RowPitch, sourceTexels + iY*GetWidth()*4, GetWidth()*4);
-
-		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
+		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		{
+			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
+			for (int iY = 0; iY < GetHeight(); ++iY)
+				memcpy(destTexels + iY*mappedTex.RowPitch, sourceTexels + iY*GetWidth()*4, GetWidth()*4);
+		}
+		texture->Unmap(D3D10CalcSubresource(0, 0, 1));
 	}
 }
-
-

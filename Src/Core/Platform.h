@@ -7,6 +7,7 @@
 
 // APIs
 #include <windows.h>
+#include <DXGI.h>
 #include <d3d10_1.h>
 
 // CRT & STL

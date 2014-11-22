@@ -1,3 +1,5 @@
+
+#include "Platform.h"
 #include "Element.h"
 
 namespace Pimp 
@@ -5,7 +7,6 @@ namespace Pimp
 	Element::Element(World* ownerWorld)
 		: ownerWorld(ownerWorld), isNode(false), type(ET_Element)
 	{
-
 	}
 
 	Element::~Element() {}

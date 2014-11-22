@@ -1,7 +1,7 @@
+
+#include "Platform.h"
 #include "D3D.h"
-#include "Texture.h"
-
-
+// #include "Texture.h"
 
 namespace Pimp 
 {

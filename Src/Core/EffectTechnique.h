@@ -1,6 +1,6 @@
+
 #pragma once
 
-#include "D3D.h"
 #include "Effect.h"
 
 namespace Pimp
@@ -19,4 +19,3 @@ namespace Pimp
 		ID3D10EffectTechnique* technique;
 	};
 }
-
