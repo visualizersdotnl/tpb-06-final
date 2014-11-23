@@ -5,7 +5,7 @@
 
 #include <Shared/assert.h>
 
-#ifdef _DEBUG // @plek: Why?
+#ifdef _DEBUG // FIXME: Why, and why only in _DEBUG?
 
 #include <memory.h>
 #include <string.h>

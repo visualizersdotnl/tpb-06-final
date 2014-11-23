@@ -46,7 +46,7 @@ const float kTileMul = PIMPPLAYER_RENDER_ASPECT_RATIO;
 // - Release: release build that runs Rocket in replay mode (globally defines SYNC_PLAYER).
 //
 
-#include "../../Libs/rocket/lib/sync.h"
+#include <rocket/Lib/sync.h>
 
 double kRocketRowRate = (PIMPPLAYER_ROCKET_BPM/60.0) * PIMPPLAYER_ROCKET_RPB;
 

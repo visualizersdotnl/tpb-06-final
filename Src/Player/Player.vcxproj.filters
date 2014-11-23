@@ -27,15 +27,6 @@
     <ClCompile Include="Content\Demo.cpp">
       <Filter>/Content</Filter>
     </ClCompile>
-    <ClCompile Include="..\Libs\rocket\lib\data.c">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libs\rocket\lib\device.c">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Libs\rocket\lib\track.c">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClCompile>
     <ClCompile Include="Stub.cpp">
       <Filter>Stub</Filter>
     </ClCompile>
@@ -57,25 +48,19 @@
     <ClCompile Include="AutoShaderReload.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
+    <ClCompile Include="..\3rdparty\rocket\lib\data.c">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\rocket\lib\device.c">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\rocket\lib\track.c">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Content\Demo.h">
       <Filter>/Content</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\data.h">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\base.h">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\device.h">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\sync.h">
-      <Filter>../Libs/Rocket/lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Libs\rocket\lib\track.h">
-      <Filter>../Libs/Rocket/lib</Filter>
     </ClInclude>
     <ClInclude Include="Content\Blobs.h">
       <Filter>/Content\Parts</Filter>
@@ -135,21 +120,30 @@
     <ClInclude Include="SetLastError.h">
       <Filter>Stub</Filter>
     </ClInclude>
+    <ClInclude Include="..\3rdparty\rocket\lib\base.h">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\rocket\lib\data.h">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\rocket\lib\device.h">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\rocket\lib\sync.h">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\rocket\lib\track.h">
+      <Filter>../3rdparty/Rocket/lib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Libs\bass24\bass.chm">
-      <Filter>/../Libs/bass24</Filter>
+    <None Include="..\3rdparty\bass24\bass.chm">
+      <Filter>../3rdparty/bass24</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="/Content">
       <UniqueIdentifier>{31eaa5f6-ed09-44c7-8a77-2163e31dade5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="../Libs/Rocket/lib">
-      <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="/../Libs/bass24">
-      <UniqueIdentifier>{38c19be1-fee2-4a3f-b6b4-f7f2a1454244}</UniqueIdentifier>
     </Filter>
     <Filter Include="/Content\Shaders %28&lt;root&gt;/Content/assets%29">
       <UniqueIdentifier>{016f8ec8-51e1-41d8-92ae-c4bfae3a98a1}</UniqueIdentifier>
@@ -169,11 +163,15 @@
     <Filter Include="/Content\Parts">
       <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Libs\bass24\c\x64\bass.lib">
-      <Filter>/../Libs/bass24</Filter>
-    </Library>
+    <Filter Include="../3rdparty/bass24">
+      <UniqueIdentifier>{7ddd1c0a-e804-4281-8dba-b22da662cba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="../3rdparty/bass24\/c/x64">
+      <UniqueIdentifier>{67556f16-b85f-4a8b-b292-5e64cf5da126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="../3rdparty/Rocket/lib">
+      <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Player.rc">
@@ -182,5 +180,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\3rdparty\bass24\c\x64\bass.lib">
+      <Filter>../3rdparty/bass24\/c/x64</Filter>
+    </Library>
   </ItemGroup>
 </Project>

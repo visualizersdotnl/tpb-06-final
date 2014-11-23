@@ -77,7 +77,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;../Libs;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -108,7 +108,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;../Libs;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SYNC_PLAYER;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -142,7 +142,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;../Libs;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DESIGN;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -174,9 +174,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Libs\rocket\lib\data.c" />
-    <ClCompile Include="..\Libs\rocket\lib\device.c" />
-    <ClCompile Include="..\Libs\rocket\lib\track.c" />
+    <ClCompile Include="..\3rdparty\rocket\lib\data.c" />
+    <ClCompile Include="..\3rdparty\rocket\lib\device.c" />
+    <ClCompile Include="..\3rdparty\rocket\lib\track.c" />
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AutoShaderReload.cpp" />
@@ -193,11 +193,11 @@
     <ClCompile Include="Stub.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Libs\rocket\lib\base.h" />
-    <ClInclude Include="..\Libs\rocket\lib\data.h" />
-    <ClInclude Include="..\Libs\rocket\lib\device.h" />
-    <ClInclude Include="..\Libs\rocket\lib\sync.h" />
-    <ClInclude Include="..\Libs\rocket\lib\track.h" />
+    <ClInclude Include="..\3rdparty\rocket\lib\base.h" />
+    <ClInclude Include="..\3rdparty\rocket\lib\data.h" />
+    <ClInclude Include="..\3rdparty\rocket\lib\device.h" />
+    <ClInclude Include="..\3rdparty\rocket\lib\sync.h" />
+    <ClInclude Include="..\3rdparty\rocket\lib\track.h" />
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
@@ -224,6 +224,12 @@
     <ResourceCompile Include="Player.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\3rdparty\LodePNG\LodePNG.vcxproj">
+      <Project>{f30ef568-f1d2-4d38-9c74-012246924f17}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdparty\TinyXML\tinyxmlSTL.vcxproj">
+      <Project>{519cda93-b273-4c3e-9328-659e1b7ce4a6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{2dd684b0-6eef-48a8-b151-923a6719e9be}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -238,22 +244,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Legacy\Shared\Shared.vcxproj">
       <Project>{493c64ac-e3bb-495b-b653-933160a10f98}</Project>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\Libs\LodePNG\LodePNG.vcxproj">
-      <Project>{f30ef568-f1d2-4d38-9c74-012246924f17}</Project>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\Libs\TinyXML\tinyxmlSTL.vcxproj">
-      <Project>{519cda93-b273-4c3e-9328-659e1b7ce4a6}</Project>
       <Private>false</Private>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
@@ -299,13 +289,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Libs\bass24\bass.chm" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Libs\bass24\c\x64\bass.lib" />
+    <None Include="..\3rdparty\bass24\bass.chm" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\3rdparty\bass24\c\x64\bass.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
