@@ -1,6 +1,7 @@
+
 #pragma once
 
-#include "stdafx.h"
+#include <string>
 
 // this will remove the filename (including extension) from a full filename
 // so:

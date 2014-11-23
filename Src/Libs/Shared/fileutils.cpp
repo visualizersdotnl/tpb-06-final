@@ -1,6 +1,7 @@
-#include "stdafx.h"
-#include "fileutils.h"
+
+#include <Windows.h>
 #include <sys/stat.h>
+#include "fileutils.h"
 
 const std::string RemoveFilenameFromPath(const std::string& filename)
 {

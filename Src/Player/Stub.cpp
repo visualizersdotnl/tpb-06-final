@@ -18,6 +18,8 @@
 
 #include <Core/Platform.h>
 #include <intrin.h> // for SIMD check
+#include <Shared/stopwatch.h>
+#include <Shared/misc.h>
 #include <Core/Core.h>
 #include "Settings.h"
 #include "SceneTools.h"

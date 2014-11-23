@@ -3,6 +3,7 @@
 #if defined(_DEBUG) || defined(_DESIGN)
 
 // #include <Core/Core.h>
+#include <Shared/stopwatch.h>
 #include <Shared/fileutils.h>
 
 // Helper class that can monitor file changes to shader files and automatically trigger recompilation when changes

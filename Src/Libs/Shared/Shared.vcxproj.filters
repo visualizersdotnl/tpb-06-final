@@ -15,25 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alignedalloc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="conversions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="crc32.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="fileutils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="misc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="resources.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stopwatch.cpp">
@@ -41,16 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alignedalloc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="assert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="conversions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="crc32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fileutils.h">
@@ -59,16 +32,10 @@
     <ClInclude Include="misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resources.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="singleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stopwatch.h">

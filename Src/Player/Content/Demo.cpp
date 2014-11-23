@@ -1,5 +1,7 @@
 
 #include <Core/Platform.h>
+#include <Shared/fileutils.h>
+#include <Shared/stopwatch.h>
 #include <Core/Core.h>
 #include "SceneTools.h"
 #include "Assets.h"
@@ -301,7 +303,8 @@ static const sync_track *st_blobsProjScrollU, *st_blobsProjScrollV;
 
 const std::string GetAssetsPath()
 {
-	const std::string exePath = LowerCase(RemoveFilenameFromPath(GetCurrentProcessFileName()));
+	std::string exePath = RemoveFilenameFromPath(GetCurrentProcessFileName());
+	std::transform(exePath.begin(), exePath.end(), exePath.begin(), ::tolower);
 	return exePath + "assets\\";
 }
 

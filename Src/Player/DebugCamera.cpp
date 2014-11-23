@@ -1,5 +1,6 @@
 
 #include <Core/Platform.h>
+#include <Shared/misc.h>
 #include <Core/Core.h>
 #include "DebugCamera.h"
 #include "SceneTools.h"
@@ -114,11 +115,4 @@ void DebugCamera::DumpCurrentTransformToOutputWindow()
 	DEBUG_LOG("Y = %.2ff", rot.y);
 	DEBUG_LOG("Z = %.2ff", rot.z);
 	DEBUG_LOG("W = %.2ff", rot.w);
-
-	//DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.x", pos.x);
-	//DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.y", pos.y);
-	//DEBUG_LOG("{  0.0f,	%.2ff, 0.0f, 0.0f}, // pos.z", pos.z);
-	//DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.x", RAD2DEG(rotEulerXYZ.x));
-	//DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.y", RAD2DEG(rotEulerXYZ.y));
-	//DEBUG_LOG("{  0.0f,	DEG2RAD(%.2ff), 0.0f, 0.0f}, // rot.z", RAD2DEG(rotEulerXYZ.z));
 }

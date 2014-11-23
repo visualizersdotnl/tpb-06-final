@@ -1,5 +1,6 @@
 
 #include "Platform.h"
+#include <Math/math.h>
 #include "D3D.h"
 #include "ScreenQuadVertexBuffer.h"
 #include "Effect.h"

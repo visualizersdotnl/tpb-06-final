@@ -1,5 +1,7 @@
+
 #pragma once
 
+#include "assert.h"
 
 // Templated Singleton class, inspired by:
 // http://www.codeproject.com/KB/cpp/singleton_template.aspx

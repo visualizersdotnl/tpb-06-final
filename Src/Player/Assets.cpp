@@ -16,7 +16,8 @@
 
 static Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool gammaCorrect)
 {
-	const std::string ID = LowerCase(GetFilenameWithoutExtFromPath(path));
+	std::string ID = GetFilenameWithoutExtFromPath(path);
+	std::transform(ID.begin(), ID.end(), ID.begin(), ::tolower);
 
 	std::vector<unsigned char> pixels;
 	unsigned int /* size_t */ width, height;
