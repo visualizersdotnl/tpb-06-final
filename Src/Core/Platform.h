@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <exception>
 
-// Libs
+// Legacy
 #include <Shared/assert.h>
 
 // COM release macro

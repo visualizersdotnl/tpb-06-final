@@ -101,12 +101,6 @@
     <ClInclude Include="singleton.h" />
     <ClInclude Include="stopwatch.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Math\Math.vcxproj">
-      <Project>{881b9524-7d8d-4a76-ad1c-5d781140acc3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

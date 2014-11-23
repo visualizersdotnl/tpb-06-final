@@ -56,7 +56,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../3rdparty;../Legacy;../Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -75,7 +75,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../3rdparty;../Legacy;../Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -154,25 +154,15 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_PostProcess.fx">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling postfx shader...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling core post processing shader...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling shader...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling core post processing shader...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Libs\Math\Math.vcxproj">
-      <Project>{881b9524-7d8d-4a76-ad1c-5d781140acc3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Libs\Shared\Shared.vcxproj">
-      <Project>{493c64ac-e3bb-495b-b653-933160a10f98}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
@@ -192,10 +182,10 @@
     <CustomBuild Include="Shaders\Shader_Blobs.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling sprites shader...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling std. metaballs shader...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_4_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling sprites shader...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling std. metaballs shader...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
