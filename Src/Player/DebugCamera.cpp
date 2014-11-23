@@ -12,11 +12,11 @@ DebugCamera::DebugCamera(Pimp::World* world) :
 	ASSERT(nullptr != world);
 
 	camera = new Pimp::Camera(world);
-	world->GetElements().Add(camera);
+	world->GetElements().push_back(camera);
 	camera->SetFOVy(0.563197f);
 
 	xform = new Pimp::Xform(world);
-	world->GetElements().Add(xform);
+	world->GetElements().push_back(xform);
 
 	AddChildToParent(xform,world->GetRootNode());
 	AddChildToParent(camera,xform);
@@ -34,7 +34,7 @@ void DebugCamera::SetEnabled( bool enabled )
 		{
 			// Adopt current camera.
 			Pimp::Camera* prevCam = world->GetCamera();
-			ASSERT(prevCam->GetParents().Size() == 1);
+			ASSERT(prevCam->GetParents().size() == 1);
 			Pimp::Node* prevCamParent = prevCam->GetParents()[0];
 			ASSERT(prevCamParent->GetType() == Pimp::ET_Xform);
 			Pimp::Xform* prevDirectedCamXform = static_cast<Pimp::Xform*>(prevCamParent);

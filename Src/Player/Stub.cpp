@@ -14,7 +14,6 @@
 	Issues (some of these are in Github as well):
 	- Remove unused (commented) code.
 	- Leaks (perhaps use an external tool to test that).
-	- Phase out FixedSizeList use.
 */
 
 #include <Core/Platform.h>
@@ -510,7 +509,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 							DEBUG_LOG("> W,S,A,D:	Translate current view forward, back, left or right.");
 							DEBUG_LOG("> Q,E:		Roll current view, in either positive or negative direction.");
 							DEBUG_LOG("> Drag LMB:	Adjust yaw and pitch of current view.");
-							DEBUG_LOG("> ENTER:		Dump current debug camera transform to output window.");
+							DEBUG_LOG("> ENTER:	    Dump current debug camera transform to output window.");
 							DEBUG_LOG("============================================================================");
 #endif	
 

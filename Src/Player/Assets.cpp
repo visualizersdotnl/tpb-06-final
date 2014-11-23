@@ -169,7 +169,7 @@ namespace Assets
 				*request.ppDest = pTex;
 			s_textures.push_back(pTex);
 
-			Demo::GetWorld()->GetTextures().Add(pTex);
+			Demo::GetWorld()->GetTextures().push_back(pTex);
 		}
 
 		return true;
@@ -211,7 +211,7 @@ namespace Assets
 
 			*request.ppDest = pMat;
 			s_materials.push_back(pMat);
-			Demo::GetWorld()->GetMaterials().Add(pMat);
+			Demo::GetWorld()->GetMaterials().push_back(pMat);
 		}
 
 		// Ditch requests.

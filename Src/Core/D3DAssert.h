@@ -38,7 +38,7 @@ inline const std::string GetDxErrorDesc(const std::string &error, const char *fi
 }
 
 #ifdef _DEBUG
-	#define D3D_ASSERT(hRes) ASSERT_MSG(S_OK == (hRes), (S_OK != (hRes)) ? GetDxErrorDesc((hRes, __FILE__, __LINE__)).c_str() : "")
+	#define D3D_ASSERT(hRes) ASSERT_MSG(S_OK == (hRes), (S_OK != (hRes)) ? GetDxErrorDesc(hRes, __FILE__, __LINE__).c_str() : "")
 	#define D3D_VERIFY(hRes) D3D_ASSERT(hRes)
 	#define D3D_ASSERT_MSG(hRes, message) ASSERT_MSG(S_OK == (hRes), message)
 #else

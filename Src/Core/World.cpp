@@ -8,29 +8,19 @@
 #include "Metaballs.h"
 #include "Sprites.h"
 
-// FIXME: Introduce regular STL vectors instead?
-#define PIMP_MAX_NUM_WORLD_ELEMENTS 8192
-#define PIMP_MAX_NUM_TEXTURES 256
-#define PIMP_MAX_NUM_SCENES 256
-#define PIMP_MAX_NUM_MATERIALS 256
-
 namespace Pimp 
 {
-	World::World()
-		: elements(PIMP_MAX_NUM_WORLD_ELEMENTS)
+	World::World() :
+		rootNode(new Xform(this))
 ,		currentCamera(nullptr)
 ,		currentSceneIndex(-1)
-,		textures(PIMP_MAX_NUM_TEXTURES)
-,		materials(PIMP_MAX_NUM_MATERIALS)
-,		scenes(PIMP_MAX_NUM_SCENES)
 ,		postProcess(new PostProcess())
 ,		screenQuadVertexBuffer(new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather()))
 ,		currentTime(0.f)
 ,		motionBlurAmount(0.f)
 ,		prevMotionBlurTime(9999999.0)
 	{
-		rootNode = new Xform(this);
-		elements.Add(rootNode);
+		elements.push_back(rootNode);
 
 		// Bind for loading bar (embedded in core post processing shader).
 		screenQuadVertexBuffer->Bind();
@@ -38,8 +28,9 @@ namespace Pimp
 
 	World::~World()
 	{
-		for (int i=0; i<elements.Size(); ++i)
-			delete elements[i];
+		// Elements are owned, so delete them
+		for (auto *element : elements)
+			delete element;
 
 		delete screenQuadVertexBuffer;
 		delete postProcess;
@@ -50,12 +41,10 @@ namespace Pimp
 		currentTime += deltaTime;
 
 		// Tick ALL non-node elements first
-		for (int i=elements.Size()-1; i>=0; --i)
+		for (auto *element : elements)
 		{
-			if (!elements[i]->IsNode())
-			{
-				elements[i]->Tick(deltaTime);
-			}			
+			if (false == element->IsNode())
+				element->Tick(deltaTime);
 		}
 
 		// Then tick our DAG with nodes
@@ -111,11 +100,9 @@ namespace Pimp
 				currentCamera->Bind();
 
 			// Render our scene to a single sceneColor (? -> FIXME, ask Glow) FP16 RT
-			if (scenes.IsValidIndex(currentSceneIndex) && 
-				scenes[currentSceneIndex] != NULL)
-			{
+			ASSERT(-1 == currentSceneIndex || currentSceneIndex < scenes.size());
+			if (-1 != currentSceneIndex && nullptr != scenes[currentSceneIndex])
 				scenes[currentSceneIndex]->Render(currentCamera);
-			}
 
 			// Draw metaballs? (FIXME?)
 			if (nullptr != pMetaballs)
@@ -160,43 +147,45 @@ namespace Pimp
 	{
 		currentTime = time;
 
-		for (int i=0; i<elements.Size(); ++i)
-		{
-			elements[i]->ForceSetTime(time);
-		}
+		for (auto *element : elements)
+			element->ForceSetTime(time);
 	}
 
 	void World::StaticAddChildToParent(Node* nodeChild, Node* nodeParent)
 	{
-		ASSERT(nodeChild != NULL);
-		ASSERT(nodeParent != NULL);
-		//	ASSERT(nodeChild->GetParent() == NULL);
+		ASSERT(nullptr != nodeChild && nullptr != nodeParent);
 
 		// Add child to parent's children
-		nodeParent->GetChildren().Add(nodeChild);
+		nodeParent->GetChildren().push_back(nodeChild);
 
 		// Add parent to child's parents
-		nodeChild->GetParents().Add(nodeParent);
+		nodeChild->GetParents().push_back(nodeParent);
 	}
 
 	void World::StaticRemoveChildFromParent(Node* nodeChild, Node* nodeParent)
 	{
-		ASSERT(nodeChild != NULL);
-		ASSERT(nodeParent != NULL);
-		//	ASSERT(nodeChild->GetParent() == NULL);
+		ASSERT(nullptr != nodeChild && nullptr != nodeParent);
 
 		// Remove child from parent's children
-		nodeParent->GetChildren().Remove(nodeChild);
+		std::vector<Node*>& children = nodeParent->GetChildren();
+		auto iChild = std::find(children.begin(), children.end(), nodeChild);
+		if (children.end() != iChild)
+			children.erase(iChild);
 
 		// Remove parent from child's parents
-		nodeChild->GetParents().Remove(nodeParent);
+		std::vector<Node*>& parents = nodeParent->GetParents();
+		auto iParent = std::find(parents.begin(), parents.end(), nodeParent);
+		if (parents.end() != iParent)
+			parents.erase(iParent);
 	}
 
 	void World::UpdateAllMaterialParameters()
 	{
-		for (int i=0; i<materials.Size(); ++i)
-			if (materials[i] != NULL)
-				materials[i]->RefreshParameters();
+		for (auto *material : materials)
+		{
+			if (nullptr != material)
+				material->RefreshParameters();				
+		}
 	}
 
 	void World::SetMotionBlurAmount( float amount )

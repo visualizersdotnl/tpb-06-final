@@ -9,16 +9,10 @@ namespace Pimp
 	{
 		ET_Element = 0,
 		ET_Node,
-		ET_Geometry,
 		ET_Xform,
 		ET_Camera,
-		ET_AnimCurve,
-		ET_PolyMesh,
 		ET_MaterialParameter,
-		ET_ParticleSpline,
-		ET_ParticleAttractor,
 		ET_Scene,
-		ET_Metaballs,
 
 		MAX_ElementType
 	};

@@ -61,7 +61,7 @@ namespace Pimp
 		t = CreateMatrixTranslation(translation);
 		s = CreateMatrixScaling(scale);
 
-		transformLocal = scalePivotInv * s;
+		transformLocal  = scalePivotInv * s;
 		transformLocal *= scalePivot;
 		transformLocal *= scalePivotTranslation;
 
@@ -76,7 +76,7 @@ namespace Pimp
 	void Xform::Tick(float deltaTime)
 	{
 		// Update world matrix
-		const Matrix4* world = (parents.Size() > 0) ? parents[0]->GetWorldTransform() : Matrix4::GetIdentityPtr();
+		const Matrix4* world = (false == parents.empty()) ? parents[0]->GetWorldTransform() : Matrix4::GetIdentityPtr();
 		
 		transformWorld = transformLocal * (*world);
 		transformWorldInv = transformWorld.Inversed();

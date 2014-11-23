@@ -9,18 +9,17 @@
 AutoShaderReload::AutoShaderReload( Pimp::World* world, float checkInterval )
 	: world(world), checkInterval(checkInterval)
 {
-	FixedSizeList<Pimp::Scene*> scenes = world->GetScenes();
-
-	for (int i=0; i<scenes.Size(); ++i)
+	const std::vector<Pimp::Scene*>& scenes = world->GetScenes();
+	for (auto *scene : scenes)
 	{
-		Pimp::Scene* scene = scenes[i];
-		Pimp::Material* material = scene->GetMaterial();
+		ASSERT(nullptr != scene);
 
+		Pimp::Material* material = scene->GetMaterial();
 		if (nullptr != material && false == material->GetShaderFileName().empty())
 		{
-			// File should exist! (FIXME: OK, makes sense, but why exactly?)
-			ASSERT(FileExists(scene->GetMaterial()->GetShaderFileName())); 
-			
+			// File should exist! (FIXME: ok, makes sense, but why exactly?)
+			ASSERT(true == FileExists(material->GetShaderFileName()));
+
 			Shader shader;
 			shader.scene = scene;
 			shader.changeTracker = new FileChangeCheck(scene->GetMaterial()->GetShaderFileName().c_str());
@@ -73,15 +72,17 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 
 	if (success)
 	{
+		std::vector<Pimp::Material*>& materials = world->GetMaterials();
+
 		// Create new material
 		Pimp::Material* newMaterial = new Pimp::Material(world, compiled_shader, compiled_shader_size, fileName);
 		scene->SetMaterial(newMaterial);
-		world->GetMaterials().Add(newMaterial);
+		materials.push_back(newMaterial);
 
 		// Clean up old material
-		int oldIndex = world->GetMaterials().Find(oldMaterial);
-		if (oldIndex >= 0)
-			world->GetMaterials().RemoveAtIndex(oldIndex);
+		auto iMat = std::find(materials.begin(), materials.end(), oldMaterial);
+		if (materials.end() != iMat)
+			materials.erase(iMat);
 
 		delete oldMaterial;
 

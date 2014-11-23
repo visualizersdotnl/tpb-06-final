@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <Shared/fixedsizelist.h>
 #include <Math/math.h>
 #include "Element.h"
 
@@ -11,23 +10,15 @@ namespace Pimp
 		: public Element
 	{
 	protected:
-		// FIXME: replace for STL.
-		FixedSizeList<Node*> children;
-		FixedSizeList<Node*> parents;
+		std::vector<Node*> children;
+		std::vector<Node*> parents;
 
 	public:
 		Node(World* ownerWorld);
 		virtual ~Node() {}
 
-		FixedSizeList<Node*>& GetChildren()
-		{
-			return children;
-		}
-
-		FixedSizeList<Node*>& GetParents() 
-		{
-			return parents;
-		}
+		std::vector<Node*>& GetChildren() { return children; }
+		std::vector<Node*>& GetParents()  { return parents;  }
 
 		virtual const Matrix4* GetWorldTransform() const;
 		virtual const Matrix4* GetWorldTransformInv() const;

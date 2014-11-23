@@ -56,9 +56,6 @@
     <ClInclude Include="fileutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fixedsizelist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>

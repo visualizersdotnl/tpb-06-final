@@ -2,13 +2,9 @@
 #include "Platform.h"
 #include "Node.h"
 
-#define PIMP_MAX_NUM_NODE_CHILDREN 1024
-#define PIMP_MAX_NUM_NODE_PARENTS  4096
-
 namespace Pimp 
 {
-	Node::Node(World* ownerWorld)
-		: Element(ownerWorld), parents(PIMP_MAX_NUM_NODE_PARENTS), children(PIMP_MAX_NUM_NODE_CHILDREN)
+	Node::Node(World* ownerWorld) : Element(ownerWorld)
 	{
 		SetType(ET_Node);
 		SetIsNode(true);
@@ -16,18 +12,15 @@ namespace Pimp
 
 	void Node::Tick(float deltaTime)
 	{
-		for (int i=children.Size()-1; i>=0; --i)
-		{
-			children[i]->Tick(deltaTime);
-		}
+		for (auto iChild = children.rbegin(); iChild != children.rend(); ++iChild)
+			(*iChild)->Tick(deltaTime);
 	}
 
 	const Matrix4* Node::GetWorldTransform() const
 	{
-		if (parents.Size() > 0)
+		if (false == parents.empty())
 		{
-			ASSERT( parents.Size() == 1 );
-
+			ASSERT(1 == parents.size());
 			return parents[0]->GetWorldTransform();
 		}
 		else
@@ -36,10 +29,9 @@ namespace Pimp
 
 	const Matrix4* Node::GetWorldTransformInv() const
 	{
-		if (parents.Size() > 0)
+		if (false == parents.empty())
 		{
-			ASSERT( parents.Size() == 1 );
-
+			ASSERT(1 == parents.size());
 			return parents[0]->GetWorldTransformInv();
 		}
 		else

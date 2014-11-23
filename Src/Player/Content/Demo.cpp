@@ -94,7 +94,7 @@ static Pimp::MaterialParameter *CreateDynShaderParam(
 	Pimp::MaterialParameter::ValueType valueType = Pimp::MaterialParameter::VT_Value)
 {
 	Pimp::MaterialParameter *newParam = new Pimp::MaterialParameter(s_pWorld);
-	s_pWorld->GetElements().Add(newParam);
+	s_pWorld->GetElements().push_back(newParam);
 	newParam->SetValueType(Pimp::MaterialParameter::VT_Value);
 	newParam->SetName(name.c_str());
 	return newParam;
@@ -237,9 +237,9 @@ protected:
 		if (nullptr == m_pScene)
 		{
 			m_pScene = new Pimp::Scene(s_pWorld);
-			s_pWorld->GetScenes().Add(m_pScene);
-			s_pWorld->GetElements().Add(m_pScene);
-			m_sceneIdx = s_pWorld->GetScenes().Size()-1;	
+			s_pWorld->GetScenes().push_back(m_pScene);
+			s_pWorld->GetElements().push_back(m_pScene);
+			m_sceneIdx = int(s_pWorld->GetScenes().size()-1);	
 
 			m_pScene->SetMaterial(pMat);
 		}
@@ -251,7 +251,7 @@ protected:
 		Pimp::Xform* xform = new Pimp::Xform(s_pWorld);
 		
 		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(s_pWorld);
-		s_pWorld->GetElements().Add(param);
+		s_pWorld->GetElements().push_back(param);
 		
 		if (true ==  inverse)
 			param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
@@ -405,9 +405,9 @@ bool GenerateWorld(const char *rocketClient)
 	
 	// Add default camera transformation.
 	s_defaultCam = new Pimp::Camera(s_pWorld);
-	s_pWorld->GetElements().Add(s_defaultCam);
+	s_pWorld->GetElements().push_back(s_defaultCam);
 	s_defaultXform = new Pimp::Xform(s_pWorld);
-	s_pWorld->GetElements().Add(s_defaultXform);
+	s_pWorld->GetElements().push_back(s_defaultXform);
 	AddChildToParent(s_defaultXform, s_pWorld->GetRootNode());
 	AddChildToParent(s_defaultCam, s_defaultXform);
 	s_defaultCam->SetFOVy(0.563197f);
@@ -438,7 +438,7 @@ bool GenerateWorld(const char *rocketClient)
 		pScene->BindToWorld();
 
 	// Add user postFX.
-	s_pWorld->GetMaterials().Add(matUserPostFX);
+	s_pWorld->GetMaterials().push_back(matUserPostFX);
 	s_pWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
 
 	// Ta-daa, ready.

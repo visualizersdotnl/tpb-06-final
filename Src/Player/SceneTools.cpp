@@ -14,47 +14,45 @@ void AddChildToParent(Pimp::Node* nodeChild, Pimp::Node* nodeParent)
 
 static void RecursiveRemoveNode(Pimp::Node* node)
 {
-	FixedSizeList<Pimp::Element*>& elems = node->GetOwnerWorld()->GetElements();
-	elems.Remove(node);
+	std::vector<Pimp::Element*>& elements = node->GetOwnerWorld()->GetElements();
+	auto iElem = std::find(elements.begin(), elements.end(), node);
+	if (elements.end() != iElem)
+		elements.erase(iElem);
 
-	for (int i=0; i<node->GetChildren().Size(); ++i)
-		RecursiveRemoveNode(node->GetChildren()[i]);
+	for (auto iChild : node->GetChildren())
+		RecursiveRemoveNode(iChild);
 }
 
 void RemoveNodeFromWorld(Pimp::Node* node)
 {
 	Pimp::World* world = node->GetOwnerWorld();
 
-	FixedSizeList<Pimp::Node*>& parents = node->GetParents();
-	for (int i=0; i<parents.Size(); ++i)
+	for (auto iParent : node->GetParents())
 	{
-		parents[i]->GetChildren().Remove(node);
+		std::vector<Pimp::Node*>& children = iParent->GetChildren();
+		auto iNode = std::find(children.begin(), children.end(), node);
+		if (children.end() != iNode)
+			children.erase(iNode);
+
 	}
 	
 	RecursiveRemoveNode(node);
 }
 
-void DuplicateTransformTransformedHierarchy(
-	Pimp::World* w,
-	Pimp::Node* source, Pimp::Node* dest)
+void DuplicateTransformTransformedHierarchy(Pimp::World* world, Pimp::Node* from, Pimp::Node* to)
 {
-	for (int i=0; i<source->GetChildren().Size(); ++i)
+	ASSERT(nullptr != world && nullptr != from && nullptr != to);
+
+	for (auto iChild : from->GetChildren())
 	{
-		Pimp::Node* n = source->GetChildren()[i];
-
-		if (n->GetType() == Pimp::ET_Xform)
+		if (Pimp::ET_Xform == iChild->GetType())
 		{
-			Pimp::Xform* x = new Pimp::Xform(*(Pimp::Xform*)n);
-			w->GetElements().Add(x);
+			Pimp::Xform* copy = new Pimp::Xform(*static_cast<Pimp::Xform*>(iChild));
+			world->GetElements().push_back(copy);
+			AddChildToParent(copy, to);
 
-			AddChildToParent(x, dest);
-
-			DuplicateTransformTransformedHierarchy(w, n, x);
-		}
-		else if (n->GetType() == Pimp::ET_PolyMesh)
-		{
-			// Instance polymesh!
-			AddChildToParent(n, dest);
+			// Recurse..
+			DuplicateTransformTransformedHierarchy(world, iChild, copy);
 		}
 	}
 }

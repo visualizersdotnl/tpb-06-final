@@ -104,7 +104,6 @@
     <ClInclude Include="conversions.h" />
     <ClInclude Include="crc32.h" />
     <ClInclude Include="fileutils.h" />
-    <ClInclude Include="fixedsizelist.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="shared.h" />

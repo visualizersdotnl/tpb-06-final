@@ -65,16 +65,13 @@ namespace Pimp
 		// Our own static parameters for this material
 		InitParameters();
 
-
 		// All of our world's material parameters
-		FixedSizeList<Element*>& elements = world->GetElements();
-
-		for (int i=0; i<elements.Size(); ++i)
+		const std::vector<Element*>& elements = world->GetElements();
+		for (auto *element : elements)
 		{
-			if (elements[i]->GetType() == ET_MaterialParameter)
+			if (ET_MaterialParameter == element->GetType())
 			{
-				MaterialParameter* matParam = (MaterialParameter*)elements[i];
-
+				MaterialParameter* matParam = static_cast<MaterialParameter*>(element);
 				if (true == effect.HasVariable(matParam->GetName()))
 				{
 					BoundMaterialParameter boundMatParam;
@@ -86,17 +83,14 @@ namespace Pimp
 		}
 
 		// All of our world's textures
-		const FixedSizeList<Texture*>& allTextures = world->GetTextures();
-
-		for (int i=0; i<allTextures.Size(); ++i)
+		const std::vector<Texture*>& textures = world->GetTextures();
+		for (auto *texture : textures)
 		{
-			Texture* tex = allTextures[i];
-			std::string texBindingName = std::string("texture_") + tex->GetName();
-
-			if (true == effect.HasVariable(texBindingName.c_str()))
+			const std::string bindName = "texture_" + texture->GetName();
+			if (true == effect.HasVariable(bindName.c_str()))
 			{
-				const int varIndex = effect.RegisterVariable(texBindingName.c_str(), true);
-				effect.SetVariableValue(varIndex, tex->GetShaderResourceView());
+				const int varIndex = effect.RegisterVariable(bindName.c_str(), true);
+				effect.SetVariableValue(varIndex, texture->GetShaderResourceView());
 				boundTextureVariableIndices.push_back(varIndex);
 			}
 		}
