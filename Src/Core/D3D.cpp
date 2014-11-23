@@ -33,7 +33,8 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 	const DWORD viewWidth = mode.width;
 	const DWORD viewHeight = mode.height;
 
-#ifdef D3D_DISABLE_SPECIFIC_WARNINGS
+#if defined(_DEBUG)
+#if D3D_DISABLE_SPECIFIC_WARNINGS
 	ID3D10InfoQueue* infoQueue;
 	device->QueryInterface(__uuidof(ID3D10InfoQueue),  (void **)&infoQueue); 
 	
@@ -49,6 +50,7 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 
 	// Apply the filter to the info queue
 	infoQueue->AddStorageFilterEntries(&filter);  
+#endif
 #endif
 
 	// Retrieve backbuffer

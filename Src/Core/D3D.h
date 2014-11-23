@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "PIX.h"
+
 #include "D3DAssert.h"
 #include "RenderTarget.h"
 #include "DepthStencil.h"

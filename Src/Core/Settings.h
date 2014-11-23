@@ -13,3 +13,6 @@
 // Used both in Core and by Player to set up the initial swap chain.
 #define D3D_ANTIALIAS_NUM_SAMPLES 1
 #define D3D_ANTIALIAS_QUALITY 0
+
+// Set to 1 to have D3D shut it's trap about lingering binds (applies to debug build only).
+#define D3D_DISABLE_SPECIFIC_WARNINGS 1
