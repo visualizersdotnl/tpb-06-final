@@ -1,7 +1,6 @@
 
 #include <Core/Platform.h>
 #include <Core/Core.h>
-#include <Shared/assert.h>
 #include "MaterialCompiler.h"
 
 MaterialCompiler::MaterialCompiler() :
@@ -11,10 +10,10 @@ MaterialCompiler::MaterialCompiler() :
 
 MaterialCompiler::~MaterialCompiler()
 {
-	for (Job *pJob : m_jobs)
+	for (auto *pJob : m_jobs)
 		delete pJob;
 
-	for (HANDLE hThread : m_threads)
+	for (auto hThread : m_threads)
 		CloseHandle(hThread);
 }
 

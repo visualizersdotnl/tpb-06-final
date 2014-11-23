@@ -19,5 +19,8 @@
 #include <algorithm>
 #include <exception>
 
+// Libs
+#include <Shared/assert.h>
+
 // COM release macro
 #define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()

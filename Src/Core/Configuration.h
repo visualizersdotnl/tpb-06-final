@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <Shared/assert.h> // Used by <Shared/singleton.h>
 #include <Shared/singleton.h>
 
 namespace Pimp 

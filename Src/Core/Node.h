@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <Shared/assert.h>
 #include <Shared/fixedsizelist.h>
 #include <Math/math.h>
 #include "Element.h"

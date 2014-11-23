@@ -17,7 +17,7 @@ struct PSOutput
 
 cbuffer paramsOnlyOnce
 {
-	// Required by code.
+	// Required by Material.
 	float4x4 viewInvMatrix; 
 
 	// These are bound to a Rocket tracks.

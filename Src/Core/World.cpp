@@ -110,7 +110,7 @@ namespace Pimp
 			if (currentCamera != NULL)
 				currentCamera->Bind();
 
-			// Render our scene to a single sceneColor (? -> FIXMEM, ask Glow) FP16 RT
+			// Render our scene to a single sceneColor (? -> FIXME, ask Glow) FP16 RT
 			if (scenes.IsValidIndex(currentSceneIndex) && 
 				scenes[currentSceneIndex] != NULL)
 			{

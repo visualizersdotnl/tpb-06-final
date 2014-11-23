@@ -7,9 +7,12 @@
 //    Do keep an eye on constant parameters that may have to remain that way for speed.
 // 2. Consider making this a proper world node?
 // 3. Remove any remaining hacks.
+// 4. Use AVX?
 
 // Until then basic parameters can be modified in this file, a little below.
 // Shading-related stuff can be set on runtime.
+
+// Note: needs a large stack (recurses like there's no tomorrow).
 
 #include "Platform.h"
 #include "D3D.h"

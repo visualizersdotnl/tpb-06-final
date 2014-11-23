@@ -1,6 +1,5 @@
 
 #include <Core/Platform.h>
-#include <Shared/assert.h>
 #include <bass24/c/bass.h>
 #include "Audio.h"
 #include "SetLastError.h"

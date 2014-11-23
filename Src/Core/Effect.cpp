@@ -1,6 +1,5 @@
 
 #include "Platform.h"
-#include <Shared/assert.h>
 #include "D3D.h"
 #include "Effect.h"
 

@@ -48,13 +48,13 @@ namespace Pimp
 
 	void Node::CreateLookAt( Matrix4* outLookAt ) const
 	{
-		const Matrix4* wurld = GetWorldTransform();
+		const Matrix4* mWorld = GetWorldTransform();
 
-		Vector3 worldPosition = Vector3(wurld->_41, wurld->_42, wurld->_43);
-		Matrix4 o = wurld->InvertedOrthogonal();
+		const Vector3 worldPosition = Vector3(mWorld->_41, mWorld->_42, mWorld->_43);
+		const Matrix4 mOrientation = mWorld->InvertedOrthogonal();
 
-		const Vector3 worldDirectionUp(o._12, o._22, o._32);
-		const Vector3 worldDirectionForward(-o._13, -o._23, -o._33);
+		const Vector3 worldDirectionUp(mOrientation._12, mOrientation._22, mOrientation._32);
+		const Vector3 worldDirectionForward(-mOrientation._13, -mOrientation._23, -mOrientation._33);
 
 		*outLookAt = CreateMatrixLookAt(worldPosition, worldDirectionForward, worldDirectionUp);
 	}
