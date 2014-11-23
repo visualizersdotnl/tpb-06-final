@@ -206,7 +206,6 @@ static Pimp::Metaballs *s_pMetaballs = nullptr;
 //
 // !! IMPORTANT !!
 // All objects added as an element to the world are destroyed by the world itself!
-// This includes stuff like scenes and cameras!
 //
 
 class Scene
@@ -252,22 +251,23 @@ protected:
 	{
 		Pimp::Xform* xform = new Pimp::Xform(s_pWorld);
 		
-		Pimp::MaterialParameter* param = new Pimp::MaterialParameter(s_pWorld);
-		s_pWorld->GetElements().push_back(param);
+		Pimp::MaterialParameter* matParam = new Pimp::MaterialParameter(s_pWorld);
+		s_pWorld->GetElements().push_back(matParam);
 		
 		if (true ==  inverse)
-			param->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
+			matParam->SetValueType(Pimp::MaterialParameter::VT_NodeXformInv);
 		else
-			param->SetValueType(Pimp::MaterialParameter::VT_NodeXform);
+			matParam->SetValueType(Pimp::MaterialParameter::VT_NodeXform);
 
-		param->SetName(name);
+		matParam->SetName(name);
 
 		Pimp::World::StaticAddChildToParent(xform, s_pWorld->GetRootNode());
-		Pimp::World::StaticAddChildToParent(param, xform);
+		Pimp::World::StaticAddChildToParent(matParam, xform);
 
-		// FIXME: I think we're leaking the Xform here
+		// @plek: As the transform node becomes a child of the paramater, the node destructor should
+		//        eventually delete it. Confirm this some day.
 
-		return param;
+		return matParam;
 	}
 
 	// And this one on top of Tick() to activate said scene.
@@ -372,7 +372,7 @@ bool GenerateWorld(const char *rocketClient)
 	s_scenes[SCENE_BULLESANDBITCHES] = new BulletsAndBitches();
 
 	// Instantiate all local (part/scene) Rocket tracks.	
-	for (Scene *pScene : s_scenes)
+	for (auto pScene : s_scenes)
 		pScene->ReqRocketTracks();
 
 	// 2 blob parts share these (must be uploaded manually since it's not a dyn. loaded shader).
@@ -386,7 +386,7 @@ bool GenerateWorld(const char *rocketClient)
 
 	texWhite = Pimp::gD3D->GetWhiteTex();
 
-	for (Scene *pScene : s_scenes)
+	for (auto pScene : s_scenes)
 		pScene->ReqAssets();
 
 	// Loaded some more! :)
@@ -437,7 +437,7 @@ bool GenerateWorld(const char *rocketClient)
 	// Setup and bind world objects.
 	//
 
-	for (Scene *pScene : s_scenes)
+	for (auto pScene : s_scenes)
 		pScene->BindToWorld();
 
 	// Add user postFX.
@@ -474,7 +474,7 @@ void ReleaseWorld()
 	delete s_sprites;
 	delete s_pMetaballs;
 
-	for (Scene *pScene : s_scenes)
+	for (auto pScene : s_scenes)
 		delete pScene;
 
 	Assets::Release();
@@ -541,7 +541,7 @@ bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 		// FIXME: A regular demo would stop right here, TPB-06 has a little Bond hack on top.
 		// return false;
 
-		// -- TPB-06 ENDING HACK --
+		// ----- TPB-06 ENDING HACK -----
 
 		Audio_Pause();
 
@@ -573,7 +573,7 @@ bool Tick(float timeElapsed, Pimp::Camera *pDebugCam)
 
 		return !(sw_t >= t);
 
-		// -- TPB-06 ENDING HACK --
+		// ----- TPB-06 ENDING HACK -----
 	}
 
 	// Sprite post FX Zs.
