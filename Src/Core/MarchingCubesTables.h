@@ -1,10 +1,10 @@
 	
-// marching cubes tables, mostly stolen from Paul Bourke
+// Marching cubes tables, mostly stolen from Paul Bourke.
 
 #ifndef _MCTABLES_H_
 #define _MCTABLES_H_
 
-// indices that form a connecting line between each of a grid cube's 12 edges
+// Indices that form a connecting line between each of a grid cube's 12 edges
 const unsigned int kCubeEdgeIndices[12][2] = 
 {
 	0, 1,
@@ -21,7 +21,7 @@ const unsigned int kCubeEdgeIndices[12][2] =
 	3, 7
 };
 
-// pairs to calculate a vertex cache index for a grid cube's edge (cube index & offset)
+// Pairs to calculate a vertex cache index for a grid cube's edge (cube index & offset)
 const unsigned int kCubeEdgeToVertexCache[12][2] = 
 {
 	0, 0, 
@@ -38,7 +38,7 @@ const unsigned int kCubeEdgeToVertexCache[12][2] =
 	7, 2,
 };
 
-// for every possible facet, this value is a 12-bit mask of which of the cube's edges are cut by the surface
+// For every possible facet, this value is a 12-bit mask of which of the cube's edges are cut by the surface
 const unsigned int kEdgeTable[256] = 
 {
 	0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -75,7 +75,7 @@ const unsigned int kEdgeTable[256] =
 	0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   
 };
 
-// vertex sequences: one for each possible facet
+// Vertex sequences: one for each possible facet
 const int kTriangleTable[256][16] =
 {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

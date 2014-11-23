@@ -3,6 +3,7 @@
 #include <Shared/assert.h>
 #include <bass24/c/bass.h>
 #include "Audio.h"
+#include "SetLastError.h"
 #include "Content/Demo.h" // FIXME: for TPB-06 sample loads only
 
 static HSTREAM s_hMP3[3] = { 0 };

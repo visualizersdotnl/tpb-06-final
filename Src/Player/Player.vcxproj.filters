@@ -132,6 +132,9 @@
       <Filter>Helper</Filter>
     </ClInclude>
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SetLastError.h">
+      <Filter>Stub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libs\bass24\bass.chm">

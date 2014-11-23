@@ -431,7 +431,7 @@ RenderTarget* D3D::CreateRenderTarget(int shResinkFactor, DXGI_FORMAT format, bo
 
 	return new RenderTarget(format, texture, renderTargetView, shaderResourceView);
 
-	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
 ID3D10Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
@@ -489,7 +489,7 @@ DepthStencil* D3D::CreateDepthStencil(bool multiSample)
 
 	return new DepthStencil(texture, view);
 
-	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
 Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection)
@@ -516,7 +516,7 @@ Texture2D* D3D::CreateTexture2D(const std::string& name, int width, int height, 
 
 	return new Texture2D(name, width, height, texture, view);
 
-	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
 Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, int depth)
@@ -562,7 +562,7 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 
 	return new Texture3D(name, width, height, depth, texture, view, rtViews);
 
-	// FIXME: if it cops out anywhere here by way of thResow we're obviously potentially leaking.
+	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
 bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* outCompiledEffectLength)

@@ -53,7 +53,6 @@ namespace Pimp
 		// Mrt = rotation pivot translation = TranslationMat(rotationpivottranslation)
 		// 
 
-
 		Matrix4 r,s,t,ro;
 
 		r = CreateMatrixRotationQuaternion(rotation);
@@ -74,10 +73,9 @@ namespace Pimp
 		transformLocal *= t;
 	}
 
-
 	void Xform::Tick(float deltaTime)
 	{
-		// Calc new world
+		// Update world matrix
 		const Matrix4* world = (parents.Size() > 0) ? parents[0]->GetWorldTransform() : Matrix4::GetIdentityPtr();
 		
 		transformWorld = transformLocal * (*world);
@@ -86,7 +84,6 @@ namespace Pimp
 		// Tick children 
 		Node::Tick(deltaTime);
 	}
-
 
 	void Xform::SetTranslation(const Vector3& translation)
 	{
@@ -115,7 +112,6 @@ namespace Pimp
 	void Xform::SetRotationPivotTranslation(const Vector3& rotPivotTranslation)
 	{
 		rotationPivotTranslation = CreateMatrixTranslation(rotPivotTranslation);
-
 		CalculateTransforms();
 	}
 
@@ -123,14 +119,12 @@ namespace Pimp
 	{
 		rotationPivot = CreateMatrixTranslation(vecRotationPivot);
 		rotationPivotInv = rotationPivot.Inversed();
-
 		CalculateTransforms();
 	}
 
 	void Xform::SetScalePivotTranslation(const Vector3& vecScalePivotTrans)
 	{
 		scalePivotTranslation = CreateMatrixTranslation(vecScalePivotTrans);
-
 		CalculateTransforms();
 	}
 
@@ -138,7 +132,6 @@ namespace Pimp
 	{
 		scalePivot = CreateMatrixTranslation(vecScalePivot);
 		scalePivotInv = scalePivot.Inversed();
-
 		CalculateTransforms();
 	}
 }

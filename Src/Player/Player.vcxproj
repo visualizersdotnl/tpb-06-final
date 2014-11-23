@@ -217,6 +217,7 @@
     <ClInclude Include="MaterialCompiler.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneTools.h" />
+    <ClInclude Include="SetLastError.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>

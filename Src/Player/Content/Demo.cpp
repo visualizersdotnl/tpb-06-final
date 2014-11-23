@@ -5,6 +5,7 @@
 #include "Assets.h"
 #include "Audio.h"
 #include "Settings.h"
+#include "SetLastError.h"
 
 // There is a single Core::World, which is a basic scenegraph.
 static Pimp::World *s_pWorld = nullptr;

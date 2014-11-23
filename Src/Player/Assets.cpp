@@ -7,6 +7,7 @@
 #include "Assets.h"
 #include "Settings.h"
 #include "MaterialCompiler.h"
+#include "SetLastError.h"
 #include "Content/Demo.h"
 
 //

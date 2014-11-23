@@ -19,8 +19,5 @@
 #include <algorithm>
 #include <exception>
 
-// ** Must be implemented by host! **
-void SetLastError(const std::string &message);
-
 // COM release macro
 #define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()
