@@ -1,7 +1,7 @@
 
 #include <Core/Platform.h>
 #include <Core/Core.h>
-#include <Shared/shared.h>
+#include <Shared/fileutils.h>
 #include <LodePNG/lodepng.h>
 // #include "SceneTools.h"
 #include "Assets.h"

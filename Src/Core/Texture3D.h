@@ -1,9 +1,7 @@
 
 #pragma once
 
-//#include <d3d10_1.h>
 #include "Texture.h"
-//#include <shared/shared.h>
 
 namespace Pimp
 {

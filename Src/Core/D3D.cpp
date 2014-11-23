@@ -5,7 +5,6 @@
 
 
 #include "Platform.h"
-//#include <shared/shared.h>
 #include "D3D.h"
 #include "Settings.h"
 #include "Configuration.h"

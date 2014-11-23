@@ -1,7 +1,6 @@
 
 #pragma once
 
-//#include <Shared/shared.h>
 #include "Node.h"
 #include "Effect.h"
 

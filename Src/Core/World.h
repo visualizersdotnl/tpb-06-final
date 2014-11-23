@@ -1,7 +1,5 @@
 #pragma once
 
-//#include <Shared/shared.h>
-
 #include "Settings.h"
 #include "Element.h"
 #include "Material.h"
