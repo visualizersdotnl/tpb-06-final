@@ -411,7 +411,7 @@ RenderTarget* D3D::CreateRenderTarget(int shResinkFactor, DXGI_FORMAT format, bo
 
 	ID3D10RenderTargetView* renderTargetView = nullptr;
 
-	// FIXME
+	// FIXME: if I do this my loading bar disappears!
 //	hRes = device->CreateRenderTargetView(texture, (false == multiSample) ? nullptr : &rtDesc, &renderTargetView);
 	hRes = device->CreateRenderTargetView(texture, nullptr, &renderTargetView);
 	D3D_ASSERT(hRes);
@@ -424,7 +424,7 @@ RenderTarget* D3D::CreateRenderTarget(int shResinkFactor, DXGI_FORMAT format, bo
 
 	ID3D10ShaderResourceView* shaderResourceView = nullptr;
 
-	// FIXME
+	// FIXME: if I do this my loading bar disappears!
 //	hRes = device->CreateShaderResourceView(texture, (false == multiSample) ? nullptr : &shDesc, &shaderResourceView);
 	hRes = device->CreateShaderResourceView(texture, nullptr, &shaderResourceView);
 	D3D_ASSERT(hRes);

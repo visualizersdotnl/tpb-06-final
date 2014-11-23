@@ -17,6 +17,7 @@
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <exception>
 
 // ** Must be implemented by host! **
 void SetLastError(const std::string &message);
