@@ -50,7 +50,7 @@ bool Audio_Create(unsigned int iDevice, HWND hWnd, const std::string &mp3Path, b
 	MP3s.push_back(Demo::GetAssetsPath() + "shelldrop.mp3");
 
 	int iMP3 = 0;
-	for (const std::string &path : MP3s)
+	for (auto &path : MP3s)
 	{
 		DWORD streamFlags = BASS_SAMPLE_FX | BASS_MP3_SETPOS | BASS_STREAM_PRESCAN;
 		if (0 != iMP3) streamFlags |= (0 == iDevice) ? BASS_STREAM_DECODE : 0; // Decode disables FX.

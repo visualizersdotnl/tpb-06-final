@@ -37,7 +37,7 @@ public:
 		Assets::AddTexture2D("textures\\bondtro\\bond-hole.png", &blast[0]);
 		Assets::AddTexture2D("textures\\bondtro\\bond-hole-2.png", &blast[1]);
 		Assets::AddTexture2D("textures\\bondtro\\bond-hole-3.png", &blast[2]);
-		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp);
+		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp, true);
 		Assets::AddTexture2D("textures\\bondtro\\bond-circle.png", &blob);
 		Assets::AddTexture2D("textures\\bondtro\\bg.png", &background2);
 
