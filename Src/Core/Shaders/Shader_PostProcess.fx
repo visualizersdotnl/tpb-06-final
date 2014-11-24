@@ -53,7 +53,6 @@ VSOutput MainVS(VSInput input)
 Texture2D bufferSceneColor;
 Texture2D bufferFilter;
 
-
 SamplerState samplerSceneColor
 {
 	AddressU = CLAMP;
@@ -67,7 +66,6 @@ SamplerState samplerFilter
 	AddressV = CLAMP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
-
 
 PSOutput MainPS_Gather(VSOutput input)
 {
@@ -92,8 +90,6 @@ PSOutput MainPS_Gather(VSOutput input)
 	return result;
 }
 
-
-
 PSOutput MainPS_Blur(VSOutput input)
 {
 	PSOutput result;
@@ -111,7 +107,6 @@ PSOutput MainPS_Blur(VSOutput input)
 	
 	return result;
 }
-
 
 PSOutput MainPS_Combine(VSOutput input)
 {
@@ -150,7 +145,6 @@ PSOutput MainPS_Combine(VSOutput input)
 	
 	return result;
 }
-
 
 PSOutput MainPS_MotionBlur(VSOutput input)
 {

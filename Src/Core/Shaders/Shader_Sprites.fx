@@ -18,6 +18,16 @@ cbuffer paramsOnlyOnce
 };
 
 
+VSOutput MainVS(VSInput input)
+{ 
+	VSOutput output;
+	output.screenPos = float4(input.position, 1.f);
+	output.color = input.color;
+	output.texCoord = input.texCoord;
+	return output;
+}
+
+
 Texture2D textureMap;
 
 SamplerState samplerTextureWrap
@@ -34,24 +44,12 @@ SamplerState samplerTextureClamp
 	Filter = MIN_MAG_MIP_LINEAR;
 };
 
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-	output.screenPos = float4(input.position, 1.f);
-	output.color = input.color;
-	output.texCoord = input.texCoord;
-	return output;
-}
-
-
 float4 MainPS_Wrap(VSOutput input) : SV_Target0
 {
 	float2 uv = input.texCoord;
 	float4 texColor = textureMap.Sample(samplerTextureWrap, uv);	
 	return texColor*input.color;
 }
-
 
 float4 MainPS_Clamp(VSOutput input) : SV_Target0
 {

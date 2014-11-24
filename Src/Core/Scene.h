@@ -21,8 +21,8 @@ namespace Pimp
 
 		void Render(Camera* camera);
 
-		void SetMaterial(Material* mat) { material = mat;  }
-		Material* GetMaterial() const   { return material; }
+		void SetMaterial(Material* material) { this->material = material;  }
+		Material* GetMaterial() const        { return material;            }
 
 		static float GetSceneRenderLOD() 
 		{

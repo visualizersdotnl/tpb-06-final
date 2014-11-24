@@ -27,6 +27,7 @@ cbuffer paramsOnlyOnce
 	float rim;
 };
 
+
 float3 LightVertex(
 	float3 position,
 	float3 normal,
@@ -73,7 +74,6 @@ VSOutput MainVS(VSInput input)
 	return output;
 }
 
-	
 Texture2D textureMap;
 Texture2D projMap;
 
@@ -83,8 +83,6 @@ SamplerState samplerTexture
 	AddressV = WRAP;
 	Filter = MIN_MAG_MIP_LINEAR;
 };
-
-
 
 float4 MainPS(VSOutput input) : SV_Target0
 {
@@ -98,7 +96,6 @@ float4 MainPS(VSOutput input) : SV_Target0
 
 	return texColor*projColor*input.color*float4(_rim.xxx,1.0);
 }
-
 
 
 technique10 Blobs

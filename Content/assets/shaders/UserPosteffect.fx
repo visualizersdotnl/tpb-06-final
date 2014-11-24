@@ -27,16 +27,6 @@ cbuffer paramsOnlyOnce
 };
 
 
-Texture2D sceneBuffer;
-
-SamplerState samplerSceneBuffer
-{
-	AddressU = CLAMP;
-	AddressV = CLAMP;
-	Filter = MIN_MAG_LINEAR_MIP_POINT;
-};
-
-
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
@@ -46,6 +36,16 @@ VSOutput MainVS(VSInput input)
 
 	return output;
 }
+
+
+Texture2D sceneBuffer;
+
+SamplerState samplerSceneBuffer
+{
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	Filter = MIN_MAG_LINEAR_MIP_POINT;
+};
 
 // Taken from a Shadertoy shader. Not that nice.
 float rand(float2 co){
