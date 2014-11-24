@@ -1,7 +1,6 @@
 
 #include "Platform.h"
 #include <xmmintrin.h>
-#include <emmintrin.h>
 #include "D3D.h"
 // #include "Texture2D.h"
 
@@ -24,10 +23,10 @@ namespace Pimp
 		const _MM_ALIGN16 float thresholdLow[4] = { 0, 0, 0, 0 };  
 		const _MM_ALIGN16 float thresholdHigh[4] = { 255.0f, 255.0f, 255.0f, 255.0f };
 
-		__m128 thresholdLow128 = _mm_load_ps(thresholdLow);
-		__m128 thresholdHigh128 = _mm_load_ps(thresholdHigh);
+		const __m128 thresholdLow128 = _mm_load_ps(thresholdLow);
+		const __m128 thresholdHigh128 = _mm_load_ps(thresholdHigh);
 
-		int initialRoundMode = _MM_GET_ROUNDING_MODE();
+		const int initialRoundMode = _MM_GET_ROUNDING_MODE();
 		_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
 
 		unsigned int* pDest32 = reinterpret_cast<unsigned int*>(pDest);
@@ -43,22 +42,22 @@ namespace Pimp
 			srcPixel = _mm_max_ps(thresholdLow128, srcPixel);
 			srcPixel = _mm_min_ps(thresholdHigh128, srcPixel);
 
-			// round to nearest int (using sse2)
+			// int. rounding
 			__m128i srcPixelInt = _mm_cvtps_epi32(srcPixel);
 
-			// pack 2 sets of 4 32bit ints together into 8 16 bit ints (also saturate)
+			// pack 2 sets of 4 32-bit components back to 16-bit (saturated)
 			__m128i twice = _mm_packs_epi32( srcPixelInt, srcPixelInt );
 
 			union { __m128i quadPacked; unsigned int quad[4]; };
 
-			// pack 2 sets of 8 16bit ints into 16 8bit ints (also saturate)
+			// pack 2 sets back to 8-bit (saturated)
 			quadPacked = _mm_packus_epi16(twice, twice);
 
 			// quad is stored like this:
-			// r0 [bits  0..7]: first pixel, alpha
-			// r1 [bits 8..15]: first pixel, R
-			// r2 [bits 16..23]: first pixel, G
-			// r3 [bits 24..31]: first pixel, B
+			// r0 [bits   0..7]: A
+			// r1 [bits  8..15]: R
+			// r2 [bits 16..23]: G
+			// r3 [bits 24..31]: B
 
 			*(pDest32++) = (quad[0] >> 8) | ((quad[0] & 0xff) << 24);	
 			++pSrc;
