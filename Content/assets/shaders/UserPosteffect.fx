@@ -1,4 +1,6 @@
 
+#include "../../../Src/Core/Shaders/MatConsts.inc"
+
 struct VSInput
 {
 	float3 position : POSITION;
@@ -15,13 +17,8 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
-#include "../../../Src/Core/Shaders/MatConsts.inc"
-
-cbuffer paramsOnlyOnce
+cbuffer paramsRocket
 {
-	// Required by Material.
-	float4x4 viewInvMatrix; 
-
 	// These are bound to a Rocket tracks.
 	float g_preSpriteFade; // 0 = 100%, 1 = white, -100 = completely black.
 	float g_sceneNoise;    // 0 = none, 1 = opaque.
@@ -39,9 +36,6 @@ VSOutput MainVS(VSInput input)
 	return output;
 }
 
-
-// Supplied by Material instance.
-Texture2D sceneBuffer;
 
 SamplerState samplerSceneBuffer
 {

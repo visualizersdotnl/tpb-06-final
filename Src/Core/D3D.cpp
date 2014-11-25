@@ -569,7 +569,9 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 }
 
 // FIXME: probably defined after porting to D3D11.
-#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
+#ifndef D3D_COMPILE_STANDARD_FILE_INCLUDE
+	#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
+#endif
 
 bool D3D::CompileEffect(
 	const std::string &path,

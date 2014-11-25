@@ -1,4 +1,7 @@
 
+#include "../../../Src/Core/Shaders/MatConsts.inc"
+
+
 #define SHOW_NORMALS 0
 
 
@@ -35,11 +38,8 @@ static float MaximumDistance = 500.0;
 static float StepFraction = 0.7;
 
 
-cbuffer paramsOnlyOnce
+cbuffer paramsFX
 {
-	float4x4 viewInvMatrix;
-	float sceneRenderLOD = 1;	
-	
 	float FOV = 0.7f;
 
 	float fisheyeStrength = 6; //6;

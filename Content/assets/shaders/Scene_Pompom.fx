@@ -1,4 +1,6 @@
 
+#include "../../../Src/Core/Shaders/MatConsts.inc"
+
 struct VSInput
 {
 	float3 position : POSITION;
@@ -15,10 +17,8 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
-cbuffer paramsOnlyOnce
+cbuffer paramsFX
 {
-	float sceneRenderLOD = 1;	
-
 	float g_fxTime;
 
 	float4x4 pompomRotMat;

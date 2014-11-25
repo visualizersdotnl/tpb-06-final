@@ -15,8 +15,8 @@ namespace Pimp
 ,		effectPass(&effectTechnique, "Default")
 ,		world(world)
 ,		varIndexViewInvMatrix(-1)
-,		varIndexSceneRenderLOD(0)
-,		varIndexSceneBuffer(0)
+,		varIndexSceneRenderLOD(-1)
+,		varIndexSceneBuffer(-1)
 ,		blendMode(D3D::BM_None)
 #ifdef _DEBUG
 ,		shaderFileName(shaderFileName)
@@ -29,12 +29,9 @@ namespace Pimp
 
 	void Material::InitParameters()
 	{
-		varIndexViewInvMatrix = effect.RegisterVariable("viewInvMatrix", false);
-		varIndexSceneRenderLOD = effect.RegisterVariable("sceneRenderLOD", false);
+		varIndexViewInvMatrix = effect.RegisterVariable("viewInvMatrix", true);
+		varIndexSceneRenderLOD = effect.RegisterVariable("sceneRenderLOD", true);
 		varIndexSceneBuffer = effect.RegisterVariable("sceneBuffer", false);
-
-		if (varIndexSceneRenderLOD >= 0)
-			effect.SetVariableValue(varIndexSceneRenderLOD, Scene::GetSceneRenderLOD());
 	}
 
 	void Material::Bind(Camera* camera)
@@ -42,9 +39,7 @@ namespace Pimp
 		if (nullptr != camera)
 		{
 			const Matrix4* viewInvMatrix = camera->GetViewInvMatrixPtr();
-
-			if (varIndexViewInvMatrix >= 0)
-				effect.SetVariableValue(varIndexViewInvMatrix, *viewInvMatrix);
+			effect.SetVariableValue(varIndexViewInvMatrix, *viewInvMatrix);
 		}
 
 		for (auto &iParam : boundMaterialParameters)
@@ -65,7 +60,7 @@ namespace Pimp
 		// Our own static parameters for this material
 		InitParameters();
 
-		// All of our world's material parameters
+		// Evaluate all world's material parameters
 		const std::vector<Element*>& elements = world->GetElements();
 		for (auto *element : elements)
 		{
@@ -74,6 +69,7 @@ namespace Pimp
 				MaterialParameter* matParam = static_cast<MaterialParameter*>(element);
 				if (true == effect.HasVariable(matParam->GetName()))
 				{
+					// Wanted? Bind it
 					BoundMaterialParameter boundMatParam;
 					boundMatParam.varIndex = effect.RegisterVariable(matParam->GetName(), true);
 					boundMatParam.parameter = matParam;
@@ -82,13 +78,14 @@ namespace Pimp
 			}
 		}
 
-		// All of our world's textures
+		// Evaluate all world's textures
 		const std::vector<Texture*>& textures = world->GetTextures();
 		for (auto *texture : textures)
 		{
 			const std::string bindName = "texture_" + texture->GetName();
 			if (true == effect.HasVariable(bindName.c_str()))
 			{
+				// Wanted? Bind it
 				const int varIndex = effect.RegisterVariable(bindName.c_str(), true);
 				effect.SetVariableValue(varIndex, texture->GetShaderResourceView());
 				boundTextureVariableIndices.push_back(varIndex);
@@ -98,6 +95,7 @@ namespace Pimp
 
 	void Material::SetSceneBuffer(ID3D10ShaderResourceView* resourceView)
 	{
+		// Only required by user post processing shader.
 		if (varIndexSceneBuffer >= 0)
 			effect.SetVariableValue(varIndexSceneBuffer, resourceView);
 	}
