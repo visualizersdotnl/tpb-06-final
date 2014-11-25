@@ -17,12 +17,12 @@ MaterialCompiler::~MaterialCompiler()
 		CloseHandle(hThread);
 }
 
-void MaterialCompiler::StartJob(const unsigned char *source, int sourceLen, unsigned char **bytecode, int *bytecodeSize)
+void MaterialCompiler::StartJob(const unsigned char *source, int sourceLen, unsigned char **bytecode, int *bytecodeSize, std::string &errorMsg)
 {
 	if (false == m_locked)
 	{
 		// Spawn new job thread.
-		Job *pJob = new Job();
+		Job *pJob = new Job(errorMsg);
 		pJob->source = source;
 		pJob->sourceLen = sourceLen;
 		pJob->bytecode = bytecode;
@@ -58,10 +58,11 @@ void MaterialCompiler::WaitForCompletion()
 		pJob->source,
 		pJob->sourceLen,
 		pJob->bytecode,
-		pJob->bytecodeSize))
+		pJob->bytecodeSize,
+		pJob->errorMsg))
 	{
-		ASSERT(0);
-		*pJob->bytecodeSize = -1; // Quick way to indicate that compile has failed.
+		// Quick way to indicate that compile has failed.
+		*pJob->bytecodeSize = -1; 
 	}
 
 	// Done.

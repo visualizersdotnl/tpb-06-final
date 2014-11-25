@@ -61,12 +61,14 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 	// Compile our shader (text -> bytecode)
 	unsigned char* compiled_shader;
 	int compiled_shader_size;
+	std::string errorMsg;
 	bool success = 
 		Pimp::gD3D->CompileEffect(
 		shader_ascii, 
 		shader_ascii_size, 
 		&compiled_shader, 
-		&compiled_shader_size);
+		&compiled_shader_size,
+		errorMsg);
 
 	delete[] shader_ascii;
 
@@ -88,6 +90,10 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 
 		// Replace pointer in asset loader's administration
 		Assets::ReplaceMaterial(oldMaterial, newMaterial);
+	}
+	else
+	{
+		ASSERT_MSG(0, errrorMsg.c_str);
 	}
 }
 

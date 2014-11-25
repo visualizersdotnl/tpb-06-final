@@ -68,7 +68,8 @@ public:
 		path(path),
 		ppDest(ppDest),
 		source(nullptr),
-		bytecode(nullptr) {}
+		bytecode(nullptr),
+		errorMsg("Unknown") {}
 
 	~MaterialRequest() 
 	{ 
@@ -81,6 +82,8 @@ public:
 
 	unsigned char *source, *bytecode;
 	int sourceSize, bytecodeSize;
+
+	std::string errorMsg;
 };
 
 class Texture2DRequest
@@ -134,7 +137,10 @@ namespace Assets
 					return false;
 				}
 
-				s_fxCompiler.StartJob(request.source, request.sourceSize, &request.bytecode, &request.bytecodeSize);
+				s_fxCompiler.StartJob(
+					request.source, request.sourceSize, 
+					&request.bytecode, &request.bytecodeSize,
+					request.errorMsg);
 			}
 		}
 		else
@@ -200,10 +206,13 @@ namespace Assets
 			{
 				if (-1 == request.bytecodeSize)
 				{
-					SetLastError("Failed to compile shader: " + request.path);
+					std::stringstream error;
+					error << "Failed to compile shader (" << request.path << "): ";
+					error << request.errorMsg;
+					SetLastError(error.str());
 					return false;
 				}
-
+	
 				// In dev. mode, dump shader binary to disk.
 				VERIFY(true == WriteFileContent(request.path + "b", request.bytecode, request.bytecodeSize));
 			}

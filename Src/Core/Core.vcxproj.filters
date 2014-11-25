@@ -208,5 +208,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shaders\MatConsts.inc">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -40,8 +40,6 @@ public:
 		Assets::AddTexture2D("textures\\bondtro\\bond-meneer.png", &pimp, true);
 		Assets::AddTexture2D("textures\\bondtro\\bond-circle.png", &blob);
 		Assets::AddTexture2D("textures\\bondtro\\bg.png", &background2);
-
-
 	}
 
 	void BindToWorld()

@@ -147,7 +147,12 @@ namespace Pimp
 		Texture3D* CreateTexture3D(const std::string& name, int width, int height, int depth);
 
 		// .FX compile (only for dev. usage, ship with precompiled shaders)
-		bool CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* compiledEffectLength);
+		bool CompileEffect(
+			const unsigned char* effectAscii, 
+			int effectAsciiSize, 
+			unsigned char** outCompiledEffectBuffer, 
+			int* outCompiledEffectLength,
+			std::string &errorMsg);
 
 	private:
 		// These are supplied by on construction (not owned)
@@ -166,6 +171,10 @@ namespace Pimp
 		D3D10_VIEWPORT backVP;    // Full-size back buffer viewport.
 		D3D10_VIEWPORT backAdjVP; // Viewport that centers scene on back buffer.
 		D3D10_VIEWPORT sceneVP;   // Aspect-ratio adjusted full viewport.
+
+#if defined(_DEBUG) && D3D_DISABLE_SPECIFIC_WARNINGS
+		ID3D10InfoQueue* infoQueue;
+#endif
 	};
 
 	extern D3D* gD3D;

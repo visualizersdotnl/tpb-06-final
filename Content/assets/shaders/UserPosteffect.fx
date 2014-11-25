@@ -15,6 +15,8 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
+// #include "../../../Src/Core/Shaders/MatConsts.inc"
+
 cbuffer paramsOnlyOnce
 {
 	// Required by Material.
@@ -38,6 +40,7 @@ VSOutput MainVS(VSInput input)
 }
 
 
+// Supplied by Material instance.
 Texture2D sceneBuffer;
 
 SamplerState samplerSceneBuffer

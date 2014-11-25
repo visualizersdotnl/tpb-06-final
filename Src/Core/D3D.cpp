@@ -33,9 +33,8 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 	const DWORD viewWidth = mode.width;
 	const DWORD viewHeight = mode.height;
 
-#if defined(_DEBUG)
-#if D3D_DISABLE_SPECIFIC_WARNINGS
-	ID3D10InfoQueue* infoQueue;
+#if defined(_DEBUG) && D3D_DISABLE_SPECIFIC_WARNINGS
+	infoQueue = nullptr;
 	device->QueryInterface(__uuidof(ID3D10InfoQueue),  (void **)&infoQueue); 
 	
 	D3D10_MESSAGE_ID messageIDs [] = { 
@@ -50,7 +49,6 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 
 	// Apply the filter to the info queue
 	infoQueue->AddStorageFilterEntries(&filter);  
-#endif
 #endif
 
 	// Retrieve backbuffer
@@ -263,6 +261,10 @@ D3D::D3D(ID3D10Device1 *device, IDXGISwapChain* swapChain) :
 
 D3D::~D3D()
 {
+#if defined(_DEBUG) && D3D_DISABLE_SPECIFIC_WARNINGS
+	SAFE_RELEASE(infoQueue);
+#endif
+
 	delete pWhiteTex;
 
 	for (size_t iBS = 0; iBS < MAX_BlendMode; ++iBS)
@@ -566,7 +568,12 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
-bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, unsigned char** outCompiledEffectBuffer, int* outCompiledEffectLength)
+bool D3D::CompileEffect(
+	const unsigned char* effectAscii, 
+	int effectAsciiSize, 
+	unsigned char** outCompiledEffectBuffer, 
+	int* outCompiledEffectLength,
+	std::string &errorMsg)
 {	
 	ID3DBlob* shader = nullptr;
 	ID3DBlob* errors = nullptr;
@@ -587,18 +594,21 @@ bool D3D::CompileEffect(const unsigned char* effectAscii, int effectAsciiSize, u
 	if (S_OK != hRes)
 	{
 		if (nullptr != errors)
-		{
-			char* errorMsg = reinterpret_cast<char*>(errors->GetBufferPointer());
-			D3D_ASSERT_MSG(hRes, errorMsg);
+		{			
+			errorMsg = std::string(reinterpret_cast<char*>(errors->GetBufferPointer()), (size_t) errors->GetBufferSize());
+
+			// Not using D3D_ASSERT_MSG as this may be called from a worker thread.
+			ASSERT_MSG(S_OK != hRes, errorMsg.c_str());
 		}
 
+		SAFE_RELEASE(errors);
 		return false;
 	}
 
 	ASSERT(shader->GetBufferSize() > 0);
 	*outCompiledEffectBuffer = new unsigned char[shader->GetBufferSize()];
 	ASSERT(*outCompiledEffectBuffer != NULL);
-	memcpy(*outCompiledEffectBuffer, (unsigned char*)shader->GetBufferPointer(), (unsigned int)shader->GetBufferSize());
+	memcpy(*outCompiledEffectBuffer, (unsigned char*)shader->GetBufferPointer(), (size_t) shader->GetBufferSize());
 	*outCompiledEffectLength = (int)shader->GetBufferSize();
 
 	shader->Release();
