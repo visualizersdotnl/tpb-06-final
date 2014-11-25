@@ -148,6 +148,7 @@ namespace Pimp
 
 		// .FX compile (only for dev. usage, ship with precompiled shaders)
 		bool CompileEffect(
+			const std::string &path,
 			const unsigned char* effectAscii, 
 			int effectAsciiSize, 
 			unsigned char** outCompiledEffectBuffer, 

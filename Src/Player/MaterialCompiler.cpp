@@ -17,12 +17,17 @@ MaterialCompiler::~MaterialCompiler()
 		CloseHandle(hThread);
 }
 
-void MaterialCompiler::StartJob(const unsigned char *source, int sourceLen, unsigned char **bytecode, int *bytecodeSize, std::string &errorMsg)
+void MaterialCompiler::StartJob(
+	const std::string &path,
+	const unsigned char *source, int sourceLen, 
+	unsigned char **bytecode, int *bytecodeSize, 
+	std::string &errorMsg)
 {
 	if (false == m_locked)
 	{
 		// Spawn new job thread.
 		Job *pJob = new Job(errorMsg);
+		pJob->path = path;
 		pJob->source = source;
 		pJob->sourceLen = sourceLen;
 		pJob->bytecode = bytecode;
@@ -55,6 +60,7 @@ void MaterialCompiler::WaitForCompletion()
 
 	// Compile FX...
 	if (false == Pimp::gD3D->CompileEffect(
+		pJob->path,
 		pJob->source,
 		pJob->sourceLen,
 		pJob->bytecode,

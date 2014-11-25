@@ -138,6 +138,7 @@ namespace Assets
 				}
 
 				s_fxCompiler.StartJob(
+					request.path,
 					request.source, request.sourceSize, 
 					&request.bytecode, &request.bytecodeSize,
 					request.errorMsg);
@@ -207,7 +208,7 @@ namespace Assets
 				if (-1 == request.bytecodeSize)
 				{
 					std::stringstream error;
-					error << "Failed to compile shader (" << request.path << "): ";
+					error << "Failed to compile shader: ";
 					error << request.errorMsg;
 					SetLastError(error.str());
 					return false;

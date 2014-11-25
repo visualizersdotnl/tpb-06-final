@@ -64,6 +64,7 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 	std::string errorMsg;
 	bool success = 
 		Pimp::gD3D->CompileEffect(
+		fileName,
 		shader_ascii, 
 		shader_ascii_size, 
 		&compiled_shader, 

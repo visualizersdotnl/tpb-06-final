@@ -568,7 +568,11 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
+// FIXME: probably defined after porting to D3D11.
+#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
+
 bool D3D::CompileEffect(
+	const std::string &path,
 	const unsigned char* effectAscii, 
 	int effectAsciiSize, 
 	unsigned char** outCompiledEffectBuffer, 
@@ -579,15 +583,15 @@ bool D3D::CompileEffect(
 	ID3DBlob* errors = nullptr;
 
 	const HRESULT hRes = D3DCompile(
-		effectAscii,
+		effectAscii, 
 		effectAsciiSize,
-		NULL, // name
-		NULL, // defines		
-		NULL, // includes
-		NULL, // entrypoint
-		"fx_4_0", // target
-		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, // flags
-		0, // effect compiler flags
+		path.c_str(),                     
+		nullptr,  // No defines.
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // Use default include handler.
+		nullptr,  // Default ntry point.
+		"fx_4_0", // Target SM.
+		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, // Standard flags.
+		0,        // .FX=-specific flags.
 		&shader,
 		&errors);
 

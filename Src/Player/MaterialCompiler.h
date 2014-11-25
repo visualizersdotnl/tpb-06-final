@@ -7,7 +7,14 @@ public:
 	MaterialCompiler();
 	~MaterialCompiler();
 
-	void StartJob(const unsigned char *source, int sourceLen, unsigned char **bytecode, int *bytecodeSize, std::string &errorMsg);
+	void StartJob(
+		const std::string &path,
+		const unsigned char *source, 
+		int sourceLen, 
+		unsigned char **bytecode, 
+		int *bytecodeSize, 
+		std::string &errorMsg);
+
 	void WaitForCompletion();
 
 private:
@@ -17,6 +24,7 @@ private:
 		Job(std::string &errorMsg) : errorMsg(errorMsg) {}
 		std::string &errorMsg;
 
+		std::string path;
 		const unsigned char *source;
 		int sourceLen;
 		unsigned char **bytecode;
