@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "misc.h"
 
 bool FloatsEqual(float a, float b, float epsilon)

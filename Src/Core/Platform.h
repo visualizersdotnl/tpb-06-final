@@ -3,7 +3,8 @@
 // - Includes core OS, DirectX, CRT & STL headers.
 // - Defines often used macros, constants et cetera.
 
-#pragma once
+#if !defined(CORE_PLATFORM_H)
+#define CORE_PLATFORM_H
 
 // APIs
 #include <windows.h>
@@ -24,3 +25,5 @@
 
 // COM release macro
 #define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()
+
+#endif // CORE_PLATFORM_H

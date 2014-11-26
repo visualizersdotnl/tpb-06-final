@@ -211,5 +211,8 @@
     <None Include="Shaders\MaterialConstants.inc">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\.gitignore">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

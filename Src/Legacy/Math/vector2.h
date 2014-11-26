@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <math.h>
@@ -54,8 +55,5 @@ public:
 		return x*other.x + y*other.y;
 	}
 
-
-
 	float x,y;
-
 };

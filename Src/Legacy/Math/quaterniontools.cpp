@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "quaterniontools.h"
 
 // Inspired by Wine's implementation of D3DXQuaternionRotationMatrix:

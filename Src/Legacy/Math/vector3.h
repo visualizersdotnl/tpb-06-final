@@ -1,7 +1,7 @@
+
 #pragma once
 
 #include <math.h>
-
 
 class Vector3
 {
@@ -123,19 +123,5 @@ public:
 		return *this;
 	}
 
-	static const Vector3& GetZero()
-	{
-		return zero;
-	}
-
-	static const Vector3& GetOne()
-	{
-		return one;
-	}
-
 	float x,y,z;
-
-private:
-	static Vector3 zero;
-	static Vector3 one;
 };

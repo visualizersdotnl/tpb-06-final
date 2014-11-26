@@ -4,6 +4,10 @@
 
 #pragma once
 
+#if !defined(CORE_PLATFORM_H)
+	#error "Include Platform.h first!"
+#endif
+
 #include "Settings.h"
 #include "Configuration.h"
 #include "D3D.h"

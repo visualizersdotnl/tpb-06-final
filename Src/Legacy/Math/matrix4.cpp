@@ -1,4 +1,5 @@
-#include "stdafx.h"
+
+#include <Shared/assert.h>
 #include "matrix4.h"
 #include "vector4.h"
 #include "misc.h"

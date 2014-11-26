@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shaders\.gitignore" />
     <None Include="Shaders\MaterialConstants.inc" />
   </ItemGroup>
   <ItemGroup>
