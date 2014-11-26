@@ -166,7 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="Shaders\MatConsts.inc" />
+    <None Include="Shaders\MaterialConstants.inc" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_Sprites.fx">

@@ -94,7 +94,7 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 	}
 	else
 	{
-		ASSERT_MSG(0, errrorMsg.c_str);
+		ASSERT_MSG(0, errorMsg.c_str());
 	}
 }
 

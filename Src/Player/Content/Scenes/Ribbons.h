@@ -48,7 +48,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		s_sprites->AddBackgroundSprite(texBack, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 
 		float logoY = (float) sync_get_val(st_logoY, row);

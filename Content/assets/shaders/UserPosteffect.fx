@@ -1,5 +1,5 @@
 
-#include "../../../Src/Core/Shaders/MatConsts.inc"
+#include "../../../Src/Core/Shaders/MaterialConstants.inc"
 
 struct VSInput
 {
@@ -17,11 +17,12 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
-cbuffer paramsRocket
+cbuffer Constants
 {
-	// These are bound to a Rocket tracks.
-	float g_preSpriteFade; // 0 = 100%, 1 = white, -100 = completely black.
-	float g_sceneNoise;    // 0 = none, 1 = opaque.
+	// These are bound to global Rocket tracks:
+	float g_fxTime;
+	float g_preSpriteFade; // 0 = Visible, 1 = White, -100 = Black
+	float g_sceneNoise;    // 0 = None, 1 = Full
 	float g_sceneNoiseT;
 };
 

@@ -74,7 +74,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		s_sprites->AddBackgroundSprite(background, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 	
 		const float kProjectorZ = 1.f;

@@ -1,5 +1,5 @@
 
-#include "../../../Src/Core/Shaders/MatConsts.inc"
+#include "../../../Src/Core/Shaders/MaterialConstants.inc"
 
 struct VSInput
 {
@@ -17,7 +17,7 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
-cbuffer paramsFX
+cbuffer Constants
 {
 	float g_fxTime;
 

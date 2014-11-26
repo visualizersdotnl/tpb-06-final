@@ -22,7 +22,7 @@ struct PSOutput
 	float4 color : SV_Target0;
 };
 
-cbuffer paramsOnlyOnce
+cbuffer SetByPostProcessing
 {
 	// Bloom parameters.
 	float4 bloomGatherSamples[2];

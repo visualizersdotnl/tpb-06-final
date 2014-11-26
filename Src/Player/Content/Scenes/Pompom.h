@@ -41,7 +41,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 //		s_sprites->AddBackgroundSprite(background, Pimp::D3D::Blend::BM_None, -1, 1.f, true);
 		float stretchY = (float) sync_get_val(st_furStretchY, row);
 		s_sprites->AddBackgroundSprite(

@@ -45,7 +45,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 
 		float toBG2 = (float) sync_get_val(st_toBG2, row);
 		if (0.f == toBG2)

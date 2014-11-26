@@ -49,7 +49,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 
 		float time = (float) sync_get_val(st_fxTime, row);
 			

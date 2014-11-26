@@ -62,38 +62,8 @@
     <ClInclude Include="Content\Demo.h">
       <Filter>/Content</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Blobs.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Bondtro.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\GeneralCinema.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Knot.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Ribbons.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Ribbons2.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Stub</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Shafts.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Blobs2.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\Pompom.h">
-      <Filter>/Content\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\BulletsAndBitches.h">
-      <Filter>/Content\Parts</Filter>
     </ClInclude>
     <ClInclude Include="CPUID.h">
       <Filter>Stub</Filter>
@@ -135,6 +105,45 @@
     <ClInclude Include="..\3rdparty\rocket\lib\track.h">
       <Filter>../3rdparty/Rocket/lib</Filter>
     </ClInclude>
+    <ClInclude Include="Content\Scenes\Blobs.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Blobs2.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Bondtro.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\BulletsAndBitches.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\GeneralCinema.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Knot.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Pompom.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Ribbons.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Ribbons2.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scenes\Shafts.h">
+      <Filter>/Content\/Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Rocket.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Misc.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scene.h">
+      <Filter>/Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\3rdparty\bass24\bass.chm">
@@ -160,9 +169,6 @@
     <Filter Include="Helper">
       <UniqueIdentifier>{99482fef-3b40-4572-a2ec-702de3b4f969}</UniqueIdentifier>
     </Filter>
-    <Filter Include="/Content\Parts">
-      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="../3rdparty/bass24">
       <UniqueIdentifier>{7ddd1c0a-e804-4281-8dba-b22da662cba6}</UniqueIdentifier>
     </Filter>
@@ -171,6 +177,9 @@
     </Filter>
     <Filter Include="../3rdparty/Rocket/lib">
       <UniqueIdentifier>{77cfbdfc-56c3-4b48-90d6-8d3dfb907a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="/Content\/Scenes">
+      <UniqueIdentifier>{1ee9bd3c-da61-4c92-8a87-381cb3678f25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

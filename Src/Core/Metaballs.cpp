@@ -15,6 +15,7 @@
 // Note: needs a large stack (recurses like there's no tomorrow).
 
 #include "Platform.h"
+#include <Shared/assert.h>
 #include "D3D.h"
 #include "Metaballs.h"
 
@@ -282,7 +283,7 @@ void Metaballs::SetRotation(const Quaternion &rotation)
 
 void Metaballs::SetMaps(Texture2D *envMap, Texture2D *projMap, float projScrollU, float projScrollV)
 {
-//	ASSERT(nullptr != envMap && nullptr != projMap);
+	ASSERT(nullptr != envMap && nullptr != projMap);
 	this->envMap = envMap;
 	this->projMap = projMap;
 	this->projScrollU = projScrollU;

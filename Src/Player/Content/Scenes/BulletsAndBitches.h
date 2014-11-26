@@ -48,7 +48,7 @@ public:
 
 	void EndPic(float alpha)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		s_sprites->AddBackgroundSprite(thunderball, Pimp::D3D::Blend::BM_Additive, AlphaToVtxColor(alpha), 1.f, true);
 	}
 
@@ -58,7 +58,7 @@ public:
 		const float freqMod = (float) sync_get_val(st_endFlangerFreqMod, row);
 		Audio_FlangerMP3(wetDry, freqMod);
 		
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 
 		const float bitchBullets = (float) sync_get_val(st_bitchBullets, row);
 

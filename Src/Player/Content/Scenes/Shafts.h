@@ -81,7 +81,7 @@ public:
 		((Pimp::Xform*)rotation1Param->GetParents()[0])->SetRotation(rotation1);
 		((Pimp::Xform*)rotation2Param->GetParents()[0])->SetRotation(rotation2);
 
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::Blend::BM_None, 0, 1.f, true);
 
 		// vignette (hides artifacts on the corners of the background box)

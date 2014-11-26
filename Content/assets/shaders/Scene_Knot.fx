@@ -1,5 +1,5 @@
 
-#include "../../../Src/Core/Shaders/MatConsts.inc"
+#include "../../../Src/Core/Shaders/MaterialConstants.inc"
 
 
 #define SHOW_NORMALS 0
@@ -38,7 +38,7 @@ static float MaximumDistance = 500.0;
 static float StepFraction = 0.7;
 
 
-cbuffer paramsFX
+cbuffer Constants
 {
 	float FOV = 0.7f;
 

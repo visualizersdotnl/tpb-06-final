@@ -77,7 +77,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -108,7 +108,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SYNC_PLAYER;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -142,7 +142,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;Content;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../3rdparty;../Legacy;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DESIGN;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -201,17 +201,20 @@
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AutoShaderReload.h" />
-    <ClInclude Include="Content\Blobs.h" />
-    <ClInclude Include="Content\Blobs2.h" />
-    <ClInclude Include="Content\Bondtro.h" />
-    <ClInclude Include="Content\BulletsAndBitches.h" />
     <ClInclude Include="Content\Demo.h" />
-    <ClInclude Include="Content\GeneralCinema.h" />
-    <ClInclude Include="Content\Knot.h" />
-    <ClInclude Include="Content\Pompom.h" />
-    <ClInclude Include="Content\Ribbons.h" />
-    <ClInclude Include="Content\Ribbons2.h" />
-    <ClInclude Include="Content\Shafts.h" />
+    <ClInclude Include="Content\Misc.h" />
+    <ClInclude Include="Content\Scene.h" />
+    <ClInclude Include="Content\Scenes\Blobs.h" />
+    <ClInclude Include="Content\Scenes\Blobs2.h" />
+    <ClInclude Include="Content\Scenes\Bondtro.h" />
+    <ClInclude Include="Content\Scenes\BulletsAndBitches.h" />
+    <ClInclude Include="Content\Scenes\GeneralCinema.h" />
+    <ClInclude Include="Content\Scenes\Knot.h" />
+    <ClInclude Include="Content\Scenes\Pompom.h" />
+    <ClInclude Include="Content\Scenes\Ribbons.h" />
+    <ClInclude Include="Content\Scenes\Ribbons2.h" />
+    <ClInclude Include="Content\Scenes\Shafts.h" />
+    <ClInclude Include="Content\Rocket.h" />
     <ClInclude Include="CPUID.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="MaterialCompiler.h" />

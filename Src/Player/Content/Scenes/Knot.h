@@ -33,7 +33,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		s_sprites->AddBackgroundSprite(texWhite, Pimp::D3D::Blend::BM_None, 0, 1.f, true);
 	}
 };

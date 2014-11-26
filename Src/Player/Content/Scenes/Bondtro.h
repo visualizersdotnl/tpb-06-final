@@ -66,7 +66,7 @@ public:
 
 	void Tick(double row)
 	{
-		SetMainSceneAndDefaultCamera();
+		SetMainSceneAndCamera(s_defaultCam);
 		
 		s_sprites->AddBackgroundSprite(
 			texWhite, 

@@ -13,10 +13,6 @@ struct VSOutput
 	float2 texCoord : TEXCOORD0;
 };
 
-cbuffer paramsOnlyOnce
-{
-};
-
 
 VSOutput MainVS(VSInput input)
 { 

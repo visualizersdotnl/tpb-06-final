@@ -16,7 +16,7 @@ struct VSOutput
 };
 
 
-cbuffer paramsOnlyOnce
+cbuffer SetByMetaballs
 {
 	float4x4 viewProjMatrix;
 	float4x4 mWorld;
