@@ -21,7 +21,7 @@ D3D::D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swa
 	device(device), context(context), swapChain(swapChain)
 ,	rasterizerState(nullptr)
 ,	renderTargetBackBuffer(nullptr)
-,	depthStencil(nullptr)
+,	sceneDepthStencil(nullptr)
 ,	pWhiteTex(nullptr)
 {
 	depthStencilState[0] = depthStencilState[1] = nullptr;
@@ -133,8 +133,8 @@ D3D::D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swa
 	// Set full viewport by default
 	context->RSSetViewports(1, &backVP);
 
-	// Create depth-stencil
-	depthStencil = CreateDepthStencil(true);
+	// Create default scene depth-stencil
+	sceneDepthStencil = CreateSceneDepthStencil(true);
 
 	// Depth-stencil states (on and off)
 	D3D11_DEPTH_STENCIL_DESC dsStateDesc;
@@ -151,10 +151,10 @@ D3D::D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swa
 	D3D_VERIFY(device->CreateDepthStencilState(&dsStateDesc, &depthStencilState[1]));
 
 	// Depth-stencil disabled by default
-	DisableDepthStencil();
+	DisableSceneDepthStencil();
 
-	// Bind backbuffer and depth stencil as primary RT
-	BindBackbuffer(depthStencil);
+	// Bind backbuffer as primary render target
+	BindBackbuffer();
 
 	// Create blend states
 	//
@@ -267,7 +267,7 @@ D3D::~D3D()
 	SAFE_RELEASE(depthStencilState[0]);
 	SAFE_RELEASE(depthStencilState[1]);
 
-	delete depthStencil;
+	delete sceneDepthStencil;
 	SAFE_RELEASE(rasterizerState);
 	delete renderTargetBackBuffer;
 }
@@ -278,17 +278,17 @@ void D3D::Clear(ID3D11RenderTargetView* renderTarget)
 	context->ClearRenderTargetView(renderTarget, black);
 }
 
-void D3D::BindBackbuffer(DepthStencil* depth)
+void D3D::BindBackbuffer()
 {
 	ID3D11RenderTargetView* view = renderTargetBackBuffer->GetRenderTargetView();
-	context->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : nullptr);
+	context->OMSetRenderTargets(1, &view, nullptr);
 }
 
-void D3D::BindRenderTarget( RenderTarget* pixels, DepthStencil* depth)
+void D3D::BindRenderTarget(RenderTarget* pixels, DepthStencil* depth)
 {
 	ASSERT(nullptr != pixels);
 	ID3D11RenderTargetView* view = pixels->GetRenderTargetView();
-	context->OMSetRenderTargets(1, &view, depth ? depth->GetDepthStencilView() : nullptr);
+	context->OMSetRenderTargets(1, &view, (nullptr != depth) ? depth->GetDepthStencilView() : nullptr);
 }
 
 void D3D::BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex)
@@ -385,47 +385,51 @@ RenderTarget* D3D::CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool
 	ASSERT(shrinkFactor >= 1);
 
 	// Create texture
-	D3D11_TEXTURE2D_DESC desc;
-	memset(&desc, 0, sizeof(desc));
-	desc.Width  = (UINT) sceneVP.Width  / shrinkFactor;
-	desc.Height = (UINT) sceneVP.Height / shrinkFactor;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = format;
-	desc.SampleDesc.Count = multiSample ? D3D_ANTIALIAS_NUM_SAMPLES : 1;
-	desc.SampleDesc.Quality = multiSample ? D3D_ANTIALIAS_QUALITY : 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	D3D11_TEXTURE2D_DESC texDesc;
+	memset(&texDesc, 0, sizeof(texDesc));
+	texDesc.Width  = (UINT) sceneVP.Width  / shrinkFactor;
+	texDesc.Height = (UINT) sceneVP.Height / shrinkFactor;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = format;
+	texDesc.SampleDesc.Count = multiSample ? D3D_ANTIALIAS_NUM_SAMPLES : 1;
+	texDesc.SampleDesc.Quality = multiSample ? D3D_ANTIALIAS_QUALITY : 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
 	ID3D11Texture2D* texture = nullptr;
-	HRESULT hRes = device->CreateTexture2D(&desc, NULL, &texture);
+	HRESULT hRes = device->CreateTexture2D(&texDesc, NULL, &texture);
 	D3D_ASSERT(hRes);
 
 	// Create view
-	D3D11_RENDER_TARGET_VIEW_DESC rtDesc;
-	memset(&rtDesc, 0, sizeof(rtDesc));
-	rtDesc.Format = format;
-	rtDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+	memset(&rtvDesc, 0, sizeof(rtvDesc));
+	rtvDesc.Format = format;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
 
 	ID3D11RenderTargetView* renderTargetView = nullptr;
-
-	// FIXME: if I do this my loading bar disappears!
-//	hRes = device->CreateRenderTargetView(texture, (false == multiSample) ? nullptr : &rtDesc, &renderTargetView);
 	hRes = device->CreateRenderTargetView(texture, nullptr, &renderTargetView);
 	D3D_ASSERT(hRes);
 
+	// FIXME: if I do this my loading bar disappears!
+//	ID3D11RenderTargetView* renderTargetView = nullptr;
+//	hRes = device->CreateRenderTargetView(texture, (false == multiSample) ? nullptr : &rtvDesc, &renderTargetView);
+//	D3D_ASSERT(hRes);
+
 	// Create shader view
-	D3D11_SHADER_RESOURCE_VIEW_DESC shDesc;
-	memset(&shDesc, 0, sizeof(shDesc));
-	shDesc.Format = format;
-	shDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	memset(&srvDesc, 0, sizeof(srvDesc));
+	srvDesc.Format = format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS; // Multi-sampled!
 
 	ID3D11ShaderResourceView* shaderResourceView = nullptr;
-
-	// FIXME: if I do this my loading bar disappears!
-//	hRes = device->CreateShaderResourceView(texture, (false == multiSample) ? nullptr : &shDesc, &shaderResourceView);
 	hRes = device->CreateShaderResourceView(texture, nullptr, &shaderResourceView);
 	D3D_ASSERT(hRes);
+
+	// FIXME: if I do this my loading bar disappears!
+//	ID3D11ShaderResourceView* shaderResourceView = nullptr;
+//	hRes = device->CreateShaderResourceView(texture, (false == multiSample) ? nullptr : &srvDesc, &shaderResourceView);
+//	D3D_ASSERT(hRes);
 
 	return new RenderTarget(format, texture, renderTargetView, shaderResourceView);
 
@@ -454,35 +458,35 @@ ID3D11Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)
 	return texture;
 }
 
-DepthStencil* D3D::CreateDepthStencil(bool multiSample)
+DepthStencil* D3D::CreateSceneDepthStencil(bool multiSample)
 {
-	D3D11_TEXTURE2D_DESC dsDesc;
-	dsDesc.Width = (UINT) backVP.Width;
-	dsDesc.Height = (UINT) backVP.Height;
-	dsDesc.MipLevels = 1;
-	dsDesc.ArraySize = 1;
-	dsDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dsDesc.SampleDesc.Count = multiSample ? D3D_ANTIALIAS_NUM_SAMPLES : 1;
-	dsDesc.SampleDesc.Quality = multiSample ? D3D_ANTIALIAS_QUALITY : 0;
-	dsDesc.Usage = D3D11_USAGE_DEFAULT;
-	dsDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	dsDesc.CPUAccessFlags = 0;
-	dsDesc.MiscFlags = 0;
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = (UINT) sceneVP.Width;
+	texDesc.Height = (UINT) sceneVP.Height;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	texDesc.SampleDesc.Count = multiSample ? D3D_ANTIALIAS_NUM_SAMPLES : 1;
+	texDesc.SampleDesc.Quality = multiSample ? D3D_ANTIALIAS_QUALITY : 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
 
 	// Create depth stencil
 	ID3D11Texture2D* texture = nullptr;
-	HRESULT hRes = device->CreateTexture2D(&dsDesc, nullptr, &texture);
+	HRESULT hRes = device->CreateTexture2D(&texDesc, nullptr, &texture);
 	D3D_ASSERT(hRes);
 
 	// And it's view
 	ID3D11DepthStencilView* view = nullptr;
 
-	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-	descDSV.Format = dsDesc.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	descDSV.Texture2D.MipSlice = 0;
+	D3D11_DEPTH_STENCIL_VIEW_DESC viewDesc;
+	viewDesc.Format = texDesc.Format;
+	viewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	viewDesc.Texture2D.MipSlice = 0;
 	
-	hRes = device->CreateDepthStencilView(texture, nullptr /* FIXME: why not &descDSV? */, &view);
+	hRes = device->CreateDepthStencilView(texture, nullptr /* FIXME: why not &viewDesc? */, &view);
 	D3D_ASSERT(hRes);
 
 	return new DepthStencil(texture, view);
@@ -583,12 +587,12 @@ bool D3D::CompileEffect(
 		effectAscii, 
 		effectAsciiSize,
 		path.c_str(),                     
-		nullptr,  // No defines.
+		nullptr,                           // No defines.
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // Use default include handler.
-		nullptr,  // Default ntry point.
-		"fx_4_0", // Target SM.
-		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, // Standard flags.
-		0,        // .FX=-specific flags.
+		nullptr,                           // Default entry point.
+		"fx_5_0",                          // Only target supported by Effects11.
+		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, 
+		0,
 		&shader,
 		&errors);
 

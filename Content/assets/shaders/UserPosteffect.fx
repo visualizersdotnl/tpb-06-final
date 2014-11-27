@@ -67,7 +67,7 @@ PSOutput MainPS(VSOutput input)
 }
 
 
-technique10 Default
+technique11 Default
 {
 	pass Default
 	{

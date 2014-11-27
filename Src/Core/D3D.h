@@ -30,9 +30,9 @@ namespace Pimp
 			Clear(renderTargetBackBuffer->GetRenderTargetView()); 
 		}
 
-		void ClearDepthStencil()
+		void ClearSceneDepthStencil()
 		{
-			context->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+			context->ClearDepthStencilView(sceneDepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 		}
 
 		void Flip(UINT syncInterval)
@@ -61,7 +61,7 @@ namespace Pimp
 			context->IASetInputLayout(layout);
 		}
 
-		void BindBackbuffer(DepthStencil* depth);
+		void BindBackbuffer();
 		void BindRenderTarget(RenderTarget* pixels, DepthStencil* depth);
 		void BindRenderTargetTexture3D(Texture3D* pixels, int sliceIndex);
 
@@ -98,17 +98,17 @@ namespace Pimp
 			height = sceneVP.Height;
 		}
 
-		void D3D::EnableDepthStencil()
+		void D3D::EnableSceneDepthStencil()
 		{
 			context->OMSetDepthStencilState(depthStencilState[0], 0);
 		}
 
-		void D3D::DisableDepthStencil()
+		void D3D::DisableSceneDepthStencil()
 		{
 			context->OMSetDepthStencilState(depthStencilState[1], 0);
 		}
 
-		DepthStencil* GetDefaultDepthStencil()    { return depthStencil; }
+		DepthStencil* GetSceneDepthStencil()      { return sceneDepthStencil; }
 		RenderTarget* GetRenderTargetBackBuffer() { return renderTargetBackBuffer; }
 
 		enum Blend
@@ -147,7 +147,8 @@ namespace Pimp
 		// Create aspect ratio adjusted size (sceneVP) CPU target
 		ID3D11Texture2D* CreateIntermediateCPUTarget(DXGI_FORMAT format);
 		
-		DepthStencil* CreateDepthStencil(bool multiSample); // Full swap chain size.
+		// Matches scene viewport dimensions!
+		DepthStencil* CreateSceneDepthStencil(bool multiSample); 
 		
 		Texture2D* CreateTexture2D(const std::string& name, int width, int height, bool requiresGammaCorrection);
 		Texture3D* CreateTexture3D(const std::string& name, int width, int height, int depth);
@@ -170,7 +171,7 @@ namespace Pimp
 		// Actual resources
 		ID3D11RasterizerState* rasterizerState;
 		RenderTarget* renderTargetBackBuffer;
-		DepthStencil* depthStencil;
+		DepthStencil* sceneDepthStencil;
 		ID3D11DepthStencilState* depthStencilState[2]; // On (0) and off (1), plain and simple.
 		ID3D11BlendState* blendStates[MAX_BlendMode];
 		Texture2D* pWhiteTex;

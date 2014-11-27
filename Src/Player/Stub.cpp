@@ -387,23 +387,32 @@ static bool CreateDirect3D()
 	const UINT Flags = D3D11_CREATE_DEVICE_SINGLETHREADED | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #endif
 
-	const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
-	D3D_FEATURE_LEVEL outFeatureLevel;
+	D3D_FEATURE_LEVEL featureLevels[] =
+	{
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1
+//		D3D_FEATURE_LEVEL_10_0,
+//		D3D_FEATURE_LEVEL_9_3,
+//		D3D_FEATURE_LEVEL_9_2,
+//		D3D_FEATURE_LEVEL_9_1
+	};
+
+	// FIXME: decide what we'll do with this information.
+	D3D_FEATURE_LEVEL featureLevel;
 
 	HRESULT hRes = D3D11CreateDevice(
-		s_pAdapter,
+		nullptr, // FIXME: s_pAdapter,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		Flags,
-		&featureLevel, 1,
+		featureLevels, ARRAYSIZE(featureLevels),
 		D3D11_SDK_VERSION,
 		&s_pD3D,
-		&outFeatureLevel,
+		&featureLevel,
 		&s_pD3DContext);
 	if SUCCEEDED(hRes)
 	{
-		ASSERT(outFeatureLevel == featureLevel);
-
 		// create swap chain
 		DXGI_SWAP_CHAIN_DESC swapDesc;
 		swapDesc.BufferDesc = s_displayMode;
@@ -429,8 +438,8 @@ static bool CreateDirect3D()
 	std::stringstream message;
 	message << "Can't create Direct3D 11.0 device.\n\n";
 	message << ((true == kWindowed) ? "Type: windowed.\n" : "Type: full screen.\n");
-	message << "Resolution: " << s_displayMode.Width << "*" << s_displayMode.Width << ".\n";
-	message << "DirectX error: " << DXGetErrorDescription(hRes) << ".\n";
+	message << "Resolution: " << s_displayMode.Width << "*" << s_displayMode.Width << ".\n\n";
+	message << DXGetErrorString(hRes) << " - " << DXGetErrorDescription(hRes) << ".\n";
 	SetLastError(message.str());
 	return false;
 }
@@ -441,6 +450,7 @@ static void DestroyDirect3D()
 		s_pSwapChain->SetFullscreenState(FALSE, nullptr);
 	
 	SAFE_RELEASE(s_pSwapChain);
+	SAFE_RELEASE(s_pD3DContext);
 	SAFE_RELEASE(s_pD3D);
 }
 
@@ -635,12 +645,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, 
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 		// Try a few things to restore the desktop.
-		SAFE_RELEASE(s_pD3D);
+		SAFE_RELEASE(s_pSwapChain);
 		if (NULL != s_hWnd) DestroyWindow(s_hWnd);
 
-		// Sound the alarm bell :-)
+		// Sound the alarm bell.
 		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", PIMPPLAYER_RELEASE_ID, MB_OK | MB_ICONEXCLAMATION);
-		_exit(1); // Better do as little as possible past this point.
+
+		// Better do as little as possible past this point.
+		_exit(1); 
 	}
 #endif
 

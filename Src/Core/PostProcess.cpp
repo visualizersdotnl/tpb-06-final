@@ -90,7 +90,7 @@ void PostProcess::SetParameters()
 
 void PostProcess::BindForRenderScene()
 {
-	gD3D->BindRenderTarget(renderTargetSceneMS, gD3D->GetDefaultDepthStencil());
+	gD3D->BindRenderTarget(renderTargetSceneMS, gD3D->GetSceneDepthStencil());
 }
 
 void PostProcess::RenderPostProcess()
@@ -144,7 +144,7 @@ void PostProcess::RenderPostProcess()
 	// Combine bloom results to back buffer:
 
 	// 1. Bind and clear entire back buffer
-	gD3D->BindBackbuffer(nullptr);
+	gD3D->BindBackbuffer();
 	gD3D->SetBackViewport();
 	gD3D->ClearBackBuffer();
 

@@ -158,7 +158,7 @@ PSOutput MainPS_MotionBlur(VSOutput input)
 }
 
 
-technique10 PostFX
+technique11 PostFX
 {
 	pass Gather
 	{

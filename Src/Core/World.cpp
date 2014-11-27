@@ -72,8 +72,6 @@ namespace Pimp
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
 	{
-		// FIXME: maybe clear entire back buffer here?
-
 		// Set scene viewport
 		gD3D->SetSceneViewport();
 
@@ -84,7 +82,7 @@ namespace Pimp
 		postProcess->BindForRenderScene();
 		{
 			// Disable depth stencil
-			gD3D->DisableDepthStencil();
+			gD3D->DisableSceneDepthStencil();
 
 			// Prepare all sprites to be drawn
 			sprites.PrepareToDraw();
@@ -108,13 +106,13 @@ namespace Pimp
 			if (nullptr != pMetaballs)
 			{
 				// Clear & enable depth stencil
-				gD3D->ClearDepthStencil();
-				gD3D->EnableDepthStencil();
+				gD3D->ClearSceneDepthStencil();
+				gD3D->EnableSceneDepthStencil();
 
 				pMetaballs->Draw(currentCamera);
 
 				// Disable depth stencil
-				gD3D->DisableDepthStencil();
+				gD3D->DisableSceneDepthStencil();
 			}
 		}
 
@@ -126,7 +124,7 @@ namespace Pimp
 
 		// ** At this point, the back buffer will be bound  **
 
-		// Set adjusted back buffer viewport for spritess
+		// Set adjusted back buffer viewport for sprites
 //		gD3D->SetBackAdjViewport();
 		// ^^ Already done by PostProcess::RenderPostProcess()
 

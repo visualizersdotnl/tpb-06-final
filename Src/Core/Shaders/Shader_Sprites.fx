@@ -55,7 +55,7 @@ float4 MainPS_Clamp(VSOutput input) : SV_Target0
 }
 
 
-technique10 Sprites
+technique11 Sprites
 {
 	pass Wrap
 	{

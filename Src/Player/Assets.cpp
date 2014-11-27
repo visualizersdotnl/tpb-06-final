@@ -36,7 +36,7 @@ static Pimp::Texture2D *LoadPNG(const std::string &path, bool alphaPreMul, bool 
 		unsigned int *pPixels = reinterpret_cast<unsigned int *>(&pixels[0]);
 		for (unsigned int iPixel = 0; iPixel < width*height; ++iPixel)
 		{
-			const unsigned int pixel = pPixels[iPixel];
+			const unsigned int pixel = *pPixels;
 			
 			const unsigned int alpha = pixel >> 24;
 			unsigned int red = (pixel >> 16) & 0xff;

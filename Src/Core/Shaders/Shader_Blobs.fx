@@ -98,7 +98,7 @@ float4 MainPS(VSOutput input) : SV_Target0
 }
 
 
-technique10 Blobs
+technique11 Blobs
 {
 	pass Default
 	{
