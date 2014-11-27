@@ -105,7 +105,7 @@
     <ClCompile Include="Metaballs.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
-    <ClCompile Include="ScreenQuadVertexBuffer.cpp" />
+    <ClCompile Include="ScreenQuad.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture2D.cpp" />
@@ -135,7 +135,7 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="RenderTarget.h" />
-    <ClInclude Include="ScreenQuadVertexBuffer.h" />
+    <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Shaders\Shader_Blobs.h" />
     <ClInclude Include="Shaders\Shader_Sprites.h" />

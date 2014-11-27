@@ -18,20 +18,20 @@ namespace Pimp
 	float Scene::sceneRenderLOD = 1.f;
 #endif
 
-	Scene::Scene(World* ownerWorld) :
-		Element(ownerWorld), material(NULL)
+	Scene::Scene(World* ownerWorld, Material& material) :
+		Element(ownerWorld)
+,		material(&material)
+,		screenQuad(material.GetEffectPass())
 	{
 		SetType(ET_Scene);
 	}
 
 	void Scene::Render(Camera* camera)
 	{
-		if (nullptr != material)
-		{
-			material->Bind(camera);
-			gD3D->SetBlendMode(material->GetBlendMode());
-			gD3D->DrawScreenQuad();
-			gD3D->SetBlendMode(D3D::Blend::BM_None);
-		}
+		material->Bind(camera);
+		gD3D->SetBlendMode(material->GetBlendMode());
+		screenQuad.Bind();
+		screenQuad.Draw();
+		gD3D->SetBlendMode(D3D::Blend::BM_None);
 	}
 }

@@ -18,13 +18,14 @@ namespace Pimp
 {
 
 PostProcess::PostProcess() :
-	effect(gCompiledShader_PostProcess, sizeof(gCompiledShader_PostProcess)),
-	techniquePostFX(effect, "PostFX"),
-	passBloomGather(techniquePostFX, "Gather"),
-	passBloomBlur(techniquePostFX, "Blur"),
-	passBloomCombine(techniquePostFX, "Combine"),
-	passMotionBlurBlend(techniquePostFX, "MotionBlur"),
-	userPostEffect(nullptr)
+	effect(gCompiledShader_PostProcess, sizeof(gCompiledShader_PostProcess))
+,	techniquePostFX(effect, "PostFX")
+,	passBloomGather(techniquePostFX, "Gather")
+,	passBloomBlur(techniquePostFX, "Blur")
+,	passBloomCombine(techniquePostFX, "Combine")
+,	passMotionBlurBlend(techniquePostFX, "MotionBlur")
+,	screenQuad(passBloomGather)
+,	userPostEffect(nullptr)
 {
 	// Create render targets
 	renderTargetSceneMS = gD3D->CreateRenderTarget(1, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
@@ -59,7 +60,6 @@ PostProcess::~PostProcess()
 	delete renderTargetFilter[1];
 }
 
-
 void PostProcess::OnSceneRenderLODChanged()
 {
 	SetParameters();
@@ -82,7 +82,7 @@ void PostProcess::SetParameters()
 		POSTPROCESS_FILTER_SCALEDOWN / height);
 	effect.SetVariableValue(varIndexFilterSizeInv, invFilterSize);
 
-	effect.SetVariableValue(varIndexLoadProgress, 0.0f);
+	effect.SetVariableValue(varIndexLoadProgress, 0.f);
 
 	InitBloomGatherSamples();
 	InitBloomBlurSamples(invFilterSize);
@@ -98,12 +98,15 @@ void PostProcess::RenderPostProcess()
 	// Resolve MS target to single sample
 	renderTargetSceneMS->ResolveTo(renderTargetSceneSingle);
 
+	// Bind screen quad
+	screenQuad.Bind();
+
 	// Apply motion blurring (just blend renderTargetSceneSingle on renderTargetSceneMotionBlurred)
 	gD3D->SetBlendMode(D3D::BM_AlphaBlend);
 	gD3D->BindRenderTarget(renderTargetSceneMotionBlurred, NULL);
 	effect.SetVariableValue(varIndexBufferSceneColor, renderTargetSceneSingle->GetShaderResourceView());
 	passMotionBlurBlend.Apply();
-	gD3D->DrawScreenQuad();
+	screenQuad.Draw();
 	gD3D->SetBlendMode(D3D::BM_None);
 
 	RenderTarget* gatherSource;
@@ -114,7 +117,7 @@ void PostProcess::RenderPostProcess()
 		gD3D->BindRenderTarget(renderTargetSceneUserPostEffect, nullptr);
 		userPostEffect->SetSceneBuffer(renderTargetSceneMotionBlurred->GetShaderResourceView());
 		userPostEffect->Bind(nullptr);
-		gD3D->DrawScreenQuad();
+		screenQuad.Draw();
 
 		gatherSource = renderTargetSceneUserPostEffect;
 	}
@@ -125,21 +128,21 @@ void PostProcess::RenderPostProcess()
 	gD3D->BindRenderTarget(renderTargetFilter[0], nullptr);
 	effect.SetVariableValue(varIndexBufferSceneColor, gatherSource->GetShaderResourceView());
 	passBloomGather.Apply();	
-	gD3D->DrawScreenQuad();
+	screenQuad.Draw();
 
 	// Blur pass 1 (H)
 	gD3D->BindRenderTarget(renderTargetFilter[1], nullptr);
 	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirH);
 	passBloomBlur.Apply();
-	gD3D->DrawScreenQuad();
+	screenQuad.Draw();
 
 	// Blur pass 2 (V)
 	gD3D->BindRenderTarget(renderTargetFilter[0], nullptr);
 	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[1]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirV);
 	passBloomBlur.Apply();	
-	gD3D->DrawScreenQuad();
+	screenQuad.Draw();
 
 	// Combine bloom results to back buffer:
 
@@ -152,7 +155,7 @@ void PostProcess::RenderPostProcess()
 	gD3D->SetBackAdjViewport();
 	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	passBloomCombine.Apply();	
-	gD3D->DrawScreenQuad();
+	screenQuad.Draw();
 
 	// Reset bound variables again
 	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D11ShaderResourceView*) nullptr);

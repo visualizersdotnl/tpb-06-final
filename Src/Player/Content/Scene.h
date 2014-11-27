@@ -41,12 +41,10 @@ protected:
 	{
 		if (nullptr == m_pScene)
 		{
-			m_pScene = new Pimp::Scene(s_pWorld);
+			m_pScene = new Pimp::Scene(s_pWorld, *pMat);
 			s_pWorld->GetScenes().push_back(m_pScene);
 			s_pWorld->GetElements().push_back(m_pScene);
 			m_sceneIdx = int(s_pWorld->GetScenes().size()-1);	
-
-			m_pScene->SetMaterial(pMat);
 		}
 	}
 

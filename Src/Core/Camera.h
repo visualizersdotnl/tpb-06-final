@@ -35,7 +35,7 @@ namespace Pimp
 
 	public:
 		Camera(World* ownerWorld);
-		virtual ~Camera() {}
+		~Camera() {}
 
 		virtual void Tick(float timeDelta);
 		
@@ -43,20 +43,9 @@ namespace Pimp
 
 		void SetFOVy(float FOVy);
 
-		const Matrix4* GetViewProjectionMatrixPtr() const 
-		{
-			return &viewProjMatrix;
-		}
-
-		const Matrix4* GetViewMatrixPtr() const 
-		{
-			return &viewMatrix;
-		}
-
-		const Matrix4* GetViewInvMatrixPtr() const 
-		{
-			return &viewMatrixInverse;
-		}
+		const Matrix4* GetViewProjectionMatrixPtr() const { return &viewProjMatrix;    }
+		const Matrix4* GetViewMatrixPtr() const           { return &viewMatrix;        }
+		const Matrix4* GetViewInvMatrixPtr() const        { return &viewMatrixInverse; }
 
 		const Vector3& GetWorldPosition() const 
 		{

@@ -3,8 +3,6 @@
 
 namespace Pimp 
 {
-	// Element types. This is a unique index per class, used for 
-	// shameless reflection-like constructions.
 	enum ElementType
 	{
 		ET_Element = 0,

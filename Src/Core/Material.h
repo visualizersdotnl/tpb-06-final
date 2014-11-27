@@ -36,7 +36,7 @@ namespace Pimp
 		D3D::Blend blendMode;
 
 		// Complete path to shader source file
-		std::string shaderFileName; 
+		const std::string shaderFileName; 
 protected:
 		virtual void InitParameters();
 
@@ -46,16 +46,21 @@ protected:
 
 		void Bind(Camera* camera);
 
+		void RefreshParameters();
+		void SetSceneBuffer(ID3D11ShaderResourceView* resourceView);
+
+		void SetBlendMode(D3D::Blend mode) { blendMode = mode; }
+		D3D::Blend GetBlendMode() const    { return blendMode; }
+
+		// Exposed to verify vertex shader input(s).
+		const EffectPass& GetEffectPass() const 
+		{ 
+			return effectPass; 
+		}
+
 		const std::string& GetShaderFileName() const
 		{
 			return shaderFileName;
 		}
-
-		void RefreshParameters();
-
-		void SetSceneBuffer(ID3D11ShaderResourceView* resourceView);
-
-		void SetBlendMode(D3D::Blend mode) { blendMode = mode; }
-		D3D::Blend GetBlendMode() const { return blendMode; }
 	};
 }

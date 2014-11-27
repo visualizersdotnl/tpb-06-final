@@ -124,7 +124,7 @@ bool Metaballs::Initialize()
 	int signatureLength;
 	effectPass.GetVSInputSignature(&signature, &signatureLength);
 
-	/* static const */ D3D11_INPUT_ELEMENT_DESC elemDesc[2];
+	D3D11_INPUT_ELEMENT_DESC elemDesc[2];
 	elemDesc[0].SemanticName = "POSITION";
 	elemDesc[0].SemanticIndex = 0;
 	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;

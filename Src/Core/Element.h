@@ -42,7 +42,5 @@ namespace Pimp
 		{
 			return isNode;
 		}
-
-		virtual void ForceSetTime(float time) {}
 	};
 }

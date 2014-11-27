@@ -70,11 +70,11 @@ void DrawLoadProgress(Pimp::World &world, float progress)
 	// Draw loading bar
 	// It's still stuffed in the core post processing shader (FIXME: move it to the user one?).
 	Pimp::gD3D->SetSceneViewport();
-	Pimp::PostProcess* postProcess = world.GetPostProcess();
-	postProcess->SetLoadProgress(progress);
-	postProcess->Clear();
-	postProcess->BindForRenderScene();
-	postProcess->RenderPostProcess();
+	Pimp::PostProcess& postProcess = world.GetPostProcess();
+	postProcess.SetLoadProgress(progress);
+	postProcess.Clear();
+	postProcess.BindForRenderScene();
+	postProcess.RenderPostProcess();
 
 	// Flip it manually (blocking load)
 	Pimp::gD3D->SetBackViewport();

@@ -5,7 +5,7 @@
 
 namespace Pimp
 {
-	EffectPass::EffectPass(EffectTechnique& technique, const char* passName) :
+	EffectPass::EffectPass(const EffectTechnique& technique, const char* passName) :
 		pass(technique.GetPass(passName))
 	{
 	}
@@ -16,7 +16,7 @@ namespace Pimp
 		D3D_ASSERT(hResult);
 	}
 
-	void EffectPass::GetVSInputSignature(unsigned char** outSignature, int* outSignatureLength)
+	void EffectPass::GetVSInputSignature(unsigned char** outSignature, int* outSignatureLength) const
 	{
 		D3DX11_PASS_DESC passDesc;
 		const HRESULT hRes = pass->GetDesc(&passDesc);

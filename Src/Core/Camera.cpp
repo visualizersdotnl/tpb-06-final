@@ -9,7 +9,7 @@ namespace Pimp
 		: Node(ownerWorld)
 	{
 		SetType(ET_Camera);
-		SetFOVy(1.5f); // FIXME: this ain't 60 degrees. Why not?
+		SetFOVy(1.5f);
 	}
 
 	void Camera::Tick(float timeDelta)

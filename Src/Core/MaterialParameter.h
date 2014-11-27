@@ -47,7 +47,7 @@ namespace Pimp
 
 		void SetValueType(int type)
 		{
-			valueType = (ValueType)type;
+			valueType = (ValueType) type;
 		}
 
 		void AssignValueToEffectVariable(Effect* effect, int varIndex);

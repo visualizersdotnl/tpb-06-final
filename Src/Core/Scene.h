@@ -1,9 +1,14 @@
 
+// FIXME:
+// Scene currently keeps a pointer whilst given a reference, so that Player's AutoShaderReload mechanism
+// can swap the material on reload. This obviously isn't pretty and I should look after a proper solution.
+
 #pragma once
 
 #include "Node.h"
 #include "Material.h"
 #include "Camera.h"
+#include "ScreenQuad.h"
 
 namespace Pimp
 {
@@ -14,24 +19,24 @@ namespace Pimp
 		static float sceneRenderLOD;
 
 		Material* material;
+		ScreenQuad screenQuad;
 
 	public:
-		Scene(World* ownerWorld);
-		virtual ~Scene() {}
+		Scene(World* ownerWorld, Material& material);
+		~Scene() {}
 
 		void Render(Camera* camera);
 
-		void SetMaterial(Material* material) { this->material = material;  }
-		Material* GetMaterial() const        { return material;            }
+		static float GetSceneRenderLOD()           { return sceneRenderLOD;  }
+		static void SetSceneRenderLOD(float value) { sceneRenderLOD = value; }
 
-		static float GetSceneRenderLOD() 
-		{
-			return sceneRenderLOD;
-		}
+#if defined(_DEBUG) || defined(_DESIGN)
 
-		static void SetSceneRenderLOD(float value)
-		{
-			sceneRenderLOD = value;
-		}
+		// FIXME!
+		Material* GetMaterial() const         { return material; }
+		void SetMaterial(Material* material)  { this->material = material; }
+
+#endif
+
 	};
 }

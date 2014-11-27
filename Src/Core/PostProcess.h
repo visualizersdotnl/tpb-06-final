@@ -3,6 +3,7 @@
 
 #include "EffectPass.h"
 #include "RenderTarget.h"
+#include "ScreenQuad.h"
 
 namespace Pimp
 {
@@ -25,7 +26,7 @@ namespace Pimp
 
 		void OnSceneRenderLODChanged();
 
-		// User post effect shader is tied after motion blur and before bloom
+		// User post effect shader is applied after motion blur and before bloom
 		void SetUserPostEffect(Material* postEffect) { userPostEffect = postEffect; }
 		Material* GetUserPostEffect() const          { return userPostEffect;       }
 
@@ -53,6 +54,8 @@ namespace Pimp
 		EffectPass passBloomBlur;
 		EffectPass passBloomCombine;
 		EffectPass passMotionBlurBlend;
+
+		ScreenQuad screenQuad;
 
 		int varIndexFilterSizeInv;
 		int varIndexBufferSceneColor;

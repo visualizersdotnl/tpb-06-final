@@ -14,8 +14,8 @@ AutoShaderReload::AutoShaderReload( Pimp::World* world, float checkInterval )
 	{
 		ASSERT(nullptr != scene);
 
-		Pimp::Material* material = scene->GetMaterial();
-		if (nullptr != material && false == material->GetShaderFileName().empty())
+		Pimp::Material *material = scene->GetMaterial();
+		if (false == material->GetShaderFileName().empty())
 		{
 			// File should exist! (FIXME: ok, makes sense, but why exactly?)
 			ASSERT(true == FileExists(material->GetShaderFileName()));

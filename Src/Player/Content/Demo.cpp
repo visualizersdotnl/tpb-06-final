@@ -239,7 +239,7 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Add user postFX.
 	s_pWorld->GetMaterials().push_back(matUserPostFX);
-	s_pWorld->GetPostProcess()->SetUserPostEffect(matUserPostFX);
+	s_pWorld->GetPostProcess().SetUserPostEffect(matUserPostFX);
 
 	// Ta-daa, ready.
 	DrawLoadProgress(*s_pWorld, 1.f);
@@ -260,7 +260,7 @@ bool GenerateWorld(const char *rocketClient)
 
 	// Switch off loading bar in shader.
 	// No frames will (or should) be rendered before the actual demo starts.
-	s_pWorld->GetPostProcess()->SetLoadProgress(0.f);
+	s_pWorld->GetPostProcess().SetLoadProgress(0.f);
 
 	// Done!
 	return true;

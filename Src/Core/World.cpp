@@ -14,16 +14,11 @@ namespace Pimp
 		rootNode(new Xform(this))
 ,		currentCamera(nullptr)
 ,		currentSceneIndex(-1)
-,		postProcess(new PostProcess())
-,		screenQuadVertexBuffer(new ScreenQuadVertexBuffer(postProcess->GetEffectPassBloomGather()))
 ,		currentTime(0.f)
 ,		motionBlurAmount(0.f)
 ,		prevMotionBlurTime(9999999.0)
 	{
 		elements.push_back(rootNode);
-
-		// Bind for loading bar (embedded in core post processing shader).
-		screenQuadVertexBuffer->Bind();
 	}
 
 	World::~World()
@@ -31,9 +26,6 @@ namespace Pimp
 		// Elements are owned, so delete them
 		for (auto *element : elements)
 			delete element;
-
-		delete screenQuadVertexBuffer;
-		delete postProcess;
 	}
 
 	void World::Tick(float deltaTime)
@@ -55,7 +47,7 @@ namespace Pimp
 		if (timeSincePrevMotionBlur <= 0.f)
 		{
 			// Reset motion blurring since we're not moving forward on the timeline *or* we just switched cameras
-			postProcess->SetMotionBlurFrameWeight(1.f);
+			postProcess.SetMotionBlurFrameWeight(1.f);
 		}
 		else
 		{
@@ -64,10 +56,19 @@ namespace Pimp
 			// Note that we have to use pow() since it's an exponential function. 
 			// The motionBlurAmount that is specified is an amount when our framerate is exactly 60Hz.
 			const float currentFrameWeight = (motionBlurAmount > 0) ? (1.f - powf(motionBlurAmount, timeSincePrevMotionBlur*60.f)) : 1.f;
-			postProcess->SetMotionBlurFrameWeight(currentFrameWeight);
+			postProcess.SetMotionBlurFrameWeight(currentFrameWeight);
 		}
 
 		prevMotionBlurTime = currentTime;
+	}
+
+	void World::UpdateAllMaterialParameters()
+	{
+		for (auto *material : materials)
+		{
+			if (nullptr != material)
+				material->RefreshParameters();				
+		}
 	}
 
 	void World::Render(Sprites &sprites, Metaballs *pMetaballs)
@@ -76,10 +77,10 @@ namespace Pimp
 		gD3D->SetSceneViewport();
 
 		// Clear scene target
-		postProcess->Clear(); 
+		postProcess.Clear(); 
 
 		// Bind scene target
-		postProcess->BindForRenderScene();
+		postProcess.BindForRenderScene();
 		{
 			// Disable depth stencil
 			gD3D->DisableSceneDepthStencil();
@@ -90,11 +91,8 @@ namespace Pimp
 			// Draw background sprites
 			sprites.DrawBackgroundSprites();
 
-			// Bind screen quad VB for first pass
-			screenQuadVertexBuffer->Bind();
-
 			// Bind camera
-			if (currentCamera != NULL)
+			if (nullptr != currentCamera)
 				currentCamera->Bind();
 
 			// Render our scene to a single sceneColor (? -> FIXME, ask Glow) FP16 RT
@@ -102,7 +100,7 @@ namespace Pimp
 			if (-1 != currentSceneIndex && nullptr != scenes[currentSceneIndex])
 				scenes[currentSceneIndex]->Render(currentCamera);
 
-			// Draw metaballs? (FIXME?)
+			// Draw metaballs? (FIXME)
 			if (nullptr != pMetaballs)
 			{
 				// Clear & enable depth stencil
@@ -116,11 +114,8 @@ namespace Pimp
 			}
 		}
 
-		// Bind screen quad VB for RenderPostProcess()
-		screenQuadVertexBuffer->Bind();
-
 		// Combine all posteffects to back buffer
-		postProcess->RenderPostProcess();
+		postProcess.RenderPostProcess();
 
 		// ** At this point, the back buffer will be bound  **
 
@@ -139,14 +134,6 @@ namespace Pimp
 
 		// When the demo is running, Player takes care of presenting the backbuffer,
 		// so no need to call gD3D->Flip().
-	}
-
-	void World::ForceSetTime(float time)
-	{
-		currentTime = time;
-
-		for (auto *element : elements)
-			element->ForceSetTime(time);
 	}
 
 	void World::StaticAddChildToParent(Node* nodeChild, Node* nodeParent)
@@ -175,19 +162,5 @@ namespace Pimp
 		auto iParent = std::find(parents.begin(), parents.end(), nodeParent);
 		if (parents.end() != iParent)
 			parents.erase(iParent);
-	}
-
-	void World::UpdateAllMaterialParameters()
-	{
-		for (auto *material : materials)
-		{
-			if (nullptr != material)
-				material->RefreshParameters();				
-		}
-	}
-
-	void World::SetMotionBlurAmount( float amount )
-	{
-		motionBlurAmount = amount;
 	}
 }

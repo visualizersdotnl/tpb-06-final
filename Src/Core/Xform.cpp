@@ -53,7 +53,7 @@ namespace Pimp
 		// Mrt = rotation pivot translation = TranslationMat(rotationpivottranslation)
 		// 
 
-		Matrix4 r,s,t,ro;
+		Matrix4 r, s, t, ro;
 
 		r = CreateMatrixRotationQuaternion(rotation);
 		ro = CreateMatrixRotationQuaternion(rotationOrientation);

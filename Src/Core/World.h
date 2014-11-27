@@ -5,7 +5,7 @@
 #include "Element.h"
 #include "Material.h"
 #include "PostProcess.h"
-#include "ScreenQuadVertexBuffer.h"
+#include "ScreenQuad.h"
 
 // Nodes
 #include "Scene.h"
@@ -22,9 +22,6 @@ namespace Pimp
 	private:
 		Node* rootNode;
 
-		Camera* currentCamera;
-		int currentSceneIndex;
-
 		// Anything that's Tick()-able.
 		// Owned and deleted right here.
 		std::vector<Element*> elements;
@@ -33,11 +30,12 @@ namespace Pimp
 		std::vector<Material*> materials; // Materials (no element, no ownership).
 		std::vector<Scene*>    scenes;    // List of scenes. Each scene is also included in the elements list.
 
-		PostProcess* postProcess;
-		ScreenQuadVertexBuffer* screenQuadVertexBuffer;
+		PostProcess postProcess;
+
+		Camera* currentCamera;
+		int currentSceneIndex;
 
 		float currentTime;
-
 		float motionBlurAmount;
 		float prevMotionBlurTime;
 
@@ -45,26 +43,27 @@ namespace Pimp
 		World();
 		virtual ~World();
 
-		std::vector<Element*>&  GetElements()  { return elements;  }
-		std::vector<Texture*>&  GetTextures()  { return textures;  }
-		std::vector<Material*>& GetMaterials() { return materials; }
-		std::vector<Scene*>&    GetScenes()    { return scenes;    }
+		void Tick(float deltaTime);
+		void UpdateAllMaterialParameters();
+		void Render(Pimp::Sprites &, Pimp::Metaballs *);
 
 		Node* GetRootNode() const 
 		{ 
 			return rootNode; 
 		}
 
-		void SetCamera(Camera* camera) { currentCamera = camera; }
-		Camera* GetCamera() const      { return currentCamera;   }
+		std::vector<Element*>&  GetElements()  { return elements;  }
+		std::vector<Texture*>&  GetTextures()  { return textures;  }
+		std::vector<Material*>& GetMaterials() { return materials; }
+		std::vector<Scene*>&    GetScenes()    { return scenes;    }
 
-		PostProcess* GetPostProcess() const
+		PostProcess& GetPostProcess()
 		{
 			return postProcess;
 		}
 
-		void Tick(float deltaTime);
-		void Render(Pimp::Sprites &, Pimp::Metaballs *);
+		void SetCamera(Camera* camera) { currentCamera = camera; }
+		Camera* GetCamera() const      { return currentCamera;   }
 
 		void SetCurrentSceneIndex(int index) 
 		{ 
@@ -77,17 +76,16 @@ namespace Pimp
 			return currentSceneIndex; 
 		}
 
-		void ForceSetTime(float time);
-
-		float GetCurrentTime() const
-		{
-			return currentTime;
+		void ForceSetTime(float time)
+		{ 
+			currentTime = time; 
 		}
 
-		void UpdateAllMaterialParameters();
-
-		void SetMotionBlurAmount(float amount);
-
+		void SetMotionBlurAmount(float amount) 
+		{ 
+			motionBlurAmount = amount; 
+		}
+		
 		static void StaticAddChildToParent(Node* nodeChild, Node* nodeParent);
 		static void StaticRemoveChildFromParent(Node* nodeChild, Node* nodeParent);
 	};
