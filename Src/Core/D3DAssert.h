@@ -1,7 +1,7 @@
 
 #pragma once
 
-// FIXME: this is deprecated.
+// FIXME: location is deprecated.
 #include "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\DxErr.h"
 
 class CoreD3DException : public std::exception

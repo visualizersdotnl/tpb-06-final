@@ -136,8 +136,8 @@ namespace Pimp
 		class VertexBuffer
 		{
 		public:
-			ID3D10Buffer* buffer;
-			ID3D10InputLayout* layout;
+			ID3D11Buffer* buffer;
+			ID3D11InputLayout* layout;
 
 			VertexBuffer() :
 				buffer(nullptr),

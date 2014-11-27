@@ -8,7 +8,7 @@ namespace Pimp
 {
 	Texel Texel::black = { 1, 0, 0, 0 };
 
-	Texture2D::Texture2D(const std::string& name, int width, int height, ID3D10Texture2D* texture, ID3D10ShaderResourceView* view)
+	Texture2D::Texture2D(const std::string& name, int width, int height, ID3D11Texture2D* texture, ID3D11ShaderResourceView* view)
 		: Texture(name, width, height, view), texture(texture)
 	{
 	}
@@ -27,7 +27,7 @@ namespace Pimp
 		const __m128 thresholdHigh128 = _mm_load_ps(thresholdHigh);
 
 		const int initialRoundMode = _MM_GET_ROUNDING_MODE();
-		_MM_SET_ROUNDING_MODE( _MM_ROUND_NEAREST );
+		_MM_SET_ROUNDING_MODE(_MM_ROUND_NEAREST);
 
 		unsigned int* pDest32 = reinterpret_cast<unsigned int*>(pDest);
 
@@ -69,26 +69,26 @@ namespace Pimp
 
 	void Texture2D::UploadTexels(Texel* sourceTexels)
 	{
-		D3D10_MAPPED_TEXTURE2D mappedTex;
-		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		D3D11_MAPPED_SUBRESOURCE mappedTex;
+		D3D_VERIFY(gD3D->GetContext()->Map(texture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &mappedTex));
 		{
 			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
 			ASSERT(mappedTex.RowPitch == GetWidth()*4); // Assumption: no padding.
 
 			DownSampleTo8Bit(destTexels, sourceTexels,  GetWidth()*GetHeight());
 		}
-		texture->Unmap(D3D10CalcSubresource(0, 0, 1));
+		gD3D->GetContext()->Unmap(texture, D3D11CalcSubresource(0, 0, 1));
 	}
 
 	void Texture2D::UploadTexels(unsigned char* sourceTexels)
 	{
-		D3D10_MAPPED_TEXTURE2D mappedTex;
-		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		D3D11_MAPPED_SUBRESOURCE mappedTex;
+		D3D_VERIFY(gD3D->GetContext()->Map(texture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &mappedTex));
 		{
 			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
 			for (int iY = 0; iY < GetHeight(); ++iY)
 				memcpy(destTexels + iY*mappedTex.RowPitch, sourceTexels + iY*GetWidth()*4, GetWidth()*4);
 		}
-		texture->Unmap(D3D10CalcSubresource(0, 0, 1));
+		gD3D->GetContext()->Unmap(texture, D3D11CalcSubresource(0, 0, 1));
 	}
 }

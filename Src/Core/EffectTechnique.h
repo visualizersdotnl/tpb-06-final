@@ -10,12 +10,11 @@ namespace Pimp
 	public:
 		EffectTechnique(Effect* effect, const char* techniqueName);
 
-		ID3D10EffectPass* GetPass(const char* passName);
-
+		ID3DX11EffectPass* GetPass(const char* passName);
 		Effect* GetEffect() const { return effect; }
 
 	private:
 		Effect* effect;
-		ID3D10EffectTechnique* technique;
+		ID3DX11EffectTechnique* technique;
 	};
 }

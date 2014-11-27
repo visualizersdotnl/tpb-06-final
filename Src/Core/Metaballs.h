@@ -32,8 +32,8 @@ namespace Pimp
 		void SetRim(float rim);
 
 	private:
-		ID3D10Buffer *pVB, *pIB;
-		ID3D10InputLayout *inputLayout;
+		ID3D11Buffer *pVB, *pIB;
+		ID3D11InputLayout *inputLayout;
 
 		Effect effect;
 		EffectTechnique effectTechnique;

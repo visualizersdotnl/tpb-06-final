@@ -57,7 +57,7 @@ protected:
 
 		void RefreshParameters();
 
-		void SetSceneBuffer(ID3D10ShaderResourceView* resourceView);
+		void SetSceneBuffer(ID3D11ShaderResourceView* resourceView);
 
 		void SetBlendMode(D3D::Blend mode) { blendMode = mode; }
 		D3D::Blend GetBlendMode() const { return blendMode; }

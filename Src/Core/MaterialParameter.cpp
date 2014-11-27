@@ -15,15 +15,15 @@ namespace Pimp
 
 	void MaterialParameter::AssignValueToEffectVariable(Effect* effect, int varIndex)
 	{
-#ifdef _DEBUG
-		const D3D10_EFFECT_TYPE_DESC desc = effect->GetTypeDesc(varIndex);
+#if defined(_DEBUG)
+		const D3DX11_EFFECT_TYPE_DESC typeDesc = effect->GetTypeDesc(varIndex);
 
 		// Safety checks on the type
 		switch (valueType)
 		{
 		// Scalar float
 		case VT_Value:
-			if (desc.Class != D3D10_SVC_SCALAR || desc.Type != D3D10_SVT_FLOAT || desc.Elements != 0)
+			if (typeDesc.Class != D3D10_SVC_SCALAR || typeDesc.Type != D3D10_SVT_FLOAT || typeDesc.Elements != 0)
 			{
 				ASSERT(0);
 				return;
@@ -32,7 +32,7 @@ namespace Pimp
 
 		// Vector
 		case VT_NodePosition:
-			if (desc.Class != D3D10_SVC_VECTOR || desc.Type != D3D10_SVT_FLOAT || desc.Elements != 0 || desc.Rows != 1 || desc.Columns != 4)
+			if (typeDesc.Class != D3D10_SVC_VECTOR || typeDesc.Type != D3D10_SVT_FLOAT || typeDesc.Elements != 0 || typeDesc.Rows != 1 || typeDesc.Columns != 4)
 			{
 				ASSERT(0);
 				return;
@@ -42,7 +42,7 @@ namespace Pimp
 		// Matrix
 		case VT_NodeXform:
 		case VT_NodeXformInv: 
-			if (desc.Class != D3D10_SVC_MATRIX_COLUMNS || desc.Type != D3D10_SVT_FLOAT || desc.Elements != 0 || desc.Rows != 4 || desc.Columns != 4)
+			if (typeDesc.Class != D3D10_SVC_MATRIX_COLUMNS || typeDesc.Type != D3D10_SVT_FLOAT || typeDesc.Elements != 0 || typeDesc.Rows != 4 || typeDesc.Columns != 4)
 			{
 				ASSERT(0);
 				return;
@@ -57,7 +57,7 @@ namespace Pimp
 			effect->SetVariableValue(varIndex, GetCurrentValue());
 			break;
 		case VT_NodePosition:
-			effect->SetVariableValue(varIndex, *(Vector4*)&GetWorldTransform()->_41);
+			effect->SetVariableValue(varIndex, *reinterpret_cast<const Vector4*>(&GetWorldTransform()->_41));
 			break;
 		case VT_NodeXform:
 			effect->SetVariableValue(varIndex, *GetWorldTransform());

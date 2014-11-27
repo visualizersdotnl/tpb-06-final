@@ -22,17 +22,17 @@ namespace Pimp
 	{
 		ASSERT(inputLayoutEffectPass != NULL);
 
-		vertices = gD3D->CreateVertexBuffer(6*sizeof(ScreenQuadVertex), (void*)screenQuad, false);	
+		vertices = gD3D->CreateVertexBuffer(6*sizeof(ScreenQuadVertex), reinterpret_cast<const void*>(screenQuad), false);	
 
 		unsigned char* signature;
 		int signatureLength;
 		inputLayoutEffectPass->GetVSInputSignature(&signature, &signatureLength);
 
-		static const D3D10_INPUT_ELEMENT_DESC layoutDesc[] = {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D10_INPUT_PER_VERTEX_DATA, 0 },
+		static const D3D11_INPUT_ELEMENT_DESC layoutDesc[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		inputLayout = gD3D->CreateInputLayout(layoutDesc, sizeof(layoutDesc)/sizeof(D3D10_INPUT_ELEMENT_DESC), signature, signatureLength);
+		inputLayout = gD3D->CreateInputLayout(layoutDesc, sizeof(layoutDesc)/sizeof(D3D11_INPUT_ELEMENT_DESC), signature, signatureLength);
 
 		delete [] signature;
 	}

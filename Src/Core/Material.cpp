@@ -93,7 +93,7 @@ namespace Pimp
 		}
 	}
 
-	void Material::SetSceneBuffer(ID3D10ShaderResourceView* resourceView)
+	void Material::SetSceneBuffer(ID3D11ShaderResourceView* resourceView)
 	{
 		// Only required by user post processing shader.
 		if (varIndexSceneBuffer >= 0)

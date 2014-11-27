@@ -104,9 +104,6 @@
     <ClInclude Include="D3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3DCompiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DepthStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>

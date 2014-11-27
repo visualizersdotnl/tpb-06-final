@@ -6,14 +6,14 @@ namespace Pimp
 	class Texture
 	{
 	private:
-		ID3D10ShaderResourceView* view;
+		ID3D11ShaderResourceView* view;
 
-		unsigned int width;
-		unsigned int height;
-		std::string name;
+		const unsigned int width;
+		const unsigned int height;
+		const std::string name;
 
 	public:
-		Texture(const std::string& name, int width, int height, ID3D10ShaderResourceView* view);
+		Texture(const std::string& name, int width, int height, ID3D11ShaderResourceView* view);
 		virtual ~Texture();
 
 		const std::string& GetName() const
@@ -21,7 +21,7 @@ namespace Pimp
 			return name;
 		}
 
-		ID3D10ShaderResourceView* GetShaderResourceView() 
+		ID3D11ShaderResourceView* GetShaderResourceView() 
 		{ 
 			return view; 
 		}

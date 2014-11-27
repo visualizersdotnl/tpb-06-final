@@ -7,15 +7,13 @@ namespace Pimp
 	class DepthStencil
 	{
 	public:
-		DepthStencil(ID3D10Texture2D* texture, ID3D10DepthStencilView* view);
+		DepthStencil(ID3D11Texture2D* texture, ID3D11DepthStencilView* view);
 		~DepthStencil();
 
-		ID3D10DepthStencilView* GetDepthStencilView() { return view; }
+		ID3D11DepthStencilView* GetDepthStencilView() { return view; }
 
 	private:
-		ID3D10Texture2D* texture;
-		ID3D10DepthStencilView* view;
+		ID3D11Texture2D* texture;
+		ID3D11DepthStencilView* view;
 	};
 }
-
-

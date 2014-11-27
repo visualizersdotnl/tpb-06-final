@@ -8,8 +8,8 @@
 
 // APIs
 #include <windows.h>
-#include <DXGI.h>
-#include <d3d10_1.h>
+#include <dxgi.h>
+#include <d3d11.h>
 
 // CRT & STL
 #include <stdint.h>
@@ -24,6 +24,6 @@
 #include <Shared/assert.h>
 
 // COM release macro
-#define SAFE_RELEASE(pX) if (NULL != (pX)) (pX)->Release()
+#define SAFE_RELEASE(pX) if (nullptr != (pX)) (pX)->Release()
 
 #endif // CORE_PLATFORM_H

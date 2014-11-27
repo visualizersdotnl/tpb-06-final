@@ -9,28 +9,26 @@ namespace Pimp
 	{
 	private:
 		int depth;
-		ID3D10Texture3D* texture;
-		ID3D10RenderTargetView** sliceRenderTargetViews; // count: size, one for each slice
+		ID3D11Texture3D* texture;
+		ID3D11RenderTargetView** sliceRenderTargetViews;
 
 	public:
-		Texture3D(const std::string& name, int width, int height, int depth, ID3D10Texture3D* texture, ID3D10ShaderResourceView* view, ID3D10RenderTargetView** sliceRenderTargetViews);
-		virtual ~Texture3D();
+		Texture3D(
+			const std::string& name, 
+			int width, int height, int depth, 
+			ID3D11Texture3D* texture, ID3D11ShaderResourceView* view, ID3D11RenderTargetView** sliceRenderTargetViews);
 
-		// Upload texel data from a 32bit-fp source buffer.
+		~Texture3D();
+
+		// Upload texel data from a 32-bit float source buffer.
 		void UploadTexels(float* sourceTexels);
 
-
-		ID3D10RenderTargetView* GetRenderTargetView(int sliceIndex) const
+		ID3D11RenderTargetView* GetRenderTargetView(int sliceIndex) const
 		{ 
 			ASSERT(sliceIndex >= 0 && sliceIndex < GetDepth());
-
 			return sliceRenderTargetViews[sliceIndex]; 
 		}
 
-
-		int GetDepth() const
-		{
-			return depth;
-		}
+		int GetDepth() const { return depth; }
 	};
 }

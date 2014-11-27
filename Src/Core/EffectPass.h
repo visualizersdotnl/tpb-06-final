@@ -18,6 +18,6 @@ namespace Pimp
 
 	private:
 		EffectTechnique* technique;
-		ID3D10EffectPass* pass;
+		ID3DX11EffectPass* pass;
 	};
 }

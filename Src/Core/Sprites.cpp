@@ -26,27 +26,27 @@ namespace Pimp
 		effectPassWrap.GetVSInputSignature(&signature, &signatureLength);
 		// ^ Signatures are identical for both.
 
-		D3D10_INPUT_ELEMENT_DESC elemDesc[3];
+		D3D11_INPUT_ELEMENT_DESC elemDesc[3];
 		elemDesc[0].SemanticName = "POSITION";
 		elemDesc[0].SemanticIndex = 0;
 		elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		elemDesc[0].InputSlot = 0;
-		elemDesc[0].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-		elemDesc[0].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+		elemDesc[0].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		elemDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		elemDesc[0].InstanceDataStepRate = 0;
 		elemDesc[1].SemanticName = "COLOR";
 		elemDesc[1].SemanticIndex = 0;
 		elemDesc[1].Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		elemDesc[1].InputSlot = 0;
-		elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-		elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+		elemDesc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		elemDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		elemDesc[1].InstanceDataStepRate = 0;
 		elemDesc[2].SemanticName = "TEXCOORD";
 		elemDesc[2].SemanticIndex = 0;
 		elemDesc[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 		elemDesc[2].InputSlot = 0;
-		elemDesc[2].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-		elemDesc[2].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+		elemDesc[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+		elemDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		elemDesc[2].InstanceDataStepRate = 0;
 		VB.layout = gD3D->CreateInputLayout(elemDesc, 3, signature, signatureLength);
 
@@ -91,7 +91,9 @@ namespace Pimp
 		if (nullptr == pMapped)
 		{
 			// lock vertex buffer
-			VERIFY(SUCCEEDED(VB.buffer->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&pMapped))));
+			D3D11_MAPPED_SUBRESOURCE mappedVB;
+			VERIFY(SUCCEEDED(gD3D->GetContext()->Map(VB.buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB)));
+			pMapped = reinterpret_cast<Vertex*>(mappedVB.pData);
 			curMappedVtx = 0;
 		}
 
@@ -162,7 +164,7 @@ namespace Pimp
 	{
 		if (nullptr != pMapped)
 		{
-			VB.buffer->Unmap();
+			gD3D->GetContext()->Unmap(VB.buffer, 0);
 			pMapped = nullptr;
 		}
 	}

@@ -13,8 +13,8 @@ namespace Pimp
 	class ScreenQuadVertexBuffer
 	{
 	private:
-		ID3D10Buffer* vertices;
-		ID3D10InputLayout* inputLayout;
+		ID3D11Buffer* vertices;
+		ID3D11InputLayout* inputLayout;
 
 	public:
 		ScreenQuadVertexBuffer(EffectPass* inputLayoutEffectPass);

@@ -7,10 +7,12 @@ namespace Pimp
 {
 	RenderTarget::RenderTarget(
 		DXGI_FORMAT format,
-		ID3D10Texture2D* texture, 
-		ID3D10RenderTargetView* renderTargetView,
-		ID3D10ShaderResourceView* shaderResourceView)
-		: format(format), texture(texture), renderTargetView(renderTargetView),
+		ID3D11Texture2D* texture, 
+		ID3D11RenderTargetView* renderTargetView,
+		ID3D11ShaderResourceView* shaderResourceView) :
+		format(format), 
+		texture(texture), 
+		renderTargetView(renderTargetView),
 		shaderResourceView(shaderResourceView)
 	{
 	}

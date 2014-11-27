@@ -108,16 +108,15 @@ Metaballs::Metaballs() :
 
 Metaballs::~Metaballs()
 {
-	delete worldTrans;
+	SAFE_RELEASE(pVB);
+	SAFE_RELEASE(pIB);
+	SAFE_RELEASE(inputLayout);
 
-	if (nullptr != pVB) pVB->Release();
-	if (nullptr != pIB) pIB->Release();
-	if (nullptr != inputLayout) inputLayout->Release();
+	delete worldTrans;
 }
 
 bool Metaballs::Initialize()
 {
-	// FIXME: error check
 	pVB = gD3D->CreateVertexBuffer(kVertexBufferSize, nullptr, true);
 	pIB = gD3D->CreateIndexBuffer(kMaxFaces*3, nullptr, true);
 
@@ -125,20 +124,20 @@ bool Metaballs::Initialize()
 	int signatureLength;
 	effectPass.GetVSInputSignature(&signature, &signatureLength);
 
-	/* static const */ D3D10_INPUT_ELEMENT_DESC elemDesc[2];
+	/* static const */ D3D11_INPUT_ELEMENT_DESC elemDesc[2];
 	elemDesc[0].SemanticName = "POSITION";
 	elemDesc[0].SemanticIndex = 0;
 	elemDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	elemDesc[0].InputSlot = 0;
-	elemDesc[0].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-	elemDesc[0].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[0].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	elemDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	elemDesc[0].InstanceDataStepRate = 0;
 	elemDesc[1].SemanticName = "NORMAL";
 	elemDesc[1].SemanticIndex = 0;
 	elemDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	elemDesc[1].InputSlot = 0;
-	elemDesc[1].AlignedByteOffset = D3D10_APPEND_ALIGNED_ELEMENT;
-	elemDesc[1].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+	elemDesc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	elemDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	elemDesc[1].InstanceDataStepRate = 0;
 	inputLayout = gD3D->CreateInputLayout(elemDesc, 2, signature, signatureLength);
 
@@ -166,8 +165,14 @@ void Metaballs::Generate(unsigned int numBall4s, const Metaball4 *pBall4s, float
 	s_surfaceLevel = surfaceLevel;
 	s_genNumVerts = 0;
 	s_genNumFaces = 0;
-	VERIFY(SUCCEEDED(pVB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pVertices))));
-	VERIFY(SUCCEEDED(pIB->Map(D3D10_MAP_WRITE_DISCARD, 0, reinterpret_cast<void **>(&s_pFaces))));
+
+	D3D11_MAPPED_SUBRESOURCE mappedVB;
+	D3D_VERIFY(gD3D->GetContext()->Map(pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB));
+	s_pVertices = reinterpret_cast<Vertex*>(mappedVB.pData);
+
+	D3D11_MAPPED_SUBRESOURCE mappedIB;
+	D3D_VERIFY(gD3D->GetContext()->Map(pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedIB));
+	s_pFaces = reinterpret_cast<Face*>(mappedIB.pData);
 
 	// invalidate grid & vertex cache
 	memset(s_isoValues, 0xff, kGridDepth*kGridDepthSqr * sizeof(float));
@@ -248,8 +253,8 @@ void Metaballs::Generate(unsigned int numBall4s, const Metaball4 *pBall4s, float
 		}
 	}
 
-	pVB->Unmap();
-	pIB->Unmap();
+	gD3D->GetContext()->Unmap(pVB, 0);
+	gD3D->GetContext()->Unmap(pIB, 0);
 }
 
 void Metaballs::Draw(Camera* camera)

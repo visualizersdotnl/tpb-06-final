@@ -69,7 +69,7 @@ void PostProcess::SetParameters()
 {
 	const float sceneRenderLod = Scene::GetSceneRenderLOD();
 
-	DWORD width, height;
+	float width, height;
 	gD3D->GetRenderSize(width, height);
 
 	// FIXME: this was in .ZW of screenSizeInv, do we still need it?
@@ -78,8 +78,8 @@ void PostProcess::SetParameters()
 
 	// Inverse filter buffer size.
 	const Vector2 invFilterSize(
-		POSTPROCESS_FILTER_SCALEDOWN / (float) width,
-		POSTPROCESS_FILTER_SCALEDOWN / (float) height);
+		POSTPROCESS_FILTER_SCALEDOWN / width,
+		POSTPROCESS_FILTER_SCALEDOWN / height);
 	effect.SetVariableValue(varIndexFilterSizeInv, invFilterSize);
 
 	effect.SetVariableValue(varIndexLoadProgress, 0.0f);
@@ -101,19 +101,19 @@ void PostProcess::RenderPostProcess()
 	// Apply motion blurring (just blend renderTargetSceneSingle on renderTargetSceneMotionBlurred)
 	gD3D->SetBlendMode(D3D::BM_AlphaBlend);
 	gD3D->BindRenderTarget(renderTargetSceneMotionBlurred, NULL);
-	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D10ShaderResourceView*)renderTargetSceneSingle->GetShaderResourceView());
+	effect.SetVariableValue(varIndexBufferSceneColor, renderTargetSceneSingle->GetShaderResourceView());
 	passMotionBlurBlend.Apply();
 	gD3D->DrawScreenQuad();
 	gD3D->SetBlendMode(D3D::BM_None);
 
 	RenderTarget* gatherSource;
 
-	if (userPostEffect != NULL)
+	if (nullptr != userPostEffect)
 	{
 		// Apply user post effect
-		gD3D->BindRenderTarget(renderTargetSceneUserPostEffect, NULL);
+		gD3D->BindRenderTarget(renderTargetSceneUserPostEffect, nullptr);
 		userPostEffect->SetSceneBuffer(renderTargetSceneMotionBlurred->GetShaderResourceView());
-		userPostEffect->Bind(NULL);
+		userPostEffect->Bind(nullptr);
 		gD3D->DrawScreenQuad();
 
 		gatherSource = renderTargetSceneUserPostEffect;
@@ -122,21 +122,21 @@ void PostProcess::RenderPostProcess()
 		gatherSource = renderTargetSceneMotionBlurred;
 
 	// Gather bloom
-	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
+	gD3D->BindRenderTarget(renderTargetFilter[0], nullptr);
 	effect.SetVariableValue(varIndexBufferSceneColor, gatherSource->GetShaderResourceView());
 	passBloomGather.Apply();	
 	gD3D->DrawScreenQuad();
 
 	// Blur pass 1 (H)
-	gD3D->BindRenderTarget(renderTargetFilter[1], NULL);
-	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[0]->GetShaderResourceView());
+	gD3D->BindRenderTarget(renderTargetFilter[1], nullptr);
+	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[0]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirH);
 	passBloomBlur.Apply();
 	gD3D->DrawScreenQuad();
 
 	// Blur pass 2 (V)
-	gD3D->BindRenderTarget(renderTargetFilter[0], NULL);
-	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)renderTargetFilter[1]->GetShaderResourceView());
+	gD3D->BindRenderTarget(renderTargetFilter[0], nullptr);
+	effect.SetVariableValue(varIndexBufferFilter, renderTargetFilter[1]->GetShaderResourceView());
 	effect.SetVariableValue(varIndexBloomBlurPixelDir, bloomBlurDirV);
 	passBloomBlur.Apply();	
 	gD3D->DrawScreenQuad();
@@ -144,7 +144,7 @@ void PostProcess::RenderPostProcess()
 	// Combine bloom results to back buffer:
 
 	// 1. Bind and clear entire back buffer
-	gD3D->BindBackbuffer(NULL);
+	gD3D->BindBackbuffer(nullptr);
 	gD3D->SetBackViewport();
 	gD3D->ClearBackBuffer();
 
@@ -155,14 +155,14 @@ void PostProcess::RenderPostProcess()
 	gD3D->DrawScreenQuad();
 
 	// Reset bound variables again
-	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D10ShaderResourceView*)NULL);
-	effect.SetVariableValue(varIndexBufferFilter, (ID3D10ShaderResourceView*)NULL);
+	effect.SetVariableValue(varIndexBufferSceneColor, (ID3D11ShaderResourceView*) nullptr);
+	effect.SetVariableValue(varIndexBufferFilter, (ID3D11ShaderResourceView*) nullptr);
 	passBloomCombine.Apply();
 }
 
 void PostProcess::InitBloomGatherSamples()
 {
-	DWORD width, height;
+	float width, height;
 	gD3D->GetRenderSize(width, height);
 
 	const float xStep = 1.f / width;

@@ -7,7 +7,7 @@
 
 namespace Pimp
 {
-	Texture3D::Texture3D(const std::string& name, int width, int height, int depth, ID3D10Texture3D* texture, ID3D10ShaderResourceView* view, ID3D10RenderTargetView** sliceRenderTargetViews)
+	Texture3D::Texture3D(const std::string& name, int width, int height, int depth, ID3D11Texture3D* texture, ID3D11ShaderResourceView* view, ID3D11RenderTargetView** sliceRenderTargetViews)
 		: Texture(name, width, height, view), texture(texture), sliceRenderTargetViews(sliceRenderTargetViews), depth(depth)
 	{
 	}
@@ -24,8 +24,8 @@ namespace Pimp
 
 	void Texture3D::UploadTexels(float* sourceTexels)
 	{
-		D3D10_MAPPED_TEXTURE3D mappedTex;
-		D3D_VERIFY(texture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex));
+		D3D11_MAPPED_SUBRESOURCE mappedTex;
+		D3D_VERIFY(gD3D->GetContext()->Map(texture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &mappedTex));
 		{
 			unsigned char* destTexels = reinterpret_cast<unsigned char*>(mappedTex.pData);
 		
@@ -35,6 +35,6 @@ namespace Pimp
 	
 			memcpy(destTexels, sourceTexels, GetWidth()*GetHeight()*GetDepth()*4);
 		}
-		texture->Unmap( D3D10CalcSubresource(0, 0, 1) );
+		gD3D->GetContext()->Unmap(texture, D3D11CalcSubresource(0, 0, 1));
 	}
 }

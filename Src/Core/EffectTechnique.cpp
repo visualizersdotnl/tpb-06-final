@@ -12,10 +12,10 @@ namespace Pimp
 		ASSERT(nullptr != technique);
 	}
 
-	ID3D10EffectPass* EffectTechnique::GetPass(const char* passName)
+	ID3DX11EffectPass* EffectTechnique::GetPass(const char* passName)
 	{
-		ID3D10EffectPass* pass = technique->GetPassByName(passName);
-		ASSERT(pass->IsValid());
+		ID3DX11EffectPass* pass = technique->GetPassByName(passName);
+		ASSERT(nullptr != pass && pass->IsValid());
 		return pass;
 	}
 }

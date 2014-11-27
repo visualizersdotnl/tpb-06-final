@@ -11,9 +11,7 @@
 	- Provide a stable main loop.
 	- Take care of proper shutdown and error message display.
 
-	Issues (some of these are in Github as well):
-	- Remove unused (commented) code.
-	- Leaks (perhaps use an external tool to test that).
+	Oh, and try some leak detection using an external tool.
 */
 
 #include <Core/Platform.h>
@@ -48,9 +46,9 @@ static std::string s_lastError;
 void SetLastError(const std::string &message) { s_lastError = message; }
 
 // DXGI objects
-static IDXGIFactory    *s_pDXGIFactory = NULL;
-static IDXGIAdapter    *s_pAdapter = NULL;
-static IDXGIOutput     *s_pDisplay = NULL;
+static IDXGIFactory    *s_pDXGIFactory = nullptr;
+static IDXGIAdapter    *s_pAdapter = nullptr;
+static IDXGIOutput     *s_pDisplay = nullptr;
 static DXGI_MODE_DESC   s_displayMode;
 
 // app. window
@@ -59,8 +57,9 @@ static HWND s_hWnd = NULL;
 static bool s_wndIsActive; // set by WindowProc()
 
 // Direct3D objects
-static ID3D10Device1  *s_pD3D = NULL;
-static IDXGISwapChain *s_pSwapChain = NULL;
+static ID3D11Device        *s_pD3D        = nullptr;
+static ID3D11DeviceContext *s_pD3DContext = nullptr;
+static IDXGISwapChain      *s_pSwapChain  = nullptr;
 
 // Debug camera and it's state.
 #if defined(_DEBUG) || defined(_DESIGN)
@@ -73,15 +72,6 @@ static int		s_mouseTrackInitialX;
 static int		s_mouseTrackInitialY;
 #endif
 
-// serialize constant value to std::string
-// Sort of ugly but I didn't convert the project I took this stub from to streams yet.
-template<typename T> inline std::string ToString(const T &X)
-{
-	std::stringstream strStream;
-	strStream << X;
-	return strStream.str();
-}
-
 static bool CreateDXGI(HINSTANCE hInstance)
 {
 	if FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void **>(&s_pDXGIFactory)))
@@ -90,10 +80,21 @@ static bool CreateDXGI(HINSTANCE hInstance)
 		return false;
 	}
 
-	// get primary display
+	// get primary adapter
 	s_pDXGIFactory->EnumAdapters(0, &s_pAdapter);
+	if (nullptr == s_pAdapter)
+	{
+		SetLastError("No primary display adapter found.");
+		return false;
+	}
+
+	// and it's display
 	s_pAdapter->EnumOutputs(0, &s_pDisplay);
-	ASSERT(NULL != s_pAdapter && NULL != s_pDisplay);
+	if (nullptr == s_pDisplay)
+	{
+		SetLastError("No physical display attached to primary adapter.");
+		return false;
+	}
 
 	// get current display mode
 	// FindClosestMatchingMode() has failed when used on some systems' external display (hello Toshiba!)
@@ -303,7 +304,7 @@ static bool CreateAppWindow(HINSTANCE hInstance, int nCmdShow)
 		NULL,
 		NULL,
 		hInstance,
-		NULL);	
+		nullptr);	
 
 	if (NULL == s_hWnd)
 	{
@@ -381,20 +382,28 @@ static bool CreateDirect3D()
 {
 	// create device
 #if _DEBUG
-	const UINT Flags = D3D10_CREATE_DEVICE_SINGLETHREADED | D3D10_CREATE_DEVICE_DEBUG;
+	const UINT Flags = D3D11_CREATE_DEVICE_SINGLETHREADED | D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG;
 #else
-	const UINT Flags = D3D10_CREATE_DEVICE_SINGLETHREADED;
+	const UINT Flags = D3D11_CREATE_DEVICE_SINGLETHREADED | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #endif
 
-	if SUCCEEDED(D3D10CreateDevice1(
+	const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
+	D3D_FEATURE_LEVEL outFeatureLevel;
+
+	HRESULT hRes = D3D11CreateDevice(
 		s_pAdapter,
-		D3D10_DRIVER_TYPE_HARDWARE,
+		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		Flags,
-		D3D10_FEATURE_LEVEL_10_0,
-		D3D10_1_SDK_VERSION,
-		&s_pD3D))
+		&featureLevel, 1,
+		D3D11_SDK_VERSION,
+		&s_pD3D,
+		&outFeatureLevel,
+		&s_pD3DContext);
+	if SUCCEEDED(hRes)
 	{
+		ASSERT(outFeatureLevel == featureLevel);
+
 		// create swap chain
 		DXGI_SWAP_CHAIN_DESC swapDesc;
 		swapDesc.BufferDesc = s_displayMode;
@@ -407,28 +416,29 @@ static bool CreateDirect3D()
 		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		swapDesc.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-		if SUCCEEDED(s_pDXGIFactory->CreateSwapChain(s_pD3D, &swapDesc, &s_pSwapChain))
+		hRes = s_pDXGIFactory->CreateSwapChain(s_pD3D, &swapDesc, &s_pSwapChain);
+		if SUCCEEDED(hRes)
 		{
-			HRESULT hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
-//			HRESULT hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_ALT_ENTER);
+			hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
 			ASSERT(hRes == S_OK);
 			return true;
 		}
 	}
 
 	// either one failed, passing it off as one error
-	std::string message;
-	message  = "Can not create Direct3D 10.1 device.\r\n\r\n";
-	message += (kWindowed) ? "Type: windowed.\r\n" : "Type: full screen.\r\n";
-	message += "Resolution: " + ToString(s_displayMode.Width) + "*" + ToString(s_displayMode.Height) + ".";
-	SetLastError(message);
+	std::stringstream message;
+	message << "Can't create Direct3D 11.0 device.\n\n";
+	message << ((true == kWindowed) ? "Type: windowed.\n" : "Type: full screen.\n");
+	message << "Resolution: " << s_displayMode.Width << "*" << s_displayMode.Width << ".\n";
+	message << "DirectX error: " << DXGetErrorDescription(hRes) << ".\n";
+	SetLastError(message.str());
 	return false;
 }
 
 static void DestroyDirect3D()
 {
 	if (false == kWindowed && nullptr != s_pSwapChain)
-		s_pSwapChain->SetFullscreenState(FALSE, NULL);
+		s_pSwapChain->SetFullscreenState(FALSE, nullptr);
 	
 	SAFE_RELEASE(s_pSwapChain);
 	SAFE_RELEASE(s_pD3D);
@@ -489,7 +499,7 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 					try
 					{
 						// Initialize Core D3D.
-						Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pSwapChain);
+						Pimp::gD3D = new Pimp::D3D(s_pD3D, s_pD3DContext, s_pSwapChain);
 
 						// Prepare demo resources.
 						const char *rocketClient = (0 == strlen(lpCmdLine)) ? "localhost" : lpCmdLine;
