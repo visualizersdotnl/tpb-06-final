@@ -1,6 +1,6 @@
 
 //
-// Scene (or 'part' in classic demoscene lingo) base class.
+// Demo::Scene (or 'part' in classic demoscene lingo) base class.
 // Primarily intended to manage all resource requests, objects and world manipulation for a single scene.
 //
 // IMPORTANT: all objects added as an element to the world are destroyed by the world itself!

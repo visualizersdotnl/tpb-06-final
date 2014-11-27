@@ -1,7 +1,6 @@
 
-// FIXME:
-// Scene currently keeps a pointer whilst given a reference, so that Player's AutoShaderReload mechanism
-// can swap the material on reload. This obviously isn't pretty and I should look after a proper solution.
+// Scene describes a full screen scene rendered by a material shader (FX).
+// Needs expansion when actual geometry will be implemented.
 
 #pragma once
 
@@ -32,7 +31,8 @@ namespace Pimp
 
 #if defined(_DEBUG) || defined(_DESIGN)
 
-		// FIXME!
+		// FIXME: AutoShaderReload (Player) can swap the material and needs a review because
+		//        it's rather ugly.
 		Material* GetMaterial() const         { return material; }
 		void SetMaterial(Material* material)  { this->material = material; }
 

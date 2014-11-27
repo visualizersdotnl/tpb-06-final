@@ -1,3 +1,7 @@
+
+// Helper class that monitors shader file changes, triggers a recompile and swaps the materials (which contain the shader).
+// FIXME: this isn't pretty (also see Core::Scene) so I'd like to review it.
+
 #pragma once
 
 #if defined(_DEBUG) || defined(_DESIGN)
@@ -6,8 +10,6 @@
 #include <Shared/stopwatch.h>
 #include <Shared/fileutils.h>
 
-// Helper class that can monitor file changes to shader files and automatically trigger recompilation when changes
-// were detected.
 class AutoShaderReload
 {
 private:

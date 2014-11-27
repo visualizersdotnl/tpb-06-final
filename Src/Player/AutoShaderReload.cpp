@@ -6,11 +6,11 @@
 #include "AutoShaderReload.h"
 #include "Assets.h"
 
-AutoShaderReload::AutoShaderReload( Pimp::World* world, float checkInterval )
+AutoShaderReload::AutoShaderReload(Pimp::World* world, float checkInterval)
 	: world(world), checkInterval(checkInterval)
 {
 	const std::vector<Pimp::Scene*>& scenes = world->GetScenes();
-	for (auto *scene : scenes)
+	for (auto scene : scenes)
 	{
 		ASSERT(nullptr != scene);
 
