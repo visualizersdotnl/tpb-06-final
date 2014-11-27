@@ -59,16 +59,16 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 	ReadFileContent(fileName, &shader_ascii, &shader_ascii_size);
 
 	// Compile our shader (text -> bytecode)
-	unsigned char* compiled_shader;
-	int compiled_shader_size;
+	unsigned char* compiledEffect;
+	int compiledEFfectLength;
 	std::string errorMsg;
 	bool success = 
 		Pimp::gD3D->CompileEffect(
 		fileName,
 		shader_ascii, 
 		shader_ascii_size, 
-		&compiled_shader, 
-		&compiled_shader_size,
+		&compiledEffect, 
+		&compiledEFfectLength,
 		errorMsg);
 
 	delete[] shader_ascii;
@@ -78,7 +78,7 @@ void AutoShaderReload::ReloadSceneShader(Pimp::Scene* scene)
 		std::vector<Pimp::Material*>& materials = world->GetMaterials();
 
 		// Create new material
-		Pimp::Material* newMaterial = new Pimp::Material(world, compiled_shader, compiled_shader_size, fileName);
+		Pimp::Material* newMaterial = new Pimp::Material(world, compiledEffect, compiledEFfectLength, fileName);
 		scene->SetMaterial(newMaterial);
 		materials.push_back(newMaterial);
 

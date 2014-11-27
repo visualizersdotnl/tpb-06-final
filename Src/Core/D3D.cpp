@@ -366,13 +366,13 @@ ID3D11InputLayout* D3D::CreateInputLayout(
 	return layout;
 }
 
-ID3DX11Effect* D3D::CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength)
+ID3DX11Effect* D3D::CreateEffect(const void* compiledEffect, int compiledEffectLength)
 {
 	ASSERT(nullptr != compiledEffect && compiledEffectLength > 0);
 
 	ID3DX11Effect* effect = nullptr;
 	const HRESULT hRes = D3DX11CreateEffectFromMemory(
-		static_cast<LPCVOID>(compiledEffect), compiledEffectLength,
+		compiledEffect, compiledEffectLength,
 		0, // Flags
 		device, &effect);
 	D3D_ASSERT(hRes);

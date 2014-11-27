@@ -26,7 +26,7 @@ namespace Pimp
 			MaterialParameter* parameter;
 		};
 
-		std::vector<int> boundTextureVariableIndices;
+		std::vector<int> boundTextureIndices;
 		std::vector<BoundMaterialParameter> boundMaterialParameters;
 
 		int varIndexViewInvMatrix;  // Inverse view matrix.
@@ -41,11 +41,7 @@ protected:
 		virtual void InitParameters();
 
 	public:
-		Material(
-			World* world, 
-			const unsigned char* shaderCompiledText, int shaderCompiledTextLength, 
-			const std::string& shaderFileName);
-
+		Material(World* world, const void* compiledEffect, int compiledEffectLength, const std::string& shaderFileName);
 		~Material();
 
 		void Bind(Camera* camera);

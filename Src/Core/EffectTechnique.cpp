@@ -5,10 +5,9 @@
 
 namespace Pimp
 {
-	EffectTechnique::EffectTechnique(Effect* effect, const char* techniqueName)
-		: effect(effect)
+	EffectTechnique::EffectTechnique(const Effect& effect, const char* techniqueName)
 	{
-		technique = effect->GetTechnique(techniqueName);
+		technique = effect.GetTechnique(techniqueName);
 		ASSERT(nullptr != technique);
 	}
 

@@ -8,16 +8,13 @@ namespace Pimp
 	class EffectPass
 	{
 	public:
-		EffectPass(EffectTechnique* effectTechnique, const char* passName);
-
-		void Apply();
+		EffectPass(EffectTechnique& technique, const char* passName);
 
 		void GetVSInputSignature(unsigned char** outSignature, int* outSignatureLength);
-
-		Effect* GetEffect() const { return technique->GetEffect(); }
+		void Apply();
 
 	private:
-		EffectTechnique* technique;
+//		EffectTechnique& technique;
 		ID3DX11EffectPass* pass;
 	};
 }

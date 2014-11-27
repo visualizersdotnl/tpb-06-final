@@ -139,7 +139,7 @@ namespace Pimp
 			int numDescriptionItems,
 			unsigned char* signatureIA, int signatureIALength);
 
-		ID3DX11Effect* CreateEffect(const unsigned char* compiledEffect, int compiledEffectLength);
+		ID3DX11Effect* CreateEffect(const void* compiledEffect, int compiledEffectLength);
 
 		// Create aspect ratio adjusted size (sceneVP), shrunk by LOD factor
 		RenderTarget* CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool multiSample);

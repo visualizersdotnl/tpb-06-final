@@ -18,12 +18,12 @@ namespace Pimp
 {
 
 PostProcess::PostProcess() :
-	effect((unsigned char*)gCompiledShader_PostProcess, sizeof(gCompiledShader_PostProcess)),
-	techniquePostFX(&effect, "PostFX"),
-	passBloomGather(&techniquePostFX, "Gather"),
-	passBloomBlur(&techniquePostFX, "Blur"),
-	passBloomCombine(&techniquePostFX, "Combine"),
-	passMotionBlurBlend(&techniquePostFX, "MotionBlur"),
+	effect(gCompiledShader_PostProcess, sizeof(gCompiledShader_PostProcess)),
+	techniquePostFX(effect, "PostFX"),
+	passBloomGather(techniquePostFX, "Gather"),
+	passBloomBlur(techniquePostFX, "Blur"),
+	passBloomCombine(techniquePostFX, "Combine"),
+	passMotionBlurBlend(techniquePostFX, "MotionBlur"),
 	userPostEffect(nullptr)
 {
 	// Create render targets

@@ -95,9 +95,9 @@ template<typename T> inline const T lerpf(const T &A, const T &B, float factor)
 
 Metaballs::Metaballs() :
 	pVB(nullptr), pIB(nullptr), inputLayout(nullptr),
-	effect((unsigned char*)gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
-	effectTechnique(&effect, "Blobs"),
-	effectPass(&effectTechnique, "Default"),
+	effect(gCompiledShader_Blobs, sizeof(gCompiledShader_Blobs)),
+	effectTechnique(effect, "Blobs"),
+	effectPass(effectTechnique, "Default"),
 	worldTrans(new Xform(nullptr)),
 	envMap(gD3D->GetWhiteTex()), projMap(gD3D->GetWhiteTex()),
 	projScrollU(0.f), projScrollV(0.f),

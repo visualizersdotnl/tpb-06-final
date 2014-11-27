@@ -5,7 +5,7 @@
 
 namespace Pimp
 {
-	Effect::Effect(const unsigned char* compiledEffect, int compiledEffectLength)
+	Effect::Effect(const void* compiledEffect, int compiledEffectLength)
 	{
 		variables.reserve(16); // Reasonable pre-alloc.
 		effect = gD3D->CreateEffect(compiledEffect, compiledEffectLength);
@@ -16,7 +16,7 @@ namespace Pimp
 		SAFE_RELEASE(effect);
 	}
 
-	ID3DX11EffectTechnique* Effect::GetTechnique(const char* name)
+	ID3DX11EffectTechnique* Effect::GetTechnique(const char* name) const
 	{
 		ID3DX11EffectTechnique* technique = effect->GetTechniqueByName(name);
 		ASSERT(nullptr != technique);

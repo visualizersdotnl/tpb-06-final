@@ -9,10 +9,10 @@ namespace Pimp
 	class Effect
 	{
 	public:
-		Effect(const unsigned char* compiledEffect, int compiledEffectLength);
+		Effect(const void* compiledEffect, int compiledEffectLength);
 		~Effect();
 
-		ID3DX11EffectTechnique* GetTechnique(const char* name);
+		ID3DX11EffectTechnique* GetTechnique(const char* name) const;
 
 		// Register a shader variable and return its index
 		int RegisterVariable(const char* name, bool required);

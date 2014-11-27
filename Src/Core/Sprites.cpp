@@ -10,10 +10,10 @@ namespace Pimp
 	Sprites::Sprites(float vResX, float vResY) :
 		vResX(vResX), vResY(vResY)
 ,		pMapped(nullptr)
-,		effect((unsigned char*)gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites))
-,		effectTechnique(&effect, "Sprites")
-,		effectPassWrap(&effectTechnique, "Wrap")
-,		effectPassClamp(&effectTechnique, "Clamp")
+,		effect(gCompiledShader_Sprites, sizeof(gCompiledShader_Sprites))
+,		effectTechnique(effect, "Sprites")
+,		effectPassWrap(effectTechnique, "Wrap")
+,		effectPassClamp(effectTechnique, "Clamp")
 	{
 		// Get shader var. indices.
 		varIndexTextureMap = effect.RegisterVariable("textureMap", true);

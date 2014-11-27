@@ -7,12 +7,12 @@
 namespace Pimp 
 {
 	Material::Material(
-		World* world
-,		const unsigned char* shaderCompiledText, int shaderCompiledTextLength
-,		const std::string& shaderFileName)
-		: effect(shaderCompiledText, shaderCompiledTextLength)
-,		effectTechnique(&effect, "Default")
-,		effectPass(&effectTechnique, "Default")
+		World* world, 
+		const void* compiledEffect, int compiledEffectLength,
+		const std::string& shaderFileName) :
+		effect(compiledEffect, compiledEffectLength)
+,		effectTechnique(effect, "Default")
+,		effectPass(effectTechnique, "Default")
 ,		world(world)
 ,		varIndexViewInvMatrix(-1)
 ,		varIndexSceneRenderLOD(-1)
@@ -50,11 +50,11 @@ namespace Pimp
 
 	void Material::RefreshParameters()
 	{
-		for (auto varIndex : boundTextureVariableIndices)
+		for (auto varIndex : boundTextureIndices)
 			effect.SetVariableValue(varIndex, nullptr);
 
 		effect.ResetRegisteredVariables();
-		boundTextureVariableIndices.clear();
+		boundTextureIndices.clear();
 		boundMaterialParameters.clear();
 
 		// Our own static parameters for this material
@@ -88,7 +88,7 @@ namespace Pimp
 				// Wanted? Bind it
 				const int varIndex = effect.RegisterVariable(bindName.c_str(), true);
 				effect.SetVariableValue(varIndex, texture->GetShaderResourceView());
-				boundTextureVariableIndices.push_back(varIndex);
+				boundTextureIndices.push_back(varIndex);
 			}
 		}
 	}

@@ -5,11 +5,9 @@
 
 namespace Pimp
 {
-	EffectPass::EffectPass(EffectTechnique* effectTechnique, const char* passName)
-		: technique(effectTechnique)
+	EffectPass::EffectPass(EffectTechnique& technique, const char* passName) :
+		pass(technique.GetPass(passName))
 	{
-		ASSERT(nullptr != technique);
-		pass = technique->GetPass(passName);
 	}
 
 	void EffectPass::Apply()
