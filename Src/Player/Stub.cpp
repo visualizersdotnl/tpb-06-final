@@ -46,10 +46,10 @@ static std::string s_lastError;
 void SetLastError(const std::string &message) { s_lastError = message; }
 
 // DXGI objects
-static IDXGIFactory    *s_pDXGIFactory = nullptr;
-static IDXGIAdapter    *s_pAdapter = nullptr;
-static IDXGIOutput     *s_pDisplay = nullptr;
-static DXGI_MODE_DESC   s_displayMode;
+static IDXGIFactory1  *s_pDXGIFactory = nullptr;
+static IDXGIAdapter1  *s_pAdapter     = nullptr;
+static IDXGIOutput    *s_pDisplay     = nullptr;
+static DXGI_MODE_DESC  s_displayMode;
 
 // app. window
 static bool s_classRegged = false;
@@ -74,19 +74,22 @@ static int		s_mouseTrackInitialY;
 
 static bool CreateDXGI(HINSTANCE hInstance)
 {
-	if FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void **>(&s_pDXGIFactory)))
+	if FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void **>(&s_pDXGIFactory)))
 	{
-		SetLastError("Can not create DXGI factory.");
+		SetLastError("Can not create DXGI 1.1 factory.");
 		return false;
 	}
 
 	// get primary adapter
-	s_pDXGIFactory->EnumAdapters(0, &s_pAdapter);
+	s_pDXGIFactory->EnumAdapters1(0, &s_pAdapter);
 	if (nullptr == s_pAdapter)
 	{
 		SetLastError("No primary display adapter found.");
 		return false;
 	}
+
+//	DXGI_ADAPTER_DESC1 adDesc;
+//	s_pAdapter->GetDesc1(&adDesc);
 
 	// and it's display
 	s_pAdapter->EnumOutputs(0, &s_pDisplay);
@@ -401,44 +404,42 @@ static bool CreateDirect3D()
 	// FIXME: decide what we'll do with this information.
 	D3D_FEATURE_LEVEL featureLevel;
 
-	HRESULT hRes = D3D11CreateDevice(
-		nullptr, // FIXME: s_pAdapter,
-		D3D_DRIVER_TYPE_HARDWARE,
+	DXGI_SWAP_CHAIN_DESC swapDesc;
+	memset(&swapDesc, 0, sizeof(swapDesc));
+	swapDesc.BufferDesc = s_displayMode;
+	swapDesc.SampleDesc.Count = D3D_ANTIALIAS_NUM_SAMPLES;
+	swapDesc.SampleDesc.Quality = D3D_ANTIALIAS_QUALITY;
+	swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapDesc.BufferCount = 1;
+	swapDesc.OutputWindow = s_hWnd;
+	swapDesc.Windowed = kWindowed;
+	swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapDesc.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	HRESULT hRes = D3D11CreateDeviceAndSwapChain(
+		s_pAdapter,
+		D3D_DRIVER_TYPE_UNKNOWN, // This is documented in the "Remarks" section of this call.
 		NULL,
 		Flags,
 		featureLevels, ARRAYSIZE(featureLevels),
 		D3D11_SDK_VERSION,
+		&swapDesc,
+		&s_pSwapChain,
 		&s_pD3D,
 		&featureLevel,
 		&s_pD3DContext);
-	if SUCCEEDED(hRes)
+	if (S_OK == hRes)
 	{
-		// create swap chain
-		DXGI_SWAP_CHAIN_DESC swapDesc;
-		swapDesc.BufferDesc = s_displayMode;
-		swapDesc.SampleDesc.Count = D3D_ANTIALIAS_NUM_SAMPLES;
-		swapDesc.SampleDesc.Quality = D3D_ANTIALIAS_QUALITY;
-		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapDesc.BufferCount = 1;
-		swapDesc.OutputWindow = s_hWnd;
-		swapDesc.Windowed = kWindowed;
-		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		swapDesc.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-		hRes = s_pDXGIFactory->CreateSwapChain(s_pD3D, &swapDesc, &s_pSwapChain);
-		if SUCCEEDED(hRes)
-		{
-			hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
-			ASSERT(hRes == S_OK);
-			return true;
-		}
+		hRes = s_pDXGIFactory->MakeWindowAssociation(s_hWnd, DXGI_MWA_NO_WINDOW_CHANGES);
+		ASSERT(hRes == S_OK);
+		return true;
 	}
 
-	// either one failed, passing it off as one error
+	// Failed :(
 	std::stringstream message;
 	message << "Can't create Direct3D 11.0 device.\n\n";
 	message << ((true == kWindowed) ? "Type: windowed.\n" : "Type: full screen.\n");
-	message << "Resolution: " << s_displayMode.Width << "*" << s_displayMode.Width << ".\n\n";
+	message << "Resolution: " << s_displayMode.Width << "*" << s_displayMode.Height << ".\n\n";
 	message << DXGetErrorString(hRes) << " - " << DXGetErrorDescription(hRes) << ".\n";
 	SetLastError(message.str());
 	return false;

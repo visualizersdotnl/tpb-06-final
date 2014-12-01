@@ -434,6 +434,7 @@ RenderTarget* D3D::CreateRenderTarget(int shrinkFactor, DXGI_FORMAT format, bool
 	return new RenderTarget(format, texture, renderTargetView, shaderResourceView);
 
 	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
+	// FIXME: fix this by adding a ComRef object and letting the stack handle it.
 }
 
 ID3D11Texture2D* D3D::CreateIntermediateCPUTarget(DXGI_FORMAT format)

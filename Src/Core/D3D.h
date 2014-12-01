@@ -82,7 +82,6 @@ namespace Pimp
 		// Non-indexed draw methods
 		void DrawTriList(DWORD numTris) { context->Draw(numTris*3, 0); }
 		void DrawTriQuad(DWORD offset)  { context->Draw(6, offset);    }
-		void DrawScreenQuad()           { DrawTriQuad(0);             } 
 
 		// Indexed draw method(s)
 		void DrawIndexedTriList(DWORD numTris)

@@ -49,6 +49,6 @@ namespace Pimp
 
 	void ScreenQuad::Draw()
 	{
-		gD3D->DrawScreenQuad();
+		gD3D->DrawTriQuad(0);
 	}
 }

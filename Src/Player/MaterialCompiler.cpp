@@ -10,7 +10,7 @@ MaterialCompiler::MaterialCompiler() :
 
 MaterialCompiler::~MaterialCompiler()
 {
-	for (auto *pJob : m_jobs)
+	for (auto pJob : m_jobs)
 		delete pJob;
 
 	for (auto hThread : m_threads)

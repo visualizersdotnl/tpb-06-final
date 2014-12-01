@@ -19,11 +19,6 @@ namespace Pimp
 		void BindForRenderScene();
 		void RenderPostProcess();
 
-		EffectPass* GetEffectPassBloomGather() 
-		{ 
-			return &passBloomGather; 
-		}
-
 		void OnSceneRenderLODChanged();
 
 		// User post effect shader is applied after motion blur and before bloom

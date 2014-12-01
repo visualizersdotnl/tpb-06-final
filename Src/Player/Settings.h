@@ -24,14 +24,14 @@ const float PIMPPLAYER_SPRITE_RES_Y = 1080.f;
 const bool PIMPPLAYER_WINDOWED_DEV = true;
 
 // Development 720p.
-// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
-// const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
+const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
+const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
 
 // Use these to test letterboxing in windowed mode.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640; // Letter.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 480;
-const unsigned int PIMPPLAYER_WINDOWED_RES_X = 800; // Pillar.
-const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 400;
+// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 800; // Pillar.
+// const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 400;
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.
 // By enabling this boolean you can use them at runtime for public release
