@@ -2,8 +2,11 @@
 //
 // Rocket stuff.
 //
-// Rocket can run in edit mode (requires the client (sync_player.exe) to be connected) or
+// Rocket can run in edit mode (requires the client (sync_player.exe or OSX app.) to be connected) or
 // it can run from exported data in replay mode.
+//
+// You can specify a hostname/IP address on the command line in all non-Release Player builds,
+// for fancy remote editing.
 //
 // Right now, Player has 3 different build configurations:
 // -   Debug: debug build that runs Rocket in edit mode.

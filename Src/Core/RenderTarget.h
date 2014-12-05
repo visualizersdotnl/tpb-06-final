@@ -3,7 +3,7 @@
 
 namespace Pimp
 {
-	class RenderTarget
+	class RenderTarget : public boost::noncopyable
 	{
 	public:
 		RenderTarget(

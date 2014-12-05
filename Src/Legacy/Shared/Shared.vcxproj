@@ -97,7 +97,6 @@
     <ClInclude Include="assert.h" />
     <ClInclude Include="fileutils.h" />
     <ClInclude Include="misc.h" />
-    <ClInclude Include="singleton.h" />
     <ClInclude Include="stopwatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

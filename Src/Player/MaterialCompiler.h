@@ -1,7 +1,7 @@
 
 #pragma once
 
-class MaterialCompiler // : public NoCopy
+class MaterialCompiler : public boost::noncopyable
 {
 public:
 	MaterialCompiler();

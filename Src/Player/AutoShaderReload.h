@@ -10,7 +10,7 @@
 #include <Shared/stopwatch.h>
 #include <Shared/fileutils.h>
 
-class AutoShaderReload
+class AutoShaderReload : public boost::noncopyable
 {
 private:
 	Pimp::World* world;

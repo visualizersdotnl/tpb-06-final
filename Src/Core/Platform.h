@@ -23,6 +23,9 @@
 // Legacy
 #include <Shared/assert.h>
 
+// Local
+#include "Noncopyable.h"
+
 // COM release macro
 #define SAFE_RELEASE(pX) if (nullptr != (pX)) (pX)->Release()
 

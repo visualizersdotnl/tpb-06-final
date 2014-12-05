@@ -4,7 +4,7 @@
 
 namespace Pimp
 {
-	class DepthStencil
+	class DepthStencil : public boost::noncopyable
 	{
 	public:
 		DepthStencil(ID3D11Texture2D* texture, ID3D11DepthStencilView* view);

@@ -131,6 +131,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MarchingCubesTables.h" />
     <ClInclude Include="Metaballs.h" />
+    <ClInclude Include="Noncopyable.h" />
     <ClInclude Include="PIX.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PostProcess.h" />
@@ -153,12 +154,12 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_PostProcess.fx">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling core post processing shader...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling Core/Shaders/PostProcess</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling core post processing shader...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling Core/Shaders/PostProcess</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
     </CustomBuild>
@@ -172,22 +173,22 @@
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_Sprites.fx">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling sprites shader...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling Core/Shaders/Sprites</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling sprites shader...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling Core/Shaders/Sprites</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_Blobs.fx">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling std. metaballs shader...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling Core/Shaders/Blobs</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Qstrip_reflect /Qstrip_debug /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling std. metaballs shader...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)..\..\Utils\Fxc\fxc" /nologo /Tfx_5_0 /Fh%(RootDir)%(Directory)%(Filename).h /VngCompiled%(Filename) %(RootDir)%(Directory)%(Filename)%(Extension)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling Core/Shaders/Blobs</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).h;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>

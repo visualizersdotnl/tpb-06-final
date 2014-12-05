@@ -13,7 +13,7 @@
 
 namespace Pimp
 {
-	class D3D
+	class D3D : public boost::noncopyable
 	{
 	public:
 		D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swapChain);

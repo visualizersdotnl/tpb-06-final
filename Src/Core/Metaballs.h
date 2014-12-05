@@ -9,7 +9,7 @@
 
 namespace Pimp 
 {
-	class Metaballs
+	class Metaballs : public boost::noncopyable
 	{
 	public:
 		struct Metaball4

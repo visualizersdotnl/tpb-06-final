@@ -11,7 +11,7 @@ namespace Pimp
 {
 	class World;
 
-	class Material
+	class Material : public boost::noncopyable
 	{
 	private:
 		Effect effect;

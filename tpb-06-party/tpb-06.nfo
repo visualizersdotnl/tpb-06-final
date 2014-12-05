@@ -1,13 +1,13 @@
 
----------------------
-TPB-06: Excessination (PARTY VERSION 2.0)
----------------------
+-----------------------------------
+TPB-06: Excessination (PARTY FINAL)
+-----------------------------------
 
 On a beautiful spring day early 2014 in Cologne, Germany, a deal was made.
 Between two real men, at least one of them an avid reader of the Art of Manliness.
 
 It's been roughly 11 years since I've done something (TPB-05, 2003), so it didn't 
-go like I expected to and I can't say it turned out the way I wanted to.
+go like I expected to and I can't say it turned out the way I it wanted to.
 
 Still, it's here! 
 And we had great help from Glow/Inque.
@@ -15,36 +15,31 @@ And we had great help from Glow/Inque.
 
 ** System req. **
 
-64-bit Windows.
-Semi-modern CPU (SSE3 support at least) and a fashionable GPU.
-Something that spits out audio.
+- DirectX 11.
+- 64-bit Windows 7 SP1, upwards or compatible.
+- Semi-modern CPU with AVX support and a fashionable GPU (GTX 760-like).
+- A functional primary audio device.
 
 Demo will automatically adapt to your current output slash desktop
 resolution and adjust accordingly (aspect ratio), but you'll be well
 advised to use something near 16:9.
 
 It is built for 1080p.
+You can also use the windowed version which runs in 720p.
 
-DISCLAIMER:
-Party version has some stressy fixes and a lack of D3D error checking.
-It was built upon a 64KB system but lacks some left and right and we'll
-fix all that in the final. 
+Most of the stressy fixes that were in the party version have been taken out,
+so it should run pretty damn stable now or at least present a decent error message.
 
 If you run into any trouble, e-mail me (ndewit@gmail.com) with your specifications. 
 If you can be bothered. 
 
-Otherwise: http://www.youtube.com
-
-
-** Organizers **
-
-Set your beamer to 720p (or your highest!) and rock and roll.
-Don't forget dat bass.
+Otherwise: https://www.youtube.com/watch?v=KhpC6EZMZy0
+Select the 720p@60 version at least (great capture by Annikras, thanks).
 
 
 ** Credits **
 
-Programming:
+Programming & Visuals:
   Glow and Superplek
 
 2D:
@@ -63,11 +58,9 @@ Special thanks:
 We use Rocket by Kusma & Skrebbel and BASS by Ian Luck.
 
 
-Thank you and if I have a stroke and get run over by a monster truck, 
-I'll die. 
-
-And then maybe try this again.
+TPB-07 next? Time will tell.
 
 Thank you,
   Superplek/Bypass,
-  8th of November 2014
+  5th of December 2014
+

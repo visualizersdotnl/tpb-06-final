@@ -17,7 +17,7 @@ namespace Pimp
 	class Sprites;
 	class Metaballs;
 
-	class World
+	class World : public boost::noncopyable
 	{
 	private:
 		Node* rootNode;

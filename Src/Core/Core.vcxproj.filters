@@ -22,9 +22,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{abf50863-ade4-4eec-967d-29f240baa8fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\FIXME">
-      <UniqueIdentifier>{5d4ee6e2-3c5d-45de-b530-e3c49d5a01ba}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D.cpp">
@@ -47,9 +44,6 @@
     </ClCompile>
     <ClCompile Include="Sprites.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Metaballs.cpp">
-      <Filter>Source Files\FIXME</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>Source Files</Filter>
@@ -91,6 +85,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScreenQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Metaballs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -189,6 +186,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScreenQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Noncopyable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

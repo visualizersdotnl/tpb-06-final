@@ -105,7 +105,7 @@ static Pimp::Metaballs *s_pMetaballs = nullptr;
 #include "Scenes/Pompom.h"
 #include "Scenes/BulletsAndBitches.h"
 
-// Shared statics for blob parts (FIXME).
+// Shared statics for blob parts.
 static const unsigned int kNumMetaball4s = 14;
 static __declspec(align(16)) Pimp::Metaballs::Metaball4 s_metaball4s[kNumMetaball4s];
 static const sync_track *st_blobsShininess, *st_blobsOverbright;

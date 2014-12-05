@@ -6,7 +6,7 @@
 
 namespace Pimp
 {
-	class Effect
+	class Effect : public boost::noncopyable
 	{
 	public:
 		Effect(const void* compiledEffect, int compiledEffectLength);

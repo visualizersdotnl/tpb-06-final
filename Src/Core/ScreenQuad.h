@@ -5,7 +5,7 @@ namespace Pimp
 {
 	class EffectPass;
 
-	class ScreenQuad
+	class ScreenQuad : public boost::noncopyable
 	{
 	private:
 		ID3D11Buffer* vertices;

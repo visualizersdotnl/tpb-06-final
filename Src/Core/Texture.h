@@ -3,7 +3,7 @@
 
 namespace Pimp
 {
-	class Texture
+	class Texture : public boost::noncopyable
 	{
 	private:
 		ID3D11ShaderResourceView* view;

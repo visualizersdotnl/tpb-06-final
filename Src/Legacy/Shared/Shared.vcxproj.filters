@@ -32,9 +32,6 @@
     <ClInclude Include="misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="singleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stopwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>

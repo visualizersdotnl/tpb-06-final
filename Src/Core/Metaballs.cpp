@@ -2,17 +2,14 @@
 // The world famous TPB blobs.
 // It was quickly ported from an Xbox 1 project (added some SSE3 though).
 
+// ** Note: needs a large stack (recurses like there's no tomorrow). **
+
 // FIXME:
-// 1. Move all static junk into class (right now only a single instance works properly).
-//    Do keep an eye on constant parameters that may have to remain that way for speed.
-// 2. Consider making this a proper world node?
-// 3. Remove any remaining hacks.
-// 4. Use AVX?
+// 1. Remove any remaining hacks.
+// 2. Use AVX?
 
-// Until then basic parameters can be modified in this file, a little below.
-// Shading-related stuff can be set on runtime.
-
-// Note: needs a large stack (recurses like there's no tomorrow).
+// Basic (static) performance related parameters can be modified below.
+// All shader parameters and other basics can be set at runtime.
 
 #include "Platform.h"
 #include <Shared/assert.h>
@@ -86,7 +83,7 @@ static unsigned int s_genNumVerts, s_genNumFaces;
 static Vertex *s_pVertices;
 static Face *s_pFaces;
 
-// linear interpolate
+// linear interpolate (FIXME: local redundancy, but <Math/Math.h> is currently legacy, 05/12/2014)
 template<typename T> inline const T lerpf(const T &A, const T &B, float factor)
 {
 	ASSERT(factor >= 0.f && factor <= 1.f);

@@ -488,15 +488,12 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 	if (CreateDXGI(hInstance))
 	{
 		// now set up Core configuration
-		Pimp::Configuration::Init();
-
 		Pimp::Configuration::DisplayMode displayMode;
 		displayMode.width = s_displayMode.Width;
 		displayMode.height = s_displayMode.Height;
-		Pimp::Configuration::Instance()->SetDisplayMode(displayMode);
-
-		Pimp::Configuration::Instance()->SetFullscreen(false == kWindowed);
-		Pimp::Configuration::Instance()->SetRenderAspectRatio(PIMPPLAYER_RENDER_ASPECT_RATIO);
+		Pimp::gCoreCfg.SetDisplayMode(displayMode);
+		Pimp::gCoreCfg.SetFullscreen(false == kWindowed);
+		Pimp::gCoreCfg.SetRenderAspectRatio(PIMPPLAYER_RENDER_ASPECT_RATIO);
 
 		// create app. window
 		if (CreateAppWindow(hInstance, nCmdShow))
@@ -528,11 +525,11 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 							DEBUG_LOG("");
 							DEBUG_LOG("> SPACE: Toggle debug camera.");
 							DEBUG_LOG("");
-							DEBUG_LOG("To control said camera:");
-							DEBUG_LOG("> W,S,A,D:	Translate current view forward, back, left or right.");
-							DEBUG_LOG("> Q,E:		Roll current view, in either positive or negative direction.");
-							DEBUG_LOG("> Drag LMB:	Adjust yaw and pitch of current view.");
-							DEBUG_LOG("> ENTER:	    Dump current debug camera transform to output window.");
+							DEBUG_LOG("Controls:");
+							DEBUG_LOG("> W,S,A,D:   Translate current view forward, back, left or right.");
+							DEBUG_LOG("> Q,E:       Roll current view, in either positive or negative direction.");
+							DEBUG_LOG("> Drag LMB:  Adjust yaw and pitch of current view.");
+							DEBUG_LOG("> ENTER:     Dump current debug camera transform to output window.");
 							DEBUG_LOG("============================================================================");
 #endif	
 
@@ -565,7 +562,8 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 #endif
 								
 								Demo::WorldRender();
-								Pimp::gD3D->Flip((true == kWindowed) ? 0 : 1);
+//								Pimp::gD3D->Flip((true == kWindowed) ? 0 : 1);
+								Pimp::gD3D->Flip(0);
 
 								if (true == kWindowed)
 								{
@@ -616,10 +614,6 @@ int __stdcall Main(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow
 		
 		DestroyAppWindow(hInstance);
 	}
-
-	// Yes, Pimp::Configuration is a singleton.
-	// FIXME: I'd like to change that as there's no real reason for it (at least not anymore).
-	Pimp::Configuration::Free();
 
 	DestroyDXGI();
 

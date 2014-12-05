@@ -80,7 +80,7 @@ namespace Pimp
 		this->FOVy = FOVy;
 
 		// Recalculate projection matrix
-		const float renderAspect = Configuration::Instance()->GetRenderAspectRatio();
+		const float renderAspect = gCoreCfg.GetRenderAspectRatio();
 		projectionMatrix = CreateMatrixPerspectiveFov(FOVy, renderAspect, 0.15f, 2000.0f);
 	}
 }

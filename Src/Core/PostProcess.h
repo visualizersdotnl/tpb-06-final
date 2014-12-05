@@ -9,7 +9,7 @@ namespace Pimp
 {
 	class Material;
 
-	class PostProcess
+	class PostProcess : public boost::noncopyable
 	{
 	public:
 		PostProcess();

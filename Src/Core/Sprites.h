@@ -18,7 +18,7 @@ namespace Pimp
 {
 	class Texture2D;
 
-	class Sprites
+	class Sprites : public boost::noncopyable
 	{
 	private:
 		struct Vertex

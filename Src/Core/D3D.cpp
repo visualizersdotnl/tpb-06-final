@@ -24,7 +24,7 @@ D3D::D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swa
 
 	HRESULT hRes = S_OK;
 
-	const Configuration::DisplayMode& mode = Configuration::Instance()->GetDisplayMode();
+	const Configuration::DisplayMode& mode = gCoreCfg.GetDisplayMode();
 	const float viewWidth = (float) mode.width;
 	const float viewHeight = (float) mode.height;
 
@@ -88,7 +88,7 @@ D3D::D3D(ID3D11Device *device, ID3D11DeviceContext *context, IDXGISwapChain* swa
 
 	// Calculate viewports (full & aspect ratio adjusted)
 	const float fullAspectRatio = backVP.Width / backVP.Height;
-	const float renderAspectRatio = Configuration::Instance()->GetRenderAspectRatio();
+	const float renderAspectRatio = gCoreCfg.GetRenderAspectRatio();
 
 	float xResAdj, yResAdj;
 	if (fullAspectRatio < renderAspectRatio)

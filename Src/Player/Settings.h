@@ -21,13 +21,15 @@ const float PIMPPLAYER_SPRITE_RES_X = 1920.f;
 const float PIMPPLAYER_SPRITE_RES_Y = 1080.f;
 
 // Windowed (dev. only) settings.
-const bool PIMPPLAYER_WINDOWED_DEV = true;
+const bool PIMPPLAYER_WINDOWED_DEV = false;
 
 // Development 720p.
 const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280;
 const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
 
 // Use these to test letterboxing in windowed mode.
+// const unsigned int PIMPPLAYER_WINDOWED_RES_X = 1280; // Letter.
+// const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 1024;
 // const unsigned int PIMPPLAYER_WINDOWED_RES_X = 640; // Letter.
 // const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 480;
 // const unsigned int PIMPPLAYER_WINDOWED_RES_X = 800; // Pillar.
@@ -35,7 +37,7 @@ const unsigned int PIMPPLAYER_WINDOWED_RES_Y = 720;
 
 // Shader binaries (with a 'b' appended to extension) are dumped on initial load.
 // By enabling this boolean you can use them at runtime for public release
-const bool PIMPPLAYER_RUN_FROM_SHADER_BINARIES = false;
+const bool PIMPPLAYER_RUN_FROM_SHADER_BINARIES = true;
 
 // Audio settings.
 const std::string PIMPPLAYER_MP3_PATH = "ROSS2.mp3"; // Relative to asset root (see Demo.cpp).

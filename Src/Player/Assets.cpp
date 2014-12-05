@@ -148,7 +148,7 @@ namespace Assets
 		else
 		{
 			// Run from binaries.
-			for (MaterialRequest request : s_materialReqs)
+			for (MaterialRequest &request : s_materialReqs)
 			{
 				if (false == ReadFileContent(request.path + "b", &request.bytecode, &request.bytecodeSize))
 				{
