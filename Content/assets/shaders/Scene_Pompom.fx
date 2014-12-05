@@ -1,16 +1,7 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
+#include "../../../Src/Core/Shaders/ScreenQuad.inc"
 
-struct VSInput
-{
-	float3 position : POSITION;
-};
-
-struct VSOutput
-{
-	float4 screenPos	: SV_Position;
-	float4 rayDir		: TEXCOORD0; // Worldspace view direction	
-};
  
 struct PSOutput
 {
@@ -24,16 +15,6 @@ cbuffer Constants
 	float4x4 pompomRotMat;
 	float4x4 pompomRotMatInv;
 };
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-
-	output.screenPos = float4(input.position.xy * float2(1.f, 1.8f), 0, 1);
-	output.rayDir = float4(input.position.xy, 1.0, 1.0);
-	
-	return output;
-}
 
 SamplerState samplerTexture
 {
@@ -217,7 +198,7 @@ float4 ripped_main(float4 rayDir)
 // --------------------------------------------------------------------------------------------
 
 
-PSOutput MainPS(VSOutput input)
+PSOutput MainPS(VSOutput_RM input)
 {
 	PSOutput result;
 
@@ -226,11 +207,11 @@ PSOutput MainPS(VSOutput input)
 	return result;
 }
 
-technique10 Default
+technique11 Default
 {
 	pass Default
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS_RM()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS()) );		
 	}
 }

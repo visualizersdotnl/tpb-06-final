@@ -24,7 +24,7 @@ namespace Pimp
 	World::~World()
 	{
 		// Elements are owned, so delete them
-		for (auto *element : elements)
+		for (auto element : elements)
 			delete element;
 	}
 
@@ -33,7 +33,7 @@ namespace Pimp
 		currentTime += deltaTime;
 
 		// Tick ALL non-node elements first
-		for (auto *element : elements)
+		for (auto element : elements)
 		{
 			if (false == element->IsNode())
 				element->Tick(deltaTime);
@@ -64,7 +64,7 @@ namespace Pimp
 
 	void World::UpdateAllMaterialParameters()
 	{
-		for (auto *material : materials)
+		for (auto material : materials)
 		{
 			if (nullptr != material)
 				material->RefreshParameters();				

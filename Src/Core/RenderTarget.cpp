@@ -26,7 +26,7 @@ namespace Pimp
 
 	void RenderTarget::ResolveTo(RenderTarget* other)
 	{
-		ASSERT(nullptr != other);
+		ASSERT(nullptr != other && nullptr != other->texture);
 		gD3D->ResolveMultiSampledRenderTarget(other->texture, texture, format);
 	}
 }

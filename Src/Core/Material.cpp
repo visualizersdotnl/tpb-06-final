@@ -62,7 +62,7 @@ namespace Pimp
 
 		// Evaluate all world's material parameters
 		const std::vector<Element*>& elements = world->GetElements();
-		for (auto *element : elements)
+		for (auto element : elements)
 		{
 			if (ET_MaterialParameter == element->GetType())
 			{
@@ -80,7 +80,7 @@ namespace Pimp
 
 		// Evaluate all world's textures
 		const std::vector<Texture*>& textures = world->GetTextures();
-		for (auto *texture : textures)
+		for (auto texture : textures)
 		{
 			const std::string bindName = "texture_" + texture->GetName();
 			if (true == effect.HasVariable(bindName.c_str()))

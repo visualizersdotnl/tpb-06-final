@@ -167,6 +167,7 @@
     <None Include="ClassDiagram.cd" />
     <None Include="Shaders\.gitignore" />
     <None Include="Shaders\MaterialConstants.inc" />
+    <None Include="Shaders\ScreenQuad.inc" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\Shader_Sprites.fx">

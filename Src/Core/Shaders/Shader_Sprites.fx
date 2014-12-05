@@ -13,7 +13,6 @@ struct VSOutput
 	float2 texCoord : TEXCOORD0;
 };
 
-
 VSOutput MainVS(VSInput input)
 { 
 	VSOutput output;
@@ -22,7 +21,6 @@ VSOutput MainVS(VSInput input)
 	output.texCoord = input.texCoord;
 	return output;
 }
-
 
 Texture2D textureMap;
 

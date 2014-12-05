@@ -70,7 +70,7 @@ public:
 		ppDest(ppDest),
 		source(nullptr),
 		bytecode(nullptr),
-		errorMsg("Unknown") {}
+		errorMsg("Unspecified error or OK") {}
 
 	~MaterialRequest() 
 	{ 
@@ -148,7 +148,7 @@ namespace Assets
 		else
 		{
 			// Run from binaries.
-			for (MaterialRequest &request : s_materialReqs)
+			for (MaterialRequest request : s_materialReqs)
 			{
 				if (false == ReadFileContent(request.path + "b", &request.bytecode, &request.bytecodeSize))
 				{
@@ -235,10 +235,10 @@ namespace Assets
 
 	void Release()
 	{
-		for (auto *pMat : s_materials)
+		for (auto pMat : s_materials)
 			delete pMat;
 		
-		for (auto *pTex2D : s_textures)
+		for (auto pTex2D : s_textures)
 			delete pTex2D;
 
 		s_materials.clear();

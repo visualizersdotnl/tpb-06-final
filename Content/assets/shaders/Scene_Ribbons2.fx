@@ -1,21 +1,11 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
+#include "../../../Src/Core/Shaders/ScreenQuad.inc"
 
 
 #define SHOW_NORMALS 0
 
 
-struct VSInput
-{
-	float3 position : POSITION;
-};
-
-struct VSOutput
-{
-	float4 screenPos	: SV_Position;
-	float4 rayDir		: TEXCOORD0; // Worldspace view direction	
-};
- 
 struct PSOutput
 {
 	float4 color : SV_Target0;
@@ -58,19 +48,6 @@ cbuffer Constants
 
 	float ribbons2Separate = 0;
 };
-
-
-
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-
-	output.screenPos = float4(input.position.xy * float2(1,1.8) * sceneRenderLOD, 0, 1);
-	output.rayDir = float4(input.position.xy, 0.0, 0.0);
-	
-	return output;
-}
 
 
 Texture2D texture_ribbons_mesh;
@@ -427,7 +404,7 @@ float3 Shade(float3 inPos, float3 inNormal, float3 inEyeDir, float3 inEyePos, fl
 }
 
 
-PSOutput MainPS(VSOutput input)
+PSOutput MainPS(VSOutput_RM input)
 {
 	PSOutput result;
 
@@ -480,11 +457,11 @@ PSOutput MainPS(VSOutput input)
 }
 
 
-technique10 Default
+technique11 Default
 {
 	pass Default
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS_RM()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS()) );		
 	}
 }

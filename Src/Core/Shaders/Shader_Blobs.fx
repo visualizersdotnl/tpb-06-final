@@ -15,8 +15,7 @@ struct VSOutput
 	float3 view : TEXCOORD3;
 };
 
-
-cbuffer SetByMetaballs
+cbuffer Constants
 {
 	float4x4 viewProjMatrix;
 	float4x4 mWorld;
@@ -26,7 +25,6 @@ cbuffer SetByMetaballs
 	float2 projScroll;
 	float rim;
 };
-
 
 float3 LightVertex(
 	float3 position,

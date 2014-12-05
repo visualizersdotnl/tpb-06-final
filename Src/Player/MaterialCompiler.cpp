@@ -32,6 +32,7 @@ void MaterialCompiler::StartJob(
 		pJob->sourceLen = sourceLen;
 		pJob->bytecode = bytecode;
 		pJob->bytecodeSize = bytecodeSize;
+		pJob->errorMsg = errorMsg;
 		m_jobs.push_back(pJob);
 		m_threads.push_back(CreateThread(NULL, 0, ThreadProc, pJob, 0, NULL));
 	}

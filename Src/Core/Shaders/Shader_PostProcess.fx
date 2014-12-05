@@ -1,28 +1,20 @@
 
+#include "ScreenQuad.inc"
+
 // Since the target filter RT is fixed-point, we have to rescale all colors back
 // to some "allowed" range.
-#define MAX_FILTER_COLOR 4.0f
+#define MAX_FILTER_COLOR 4.f
 
-// Default is/was 15.
+// Default is/was 15 (keep in check with C++).
 #define NUM_BLOOMBLUR_SAMPLES 15
 
-struct VSInput
-{
-	float3 position : POSITION;
-};
-
-struct VSOutput
-{
-	float4 screenPos : SV_Position;
-	float2 uv : TEXCOORD0;
-};
 
 struct PSOutput
 {
 	float4 color : SV_Target0;
 };
 
-cbuffer SetByPostProcessing
+cbuffer PostProcessConstants
 {
 	// Bloom parameters.
 	float4 bloomGatherSamples[2];
@@ -37,18 +29,8 @@ cbuffer SetByPostProcessing
 	float motionBlurFrameWeight; 
 
 	// Loading bar progress (drawn if > 0).
-	float loadProgress = 0;	
+	float loadProgress = 0.f;	
 };
-
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-	output.screenPos = float4(input.position.xy, 0, 1);
-	output.uv = input.position.xy * float2(0.5f, -0.5f) + 0.5f;
-	return output;
-}
-
 	
 Texture2D bufferSceneColor;
 Texture2D bufferFilter;
@@ -162,26 +144,25 @@ technique11 PostFX
 {
 	pass Gather
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Gather()) );		
 	}
 	
 	pass Blur
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Blur()) );
 	}	
 	
 	pass Combine
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_Combine()) );
 	}	
 
 	pass MotionBlur
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS_MotionBlur()) );
 	}
 }
-

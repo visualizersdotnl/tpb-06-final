@@ -601,23 +601,23 @@ bool D3D::CompileEffect(
 	{
 		if (nullptr != errors)
 		{			
-			errorMsg = std::string(reinterpret_cast<char*>(errors->GetBufferPointer()), (size_t) errors->GetBufferSize());
+			errorMsg = std::string(reinterpret_cast<char*>(errors->GetBufferPointer()));
 
 			// Not using D3D_ASSERT_MSG as this may be called from a worker thread.
-			ASSERT_MSG(S_OK != hRes, errorMsg.c_str());
+			ASSERT_MSG(0, errorMsg.c_str());
 		}
 
 		SAFE_RELEASE(errors);
 		return false;
 	}
 
-	ASSERT(shader->GetBufferSize() > 0);
+	ASSERT(nullptr != shader && shader->GetBufferSize() > 0);
 	*outCompiledEffectBuffer = new unsigned char[shader->GetBufferSize()];
 	ASSERT(*outCompiledEffectBuffer != NULL);
 	memcpy(*outCompiledEffectBuffer, (unsigned char*)shader->GetBufferPointer(), (size_t) shader->GetBufferSize());
 	*outCompiledEffectLength = (int)shader->GetBufferSize();
-
 	shader->Release();
+
 	return true;
 }
 

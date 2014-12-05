@@ -1,8 +1,8 @@
 
-// Constants required by .FX shaders contained in a Material instance.
+#if !defined(MATERIAL_CONSTANTS_INC)
+#define MATERIAL_CONSTANTS_INC
 
-#ifndef _MATERIAL_CONSTANTS_
-#define _MATERIAL_CONSTANTS_
+// Constants required by .FX shaders contained in a Material instance.
 
 cbuffer CoreMaterialConstants
 {
@@ -13,5 +13,4 @@ cbuffer CoreMaterialConstants
 // Only to be used by user post processing FX.
 Texture2D sceneBuffer;
 
-#endif // _MATERIAL_CONSTANTS_
-
+#endif // MATERIAL_CONSTANTS_INC

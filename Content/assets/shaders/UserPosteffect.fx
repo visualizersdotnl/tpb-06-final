@@ -1,16 +1,6 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
-
-struct VSInput
-{
-	float3 position : POSITION;
-};
-
-struct VSOutput
-{
-	float4 screenPos : SV_Position;
-	float2 uv : TEXCOORD0;
-};
+#include "../../../Src/Core/Shaders/ScreenQuad.inc"
 
 struct PSOutput
 {
@@ -25,18 +15,6 @@ cbuffer Constants
 	float g_sceneNoise;    // 0 = None, 1 = Full
 	float g_sceneNoiseT;
 };
-
-
-VSOutput MainVS(VSInput input)
-{ 
-	VSOutput output;
-
-	output.screenPos = float4(input.position.xy, 0, 1);
-	output.uv = input.position.xy * float2(0.5f, -0.5f) + 0.5f;
-
-	return output;
-}
-
 
 SamplerState samplerSceneBuffer
 {
@@ -71,7 +49,7 @@ technique11 Default
 {
 	pass Default
 	{
-		SetVertexShader( CompileShader(vs_4_0, MainVS()) );
+		SetVertexShader( CompileShader(vs_4_0, ScreenQuadVS()) );
 		SetPixelShader( CompileShader(ps_4_0, MainPS()) );		
 	}
 }
