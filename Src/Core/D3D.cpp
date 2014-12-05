@@ -1,9 +1,4 @@
 
-// FIXME: location is deprecated.
-// Header included in D3DAssert.h
-#pragma comment(lib, "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x64\\DxErr.lib")
-
-
 #include "Platform.h"
 #include <D3DCompiler.h>
 #include "D3D.h"

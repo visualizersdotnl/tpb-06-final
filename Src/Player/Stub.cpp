@@ -1,4 +1,4 @@
-
+	
 /*
 	Player stub.
 
@@ -7,11 +7,11 @@
 	The idea here is to:
 	- Create and manage a simple render window.
 	- Initialize and maintain DXGI/D3D and create the device exactly like Core wants it.
-	- Kick off audio and talk to Rocket.
+	- Kick off audio.
 	- Provide a stable main loop.
 	- Take care of proper shutdown and error message display.
 
-	Oh, and try some leak detection using an external tool.
+	Oh, and try some leak detection using an external tool or debug heap.
 */
 
 #include <Core/Platform.h>
@@ -244,7 +244,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		};
 
 	case WM_SIZE:
-		break; // FIXME: ALT+ENTER issue.
+		break; // ALT+ENTER is blocked, all else is ignored or scaled if the window type permits it.
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
