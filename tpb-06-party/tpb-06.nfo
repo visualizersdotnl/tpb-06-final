@@ -17,7 +17,7 @@ And we had great help from Glow/Inque.
 
 - DirectX 11.
 - 64-bit Windows 7 SP1, upwards or compatible.
-- Semi-modern CPU with AVX support and a fashionable GPU (GTX 760-like).
+- Semi-modern CPU with SSE4.1 support and a fashionable GPU (GTX 760-like).
 - A functional primary audio device.
 
 Demo will automatically adapt to your current output slash desktop
