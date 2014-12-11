@@ -639,9 +639,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, 
 	}
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
-		// Try a few things to restore the desktop.
-		SAFE_RELEASE(s_pSwapChain);
-		if (NULL != s_hWnd) DestroyWindow(s_hWnd);
+		if (false == kWindowed)
+		{
+			// Try a few things to restore the desktop.
+			// Only worth trying if running full screen.
+			SAFE_RELEASE(s_pSwapChain);
+			if (NULL != s_hWnd) DestroyWindow(s_hWnd);
+		}
 
 		// Sound the alarm bell.
 		MessageBox(NULL, "Demo crashed (unhandled exception). Now quickly: http://www.pouet.net!", PIMPPLAYER_RELEASE_ID, MB_OK | MB_ICONEXCLAMATION);

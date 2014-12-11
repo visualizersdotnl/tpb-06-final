@@ -1,6 +1,7 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
 #include "../../../Src/Core/Shaders/ScreenQuad.inc"
+#include "../../../Src/Player/Content/Constants.inc"
 
 
 #define SHOW_NORMALS 0
@@ -31,8 +32,6 @@ static float StepFraction = 0.9;
 cbuffer Constants
 {
 	float FOV = 0.7f;
-
-	float g_fxTime = 0;
 
 	float fisheyeStrength = 6; //6;
 	float fisheyeFOV = 1.0; //1.0;

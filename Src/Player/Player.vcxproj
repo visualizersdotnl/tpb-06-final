@@ -293,6 +293,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\3rdparty\bass24\bass.chm" />
+    <None Include="Content\Constants.inc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App.ico" />
