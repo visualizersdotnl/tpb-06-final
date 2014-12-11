@@ -1,9 +1,8 @@
 
 #if !defined(MATERIAL_CONSTANTS_INC)
 #define MATERIAL_CONSTANTS_INC
-
+ 
 // Constants required by .FX shaders contained in a Material instance.
-
 cbuffer CoreMaterialConstants
 {
 	float4x4 viewInvMatrix; 

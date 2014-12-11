@@ -563,11 +563,6 @@ Texture3D* D3D::CreateTexture3D(const std::string& name, int width, int height, 
 	// FIXME: if it cops out anywhere here by way of throw we're obviously potentially leaking.
 }
 
-// FIXME: probably defined after porting to D3D11.
-#ifndef D3D_COMPILE_STANDARD_FILE_INCLUDE
-	#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((ID3DInclude*)(UINT_PTR)1)
-#endif
-
 bool D3D::CompileEffect(
 	const std::string &path,
 	const unsigned char* effectAscii, 
@@ -584,10 +579,14 @@ bool D3D::CompileEffect(
 		effectAsciiSize,
 		path.c_str(),                     
 		nullptr,                           // No defines.
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // Use default include handler.
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // Use default include handler (FIXME: create "smart" one).
 		nullptr,                           // Default entry point.
 		"fx_5_0",                          // Only target supported by Effects11.
-		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION, 
+#if defined(_DEBUG) || defined(_DESIGN)
+		D3DCOMPILE_OPTIMIZATION_LEVEL3,
+#else
+		D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_SKIP_VALIDATION,
+#endif
 		0,
 		&shader,
 		&errors);

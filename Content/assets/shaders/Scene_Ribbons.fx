@@ -1,7 +1,7 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
 #include "../../../Src/Core/Shaders/ScreenQuad.inc"
-
+#include "../../../Src/Player/Content/Constants.inc"
 
 #define SHOW_NORMALS 0
 
@@ -38,8 +38,6 @@ cbuffer Constants
 	float fadeAmount = 1; // 0 = black, 1 = visible, 10 = white-ish
 
 	float4 testLightPos = float4(20.0, 20.0, 20.0, 1.0);
-
-	float g_fxTime = 0;	
 
 	float ribbonsSpeed = 0.5; //< How fast do our ribbons wave?
 	float ribbonsAppear = 1.0; //< [0..1] 0=invisible, 1=visible

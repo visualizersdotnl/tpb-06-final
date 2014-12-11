@@ -149,6 +149,9 @@
     <None Include="..\3rdparty\bass24\bass.chm">
       <Filter>../3rdparty/bass24</Filter>
     </None>
+    <None Include="Content\Constants.inc">
+      <Filter>/Content</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="/Content">

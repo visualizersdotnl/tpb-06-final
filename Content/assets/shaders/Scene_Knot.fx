@@ -1,7 +1,8 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
 #include "../../../Src/Core/Shaders/ScreenQuad.inc"
-
+#include "../../../Src/Player/Content/Constants.inc"
+ 
 
 #define SHOW_NORMALS 0
 

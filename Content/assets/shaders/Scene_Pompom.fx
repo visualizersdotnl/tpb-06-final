@@ -1,7 +1,7 @@
 
 #include "../../../Src/Core/Shaders/MaterialConstants.inc"
 #include "../../../Src/Core/Shaders/ScreenQuad.inc"
-
+#include "../../../Src/Player/Content/Constants.inc"
  
 struct PSOutput
 {
@@ -10,8 +10,6 @@ struct PSOutput
 
 cbuffer Constants
 {
-	float g_fxTime;
-
 	float4x4 pompomRotMat;
 	float4x4 pompomRotMatInv;
 };
