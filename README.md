@@ -1,8 +1,5 @@
+# TPB-06: Excessination
 
-TPB-06 - Excessination / TPB engine.
-
-TPB-06 has been released. This is all based on Inque's core code and supplemented by
-tons of new stuff to make it suitable for full-size demoscene demos.
-
-Currently receiving massive overhauls & cleanup.
-  
+Source code release.  
+This was based on Inques core code and supplemented by tons of new stuff for full-size demoscene stuff.  
+Also full of FIXMEs, the code base was also in the middle of an overhaul at this point.
